@@ -369,7 +369,7 @@ $part_fields[] = array(
 );
 
 $can_edit_units_per_package = false;
-
+$warning_units_per_package='';
 
 if ($object->get('Part Status') == 'In Process' and $object->get('Part Current On Hand Stock') == 0) {
 
@@ -388,11 +388,10 @@ if ($object->get('Part Status') == 'In Process' and $object->get('Part Current O
         $can_edit_units_per_package = true;
 
     }
-
 }
-//todo remove this when we redo the post stuff
-//$warning_units_per_package  = '';
-//$can_edit_units_per_package = false;
+
+
+
 
 $part_fields[] = array(
     'label' => ($supplier_part_scope
@@ -412,7 +411,7 @@ $part_fields[] = array(
             'formatted_value' => $object->get('Units Per Package'),
             'label'           => ucfirst($object->get_field_label('Part Units Per Package')).$warning_units_per_package,
             'invalid_msg'     => get_invalid_message('string'),
-            'required'        => ($supplier_part_scope ? false : true),
+            'required'        => !$supplier_part_scope,
             'type'            => 'value'
         ),
 
