@@ -9,7 +9,8 @@
 
 */
 
-function get_export_fields($element, $account_currency_code = '') {
+function get_export_fields($element, $account_currency_code = ''): array
+{
 
     $export_fields = array(
         'customers'              => array(
@@ -2669,11 +2670,7 @@ function get_export_fields($element, $account_currency_code = '') {
 
     );
 
-    if (isset($export_fields[$element])) {
-        return $export_fields[$element];
-    } else {
-        return [];
-    }
+    return $export_fields[$element] ?? [];
 
 
 }
