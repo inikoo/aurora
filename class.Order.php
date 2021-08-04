@@ -303,23 +303,21 @@ class Order extends DB_Table
 
             case 'Tax Description':
 
-                switch ($this->data['Order Tax Code']) {
-                    case 'OUT':
+
+                $tax_category=new \Aurora\Models\Utils\TaxCategory($this->db);
+                $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
+
+                switch ($tax_category->get('Tax Category Type')) {
+                    case 'Outside':
                         $tax_description = _('Outside the scope of VAT');
                         break;
-                    case 'EU':
+                    case 'EU_VTC':
                         $tax_description = sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
                         break;
                     default:
+                        $tax_description= '<small class="discreet">'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name');
 
-                        switch ($this->metadata('why_tax')) {
-                            case 'EC with invalid tax number':
-                                $tax_description = sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
-                                break;
-                            default:
-                                $why_tax_formatted = '';
-                                $tax_description   = $this->metadata('tax_name').$why_tax_formatted;
-                        }
                 }
 
 

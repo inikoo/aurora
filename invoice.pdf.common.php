@@ -18,6 +18,7 @@ use CommerceGuys\Addressing\Country\CountryRepository;
 use Mpdf\Mpdf;
 use Aurora\Models\Utils\TaxCategory;
 
+include_once 'class.Country.php';
 
 $id = $_REQUEST['id'] ?? '';
 if (!$id) {
@@ -630,7 +631,7 @@ while ($row = $stmt->fetch()) {
 
 $tax_data = array();
 $sql      = sprintf(
-    "SELECT `Tax Category Name`,`Tax Category Rate`,`Invoice Tax Amount`,`Tax Category Type`,`Invoice Tax Net`,`Tax Category Country 2 Alpha Code` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Key`=B.`Invoice Tax Category Key`)  WHERE B.`Invoice Tax Invoice Key`=%d  ",
+    "SELECT `Invoice Tax Amount`,`Invoice Tax Net`,`Invoice Tax Category Key` FROM  `Invoice Tax Bridge` B  WHERE B.`Invoice Tax Invoice Key`=%d  ",
     $invoice->id
 );
 
@@ -639,10 +640,9 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
-        if ($row['Tax Category Type'] == 'Exempt') {
-            $exempt_tax = true;
+        $tax_category=new TaxCategory($db);
+        $tax_category->loadWithKey($row['Invoice Tax Category Key']);
 
-        }
 
 
         if($number_tax_lines<=1) {
@@ -651,34 +651,17 @@ if ($result = $db->query($sql)) {
             $base=money($row['Invoice Tax Net'],$invoice->get('Invoice Currency')).' @';
 
         }
-        switch ($row['Tax Category Name']) {
-            case 'Outside the scope of VAT':
-                $tax_category_name = _('Outside the scope of VAT');
-                break;
-            case 'VAT 17.5%':
-                $tax_category_name = _('VAT').' 17.5%';
-                break;
-            case 'VAT 20%':
-                $tax_category_name = _('VAT').' 20%';
-                break;
-            case 'VAT 15%':
-                $tax_category_name = _('VAT').' 15%';
-                break;
-            case 'No Tax':
-                $tax_category_name = _('No Tax');
-                break;
-            case 'RE (5,2%)':
-                $tax_category_name = 'RE 5,2%';
-                break;
-            case 'Exempt from VAT':
-                $tax_category_name = _('Exempt from VAT');
-                $exempt_tax        = true;
 
+        switch ($tax_category->get('Tax Category Type')) {
+            case 'Outside':
+                $tax_category_name = _('Tax').'<div style="font-size: x-small">'._('Outside the scope of VAT').'</div>';
                 break;
-
-
+            case 'EU_VTC':
+                $tax_category_name = _('Tax').'<div style="font-size: x-small">'.sprintf(_('Valid tax number %s'),$invoice->get('Invoice Tax Number')).'</div>';
+                $exempt_tax = true;
+                break;
             default:
-                $tax_category_name = '<small>'._('Tax').' ('.$row['Tax Category Country 2 Alpha Code'].')</small> '.$row['Tax Category Name'];
+                $tax_category_name =_('Tax').'<div style="font-size: x-small"><small>'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name').'</div>';
         }
 
 

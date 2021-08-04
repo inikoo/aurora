@@ -54,14 +54,14 @@ class ESP_TaxCategoryProvider implements TaxCategoryProvider
 
         if ($delivery_address->isEuropeanUnion()) {
             if ($taxNumber->isValid()) {
-                return $tax_category->loadWithTypeCountry('EU_VTC', $this->base_country);
+                return $tax_category->loadWithKey(1);
             } else {
                 return $tax_category->loadWithTypeCountry('IVA', $this->base_country);
             }
         }
 
 
-        return $tax_category->loadWithTypeCountry('Outside', $this->base_country);
+        return $tax_category->loadWithKey(1);
     }
 }
 

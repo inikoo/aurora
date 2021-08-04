@@ -18,11 +18,10 @@ class EUR_TaxCategoryProvider implements TaxCategoryProvider
     private string $base_country;
     private string $tax_category_code_prefix;
 
-    function __construct(PDO $db, $base_country,$tax_category_code_prefix='')
+    function __construct(PDO $db, $base_country)
     {
         $this->db           = $db;
         $this->base_country = $base_country;
-        $this->tax_category_code_prefix=$tax_category_code_prefix;
     }
 
     public function getTaxCategory($invoice_address, $delivery_address, $taxNumber): TaxCategory
@@ -30,12 +29,12 @@ class EUR_TaxCategoryProvider implements TaxCategoryProvider
         $tax_category = new TaxCategory($this->db);
 
         if ($invoice_address->getCountryCode() == $this->base_country or $delivery_address->getCountryCode() == $this->base_country) {
-            return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'S1',$this->base_country);
+            return $tax_category->loadWithCodeCountry('S1',$this->base_country);
         }
 
         if ($delivery_address->isEuropeanUnion()) {
             if ($taxNumber->isValid()) {
-                return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'EU',$this->base_country);
+                return $tax_category->loadWithCodeCountry('EU',$this->base_country);
             } else {
                 $countryCode = $delivery_address->getCountryCode();
 
@@ -52,7 +51,7 @@ class EUR_TaxCategoryProvider implements TaxCategoryProvider
                 }
                 if ($countryCode == 'ES') {
                     if (preg_match('/^(35|38|51|52)/', $delivery_address->getPostalCode())) {
-                        return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'OUT',$this->base_country);
+                        return $tax_category->loadWithCodeCountry('OUT',$this->base_country);
                     }
                 }
 
@@ -62,7 +61,7 @@ class EUR_TaxCategoryProvider implements TaxCategoryProvider
         }
 
 
-        return $tax_category->loadWithCodeCountry($this->tax_category_code_prefix.'OUT',$this->base_country);
+        return $tax_category->loadWithKey(1);
     }
 }
 

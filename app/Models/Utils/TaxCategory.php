@@ -25,12 +25,11 @@ class TaxCategory
 
     public function loadWithKey($key): TaxCategory
     {
-        $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Key`=?";
+        $sql = "select * from kbase.`Tax Category Dimension` where `Tax Category Key`=?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array($key));
         if ($row = $stmt->fetch()) {
-
             $this->data = $row;
             $this->id   = $this->data['Tax Category Key'];
         }
@@ -38,14 +37,13 @@ class TaxCategory
         return $this;
     }
 
-    public function loadWithTypeCountry($type,$country_code): TaxCategory
+    public function loadWithTypeCountry($type, $country_code): TaxCategory
     {
-        $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Type`=? and `Tax Category Active`='Yes'";
+        $sql = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Type`=? and `Tax Category Active`='Yes'";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array($country_code, $type));
         if ($row = $stmt->fetch()) {
-
             $this->data = $row;
             $this->id   = $this->data['Tax Category Key'];
         }
@@ -53,14 +51,13 @@ class TaxCategory
         return $this;
     }
 
-    public function loadWithCodeCountry($code,$country_code): TaxCategory
+    public function loadWithCodeCountry($code, $country_code): TaxCategory
     {
-        $sql  = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Code`=? and `Tax Category Active`='Yes'";
+        $sql = "select * from kbase.`Tax Category Dimension` where `Tax Category Country 2 Alpha Code`=? and  `Tax Category Code`=? and `Tax Category Active`='Yes'";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array($country_code, $code));
         if ($row = $stmt->fetch()) {
-
             $this->data = $row;
             $this->id   = $this->data['Tax Category Key'];
         }
@@ -73,8 +70,9 @@ class TaxCategory
         return $this->data[$field] ?? '';
     }
 
-    function getMetadata($field){
-        $metadata=json_decode($this->data['Tax Category Metadata'],true);
-        return $metadata[$field]??'';
+    function getMetadata($field)
+    {
+        $metadata = json_decode($this->data['Tax Category Metadata'], true);
+        return $metadata[$field] ?? '';
     }
 }

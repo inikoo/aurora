@@ -34,9 +34,9 @@ class GBR_TaxCategoryProvider implements TaxCategoryProvider
         $tax_category = new TaxCategory($this->db);
 
         if (in_array($invoice_address->getCountryCode(), $this->taxable_countries) or in_array($delivery_address->getCountryCode(), $this->taxable_countries)) {
-            return $tax_category->loadWithTypeCountry( 'Standard',$this->base_country);
+            return $tax_category->loadWithTypeCountry('Standard', $this->base_country);
         }
 
-        return $tax_category->loadWithTypeCountry('Outside',$this->base_country);
+        return $tax_category->loadWithKey(1);
     }
 }

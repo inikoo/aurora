@@ -3273,12 +3273,13 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 
     $bigger_tax = 0;
 
-    $adata     = array();
+
     $total_tax = 0;
 
     $sql = sprintf(
-        "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=ONPTF.`Tax Category Code` and `Tax Category Country Code`=%s)  WHERE `Order Key`=%d ",
-        prepare_mysql($account->get('Account Country Code')), $_data['parameters']['parent_key']
+        "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` 
+            FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Key`=ONPTF.`Order No Product Transaction Tax Category Key` )  WHERE `Order Key`=%d ",
+         $_data['parameters']['parent_key']
 
     );
 
@@ -3301,10 +3302,6 @@ function refund_new_items_tax($_data, $db, $user, $account) {
             }
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
@@ -3340,8 +3337,9 @@ function refund_new_items_tax($_data, $db, $user, $account) {
     $total_tax = 0;
 
     $sql = sprintf(
-        "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=ONPTF.`Tax Category Code` and `Tax Category Country Code`=%s)  WHERE `Order Key`=%d ",
-        prepare_mysql($account->get('Account Country Code')), $_data['parameters']['parent_key']
+        "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` 
+            FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category key`=ONPTF.`Order No Product Transaction Tax Category Key`)  WHERE `Order Key`=%d ",
+         $_data['parameters']['parent_key']
     );
 
 
@@ -3381,10 +3379,6 @@ function refund_new_items_tax($_data, $db, $user, $account) {
             }
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
