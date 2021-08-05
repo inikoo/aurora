@@ -2,8 +2,7 @@
 {foreach from=$locations_data item=location_data}
 
 {if $location_data.location_key!=$warehouse_unknown_location_key}
-
-    <tr id="part_location_edit_{$location_data.location_key}" class="locations"  location_key="{$location_data.location_key}" >
+    <tr id="part_location_edit_{$location_data.location_key}" class="locations"  data-location_key="{$location_data.location_key}" location_key="{$location_data.location_key}" >
         <td style="width:20px" class="undo_unlink_operations ">
             <i class="fa fa-fw  hide fa-undo button " title="{t}Undo{/t}" onclick="undo_disassociate_location(this)"></i>
         </td>
@@ -14,12 +13,17 @@
                      <div  class="hide picking_location_note_value">{$location_data.note}</div>
               </span>
             <span class="picking_location_icon">
+                {if $location_data.is_pipeline}
+                    <i class="fal fa-fw fa-project-diagram"></i>
+                {else}
                 <i onclick="set_as_picking_location({$part_sku},{$location_data.location_key})" class="fa fa-fw fa-shopping-basket  {if $location_data.can_pick=='No'}super_discreet_on_hover button{else}{/if}   " aria-hidden="true" title="{if $location_data.can_pick=='No'}{t}Set as picking location{/t}{else}{t}Picking location{/t}{/if}" ></i>
+                {/if}
+
             </span>
             <span onclick="change_view_if_has_link_class(this,'/locations/{$location_data.warehouse_key}/{$location_data.location_key}')" class="link location_code">{$location_data.location_code}{$location_data.location_external_icon}</span>
         </span>
             <span class="hide  discreet disassociate_info italic small">
-                {if $location_data.can_pick=='Yes'}<span class="margin_left_5" title="{t}Preferred picking location cc{/t}"><i class="fa fa-fw fa-shopping-basket "></i></span>{/if}
+                {if $location_data.can_pick=='Yes'}<span class="margin_left_5" title="{t}Preferred picking location{/t}"><i class="fa fa-fw fa-shopping-basket "></i></span>{/if}
                 {if $location_data.stock!=0}<span class=" margin_left_5">{t}current stock{/t} {$location_data.formatted_stock}{/if}</span>
             </span>
             <span class="hide  disassociate_warning small">
@@ -30,10 +34,10 @@
 
             <span class="very_discreet recommendations">
 	        <span onClick="open_edit_min_max(this)"
-                  location_key="{$location_data.location_key}" min="{$location_data.min_qty}" max="{$location_data.max_qty}"
+                  data-location_key="{$location_data.location_key}" data-min="{$location_data.min_qty}" data-max="{$location_data.max_qty}"
                   title="{t}Recommended min/max stock{/t}"
 
-                  class="button min_max open_edit_min_max {if $location_data.can_pick=='No'}hide{/if}">
+                  class="button min_max open_edit_min_max {if !($location_data.can_pick=='Yes' or $location_data.is_pipeline)   }hide{/if}">
                  ( <span class="formatted_recommended_min">{$location_data.formatted_min_qty}</span> ,
                    <span class="formatted_recommended_max">{$location_data.formatted_max_qty}</span> )
             </span>
@@ -41,18 +45,19 @@
 	        
 	        <span onClick="open_edit_recommended_move(this)"
 
-                  location_key="{$location_data.location_key}"  recommended_move="{$location_data.move_qty}"
+                  data-location_key="{$location_data.location_key}"  data-recommended_move="{$location_data.move_qty}"
 
                   title="{t}Recommended replenishment quantity{/t}"
 
-                  class="button open_edit_recommended_move {if $location_data.can_pick=='Yes'}hide{/if}">[ <span class="formatted_recommended_move">{$location_data.formatted_move_qty}</span> ]</span>
+                  class="button open_edit_recommended_move {if ($location_data.can_pick=='Yes' or $location_data.is_pipeline)   }hide{/if}">[ <span class="formatted_recommended_move">{$location_data.formatted_move_qty}</span> ]</span>
 
 
 
 	        </span>
         </td>
         <td class="aright  last_audit_days">{$location_data.days_last_audit}</td>
-        <td class="aright  formatted_stock">{$location_data.formatted_stock}  <i onclick="open_sent_part_to_production(this)" location_key="{$location_data.location_key}" max="{$location_data.stock}"  class="far fa-hand-rock padding_left_10 button production_supply_edit {if !$part->get('Part Raw Material Key')>0}hide{/if}" aria-hidden="true"></i> </td>
+        <td class="aright  formatted_stock">{$location_data.formatted_stock}  <i onclick="open_sent_part_to_production(this)" location_key="{$location_data.location_key}" max="{$location_data.stock}"
+                                                                                 class="far fa-hand-rock padding_left_10 button production_supply_edit {if !$part->get('Part Raw Material Key')>0}hide{/if}" aria-hidden="true"></i> </td>
         <td class="aright  hide stock_input"><span class="stock_change"></span>
 
             <i class="far fa-dot-circle button super_discreet_on_hover set_as_audit" aria-hidden="true" title="{t}Mark as audited{/t}" onclick="set_as_audit(this)"></i>

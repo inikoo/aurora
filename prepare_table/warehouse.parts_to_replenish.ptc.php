@@ -35,13 +35,14 @@ class prepare_table_warehouse_parts_to_replenish extends prepare_table {
 
     function prepare_table() {
 
-        $this->where = ' where `Can Pick`="Yes" and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  and `Part Distinct Locations`>1  ';
+        $this->where = " where L.`Location Pipeline`='No' and  `Can Pick`='Yes' and `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  and (`Part Distinct Locations`-`Part Pipeline Locations`)>1 ";
 
         $this->table = "
     `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`) left join `Part Dimension` P on (PL.`Part SKU`=P.`Part SKU`) left join `Warehouse Flag Dimension` on (`Warehouse Flag Key`=`Location Warehouse Flag Key`)
      ";
 
-        $this->fields = " `Part Symbol`, `Part Distinct Locations`,  P.`Part Current On Hand Stock`,  `Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as ordered_quantity,`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` as effective_stock,`Location Warehouse Key`,`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,PL.`Location Key`,`Location Code`,P.`Part Reference`,`Warehouse Flag Color`,`Warehouse Flag Key`,`Warehouse Flag Label`,PL.`Part SKU`,IFNULL((select GROUP_CONCAT(L.`Location Key`,':',L.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` L on (L.`Location Key`=PLD.`Location Key`) where PLD.`Part SKU`=P.`Part SKU`),'') as location_data,
+        $this->fields = " `Part Symbol`, `Part Distinct Locations`,  P.`Part Current On Hand Stock`,  `Part Current Stock In Process`+ `Part Current Stock Ordered Paid` as ordered_quantity,`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` as effective_stock,`Location Warehouse Key`,`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,PL.`Location Key`,`Location Code`,P.`Part Reference`,`Warehouse Flag Color`,`Warehouse Flag Key`,`Warehouse Flag Label`,PL.`Part SKU`,
+        IFNULL((select GROUP_CONCAT(SL.`Location Key`,':',SL.`Location Code`,':',`Can Pick`,':',`Quantity On Hand` SEPARATOR ',') from `Part Location Dimension` PLD  left join `Location Dimension` SL on (SL.`Location Key`=PLD.`Location Key`) where SL.`Location Pipeline`='No' and   PLD.`Part SKU`=P.`Part SKU`),'') as location_data,
             `Part Next Deliveries Data`,`Part Units Per Package`,`Part Package Description`
             
             ";

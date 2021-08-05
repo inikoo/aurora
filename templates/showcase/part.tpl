@@ -2,14 +2,14 @@
 {include file="sticky_note.tpl" value=$part->get('Sticky Note') object="Part" key="{$part->id}" field="Part_Sticky_Note"  }
 </div>
 
-<div id="edit_stock_min_max" location_key="" class="hide " style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
+<div id="edit_stock_min_max" data-location_key="" location_key="" class="hide " style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
     <i style="position: relative;top:-5px;padding-right:5px" onClick="close_edit_min_max(this)" class="close_min_max button fa fa-window-close" aria-hidden="true"></i>
     <input class="recommended_min min_max" style="width:50px" ovalue="" value="" placeholder="{t}min{/t}"/>
     <input class="recommended_max min_max" style="width:50px" ovalue="" value="" placeholder="{t}max{/t}"/>
     <i onClick="save_recommendations('min_max',this)" class="fa fa-cloud save" aria-hidden="true"></i>
 </div>
 
-<div id="edit_recommended_move" location_key="" class="hide" style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
+<div id="edit_recommended_move" data-location_key="" location_key="" class="hide" style="position:absolute;border:1px solid #ccc;padding:5px;width:auto;background-color: #fff;z-index: 100">
     <i style="position: relative;top:-5px;padding-right:5px" onClick="close_edit_recommended_move(this)" class="close_recommended_move button fa fa-window-close" aria-hidden="true"></i>
     <input class="recommended_move min_max" style="width:70px" ovalue="" value=""/> <i onClick="save_recommendations('move',this)" class="fa fa-cloud save" aria-hidden="true"></i>
 </div>
@@ -362,8 +362,8 @@
                         class="formatted_recommended_max"></span>}</span>
 	        <span class="edit_min_max hide"><i onClick="close_edit_min_max(this)"
                                                class="close_min_max button fa fa-times" aria-hidden="true"></i> <input
-                        class="recommended_min min_max" style="width:30px" ovalue="" value="" placeholder="{t}min{/t}"/><input
-                        class="recommended_max min_max" style="width:30px" ovalue="" value="" placeholder="{t}max{/t}"/> <i
+                        class="recommended_min min_max" style="width:30px" data-old_value="" value="" placeholder="{t}min{/t}"/><input
+                        class="recommended_max min_max" style="width:30px" data-old_value="" value="" placeholder="{t}max{/t}"/> <i
                         onClick="save_recommendations('min_max',this)" class="fa fa-cloud save"
                         aria-hidden="true"></i></span>
 
@@ -371,7 +371,7 @@
                         class="formatted_recommended_move"></span>]</span>
 	        <span class="edit_move hide"><i onClick="close_edit_recommended_move(this)"
                                             class="close_move button fa fa-times" aria-hidden="true"></i> <input
-                        class="recommended_move" style="width:30px" ovalue="" value=""/> <i
+                        class="recommended_move" style="width:30px" data-old_value="" value=""/> <i
                         onClick="save_recommendations('move',this)" class="fa fa-cloud save hide"
                         aria-hidden="true"></i></span>
 

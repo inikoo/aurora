@@ -1288,10 +1288,10 @@ class Part extends Asset
                 }
 
                 if (in_array($this->data['Part Products Web Status'], array(
-                                                                        'No Products',
-                                                                        'Offline',
-                                                                        'Out of Stock'
-                                                                    ))) {
+                    'No Products',
+                    'Offline',
+                    'Out of Stock'
+                ))) {
                     return '';
                 }
 
@@ -1673,9 +1673,9 @@ class Part extends Asset
                     return number($this->data[$amount]);
                 }
                 if (preg_match(
-                        '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Minify$/',
-                        $key
-                    )) {
+                    '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Minify$/',
+                    $key
+                )) {
                     $field = 'Part '.preg_replace('/ Minify$/', '', $key);
 
                     $suffix          = '';
@@ -1694,9 +1694,9 @@ class Part extends Asset
                     return number($_number, $fraction_digits).$suffix;
                 }
                 if (preg_match(
-                        '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/',
-                        $key
-                    ) ) {
+                    '/^(Last|Yesterday|Total|1|10|6|3|2|4|Year To|Quarter To|Month To|Today|Week To).*(Given|Lost|Required|Sold|Dispatched|Broken|Acquired) Soft Minify$/',
+                    $key
+                )) {
                     $field = 'Part '.preg_replace('/ Soft Minify$/', '', $key);
 
                     $suffix          = '';
@@ -2954,11 +2954,11 @@ class Part extends Asset
 
 
                 if (!in_array($value, array(
-                                        'In Use',
-                                        'Not In Use',
-                                        'Discontinuing',
-                                        'In Process'
-                                    ))) {
+                    'In Use',
+                    'Not In Use',
+                    'Discontinuing',
+                    'In Process'
+                ))) {
                     $this->error = true;
                     $this->msg   = _('Invalid part status').' ('.$value.')';
 
@@ -3195,7 +3195,9 @@ class Part extends Asset
 
 
         $sql = sprintf(
-            "SELECT `Location Place`,PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
+            "SELECT `Location Place`,PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Location Pipeline`,
+        `Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` 
+        FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
         ORDER BY %s",
             $this->sku,
             $where,
@@ -3215,13 +3217,14 @@ class Part extends Asset
                 } elseif ($scope == 'part_location_object') {
                     $part_locations[$row['Location Key']] = new  PartLocation($this->sku.'_'.$row['Location Key']);
                 } else {
+                    /*
                     $picking_location_icon = sprintf(
                         '<i onclick="set_as_picking_location('.$this->id.','.$row['Location Key'].')" class="fa fa-fw fa-shopping-basket %s"  title="%s" ></i></span>',
                         ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
                         ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
                     );
-
+                    */
 
                     $part_locations[] = array(
                         'formatted_stock' => number($row['Quantity On Hand'], 3),
@@ -3235,8 +3238,7 @@ class Part extends Asset
                         'note'                   => $row['Part Location Note'],
                         'location_external_icon' => ($row['Location Place'] == 'External' ? ' <i style="color:tomato" class="small fal fa-garage-car"></i>' : ''),
 
-                        'picking_location_icon' => $picking_location_icon,
-                        //'location_used_for'      => $row['Location Mainly Used For'],
+                        //'picking_location_icon' => $picking_location_icon,
                         'formatted_min_qty'     => ($row['Minimum Quantity'] != '' ? $row['Minimum Quantity'] : '?'),
                         'formatted_max_qty'     => ($row['Maximum Quantity'] != '' ? $row['Maximum Quantity'] : '?'),
                         'formatted_move_qty'    => ($row['Moving Quantity'] != '' ? $row['Moving Quantity'] : '?'),
@@ -3245,6 +3247,7 @@ class Part extends Asset
                         'move_qty'              => $row['Moving Quantity'],
 
                         'can_pick'        => $row['Can Pick'],
+                        'is_pipeline'        => $row['Location Pipeline']=='Yes',
                         'label'           => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location')),
                         'days_last_audit' => ($row['days_last_audit'] == '' ? '<span title="'._('Never been audited').'">-</span> <i class="far fa-clock padding_right_10" ></i> ' : sprintf(
                                 '<span title="%s">%s</span>',
@@ -3542,9 +3545,7 @@ class Part extends Asset
                 $stock_state = 'Low';
             }
         } elseif ($this->data['Part Days Available Forecast'] >= $this->data['Part Excess Availability Days Limit']) {
-
-                $stock_state = 'Surplus';
-
+            $stock_state = 'Surplus';
         } else {
             if ($this->data['Part Fresh'] == 'Yes') {
                 $stock_state = 'Surplus';
@@ -4205,27 +4206,27 @@ class Part extends Asset
         }
 
         if (in_array($db_interval, [
-                                     'Total',
-                                     'Year To Date',
-                                     'Quarter To Date',
-                                     'Week To Date',
-                                     'Month To Date',
-                                     'Today'
-                                 ])) {
+            'Total',
+            'Year To Date',
+            'Quarter To Date',
+            'Week To Date',
+            'Month To Date',
+            'Today'
+        ])) {
             $this->fast_update(['Part Acc To Day Updated' => gmdate('Y-m-d H:i:s')]);
         } elseif (in_array($db_interval, [
-                                           '1 Year',
-                                           '1 Month',
-                                           '1 Week',
-                                           '1 Quarter'
-                                       ])) {
+            '1 Year',
+            '1 Month',
+            '1 Week',
+            '1 Quarter'
+        ])) {
             $this->fast_update(['Part Acc Ongoing Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         } elseif (in_array($db_interval, [
-                                           'Last Month',
-                                           'Last Week',
-                                           'Yesterday',
-                                           'Last Year'
-                                       ])) {
+            'Last Month',
+            'Last Week',
+            'Yesterday',
+            'Last Year'
+        ])) {
             $this->fast_update(['Part Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
         }
     }
@@ -4904,22 +4905,48 @@ class Part extends Asset
     {
         $warehouse = get_object('Warehouse', $_SESSION['current_warehouse']);
 
-        $locations = 0;
+        $locations          = 0;
 
-        $sql = sprintf("SELECT count(*) as num FROM `Part Location Dimension` WHERE `Location Key`!=%d AND `Part SKU`=%d ", $warehouse->get('Warehouse Unknown Location Key'), $this->id);
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $locations = $row['num'];
-            }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
+        $sql  = "SELECT count(*) as num FROM `Part Location Dimension` WHERE `Location Key`!=? AND `Part SKU`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+                           $warehouse->get('Warehouse Unknown Location Key'),
+                           $this->id
+                       ]);
+        if ($row = $stmt->fetch()) {
+            $locations = $row['num'];
         }
 
 
-        $this->fast_update(array('Part Distinct Locations' => $locations));
+        $this->fast_update([
+                               'Part Distinct Locations' => $locations,
+                           ]);
+        $this->update_number_pipeline_locations();
     }
+
+
+    function update_number_pipeline_locations()
+    {
+
+        $pipeline_locations = 0;
+
+
+        $sql  = "SELECT count(*) as num FROM  `Location Picking Pipeline Bridge`   left join `Part Location Dimension`  on (`Location Picking Pipeline Location Key`=`Location Key`)   WHERE  `Part SKU`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+                           $this->id
+                       ]);
+        if ($row = $stmt->fetch()) {
+            $pipeline_locations = $row['num'];
+        }
+
+
+        $this->fast_update([
+                               'Part Pipeline Locations' => $pipeline_locations
+                           ]);
+    }
+
+
 
     function update_unknown_location()
     {

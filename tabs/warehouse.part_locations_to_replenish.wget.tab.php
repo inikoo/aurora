@@ -9,6 +9,8 @@
 
 */
 
+/** @var array $state */
+/** @var User $user */
 
 $tab     = 'warehouse.part_locations_to_replenish.wget';
 $ar_file = 'ar_warehouse_tables.php';
@@ -20,10 +22,9 @@ $default = $user->get_tab_defaults($tab);
 $table_views = array();
 
 $table_filters = array(
-    'location' => array('label' => _('Location')),
+    'reference' => array('label' => _('Part reference')),
 
 );
-
 
 $parameters = array(
     'parent'     => $state['parent'],
@@ -34,5 +35,3 @@ $parameters = array(
 
 include 'utils/get_table_html.php';
 
-
-?>

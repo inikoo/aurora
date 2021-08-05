@@ -4914,7 +4914,7 @@ function get_tab_defaults_data(): array {
             'sort_order'  => 1,
             'rpp'         => 100,
             'rpp_options' => $default_rrp_options,
-            'f_field'     => 'location'
+            'f_field'     => 'reference'
         ),
 
         'supplier.part_locations_to_replenish.wget' => array(

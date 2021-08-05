@@ -637,28 +637,24 @@ function save_leakage(element) {
 
 function open_edit_min_max(element) {
 
-    console.log($(element).offset())
 
 
-    location_key = $(element).attr('location_key')
-    min = $(element).attr('min')
-    max = $(element).attr('max')
+    let location_key = $(element).data('location_key');
+    let min = $(element).data('min');
+    let max = $(element).data('max');
+
 
 
     $('#edit_stock_min_max').removeClass('hide').offset({
         top: $(element).offset().top - 3, left: $(element).offset().left
-    }).attr('location_key', location_key)
+    }).data('location_key', location_key)
 
 
-    $('#edit_stock_min_max').find('.recommended_min').val(min).attr('ovalue', min)
-    $('#edit_stock_min_max').find('.recommended_max').val(max).attr('ovalue', max)
+    $('#edit_stock_min_max').find('.recommended_min').val(min).data('old_value', min);
+    $('#edit_stock_min_max').find('.recommended_max').val(max).data('old_value', max)
 
 
-//    $(element).addClass('invisible').next().removeClass('hide').find('input:first').focus()
-//    $(element).closest('tr').find('.stock_input').addClass('hide')
-//    $(element).closest('td').attr('colspan', 2)
 
-    //   $(element).closest('tr').find('.unlink_operations').addClass('invisible')
 
 
 }
@@ -671,24 +667,19 @@ function open_edit_min_max(element) {
 function open_edit_recommended_move(element) {
 
 
-    location_key = $(element).attr('location_key')
-    recommended_move = $(element).attr('recommended_move')
+    let location_key = $(element).data('location_key')
+    let recommended_move = $(element).data('recommended_move')
 
-    console.log('caca')
 
 
     $('#edit_recommended_move').removeClass('hide').offset({
         top: $(element).offset().top - 3, left: $(element).offset().left
-    }).attr('location_key', location_key)
+    }).data('location_key', location_key)
 
 
-    $('#edit_recommended_move').find('.recommended_move').val(recommended_move).attr('ovalue', recommended_move)
+    $('#edit_recommended_move').find('.recommended_move').val(recommended_move).data('old_value', recommended_move)
 
 
-    //$(element).addClass('invisible').next().removeClass('hide').find('input:first').focus()
-    //$(element).closest('tr').find('.stock_input').addClass('hide')
-    //$(element).closest('td').attr('colspan', 2)
-    //$(element).closest('tr').find('.unlink_operations').addClass('invisible')
 
 
 }
@@ -696,8 +687,8 @@ function open_edit_recommended_move(element) {
 function close_edit_recommended_move(element) {
 
 
-    var recommended_move = $('#edit_recommended_move').find('.recommended_move').removeClass('valid invalid')
-    recommended_move.val(recommended_move.attr('ovalue'))
+    let recommended_move = $('#edit_recommended_move').find('.recommended_move').removeClass('valid invalid')
+    recommended_move.val(recommended_move.data('old_value'))
 
     $('#edit_recommended_move').removeClass('valid invalid').addClass('hide')
 
@@ -706,10 +697,10 @@ function close_edit_recommended_move(element) {
 
 function close_edit_min_max(element) {
 
-    var min_input = $('#edit_stock_min_max').find('.recommended_min').removeClass('valid invalid')
-    min_input.val(min_input.attr('ovalue'))
-    var max_input = $('#edit_stock_min_max').find('.recommended_max').removeClass('valid invalid')
-    max_input.val(max_input.attr('ovalue'))
+    let min_input = $('#edit_stock_min_max').find('.recommended_min').removeClass('valid invalid')
+    min_input.val(min_input.data('old_value'))
+    let max_input = $('#edit_stock_min_max').find('.recommended_max').removeClass('valid invalid')
+    max_input.val(max_input.data('old_value'))
 
     $('#edit_stock_min_max').removeClass('valid invalid').addClass('hide')
 
@@ -720,22 +711,19 @@ function close_edit_min_max(element) {
 function min_max_changed(element) {
 
 
-    var min_input = $('#edit_stock_min_max').find('.recommended_min')
-    var max_input = $('#edit_stock_min_max').find('.recommended_max')
+    let min_input = $('#edit_stock_min_max').find('.recommended_min');
+    let max_input = $('#edit_stock_min_max').find('.recommended_max');
+    let min_validation = client_validation('numeric_unsigned', false, min_input.val(), '');
+    let max_validation = client_validation('numeric_unsigned', false, max_input.val(), '');
 
-    var min_validation = client_validation('smallint_unsigned', false, min_input.val(), '')
-    var max_validation = client_validation('smallint_unsigned', false, max_input.val(), '')
-
-
-    //console.log(max_validation)
     if (min_input.val() != '' && max_input.val() != '' && min_validation.class == 'valid' && max_validation.class == 'valid' && parseFloat(min_input.val()) > parseFloat(max_input.val())) {
 
-        min_validation.class = 'invalid'
-        max_validation.class = 'invalid'
+        min_validation.class = 'invalid';
+        max_validation.class = 'invalid';
 
     }
 
-
+    let validation;
     if (min_validation.class == 'invalid' || max_validation.class == 'invalid') {
         validation = 'invalid'
     } else {
@@ -746,7 +734,6 @@ function min_max_changed(element) {
     max_input.removeClass('valid invalid').addClass(max_validation.class)
 
 
-    //console.log($('#edit_stock_min_max'))
     $('#edit_stock_min_max').removeClass('valid invalid').addClass(validation).addClass('changed')
 
 
@@ -755,10 +742,8 @@ function min_max_changed(element) {
 
 function recommended_move_changed(element) {
 
-    var move_input = $('#edit_recommended_move').find('.recommended_move')
-    var validation = client_validation('smallint_unsigned', false, move_input.val(), '')
-    //console.log(validation)
-    //  $('#edit_recommended_move').removeClass('valid invalid').addClass(validation.class)
+    let move_input = $('#edit_recommended_move').find('.recommended_move')
+    let validation = client_validation('smallint_unsigned', false, move_input.val(), '')
 
     move_input.removeClass('valid invalid').addClass(validation.class)
 
@@ -768,77 +753,79 @@ function recommended_move_changed(element) {
 
 function save_recommendations(type, element) {
 
-    if (type == 'min_max') {
+    let location_key,value,field;
+    if (type === 'min_max') {
         if (!$('#edit_stock_min_max').hasClass('valid')) {
             return
         }
 
 
-        $('#edit_stock_min_max').find('.save').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-        var min = $('#edit_stock_min_max').find('.recommended_min').val()
-        var max = $('#edit_stock_min_max').find('.recommended_max').val()
-        var location_key = $('#edit_stock_min_max').attr('location_key')
+        $('#edit_stock_min_max').find('.save').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
+        let min = $('#edit_stock_min_max').find('.recommended_min').val();
+        let max = $('#edit_stock_min_max').find('.recommended_max').val();
+        location_key = $('#edit_stock_min_max').data('location_key');
 
-        var value = JSON.stringify({
+        console.log($('#edit_stock_min_max'))
+
+
+         value = JSON.stringify({
             min: min, max: max
         });
-        var field = 'Part_Location_min_max'
+         field = 'Part_Location_min_max'
     } else {
 
         if (!$('#edit_recommended_move').hasClass('valid')) {
             return
         }
 
-        $('#edit_recommended_move').find('.save').removeClass('fa-cloud').addClass('fa-spinner fa-spin')
-        var value = $('#edit_recommended_move').find('.recommended_move').val()
-        var location_key = $('#edit_recommended_move').attr('location_key')
+        $('#edit_recommended_move').find('.save').removeClass('fa-cloud').addClass('fa-spinner fa-spin');
+         value = $('#edit_recommended_move').find('.recommended_move').val();
+         location_key = $('#edit_recommended_move').data('location_key');
 
 
-        var field = 'Part_Location_Moving_Quantity'
+         field = 'Part_Location_Moving_Quantity'
     }
 
 
-    var request = '/ar_edit.php?tipo=edit_field&object=part_location&key=' + $('#locations_table').attr('part_sku') + '_' + location_key + '&field=' + field + '&value=' + fixedEncodeURIComponent(value)
 
-    console.log(request)
-    var form_data = new FormData();
-    form_data.append("tipo", 'edit_field')
+    let form_data = new FormData();
+    form_data.append("tipo", 'edit_field');
     form_data.append("object", 'part_location')
-    form_data.append("key", $('#locations_table').attr('part_sku') + '_' + location_key)
-    form_data.append("field", field)
-    form_data.append("value", value)
+    form_data.append("key", $('#locations_table').attr('part_sku') + '_' + location_key);
+    form_data.append("field", field);
+    form_data.append("value", value);
 
-    var request = $.ajax({
+    let request = $.ajax({
 
         url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
     })
 
     request.done(function (data) {
-        // console.log(data)
-        if (data.state == 200) {
 
-            //console.log(type)
-            if (type == 'min_max') {
+        if (data.state === 200) {
 
 
-                $('#part_location_edit_' + location_key).find('.open_edit_min_max').attr('min', data.value[0])
-                $('#part_location_edit_' + location_key).find('.open_edit_min_max').attr('max', data.value[1])
-                $('#part_location_edit_' + location_key).find('.formatted_recommended_min').html(data.formatted_value[0])
-                $('#part_location_edit_' + location_key).find('.formatted_recommended_max').html(data.formatted_value[1])
+            if (type === 'min_max') {
 
-                $('#edit_stock_min_max').find('.save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
-                $('#edit_stock_min_max').find('.recommended_min').val(data.value[0]).attr('ovalue', data.value[0])
-                $('#edit_stock_min_max').find('.recommended_max').val(data.value[1]).attr('ovalue', data.value[1])
+
+                $('#part_location_edit_' + location_key).find('.open_edit_min_max').data('min', data.value[0]);
+                $('#part_location_edit_' + location_key).find('.open_edit_min_max').data('max', data.value[1]);
+                $('#part_location_edit_' + location_key).find('.formatted_recommended_min').html(data.formatted_value[0]);
+                $('#part_location_edit_' + location_key).find('.formatted_recommended_max').html(data.formatted_value[1]);
+
+                $('#edit_stock_min_max').find('.save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
+                $('#edit_stock_min_max').find('.recommended_min').val(data.value[0]).data('old_value', data.value[0]);
+                $('#edit_stock_min_max').find('.recommended_max').val(data.value[1]).data('old_value', data.value[1]);
                 close_edit_min_max()
 
             } else {
 
 
-                $('#edit_recommended_move').find('.save').addClass('fa-cloud').removeClass('fa-spinner fa-spin')
+                $('#edit_recommended_move').find('.save').addClass('fa-cloud').removeClass('fa-spinner fa-spin');
 
-                $('#part_location_edit_' + location_key).find('.recommended_move').val(data.value).attr('ovalue', data.value)
-                $('#part_location_edit_' + location_key).find('.formatted_recommended_move').html(data.formatted_value)
+                $('#part_location_edit_' + location_key).find('.recommended_move').val(data.value).data('old_value', data.value);
+                $('#part_location_edit_' + location_key).find('.formatted_recommended_move').html(data.formatted_value);
 
                 close_edit_recommended_move($(element).closest('tr').find('.close_move'))
             }
@@ -869,27 +856,27 @@ function inventory_transaction_note_changed() {
 }
 
 function set_inventory_transaction_note(element) {
-    $('#inventory_transaction_note').find('textarea').val($(element).closest('tr').find('.note').val())
+    $('#inventory_transaction_note').find('textarea').val($(element).closest('tr').find('.note').val());
 
-    $(element).uniqueId()
-    console.log($(element).attr('id'))
+    $(element).uniqueId();
+
     if ($('#inventory_transaction_note').hasClass('hide') || $(element).attr('id') != $('#inventory_transaction_note').data('id')) {
 
         $('#inventory_transaction_note').data({
             'element': $(element), 'id': $(element).attr('id')
-        })
+        });
 
-        $('#inventory_transaction_note').removeClass('hide')
+        $('#inventory_transaction_note').removeClass('hide');
 
-        var position = $(element).closest('tr').find('.stock').offset();
+        let position = $(element).closest('tr').find('.stock').offset();
 
 
         $('#inventory_transaction_note').css({
             'left': position.left - $('#inventory_transaction_note').width(), 'top': position.top
-        })
+        });
 
 
-        $('#inventory_transaction_note').find('textarea').focus()
+        $('#inventory_transaction_note').find('textarea').trigger('focus')
     } else {
         $('#inventory_transaction_note').addClass('hide')
 
@@ -899,20 +886,20 @@ function set_inventory_transaction_note(element) {
 
 function set_as_picking_location(part_sku, location_key) {
 
-    var request = '/ar_edit_stock.php?tipo=set_as_picking_location&part_sku=' + part_sku + '&location_key=' + location_key
+    let request = '/ar_edit_stock.php?tipo=set_as_picking_location&part_sku=' + part_sku + '&location_key=' + location_key
     $.getJSON(request, function (data) {
 
         if (data.state == 200) {
 
+            let i;
             for (i in data.part_locations_data) {
-                console.log(data.part_locations_data[i])
 
 
                 var tr = $('#part_location_edit_' + data.part_locations_data[i].location_key)
 
                 var icon = tr.find('.picking_location_icon i')
 
-                if (data.part_locations_data[i].can_pick == 'Yes') {
+                if (data['part_locations_data'][i]['can_pick'] === 'Yes' || data['part_locations_data'][i]['is_pipeline']) {
 
                     icon.removeClass('super_discreet_on_hover button').attr('title', data.part_locations_data[i].label)
                     tr.find('.open_edit_min_max').removeClass('hide')

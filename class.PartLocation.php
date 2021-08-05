@@ -813,10 +813,7 @@ class PartLocation extends DB_Table {
                     }
 
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                exit;
-            }
+            } 
 
 
         }

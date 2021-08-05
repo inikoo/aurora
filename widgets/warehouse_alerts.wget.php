@@ -73,17 +73,23 @@ function get_warehouse_alerts($db, $warehouse, $smarty): string {
     }
 
 
-    $data = get_widget_data(
-        $warehouse->get('Warehouse Paid Ordered Parts To Replenish External Warehouse'), $warehouse->get('Warehouse Paid Ordered Parts'), 1, 1
+    if($warehouse->get('Warehouse Paid Ordered Parts To Replenish External Warehouse')>0) {
+        $data = get_widget_data(
+            $warehouse->get('Warehouse Paid Ordered Parts To Replenish External Warehouse'),
+            $warehouse->get('Warehouse Paid Ordered Parts'),
+            1,
+            1
 
-    );
-    if ($data['ok']) {
-        $smarty->assign('data', $data);
-        $html .= $smarty->fetch(
-            'dashboard/warehouse.parts_to_replenish_external_warehouse.dbard.tpl'
         );
-    }
 
+
+        if ($data['ok']) {
+            $smarty->assign('data', $data);
+            $html .= $smarty->fetch(
+                'dashboard/warehouse.parts_to_replenish_external_warehouse.dbard.tpl'
+            );
+        }
+    }
     $sql  = "select `Picking Pipeline Key` from `Picking Pipeline Dimension`  where `Picking Pipeline Warehouse Key`=? ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
