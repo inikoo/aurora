@@ -53,7 +53,8 @@ trait OrderShippingOperations {
         list($shipping, $shipping_key, $shipping_method) = $this->get_shipping();
 
 
-
+        $tax_category = new TaxCategory($this->db);
+        $tax_category->loadWithKey($this->data['Order Tax Category Key']);
 
         if (!is_numeric($shipping)) {
 
@@ -61,8 +62,8 @@ trait OrderShippingOperations {
             $tax = 0;
         } else {
 
-            $tax_category = new TaxCategory($this->db);
-            $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
+
 
             $net = $shipping;
             $tax = $shipping * $tax_category->get('Tax Category Rate');
@@ -116,15 +117,16 @@ trait OrderShippingOperations {
                     unset($shipping_to_delete[$row['Order No Product Transaction Fact Key']]);
 
                     $sql =
-                        "update `Order No Product Transaction Fact` set `Transaction Description`=? ,`Transaction Gross Amount`=?,`Transaction Total Discount Amount`=0,`Transaction Net Amount`=?,`Tax Category Code`=?,`Transaction Tax Amount`=? ,`Currency Exchange`=?,`Metadata`=?,`Delivery Note Key`=?,`Transaction Type Key`=? where `Order No Product Transaction Fact Key`=?";
+                        "update `Order No Product Transaction Fact` set  `Order No Product Transaction Tax Category Key`=?,  `Transaction Description`=? ,`Transaction Gross Amount`=?,`Transaction Total Discount Amount`=0,`Transaction Net Amount`=?,`Tax Category Code`=?,`Transaction Tax Amount`=? ,`Currency Exchange`=?,`Metadata`=?,`Delivery Note Key`=?,`Transaction Type Key`=? where `Order No Product Transaction Fact Key`=?";
 
 
                     $this->db->prepare($sql)->execute(
                         array(
+                            $tax_category->id,
                             _('Shipping'),
                             $net,
                             $net,
-                            $this->data['Order Tax Code'],
+                            $tax_category->get('Tax Category Code'),
                             $tax,
                             $this->data['Order Currency Exchange'],
                             $this->data['Order Original Metadata'],
@@ -138,13 +140,14 @@ trait OrderShippingOperations {
                 }
 
             } else {
-                $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,
+                $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Tax Category Key`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,`Transaction Description`,
 				`Transaction Gross Amount`,`Transaction Net Amount`,`Tax Category Code`,`Transaction Tax Amount`,
-				`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`,`Order No Product Transaction Version`)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
+				`Currency Code`,`Currency Exchange`,`Metadata`,`Delivery Note Key`,`Order No Product Transaction Version`)  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)  ";
 
 
                 $this->db->prepare($sql)->execute(
                     array(
+                        $tax_category->id,
                         $this->id,
                         $this->data['Order Date'],
                         'Shipping',
@@ -152,7 +155,7 @@ trait OrderShippingOperations {
                         'Shipping',
                         $net,
                         $net,
-                        $this->data['Order Tax Code'],
+                        $tax_category->get('Tax Category Code'),
                         $tax,
                         $this->data['Order Currency'],
                         $this->data['Order Currency Exchange'],
