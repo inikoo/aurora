@@ -1544,7 +1544,7 @@ class Staff extends DB_Table {
 
         $value = password_hash($value, PASSWORD_DEFAULT);
 
-        $this->update_field('Staff PIN', $value, 'nohistory');
+        $this->update_field('Staff PIN', $value, 'no_history');
         $this->add_changelog_record(
             'Staff PIN', '****', '****', '', $this->table_name, $this->id
         );

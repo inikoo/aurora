@@ -30,7 +30,7 @@ class Prospect extends Subject {
         );
 
 
-        $this->status_names = array(0 => 'new');
+
 
         if (is_numeric($arg1) and !$arg2) {
             $this->get_data('id', $arg1);

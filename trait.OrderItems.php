@@ -9,15 +9,16 @@
  Version 3.0
 
 */
+use Aurora\Models\Utils\TaxCategory;
 
-trait OrderItems {
+trait OrderItems
+{
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    function update_item($data): array {
-
-
+    function update_item($data): array
+    {
         $product = get_object('Product', $data['item_historic_key'], 'historic_key');
 
         $gross = 0;
@@ -26,27 +27,14 @@ trait OrderItems {
 
         $gross_discounts = 0;
 
-        $tax_code = $this->data['Order Tax Code'];
-        $tax_rate = $this->data['Order Tax Rate'];
 
-        if (array_key_exists('tax_code', $data)) {
-            $tax_code = $data['tax_code'];
-        }
-        if (array_key_exists('tax_rate', $data)) {
-            $tax_rate = $data['tax_rate'];
-        }
 
-        if (isset($data['Order Type'])) {
-            $order_type = $data['Order Type'];
-        } else {
-            $order_type = $this->data['Order Type'];
-        }
+        $order_type = $data['Order Type'] ?? $this->data['Order Type'];
 
 
         if (array_key_exists('qty', $data)) {
             $quantity     = $data['qty'];
             $quantity_set = true;
-
         } else {
             $quantity     = 0;
             $quantity_set = false;
@@ -66,14 +54,12 @@ trait OrderItems {
         $delta_qty = $quantity;
 
 
-        if (!in_array(
-            $this->data['Order State'], array(
-                                          'InProcess',
-                                          'InBasket',
-                                          'InWarehouse',
-                                          'PackedDone',
-                                      )
-        )) {
+        if (!in_array($this->data['Order State'], array(
+            'InProcess',
+            'InBasket',
+            'InWarehouse',
+            'PackedDone',
+        ))) {
             return array(
                 'updated' => false,
                 'why'     => 'Order State:'.$this->data['Order State']
@@ -82,22 +68,16 @@ trait OrderItems {
         }
 
 
-        if (in_array(
-            $this->data['Order State'], array(
-                                          'InWarehouse',
-                                          'PackedDone',
-                                      )
-        )) {
-
-
+        if (in_array($this->data['Order State'], array(
+            'InWarehouse',
+            'PackedDone',
+        ))) {
             //todo this is too bad!!!!! you need to choose the proper DN
 
             $_deliveries = $this->get_deliveries();
             $dn_key      = array_pop($_deliveries);
-
-            $dn          = get_object('DeliveryNote', $dn_key);
-
-
+            /** @var DeliveryNote $dn */
+            $dn = get_object('DeliveryNote', $dn_key);
         } else {
             $dn_key = 0;
             $dn     = false;
@@ -139,21 +119,14 @@ trait OrderItems {
 
 
             if ($total_quantity == 0) {
-
-
                 $this->delete_transaction($otf_key);
                 $otf_key = 0;
                 $gross   = 0;
-
-
             } else {
-
-
                 $gross = round($quantity * $product->data['Product History Price'], 2);
 
                 $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
                 $cost         = round($total_quantity * $product_cost, 4);
-
 
 
                 $sql = "update `Order Transaction Fact` set 
@@ -162,50 +135,41 @@ trait OrderItems {
 
 
                 $stmt = $this->db->prepare($sql);
-                $stmt->execute(
-                    [
-                        $quantity,
-                        $bonus_quantity,
-                        gmdate('Y-m-d H:i:s'),
-                        $gross,
-                        0,
-                        $gross,
-                        $data['Current Dispatching State'],
-                        $cost,
-                        $otf_key
-                    ]
-                );
+                $stmt->execute([
+                                   $quantity,
+                                   $bonus_quantity,
+                                   gmdate('Y-m-d H:i:s'),
+                                   $gross,
+                                   0,
+                                   $gross,
+                                   $data['Current Dispatching State'],
+                                   $cost,
+                                   $otf_key
+                               ]);
                 if ($stmt->rowCount()) {
                     $this->fast_update(array('Order Last Updated Date' => gmdate('Y-m-d H:i:s')));
                 }
 
 
-
-
-
                 if ($dn_key) {
-
                     $sql = "UPDATE `Order Transaction Fact` SET `Delivery Note Key`=? WHERE `Order Transaction Fact Key`=?";
-                    $this->db->prepare($sql)->execute(
-                        [
-                            $dn_key,
-                            $otf_key
-                        ]
-                    );
-
-
+                    $this->db->prepare($sql)->execute([
+                                                          $dn_key,
+                                                          $otf_key
+                                                      ]);
                 }
-
-
             }
-        }
-        else {
+        } else {
             $old_quantity   = 0;
             $old_net_amount = 0;
             $total_quantity = $quantity + $bonus_quantity;
 
 
             if ($total_quantity > 0) {
+
+                $tax_category = new TaxCategory($this->db);
+                $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
 
                 $gross = round($quantity * $product->data['Product History Price'], 2);
 
@@ -214,47 +178,48 @@ trait OrderItems {
 
 
                 $sql = "INSERT INTO `Order Transaction Fact` ( 
-                                      `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,`Transaction Tax Rate`,
+                                      `OTF Category Department Key`,`OTF Category Family Key`,  `Order Bonus Quantity`,`Order Transaction Type`,
+                                      `Order Transaction Tax Category Key`,
+                                      `Transaction Tax Rate`,
                                       `Transaction Tax Code`,`Order Currency Code`,
                                       `Order Date`,`Order Last Updated Date`,
-			`Product Key`,`Product ID`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,
+			                            `Product Key`,`Product ID`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,
                                       `Order Key`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,
                                       `Store Key`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
-VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
+VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
-                $this->db->prepare($sql)->execute(
-                    array(
-                        $product->get('Product Department Category Key'),
-                        $product->get('Product Family Category Key'),
-                        $bonus_quantity,
-                        $order_type,
-                        $tax_rate,
+                $this->db->prepare($sql)->execute(array(
+                                                      $product->get('Product Department Category Key'),
+                                                      $product->get('Product Family Category Key'),
+                                                      $bonus_quantity,
+                                                      $order_type,
+                                                      $tax_category->id,
+                                                      $tax_category->get('Transaction Tax Rate'),
+                                                      $tax_category->get('Transaction Tax Code'),
 
-                        $tax_code,
-                        $this->data['Order Currency'],
+                                                      $this->data['Order Currency'],
 
-                        gmdate('Y-m-d H:i:s'),
-                        gmdate('Y-m-d H:i:s'),
+                                                      gmdate('Y-m-d H:i:s'),
+                                                      gmdate('Y-m-d H:i:s'),
 
-                        $product->historic_id,
-                        $product->data['Product ID'],
-                        $data['Current Dispatching State'],
-                        $data['Current Payment State'],
-                        $this->data['Order Customer Key'],
+                                                      $product->historic_id,
+                                                      $product->data['Product ID'],
+                                                      $data['Current Dispatching State'],
+                                                      $data['Current Payment State'],
+                                                      $this->data['Order Customer Key'],
 
-                        $this->data['Order Key'],
-                        $quantity,
-                        $gross,
-                        0,
-                        $gross,
+                                                      $this->data['Order Key'],
+                                                      $quantity,
+                                                      $gross,
+                                                      0,
+                                                      $gross,
 
-                        $this->data['Order Store Key'],
-                        $dn_key,
-                        $cost,
-                        '{}'
-                    )
-                );
+                                                      $this->data['Order Store Key'],
+                                                      $dn_key,
+                                                      $cost,
+                                                      '{}'
+                                                  ));
 
 
                 $otf_key = $this->db->lastInsertId();
@@ -265,16 +230,11 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                 $this->new_otfs[] = $otf_key;
 
                 if ($dn_key) {
-
                     $sql = "UPDATE  `Order Transaction Fact` SET `Delivery Note Key`=?  WHERE `Order Transaction Fact Key`=?";
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            $dn_key,
-                            $otf_key
-                        )
-                    );
-
-
+                    $this->db->prepare($sql)->execute(array(
+                                                          $dn_key,
+                                                          $otf_key
+                                                      ));
                 }
             }
         }
@@ -282,34 +242,33 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
         $this->update_field('Order Last Updated Date', gmdate('Y-m-d H:i:s'), 'no_history');
 
-        if (in_array($this->data['Order State'], array('InBasket'))) {
+        if ($this->data['Order State'] == 'InBasket') {
             $this->update_field('Order Date', gmdate('Y-m-d H:i:s'), 'no_history');
-
-
-        }
-        else {
+        } else {
             $history_abstract = '';
             if ($delta_qty > 0) {
                 $history_abstract = sprintf(
-                    _('%1$s %2$s added'), $delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
+                    _('%1$s %2$s added'),
+                    $delta_qty,
+                    sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
                 );
             } elseif ($delta_qty < 0) {
-
                 if ($quantity == 0) {
                     $history_abstract = sprintf(
-                        _('%s %s removed, none in the order anymore'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
+                        _('%s %s removed, none in the order anymore'),
+                        -$delta_qty,
+                        sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
                     );
-
                 } else {
-
                     $history_abstract = sprintf(
-                        _('%s %s removed'), -$delta_qty, sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
+                        _('%s %s removed'),
+                        -$delta_qty,
+                        sprintf('<span class="link" onclick="change_view(\'products/%d/%d\')">%s</span>', $product->get('Store Key'), $product->id, $product->get('Product Code'))
                     );
                 }
             }
 
             if ($history_abstract != '') {
-
                 $history_data = array(
                     'History Abstract' => $history_abstract,
                     'History Details'  => ''
@@ -320,8 +279,6 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
         if (!$this->skip_update_after_individual_transaction) {
-
-
             $old_used_deals = $this->get_used_deals();
 
             $account = get_object('Account', 1);
@@ -334,7 +291,7 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             $this->update_totals();
             $this->update_discounts_items();
             $this->update_totals();
-            $this->update_shipping($dn_key, false);
+            $this->update_shipping($dn_key);
             $this->update_charges($dn_key, false);
             $this->update_discounts_no_items();
             $this->update_deal_bridge();
@@ -353,17 +310,19 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
             if (count($campaigns_diff) > 0 or count($deal_diff) > 0 or count($deal_components_diff) > 0) {
-
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'            => 'update_deals_usage',
-                    'campaigns'       => $campaigns_diff,
-                    'deals'           => $deal_diff,
-                    'deal_components' => $deal_components_diff,
+                    'au_housekeeping',
+                    array(
+                        'type'            => 'update_deals_usage',
+                        'campaigns'       => $campaigns_diff,
+                        'deals'           => $deal_diff,
+                        'deal_components' => $deal_components_diff,
 
 
-                ), DNS_ACCOUNT_CODE, $this->db
+                    ),
+                    DNS_ACCOUNT_CODE,
+                    $this->db
                 );
             }
 
@@ -371,22 +330,13 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
             if ($dn_key) {
-
-
                 $dn->update_inventory_transaction_fact($otf_key, $quantity, $bonus_quantity);
 
                 $dn->update_totals();
-
             }
 
 
-
-
-
-
             if ($this->get('Order State') == 'InBasket') {
-
-
                 if ($this->get('Order Number Items') == 0) {
                     $operations = array(
                         'cancel_operations',
@@ -401,10 +351,7 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                 }
 
                 $this->update_aiku('Order Dimension', 'refresh_basket');
-
-
             } elseif ($this->get('Order State') == 'InProcess') {
-
                 if ($this->get('Order Number Items') == 0) {
                     $operations = array(
                         'cancel_operations',
@@ -418,8 +365,6 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                         'proforma_operations'
                     );
                 }
-
-
             } elseif ($this->get('Order State') == 'InWarehouse') {
                 $operations = array('cancel_operations');
             } elseif ($this->get('Order State') == 'PackedDone') {
@@ -464,7 +409,6 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                     'To_Refund_Label',
                     'Order_Paid'
                 );
-
             } elseif ($this->get('Order To Pay Amount') < 0) {
                 $show = array(
                     'Order_To_Pay_Amount',
@@ -564,39 +508,34 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                 'charges'     => $this->get('Order Charges Net Amount'),
 
             );
-
-
-
         }
 
 
-
-
-        if (in_array(
-            $this->get('Order State'), array(
-                                         'Cancelled',
-                                         'Approved',
-                                         'Dispatched',
-                                     )
-        )) {
+        if (in_array($this->get('Order State'), array(
+            'Cancelled',
+            'Approved',
+            'Dispatched',
+        ))) {
             $discounts_class = '';
             $discounts_input = '';
         } else {
             $discounts_class = 'button';
             $discounts_input = sprintf(
                 '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d"  }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                $otf_key, percentage($gross_discounts, $gross)
+                $otf_key,
+                percentage($gross_discounts, $gross)
             );
         }
         $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($gross_discounts == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                $gross_discounts, $gross
+                $gross_discounts,
+                $gross
             ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
 
 
         return array(
             'updated'        => true,
             'otf_key'        => $otf_key,
-            'to_charge'      => money($gross- $gross_discounts, $this->data['Order Currency']),
+            'to_charge'      => money($gross - $gross_discounts, $this->data['Order Currency']),
             'item_discounts' => $discounts,
 
             'net_amount'          => $gross,
@@ -604,18 +543,15 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
             'qty'                 => $quantity,
             'delta_qty'           => $quantity - $old_quantity,
             'bonus qty'           => $bonus_quantity,
-            'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross,1, 'NA', '') : '')
+            'discount_percentage' => ($gross_discounts > 0 ? percentage($gross_discounts, $gross, 1, 'NA', '') : '')
         );
-
-
-
-
-
     }
 
-    function delete_transaction($otf_key) {
+    function delete_transaction($otf_key)
+    {
         $sql = sprintf(
-            "DELETE FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d", $otf_key
+            "DELETE FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d",
+            $otf_key
         );
 
 
@@ -629,27 +565,27 @@ VALUES (?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
 
 
         $sql = sprintf(
-            "DELETE FROM `Inventory Transaction Fact` WHERE `Map To Order Transaction Fact Key`=%d", $otf_key
+            "DELETE FROM `Inventory Transaction Fact` WHERE `Map To Order Transaction Fact Key`=%d",
+            $otf_key
         );
         $this->db->exec($sql);
 
 
         $sql = sprintf(
-            "DELETE FROM `Order Transaction Deal Bridge` WHERE `Order Transaction Fact Key`=%d", $otf_key
+            "DELETE FROM `Order Transaction Deal Bridge` WHERE `Order Transaction Fact Key`=%d",
+            $otf_key
         );
         $this->db->exec($sql);
 
         $sql = sprintf(
-            "DELETE FROM `Order Transaction Out of Stock in Basket Bridge` WHERE `Order Transaction Fact Key`=%d", $otf_key
+            "DELETE FROM `Order Transaction Out of Stock in Basket Bridge` WHERE `Order Transaction Fact Key`=%d",
+            $otf_key
         );
         $this->db->exec($sql);
-
-
     }
 
-    function get_items(): array {
-
-
+    function get_items(): array
+    {
         $sql = sprintf(
             'SELECT  `Category Code`,`Product Price`,    (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
 FROM `Order Transaction Fact` OTF 
@@ -658,7 +594,8 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
   left join  `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`)
     left join       `Order Dimension` O ON (O.`Order Key`=OTF.`Order Key`) 
       left join       `Category Dimension` C ON (C.`Category Key`=PD.`Product Family Category Key`) 
- WHERE OTF.`Order Key`=%d  ORDER BY `Product Code File As` ', $this->id
+ WHERE OTF.`Order Key`=%d  ORDER BY `Product Code File As` ',
+            $this->id
         );
 
         $items = array();
@@ -666,8 +603,6 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
-
                 $deal_info = '<div id="transaction_deal_info_'.$row['Order Transaction Fact Key'].'" class="deal_info">'.$row['deal_info'].'</div>';
 
 
@@ -677,28 +612,36 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                         '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i  class="fa minus fa-minus fa-fw like_button "  style="visibility:hidden;cursor:pointer" aria-hidden="true"></i>
                         <input readonly class=" width_50 " style="text-align: center" value="%s" ovalue="%s"> 
-                        <i  class="fa plus  fa-plus fa-fw like_button "  style="visibility:hidden;cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
+                        <i  class="fa plus  fa-plus fa-fw like_button "  style="visibility:hidden;cursor:pointer" aria-hidden="true"></i></span>',
+                        $row['Order Transaction Fact Key'],
+                        $row['Product ID'],
+                        $row['Product Key'],
+                        $row['Order Quantity'] + 0,
                         $row['Order Quantity'] + 0
                     );
-
                 } else {
-
                     if ($this->get('Order Customer Client Key') > 0) {
-
                         $edit_quantity = sprintf(
                             '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i onClick="save_item_qty_change(this,{type:\'client_order\',client_key:'.$this->get('Order Customer Client Key').',order_key:'.$this->id.'})" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
                         <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
                         <i onClick="save_item_qty_change(this,{type:\'client_order\',client_key:'.$this->get('Order Customer Client Key').',order_key:'.$this->id.'})"  class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>',
-                            $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0, $row['Order Quantity'] + 0
+                            $row['Order Transaction Fact Key'],
+                            $row['Product ID'],
+                            $row['Product Key'],
+                            $row['Order Quantity'] + 0,
+                            $row['Order Quantity'] + 0
                         );
                     } else {
-
                         $edit_quantity = sprintf(
                             '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'>
                         <i onClick="save_item_qty_change(this)" class="fa minus fa-minus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i>
                         <input class="order_qty width_50 " style="text-align: center" value="%s" ovalue="%s"> 
-                        <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>', $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], $row['Order Quantity'] + 0,
+                        <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw like_button "  style="cursor:pointer" aria-hidden="true"></i></span>',
+                            $row['Order Transaction Fact Key'],
+                            $row['Product ID'],
+                            $row['Product Key'],
+                            $row['Order Quantity'] + 0,
                             $row['Order Quantity'] + 0
                         );
                     }
@@ -709,10 +652,8 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
 
                 if ($row['Order State'] == 'Dispatched' or $row['Order State'] == 'Approved' or $row['Order State'] == 'PackedDone') {
                     $qty = number($row['Delivery Note Quantity']);
-
                 } else {
                     $qty = number($row['Order Quantity']);
-
                 }
 
 
@@ -728,24 +669,20 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                     'edit_qty'         => $edit_quantity,
                     'amount'           => '<span id="transaction_item_net_'.$row['Order Transaction Fact Key'].'" class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
                     'state'            => $row['Current Dispatching State'],
-                    'analytics_data'   => json_encode(
-                        array(
-                            'id'       => $row['Product Code'],
-                            'name'     => ($row['Product History Units Per Case'] > 1 ? $row['Product History Units Per Case'].'x ' : '').$row['Product Name'],
-                            'category' => $row['Category Code'],
-                            'price'    => $row['Product Price'],
-                            'quantity' => $row['Order Quantity']
-                        )
+                    'analytics_data'   => json_encode(array(
+                                                          'id'       => $row['Product Code'],
+                                                          'name'     => ($row['Product History Units Per Case'] > 1 ? $row['Product History Units Per Case'].'x ' : '').$row['Product Name'],
+                                                          'category' => $row['Category Code'],
+                                                          'price'    => $row['Product Price'],
+                                                          'quantity' => $row['Order Quantity']
+                                                      )
 
                     )
                 );
-
-
             }
         }
 
         return $items;
-
     }
 
 }

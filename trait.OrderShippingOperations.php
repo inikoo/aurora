@@ -9,12 +9,10 @@
  Version 3.0
 
 */
+use Aurora\Models\Utils\TaxCategory;
 
 trait OrderShippingOperations {
-    /**
-     * @var \PDO
-     */
-    public $db;
+
 
     function update_shipping_amount($value, $dn_key = false) {
 
@@ -40,7 +38,7 @@ trait OrderShippingOperations {
 
     }
 
-    function update_shipping($dn_key = false, $order_picked = true) {
+    function update_shipping($dn_key = false) {
 
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
@@ -52,11 +50,9 @@ trait OrderShippingOperations {
         }
 
 
-        if ($dn_key and $order_picked) {
-            list($shipping, $shipping_key, $shipping_method) = $this->get_shipping();
-        } else {
-            list($shipping, $shipping_key, $shipping_method) = $this->get_shipping();
-        }
+        list($shipping, $shipping_key, $shipping_method) = $this->get_shipping();
+
+
 
 
         if (!is_numeric($shipping)) {
@@ -65,8 +61,11 @@ trait OrderShippingOperations {
             $tax = 0;
         } else {
 
+            $tax_category = new TaxCategory($this->db);
+            $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
             $net = $shipping;
-            $tax = $shipping * $this->data['Order Tax Rate'];
+            $tax = $shipping * $tax_category->get('Tax Category Rate');
         }
 
 

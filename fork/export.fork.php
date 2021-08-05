@@ -242,6 +242,7 @@ function fork_export($job) {
 
 
             $char_index = 1;
+            $real_char_index=1;
             //print_r($row);
             foreach ($row as $sql_field => $value) {
                 $char = number2alpha($char_index);
@@ -418,8 +419,8 @@ function fork_export($job) {
 
 
                     $type = '';
-                    if (!empty($fork_data['fields'][$char_index - 1])) {
-                        $field_index = $fork_data['fields'][$char_index - 1];
+                    if (!empty($fork_data['fields'][$real_char_index - 1])) {
+                        $field_index = $fork_data['fields'][$real_char_index - 1];
                         if (!empty($fork_data['field_set'][$field_index]['type'])) {
                             $type = $fork_data['field_set'][$field_index]['type'];
                         }
@@ -442,7 +443,7 @@ function fork_export($job) {
                     } elseif ($type == 'dynamic_headers') {
 
 
-                        $dynamic_fields = $fork_data['field_set'][$fork_data['fields'][$char_index - 1]]['dynamic_fields'];
+                        $dynamic_fields = $fork_data['field_set'][$fork_data['fields'][$real_char_index - 1]]['dynamic_fields'];
 
 
                         foreach (preg_split('/,/', $_value) as $_values_data) {
@@ -463,7 +464,7 @@ function fork_export($job) {
                             $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $dynamic_field);
                             $char_index++;
                         }
-
+                        $char_index--;
 
 
 
@@ -472,7 +473,7 @@ function fork_export($job) {
                     }
                 }
 
-
+                $real_char_index++;
                 $char_index++;
 
             }

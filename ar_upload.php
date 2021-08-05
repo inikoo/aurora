@@ -1289,7 +1289,8 @@ function add_items_to_order($account, $db, $user, $editor, $data) {
             case 'Order':
                 /**
                  * @var $object \Order
-                 */ $object->skip_update_after_individual_transaction = false;
+                 */
+                $object->skip_update_after_individual_transaction = false;
 
                 if (in_array(
                     $object->data['Order State'], array(

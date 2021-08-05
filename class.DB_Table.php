@@ -201,7 +201,7 @@ abstract class DB_Table extends stdClass
             $this->new_value    = $value;
 
 
-            if (preg_match('/no( |\_)history|nohistory/i', $options)) {
+            if (preg_match('/no_history/i', $options)) {
                 $save_history = false;
             } else {
                 $save_history = true;
@@ -753,6 +753,7 @@ abstract class DB_Table extends stdClass
             addslashes($key),
             addslashes($key_field)
         );
+
         $stmt = $this->db->prepare('UPDATE '.$sql);
         $stmt->bindParam(1, $value);
         $stmt->bindParam(2, $this->id);

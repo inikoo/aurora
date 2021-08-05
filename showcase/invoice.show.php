@@ -11,7 +11,8 @@
 */
 
 
-function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
+function get_invoice_showcase($data, $smarty, $user, $db, $account): string
+{
     require_once 'utils/geography_functions.php';
 
 
@@ -19,6 +20,8 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
         return "";
     }
     //$data['_object']->update_tax_data();
+
+
 
     $order = get_object('order', $data['_object']->get('Invoice Order Key'));
 
@@ -45,7 +48,6 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
 
     if ($account->get('Account Country 2 Alpha Code') == 'SK') {
         $export_omega = true;
-
     }
 
 
@@ -53,7 +55,6 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
         $external_invoicer = get_object('External_Invoicer', $invoice->get('Invoice External Invoicer Key'));
         if ($external_invoicer->metadata('country') == 'SK') {
             $export_omega = true;
-
         }
     }
 
@@ -65,42 +66,38 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
         $factor = 1;
     }
 
-    $tax_data = array();
+    $tax_data = [];
     $sql      = "SELECT `Tax Category Code`,`Tax Category Rate`,`Tax Category Name`,`Invoice Tax Amount`,`Invoice Tax Net`  FROM  
-        `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Invoice Tax Code`)  WHERE B.`Invoice Tax Invoice Key`=?  AND `Tax Category Country Code`=?";
+        `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Key`=B.`Invoice Tax Category Key`)  WHERE B.`Invoice Tax Invoice Key`=?";
 
     $stmt = $db->prepare($sql);
-    $stmt->execute(
-        array(
-            $invoice->id,
-            $account->get('Account Country Code')
-        )
-    );
-    $number_tax_lines=0;
+    $stmt->execute(array(
+                       $invoice->id
+                   ));
+    $number_tax_lines = 0;
     while ($row = $stmt->fetch()) {
+
         switch ($row['Tax Category Code']) {
             case 'OUT':
-                $tax_description = _('Outside the scope od VAT');
+                $tax_description = _('Outside the scope of tax');
                 break;
             case 'EU':
-                $tax_description = sprintf(_('EC with %s'), $invoice->get('Tax Number Formatted'));
+                $tax_description = sprintf(_('EU with %s'), $invoice->get('Tax Number Formatted'));
                 break;
             default:
-
-
                 $tax_description = $row['Tax Category Name'];
-
-
         }
 
 
         $tax_data[] = array(
-            'name' => $tax_description,
-            'base' => money(
-                $factor * $row['Invoice Tax Net'], $invoice->data['Invoice Currency']
+            'name'   => $tax_description,
+            'base'   => money(
+                $factor * $row['Invoice Tax Net'],
+                $invoice->data['Invoice Currency']
             ),
             'amount' => money(
-                $factor * $row['Invoice Tax Amount'], $invoice->data['Invoice Currency']
+                $factor * $row['Invoice Tax Amount'],
+                $invoice->data['Invoice Currency']
             )
         );
         $number_tax_lines++;
@@ -128,7 +125,6 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
         $pdf_show_locale_option = true;
     } else {
         $pdf_show_locale_option = false;
-
     }
     $smarty->assign('pdf_show_locale_option', $pdf_show_locale_option);
 
@@ -178,45 +174,32 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string {
 
     if ($invoice->deleted) {
         if ($data['_object']->get('Invoice Type') == 'Refund') {
-
-
             return $smarty->fetch('showcase/deleted_refund.tpl');
-
         } else {
             return $smarty->fetch('showcase/deleted_invoice.tpl');
-
         }
-
     } else {
-
-
         if ($data['_object']->get('Invoice Type') == 'Refund') {
-
-
             $smarty->assign(
-                'object_data', json_encode(
-                                 array(
-                                     'object'              => $data['object'],
-                                     'key'                 => $data['key'],
-                                     'symbol'              => currency_symbol($invoice->get('Order Currency')),
-                                     'tax_rate'            => $invoice->get('Invoice Tax Rate'),
-                                     'available_to_refund' => $invoice->get('Invoice Total Amount'),
-                                     'tab'                 => $data['tab'],
-                                     'order_type'          => $invoice->get('Invoice Type'),
-                                 )
-                             )
+                'object_data',
+                json_encode(array(
+                                'object'              => $data['object'],
+                                'key'                 => $data['key'],
+                                'symbol'              => currency_symbol($invoice->get('Order Currency')),
+                                'tax_rate'            => $invoice->get('Invoice Tax Rate'),
+                                'available_to_refund' => $invoice->get('Invoice Total Amount'),
+                                'tab'                 => $data['tab'],
+                                'order_type'          => $invoice->get('Invoice Type'),
+                            ))
 
             );
 
 
             return $smarty->fetch('showcase/refund.tpl');
-
         } else {
             return $smarty->fetch('showcase/invoice.tpl');
-
         }
     }
-
 }
 
 

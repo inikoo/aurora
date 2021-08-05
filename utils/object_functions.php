@@ -393,15 +393,6 @@ function get_object($object_name, $key, $load_other_data = false) {
             $object = new Published_Email_Template($key);
             break;
 
-        case 'tax_category':
-        case 'tax category':
-            require_once "class.TaxCategory.php";
-            $object = new TaxCategory($key);
-            break;
-        case 'tax_category-key':
-            require_once "class.TaxCategory.php";
-            $object = new TaxCategory('key', $key);
-            break;
         case 'charge':
             require_once "class.Charge.php";
             $object = new Charge($key);

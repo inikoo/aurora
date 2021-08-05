@@ -47,8 +47,6 @@ EcomB2B/data_feeds/*.csv
 EcomB2B/data_feeds/*.xls
 EcomB2B/data_feeds/*.xlsx
 EcomB2B/data_feeds/*.txt
-app_files/po_sources_from_smarty/au.php
-app_files/po_sources_from_smarty/web.php
 websocket_server/keyring/ws.dns.php
 app_files/po_sources_from_smarty/web_au.php
 cron/fix_discontnued_valid_to_date.php
@@ -80,7 +78,6 @@ cron/set_up_spain.php
 composer.lock
 cron/fix_amount_in.php
 cron/set_up_sk_copy_agents_to.php
-composer.lock
 2020-12-22-10-26-19.043-VBoxSVC-30238.log
 bootstrap.sh
 post_bootstrap.sh
@@ -129,3 +126,4 @@ cron/set_up_web_menu.php
 /cron/fix_invoice_tax_bridge_add_net_es.php
 /cron/fix_invoice_tax_bridge_add_net_sk.php
 /cron/fix_orphan_invoice_tax_bridge.php
+/cron/set_up_tax_authority.php

@@ -9,23 +9,24 @@
  Version 2.0
 */
 
-/** @var \Smarty $smarty */
-/** @var \Account $account */
-
+/** @var Smarty $smarty */
+/** @var Account $account */
 /** @var PDO $db */
 
 
 use CommerceGuys\Addressing\Country\CountryRepository;
 use Mpdf\Mpdf;
+use Aurora\Models\Utils\TaxCategory;
 
+include_once 'class.Country.php';
 
-$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+$id = $_REQUEST['id'] ?? '';
 if (!$id) {
     exit;
 }
 
 /**
- * @var $invoice \Invoice
+ * @var $invoice Invoice
  */
 $invoice = get_object('Invoice', $id);
 if (!$invoice->id) {
@@ -83,11 +84,9 @@ if (!empty($_REQUEST['weight'])) {
     $print_weight = false;
 }
 
-
+$countryRepository = new CountryRepository();
 if (!empty($_REQUEST['origin'])) {
     $print_origin = true;
-    include_once 'class.Country.php';
-    $countryRepository = new CountryRepository();
 } else {
     $print_origin = false;
 }
@@ -307,9 +306,8 @@ if ($result = $db->query($sql)) {
         }
 
         if ($parts) {
+            /** @var Product $product */
             $product = get_object('Product', $row['Product ID']);
-
-
             $parts_data = $product->get_parts_data();
 
             $parts = '';
@@ -320,7 +318,7 @@ if ($result = $db->query($sql)) {
                     $parts .= ', '.$part_data['Units'].'x '.$part_data['Part Name'];
                 }
 
-                $description .= preg_replace('/\, /', '', $parts);
+                $description .= preg_replace('/, /', '', $parts);
             }
 
 
@@ -341,11 +339,16 @@ $transactions_no_products = array();
 
 if ($invoice->data['Invoice Net Amount Off']) {
 
+    $tax_category = new TaxCategory($db);
+    $tax_category->loadWithKey($invoice->data['Invoice Tax Category Key']);
 
-    $tax_category = get_object('Tax_Category', $invoice->data['Invoice Tax Code']);
+
+    if(!$tax_category->id){
+        throw new LogicException('Tax category not found '.$invoice->data['Invoice Tax Category Key']);
+    }
 
     $net   = -1 * $invoice->data['Invoice Net Amount Off'];
-    $tax   = $net * $tax_category->data['Tax Category Rate'];
+    $tax   = $net * $tax_category->get('Tax Category Rate');
     $total = $net + $tax;
 
 
@@ -411,10 +414,6 @@ if ($result = $db->query($sql)) {
             'Amount' => money($row['Transaction Invoice Net Amount'] + $row['Transaction Invoice Tax Amount'], $row['Currency Code'])
         );
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
 
 
@@ -435,12 +434,7 @@ if ($result = $db->query($sql)) {
         $row['Qty']      = '';
         $transactions[]  = $row;
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
-
 
 $transactions_out_of_stock = array();
 $sql                       = sprintf(
@@ -551,10 +545,6 @@ if ($result = $db->query($sql)) {
         $transactions_out_of_stock[] = $row;
 
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
 
 
@@ -641,60 +631,37 @@ while ($row = $stmt->fetch()) {
 
 $tax_data = array();
 $sql      = sprintf(
-    "SELECT `Tax Category Name`,`Tax Category Rate`,`Invoice Tax Amount`,`Tax Category Type`,`Invoice Tax Net` FROM  `Invoice Tax Bridge` B  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Code`=B.`Invoice Tax Code`)  WHERE B.`Invoice Tax Invoice Key`=%d  and `Tax Category Country Code`=%s ",
-    $invoice->id, prepare_mysql($account->get('Account Country Code'))
+    "SELECT `Invoice Tax Amount`,`Invoice Tax Net`,`Invoice Tax Category Key` FROM  `Invoice Tax Bridge` B  WHERE B.`Invoice Tax Invoice Key`=%d  ",
+    $invoice->id
 );
 
-
-//print $sql;
-//  exit;
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
-        if ($row['Tax Category Type'] == 'Exempt') {
-            $exempt_tax = true;
+        $tax_category=new TaxCategory($db);
+        $tax_category->loadWithKey($row['Invoice Tax Category Key']);
 
-        }
 
-        //    if ($row['Invoice Tax Amount'] == 0) {
-        //        continue;
-        //   }
+
         if($number_tax_lines<=1) {
             $base = '';
         }else{
             $base=money($row['Invoice Tax Net'],$invoice->get('Invoice Currency')).' @';
 
         }
-        switch ($row['Tax Category Name']) {
-            case 'Outside the scope of VAT':
-                $tax_category_name = _('Outside the scope of VAT');
-                break;
-            case 'VAT 17.5%':
-                $tax_category_name = _('VAT').' 17.5%';
-                break;
-            case 'VAT 20%':
-                $tax_category_name = _('VAT').' 20%';
-                break;
-            case 'VAT 15%':
-                $tax_category_name = _('VAT').' 15%';
-                break;
-            case 'No Tax':
-                $tax_category_name = _('No Tax');
-                break;
-            case 'RE (5,2%)':
-                $tax_category_name = 'RE 5,2%';
-                break;
-            case 'Exempt from VAT':
-                $tax_category_name = _('Exempt from VAT');
-                $exempt_tax        = true;
 
+        switch ($tax_category->get('Tax Category Type')) {
+            case 'Outside':
+                $tax_category_name = _('Tax').'<div style="font-size: x-small">'._('Outside the scope of tax').'</div>';
                 break;
-
-
+            case 'EU_VTC':
+                $tax_category_name = _('Tax').'<div style="font-size: x-small">'.sprintf(_('Valid tax number %s'),$invoice->get('Invoice Tax Number')).'</div>';
+                $exempt_tax = true;
+                break;
             default:
-                $tax_category_name = $row['Tax Category Name'];
+                $tax_category_name =_('Tax').'<div style="font-size: x-small"><small>'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name').'</div>';
         }
 
 
@@ -714,15 +681,10 @@ $smarty->assign('account', $account);
 
 $extra_comments = '';
 if ($account->get('Account Country Code') == 'SVK') {
-
     if ($exempt_tax) {
         $extra_comments = _('Delivery is exempt from tax according to §43 of Act No. 222/2004 on VAT');
-
     }
-
-
 }
-
 $smarty->assign('extra_comments', $extra_comments);
 $html = $smarty->fetch('invoice.pdf.tpl');
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');

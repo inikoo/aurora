@@ -692,7 +692,7 @@ function fork_housekeeping($job) {
                         $order->update_discounts_items();
                         $order->update_totals();
 
-                        $order->update_shipping(false, false);
+                        $order->update_shipping();
                         $order->update_charges(false, false);
                         $order->update_discounts_no_items();
                         $order->update_deal_bridge();
@@ -813,7 +813,7 @@ function fork_housekeeping($job) {
                             $order->update_discounts_items();
                             $order->update_totals();
 
-                            $order->update_shipping(false, false);
+                            $order->update_shipping();
                             $order->update_charges(false, false);
                             $order->update_discounts_no_items();
                             $order->update_deal_bridge();
@@ -1586,6 +1586,7 @@ function fork_housekeeping($job) {
             break;
 
         case 'order_dispatched':
+            /** @var Order $order */
             $order         = get_object('Order', $data['order_key']);
             $delivery_note = get_object('Delivery_Note', $data['delivery_note_key']);
 

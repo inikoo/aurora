@@ -1033,7 +1033,7 @@ WHERE OTF.`Order Key`=%s ', $parent->id
 
 function set_shipping_value($data, $editor) {
 
-
+    /** @var Order $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
@@ -1130,7 +1130,7 @@ function set_shipping_as_auto($data, $editor) {
 
 function set_hanging_charges_value($data, $editor) {
 
-
+    /** @var Order $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
@@ -1178,7 +1178,7 @@ function set_hanging_charges_value($data, $editor) {
 
 function set_hanging_charges_as_auto($data, $editor) {
 
-
+    /** @var Order  $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
@@ -1467,6 +1467,7 @@ function new_payment($data, $editor, $db, $account, $user) {
 
 function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
 
+    /** @var Order $parent */
     $parent         = get_object('Order', $data['parent_key']);
     $parent->editor = $editor;
 

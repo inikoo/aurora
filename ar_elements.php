@@ -2400,7 +2400,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
-            'where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ', prepare_mysql($parents[0]), prepare_mysql($parents[1])
+            'where  `Invoice Type`="Invoice" and  `Invoice Billing Region`=%s and I.`Invoice Tax Code`=%s  ', prepare_mysql($parents[0]), prepare_mysql($parents[1])
         );
 
 
@@ -2410,7 +2410,7 @@ function get_invoices_element_numbers($db, $parameters) {
 
         $parents = preg_split('/_/', $parameters['parent_key']);
         $where   = sprintf(
-            'where  `Invoice Type`!="Invoice"  and  `Invoice Billing Region`=%s and `Invoice Tax Code`=%s  ', prepare_mysql($parents[0]), prepare_mysql($parents[1])
+            'where  `Invoice Type`!="Invoice"  and  `Invoice Billing Region`=%s and I.`Invoice Tax Code`=%s  ', prepare_mysql($parents[0]), prepare_mysql($parents[1])
         );
 
 

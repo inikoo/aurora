@@ -9,13 +9,11 @@
  Version 3.0
 
 */
+use Aurora\Models\Utils\TaxCategory;
 
 trait Order_Calculate_Totals {
 
-    /**
-     * @var \PDO
-     */
-    public $db;
+
 
     function update_totals() {
 
@@ -106,7 +104,7 @@ trait Order_Calculate_Totals {
         $data      = array();
 
 
-        $sql = "SELECT  `Transaction Tax Code`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Order Key`=?  AND `Order Transaction Type`='Order' GROUP BY  `Transaction Tax Code`";
+        $sql = "SELECT  `Order Transaction Tax Category Key`,sum(`Order Transaction Amount`) AS net   FROM `Order Transaction Fact` WHERE `Order Key`=?  AND `Order Transaction Type`='Order' GROUP BY  `Order Transaction Tax Category Key`";
 
 
         $stmt = $this->db->prepare($sql);
@@ -116,11 +114,10 @@ trait Order_Calculate_Totals {
             )
         );
         while ($row = $stmt->fetch()) {
-            $data[$row['Transaction Tax Code']] = $row['net'];
-            //   $base_tax_code=$row['Transaction Tax Code'];//todo <-- this is used for assign the tax code to the amount off and may not work of is different tax codes
+            $data[$row['Order Transaction Tax Category Key']] = $row['net'];
 
             if ($this->data['Order Deal Amount Off'] != 0) {
-                $data[$row['Transaction Tax Code']] -= $this->data['Order Deal Amount Off'];
+                $data[$row['Order Transaction Tax Category Key']] -= $this->data['Order Deal Amount Off'];
             }
         }
 
@@ -128,7 +125,7 @@ trait Order_Calculate_Totals {
 
 
 
-        $sql  = "SELECT  `Tax Category Code`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Order Key`=?  AND `Type`='Order' GROUP BY `Tax Category Code`";
+        $sql  = "SELECT  `Order No Product Transaction Tax Category Key`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Order Key`=?  AND `Type`='Order' GROUP BY `Order No Product Transaction Tax Category Key`";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -136,20 +133,23 @@ trait Order_Calculate_Totals {
             )
         );
         while ($row = $stmt->fetch()) {
-            if (isset($data[$row['Tax Category Code']])) {
-                $data[$row['Tax Category Code']] += $row['net'];
+            if (isset($data[$row['Order No Product Transaction Tax Category Key']])) {
+                $data[$row['Order No Product Transaction Tax Category Key']] += $row['net'];
             } else {
-                $data[$row['Tax Category Code']] = $row['net'];
+                $data[$row['Order No Product Transaction Tax Category Key']] = $row['net'];
             }
         }
 
 
-        foreach ($data as $tax_code => $amount) {
+        foreach ($data as $tax_category_key => $amount) {
 
 
             $total_net += round($amount, 2);
 
-            $tax_category = get_object('Tax_Category', $tax_code);
+
+            $tax_category = new TaxCategory($this->db);
+            $tax_category->loadWithKey($tax_category_key);
+
             if ($tax_category->id) {
                 $tax = round($tax_category->get('Tax Category Rate') * $amount, 2);
             } else {

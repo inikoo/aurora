@@ -93,7 +93,7 @@ if ($order == 'tax_code') {
 $group_by = 'group by `Invoice Billing Region`,`Invoice Tax Code`';
 
 $table
-    = sprintf('  `Invoice Dimension` as I  left join kbase.`Tax Category Dimension` TC on (TC.`Tax Category Code`=`Invoice Tax Code` and `Tax Category Country Code`=%s) ',prepare_mysql($account->get('Account Country Code')));
+    = '  `Invoice Dimension` as I  left join kbase.`Tax Category Dimension` TC on (TC.`Tax Category Key`=`Invoice Tax Category Key` ) ';
 
 $sql_totals = "";
 
@@ -111,5 +111,3 @@ sum(if(`Invoice Type`='Invoice',1,0)) as invoices,
  
  
 ";
-
-?>

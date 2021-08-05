@@ -10,15 +10,21 @@
 
 */
 
+require_once '../vendor/autoload.php';
 
-chdir('../');
 
-require_once 'keyring/dns.php';
-require_once 'keyring/au_deploy_conf.php';
-require_once 'keyring/key.php';
-require_once 'utils/i18n.php';
-require_once 'utils/general_functions.php';
-require_once "class.Account.php";
+require_once '../keyring/dns.php';
+require_once '../keyring/au_deploy_conf.php';
+require_once '../keyring/key.php';
+require_once '../utils/i18n.php';
+require_once '../utils/general_functions.php';
+require_once '../utils/object_functions.php';
+
+/** @var  $dns_host */
+/** @var  $dns_port */
+/** @var  $dns_db */
+/** @var  $dns_user */
+/** @var  $dns_pwd */
 
 
 $db = new PDO(
@@ -26,7 +32,5 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-$account = new Account($db);
-date_default_timezone_set($account->data['Account Timezone']);
 
 
