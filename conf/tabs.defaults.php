@@ -2710,6 +2710,14 @@ function get_tab_defaults_data(): array {
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'handle'
         ),
+        'supplier.users'                 => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'handle'
+        ),
         'warehouses'                  => array(
             'view'        => 'overview',
             'sort_key'    => 'id',
