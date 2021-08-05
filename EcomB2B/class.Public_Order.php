@@ -22,7 +22,7 @@ include_once __DIR__.'/trait.OrderOperations.php';
 include_once __DIR__.'/trait.OrderTax.php';
 include_once __DIR__.'/trait.OrderGet.php';
 include_once __DIR__.'/trait.OrderAiku.php';
-include_once __DIR__.'trait.Address.php';
+include_once __DIR__.'/trait.Address.php';
 
 
 include_once 'class.DBW_Table.php';
