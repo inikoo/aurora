@@ -11,11 +11,6 @@ include_once('class.DB_Table.php');
 
 class Picking_Pipeline extends DB_Table {
 
-    /**
-     * @var \PDO
-     */
-    public $db;
-
 
     function __construct($arg1 = false, $arg2 = false) {
 
@@ -156,11 +151,7 @@ class Picking_Pipeline extends DB_Table {
                     return $this->data[$this->table_name.' '.$key];
                 }
 
-                if (isset($this->data[$key])) {
-                    return $this->data[$key];
-                } else {
-                    return '';
-                }
+                return $this->data[$key] ?? '';
         }
 
     }
@@ -279,7 +270,7 @@ class Picking_Pipeline extends DB_Table {
                 gmdate('Y-m-s H:i:s')
             )
         );
-        /** @var $location \Location */
+        /** @var $location Location */
         $location = get_object('Location', $location_key);
         $location->fast_update(['Location Pipeline' => 'Yes']);
         $this->update_pipeline_part_locations();
@@ -297,7 +288,7 @@ class Picking_Pipeline extends DB_Table {
             )
         );
         while ($row = $stmt->fetch()) {
-            /** @var $location \Location */
+            /** @var $location Location */
             $location = get_object('Location', $row['Location Picking Pipeline Location Key']);
             $location->update_pipeline_status();
         }
@@ -327,7 +318,7 @@ class Picking_Pipeline extends DB_Table {
         );
 
 
-        while ($row = $stmt->fetch()) {
+        if ($row = $stmt->fetch()) {
             $number_locations = $row['locations'];
             $number_parts     = $row['parts'];
         }
@@ -340,6 +331,22 @@ class Picking_Pipeline extends DB_Table {
 
             ]
         );
+
+        $sql              =
+            "select `Part SKU` from `Location Picking Pipeline Bridge` left join `Part Location Dimension` on (`Location Key`=`Location Picking Pipeline Location Key`) where `Location Picking Pipeline Picking Pipeline Key`=?  ";
+        $stmt             = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+
+
+        while ($row = $stmt->fetch()) {
+            /** @var Part $part */
+            $part=get_object('Part',$row['Part SKU']);
+            $part->update_number_pipeline_locations();
+        }
 
 
     }

@@ -16,9 +16,9 @@ require_once 'utils/natural_language.php';
 require_once 'utils/object_functions.php';
 require_once 'utils/prepare_table.php';
 
-/** @var \User $user */
+/** @var User $user */
 /** @var PDO $db */
-/** @var \Account $account */
+/** @var Account $account */
 
 if (!$user->can_view('locations')) {
     echo json_encode(

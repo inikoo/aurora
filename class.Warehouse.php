@@ -1684,7 +1684,7 @@ class Warehouse extends DB_Table {
         $part_locations_to_replenish  = 0;
 
 
-        $sql = "SELECT count(*) AS num FROM `Part Location Dimension`  WHERE  `Part Location Warehouse Key`=?  AND  `Minimum Quantity`>=0 AND `Can Pick`='Yes'";
+        $sql = "SELECT count(*) AS num FROM `Part Location Dimension` PL left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`)    WHERE  `Part Location Warehouse Key`=?  AND  `Minimum Quantity`>=0 AND `Can Pick`='Yes'and `Location Pipeline`='No'   ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -1697,9 +1697,9 @@ class Warehouse extends DB_Table {
         }
 
 
-        $sql = "SELECT count(*) AS num  FROM `Part Location Dimension` PL  LEFT JOIN `Part Dimension` P ON (PL.`Part SKU`=P.`Part SKU`) 
-                    WHERE `Can Pick`='Yes' AND `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) AND 
-                            (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  AND `Part Location Warehouse Key`=? and `Part Distinct Locations`>1 ";
+        $sql = "SELECT count(*) AS num  FROM `Part Location Dimension` PL  LEFT JOIN `Part Dimension` P ON (PL.`Part SKU`=P.`Part SKU`)  left join `Location Dimension` L on (L.`Location Key`=PL.`Location Key`)  
+                    WHERE `Can Pick`='Yes' and `Location Pipeline`='No' AND `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`- `Part Current Stock In Process`- `Part Current Stock Ordered Paid` ) AND 
+                            (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  AND `Part Location Warehouse Key`=? and (`Part Distinct Locations`-`Part Pipeline Locations`)>1 ";
 
 
         $stmt = $this->db->prepare($sql);

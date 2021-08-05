@@ -7,7 +7,7 @@
  */
 
 /** @var array $state */
-/** @var \User $user */
+/** @var User $user */
 
 $tab     = 'warehouse.parts_to_replenish_pipeline.wget';
 $ar_file = 'ar_warehouse_tables.php';
