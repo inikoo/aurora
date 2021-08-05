@@ -9,6 +9,8 @@
  Version 3
 
 */
+use Aurora\Traits\ObjectTaxNumberTrait;
+
 
 include_once __DIR__.'/trait.OrderShippingOperations.php';
 include_once __DIR__.'/trait.OrderChargesOperations.php';
@@ -20,13 +22,15 @@ include_once __DIR__.'/trait.OrderOperations.php';
 include_once __DIR__.'/trait.OrderTax.php';
 include_once __DIR__.'/trait.OrderGet.php';
 include_once __DIR__.'/trait.OrderAiku.php';
+include_once __DIR__.'trait.Address.php';
 
 
 include_once 'class.DBW_Table.php';
 
 
 class Public_Order extends DBW_Table {
-    use OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax,OrderGet,OrderAiku;
+    use Address,OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax,OrderGet,OrderAiku;
+    use ObjectTaxNumberTrait;
 
 
     var $amount_off_allowance_data = false;
