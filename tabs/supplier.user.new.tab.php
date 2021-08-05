@@ -8,27 +8,33 @@
  Version 3
 
 */
-
-
 include_once 'utils/invalid_messages.php';
-include_once 'conf/object_fields.php';
-include_once 'class.Supplier.php';
+include_once 'conf/fields/user.system.fld.php';
+
+/** @var User $user */
+/** @var PDO $db */
+/** @var Smarty $smarty */
+/** @var array $state */
 
 
-$object_fields = get_object_fields(
-    $state['_parent'], $db, $user, $smarty, array(
-        'new' => true,
-        'type' => 'user'
-    )
-);
+$object=new User();
+
+$object_fields = get_user_fields($object, $db, array(
+    'new'    => true,
+    'type'   => 'user',
+    'parent' => 'supplier'
+));
+
 
 $smarty->assign('state', $state);
-$smarty->assign('object', $state['_parent']);
+$smarty->assign('object', $object);
 $smarty->assign('object_name', 'User');
-
 $smarty->assign('object_fields', $object_fields);
 
-$html = $smarty->fetch('new_object.tpl');
 
 
-?>
+try {
+    $html = $smarty->fetch('new_object.tpl');
+} catch (Exception $e) {
+    $html = '';
+}

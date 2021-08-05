@@ -319,12 +319,9 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
             return $object_fields;
         case 'Agent':
 
-            if (isset($options['type']) and $options['type'] == 'user') {
-                include 'fields/user.system.fld.php';
-            } else {
 
                 include 'fields/agent.fld.php';
-            }
+
 
             return $object_fields;
         case 'Barcode':
@@ -339,7 +336,7 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
             if (is_array($options) and $options['type'] == 'profile') {
                 include 'fields/profile.fld.php';
             } else {
-                include 'fields/user.system.fld.php';
+               exit('Error 33');
             }
 
             return $object_fields;
@@ -380,10 +377,6 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
 
         case 'Supplier':
 
-            if (isset($options['type']) and $options['type'] == 'user') {
-                include 'fields/user.system.fld.php';
-            } else {
-
 
                 if ($user->get('User Type') == 'Agent') {
                     include 'fields/agent_supplier.fld.php';
@@ -398,7 +391,7 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
 
                 }
 
-            }
+
 
             return $object_fields;
 

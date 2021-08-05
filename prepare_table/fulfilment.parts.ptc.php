@@ -70,12 +70,10 @@ class prepare_table_fulfilment_parts extends prepare_table {
                               '3 Year'
                           )
             )) {
-                //  $yb_fields = " '' as dispatched_1yb,'' as sales_1yb,";
 
                 $yb_sales      = '0';
                 $yb_dispatched = '0';
             } else {
-                //  $yb_fields = "`Part $db_period Acc 1YB Dispatched` as dispatched_1yb,`Part $db_period Acc 1YB Invoiced Amount` as sales_1yb,";
                 $yb_sales      = "`Part $db_period Acc 1YB Invoiced Amount`";
                 $yb_dispatched = "`Part $db_period Acc 1YB Dispatched`";
             }

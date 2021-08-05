@@ -8,6 +8,9 @@
  Version 3
 
 */
+/** @var array $state */
+/** @var Smarty $smarty */
+/** @var User $user */
 
 
 $tab     = 'agent.users';
@@ -18,7 +21,7 @@ $default = $user->get_tab_defaults($tab);
 
 
 $table_views = array(
-    'privileges' => array('label' => _('Overview')),
+    'overview' => array('label' => _('Overview')),
     'weblog'      => array('label' => _('Syslog')),
 
 );
@@ -46,5 +49,3 @@ $smarty->assign('table_buttons', $table_buttons);
 
 include('utils/get_table_html.php');
 
-
-?>
