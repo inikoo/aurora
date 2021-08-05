@@ -29,35 +29,36 @@ class EUR_TaxCategoryProvider implements TaxCategoryProvider
         $tax_category = new TaxCategory($this->db);
 
         if ($invoice_address->getCountryCode() == $this->base_country or $delivery_address->getCountryCode() == $this->base_country) {
-            return $tax_category->loadWithCodeCountry('S1',$this->base_country);
+            return $tax_category->loadWithTypeCountry('Standard', $this->base_country);
         }
 
+        if ($delivery_address->isEuropeanUnion() and $invoice_address->isEuropeanUnion() and $taxNumber->isValid()) {
+            return $tax_category->loadWithKey(2);
+        }
+
+
         if ($delivery_address->isEuropeanUnion()) {
-            if ($taxNumber->isValid()) {
-                return $tax_category->loadWithCodeCountry('EU',$this->base_country);
-            } else {
-                $countryCode = $delivery_address->getCountryCode();
+            $countryCode = $delivery_address->getCountryCode();
 
-                if ($countryCode == 'MC') {
-                    return $tax_category->loadWithTypeCountry('Standard','FR');
-                }
-                if ($countryCode == 'PT') {
-                    if (preg_match('/^(90|91|92|93|94)/', $delivery_address->getPostalCode())) {
-                        return $tax_category->loadWithTypeCountry('Standard-RAM','PT' );
-                    }
-                    if (preg_match('/^9/', $delivery_address->getPostalCode())) {
-                        return $tax_category->loadWithTypeCountry('Standard-RAA','PT');
-                    }
-                }
-                if ($countryCode == 'ES') {
-                    if (preg_match('/^(35|38|51|52)/', $delivery_address->getPostalCode())) {
-                        return $tax_category->loadWithCodeCountry('OUT',$this->base_country);
-                    }
-                }
-
-
-                return $tax_category->loadWithTypeCountry('Standard',$delivery_address->getCountryCode());
+            if ($countryCode == 'MC') {
+                return $tax_category->loadWithTypeCountry('Standard', 'FR');
             }
+            if ($countryCode == 'PT') {
+                if (preg_match('/^(90|91|92|93|94)/', $delivery_address->getPostalCode())) {
+                    return $tax_category->loadWithCodeCountry('PT-SR-RAM', 'PT');
+                }
+                if (preg_match('/^9/', $delivery_address->getPostalCode())) {
+                    return $tax_category->loadWithCodeCountry('PT-SR-RAA', 'PT');
+                }
+            }
+            if ($countryCode == 'ES') {
+                if (preg_match('/^(35|38|51|52)/', $delivery_address->getPostalCode())) {
+                    return $tax_category->loadWithKey(1);
+                }
+            }
+
+
+            return $tax_category->loadWithTypeCountry('Standard', $delivery_address->getCountryCode());
         }
 
 

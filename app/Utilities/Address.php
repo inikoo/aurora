@@ -51,12 +51,12 @@ class Address
 
     public function getCountryCode(): string
     {
-        return $this->address->getCountryCode();
+        return $this->address->getCountryCode()??'';
     }
 
     public function getPostalCode(): string
     {
-        return $this->address->getPostalCode();
+        return $this->address->getPostalCode()??'';
     }
 
     public function isEuropeanUnion(): bool

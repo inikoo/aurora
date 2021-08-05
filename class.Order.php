@@ -310,10 +310,10 @@ class Order extends DB_Table
 
                 switch ($tax_category->get('Tax Category Type')) {
                     case 'Outside':
-                        $tax_description = _('Outside the scope of VAT');
+                        $tax_description = _('Outside the scope of tax');
                         break;
                     case 'EU_VTC':
-                        $tax_description = sprintf(_('EC with %s'), $this->get('Tax Number Formatted'));
+                        $tax_description = sprintf(_('EU with %s'), $this->get('Tax Number Formatted'));
                         break;
                     default:
                         $tax_description= '<small class="discreet">'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name');

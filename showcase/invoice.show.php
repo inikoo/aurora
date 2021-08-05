@@ -79,10 +79,10 @@ function get_invoice_showcase($data, $smarty, $user, $db, $account): string
 
         switch ($row['Tax Category Code']) {
             case 'OUT':
-                $tax_description = _('Outside the scope of VAT');
+                $tax_description = _('Outside the scope of tax');
                 break;
             case 'EU':
-                $tax_description = sprintf(_('EC with %s'), $invoice->get('Tax Number Formatted'));
+                $tax_description = sprintf(_('EU with %s'), $invoice->get('Tax Number Formatted'));
                 break;
             default:
                 $tax_description = $row['Tax Category Name'];

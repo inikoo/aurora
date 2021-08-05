@@ -16,7 +16,7 @@ class TaxNumber
      * @var false
      */
     private bool $valid;
-    private string $number;
+    private ?string $number;
 
     function __construct(
         $number = '',
@@ -28,7 +28,7 @@ class TaxNumber
 
     function setNumber($number)
     {
-        $this->number = $number;
+        $this->number = $number??'';
     }
 
     function setValid($valid)

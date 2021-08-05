@@ -654,7 +654,7 @@ if ($result = $db->query($sql)) {
 
         switch ($tax_category->get('Tax Category Type')) {
             case 'Outside':
-                $tax_category_name = _('Tax').'<div style="font-size: x-small">'._('Outside the scope of VAT').'</div>';
+                $tax_category_name = _('Tax').'<div style="font-size: x-small">'._('Outside the scope of tax').'</div>';
                 break;
             case 'EU_VTC':
                 $tax_category_name = _('Tax').'<div style="font-size: x-small">'.sprintf(_('Valid tax number %s'),$invoice->get('Invoice Tax Number')).'</div>';
