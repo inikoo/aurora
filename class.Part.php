@@ -3195,7 +3195,9 @@ class Part extends Asset
 
 
         $sql = sprintf(
-            "SELECT `Location Place`,PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
+            "SELECT `Location Place`,PL.`Location Key`,`Location Code`,`Quantity On Hand`,`Part Location Note`,`Location Warehouse Key`,`Part SKU`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Location Pipeline`,
+        `Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` 
+        FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
         ORDER BY %s",
             $this->sku,
             $where,
@@ -3215,13 +3217,14 @@ class Part extends Asset
                 } elseif ($scope == 'part_location_object') {
                     $part_locations[$row['Location Key']] = new  PartLocation($this->sku.'_'.$row['Location Key']);
                 } else {
+                    /*
                     $picking_location_icon = sprintf(
                         '<i onclick="set_as_picking_location('.$this->id.','.$row['Location Key'].')" class="fa fa-fw fa-shopping-basket %s"  title="%s" ></i></span>',
                         ($row['Can Pick'] == 'Yes' ? '' : 'super_discreet_on_hover button'),
                         ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location'))
 
                     );
-
+                    */
 
                     $part_locations[] = array(
                         'formatted_stock' => number($row['Quantity On Hand'], 3),
@@ -3235,8 +3238,7 @@ class Part extends Asset
                         'note'                   => $row['Part Location Note'],
                         'location_external_icon' => ($row['Location Place'] == 'External' ? ' <i style="color:tomato" class="small fal fa-garage-car"></i>' : ''),
 
-                        'picking_location_icon' => $picking_location_icon,
-                        //'location_used_for'      => $row['Location Mainly Used For'],
+                        //'picking_location_icon' => $picking_location_icon,
                         'formatted_min_qty'     => ($row['Minimum Quantity'] != '' ? $row['Minimum Quantity'] : '?'),
                         'formatted_max_qty'     => ($row['Maximum Quantity'] != '' ? $row['Maximum Quantity'] : '?'),
                         'formatted_move_qty'    => ($row['Moving Quantity'] != '' ? $row['Moving Quantity'] : '?'),
@@ -3245,6 +3247,7 @@ class Part extends Asset
                         'move_qty'              => $row['Moving Quantity'],
 
                         'can_pick'        => $row['Can Pick'],
+                        'is_pipeline'        => $row['Location Pipeline']=='Yes',
                         'label'           => ($row['Can Pick'] == 'Yes' ? _('Picking location') : _('Set as picking location')),
                         'days_last_audit' => ($row['days_last_audit'] == '' ? '<span title="'._('Never been audited').'">-</span> <i class="far fa-clock padding_right_10" ></i> ' : sprintf(
                                 '<span title="%s">%s</span>',
