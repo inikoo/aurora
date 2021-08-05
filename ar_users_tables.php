@@ -13,17 +13,11 @@ require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 
-/*
-if (!$user->can_view('users')) {
-    echo json_encode(
-        array(
-            'state' => 405,
-            'resp'  => 'Forbidden'
-        )
-    );
-    exit;
-}
-*/
+/** @var User $user */
+/** @var PDO $db */
+/** @var Account $account */
+require_once 'utils/prepare_table.php';
+
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -39,7 +33,7 @@ $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
     case 'users':
-        users(get_table_parameters(), $db, $user);
+        users(get_table_parameters(), $db, $user,$account);
         break;
     case 'user_categories':
         user_categories(get_table_parameters(), $db, $user);
@@ -63,7 +57,7 @@ switch ($tipo) {
     case 'api_keys':
     case 'profile_api_keys':
 
-    api_keys($tipo,get_table_parameters(), $db, $user);
+        api_keys($tipo, get_table_parameters(), $db, $user);
         break;
     case 'deleted_api_keys':
         deleted_api_keys(get_table_parameters(), $db, $user);
@@ -85,90 +79,16 @@ switch ($tipo) {
 }
 
 
-function users($_data, $db, $user) {
+function users($_data, $db, $user,$account)
+{
+    include_once 'prepare_table/users.ptc.php';
+    $table=new prepare_table_users($db,$account,$user);
+    echo $table->fetch($_data);
 
-    $rtext_label = 'user';
-    include_once 'prepare_table/init.php';
-
-    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
-
-    //print $sql;
-    $adata = array();
-
-    foreach ($db->query($sql) as $data) {
-        if ($data['User Active'] == 'Yes') {
-            $active      = _('Yes');
-            $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
-        } else {
-            $active      = _('No');
-            $active_icon = sprintf('<a class="fas fa-times-circle error" title="%s"></a>', _('Inactive'));
-        }
-
-
-        switch ($data['User Type']) {
-            case 'Staff':
-                $type = '<span class="link" onclick="change_view(\'employee/'.$data['User Parent Key'].'\')">'._('Employee').'</span>';
-                break;
-            case 'Contractor':
-                $type = '<span class="link" onclick="change_view(\'contractor/'.$data['User Parent Key'].'\')">'._('Contractor').'</span>';
-
-                break;
-            case 'Agent':
-                $type = '<span class="link" onclick="change_view(\'agent/'.$data['User Parent Key'].'\')">'._('Agent').'</span>';
-                break;
-            case 'Supplier':
-                $type = '<span class="link" onclick="change_view(\'supplier/'.$data['User Parent Key'].'\')">'._('Supplier').'</span>';
-
-                break;
-            case 'Warehouse':
-                $type = _('Warehouse');
-                break;
-
-            case 'Administrator':
-                $type = _('Administrator');
-                break;
-
-            default:
-                $type = $data['User Type'];
-        }
-
-
-
-
-        $adata[] = array(
-            'id'              => (integer)$data['User Key'],
-            'type'            => $type,
-            'handle'          => sprintf('<span class="link" onclick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
-            'name'            => $data['User Alias'],
-            'email'           => $data['User Password Recovery Email'],
-            'active_icon'     => $active_icon,
-            'active'          => $active,
-            'logins'          => number($data['User Login Count']),
-            'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
-            'fail_logins'     => number($data['User Failed Login Count']),
-            'fail_last_login' => ($data ['User Last Failed Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Failed Login']." +00:00"))),
-
-
-        );
-
-    }
-
-    $response = array(
-        'resultset' => array(
-            'state'         => 200,
-            'data'          => $adata,
-            'rtext'         => $rtext,
-            'sort_key'      => $_order,
-            'sort_dir'      => $_dir,
-            'total_records' => $total
-
-        )
-    );
-    echo json_encode($response);
 }
 
-function staff($_data, $db, $user) {
-
+function staff($_data, $db, $user)
+{
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
@@ -209,7 +129,6 @@ function staff($_data, $db, $user) {
             'warehouses' => $warehouses,
             'websites'   => $data['Sites'],
         );
-
     }
 
     $response = array(
@@ -227,8 +146,8 @@ function staff($_data, $db, $user) {
 }
 
 
-function contractors($_data, $db, $user) {
-
+function contractors($_data, $db, $user)
+{
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
@@ -238,7 +157,6 @@ function contractors($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
-
         if ($data['User Active'] == 'Yes') {
             $active      = _('Yes');
             $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
@@ -270,7 +188,6 @@ function contractors($_data, $db, $user) {
             'warehouses' => $warehouses,
             'websites'   => $data['Sites'],
         );
-
     }
 
     $response = array(
@@ -288,8 +205,8 @@ function contractors($_data, $db, $user) {
 }
 
 
-function agents($_data, $db, $user) {
-
+function agents($_data, $db, $user)
+{
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
@@ -297,8 +214,6 @@ function agents($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['User Active'] == 'Yes') {
             $active      = _('Yes');
             $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
@@ -322,7 +237,6 @@ function agents($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -339,8 +253,8 @@ function agents($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function suppliers($_data, $db, $user) {
-
+function suppliers($_data, $db, $user)
+{
     $rtext_label = 'user';
     include_once 'prepare_table/init.php';
 
@@ -349,8 +263,6 @@ function suppliers($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['User Active'] == 'Yes') {
             $active_icon = sprintf('<a class="fas fa-check-circle success" title="%s"></a>', _('Active'));
         } else {
@@ -363,7 +275,7 @@ function suppliers($_data, $db, $user) {
             'handle'          => sprintf('<span class="link" onclick="change_view(\'users/%d\')">%s</span>', $data['User Key'], $data['User Handle']),
             'name'            => $data['User Alias'],
             'supplier_link'   => sprintf('<span class="link" onclick="change_view(\'supplier/%d\')">%s</span>', $data['Supplier Key'], $data['Supplier Code']),
-            'active_icon'          => $active_icon,
+            'active_icon'     => $active_icon,
             'logins'          => number($data['User Login Count']),
             'last_login'      => ($data ['User Last Login'] == '' ? '' : strftime("%e %b %Y %H:%M %Z", strtotime($data ['User Last Login']." +00:00"))),
             'fail_logins'     => number($data['User Failed Login Count']),
@@ -371,7 +283,6 @@ function suppliers($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -389,8 +300,8 @@ function suppliers($_data, $db, $user) {
 }
 
 
-function login_history($_data, $db, $user) {
-
+function login_history($_data, $db, $user)
+{
     $rtext_label = 'session';
     include_once 'prepare_table/init.php';
 
@@ -399,7 +310,6 @@ function login_history($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
-
         $adata[] = array(
             'id'          => (integer)$data['User Log Key'],
             'user_key'    => (integer)$data['User Key'],
@@ -408,13 +318,14 @@ function login_history($_data, $db, $user) {
             'parent_key'  => $data['User Parent Key'],
             'ip'          => $data['IP'],
             'login_date'  => strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['Start Date'])
+                "%a %e %b %Y %H:%M %Z",
+                strtotime($data['Start Date'])
             ),
             'logout_date' => ($data['Logout Date'] != '' ? strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['Logout Date'])
+                "%a %e %b %Y %H:%M %Z",
+                strtotime($data['Logout Date'])
             ) : ''),
         );
-
     }
 
     $response = array(
@@ -432,8 +343,8 @@ function login_history($_data, $db, $user) {
 }
 
 
-function user_categories($_data, $db, $user) {
-
+function user_categories($_data, $db, $user)
+{
     $rtext_label = 'user category';
     include_once 'prepare_table/init.php';
 
@@ -469,12 +380,10 @@ function user_categories($_data, $db, $user) {
     );
 
     foreach ($db->query($sql) as $data) {
-
         $base_data[$data['User Type']] = $data;
     }
 
     foreach ($base_data as $key => $data) {
-
         switch ($data['User Type']) {
             case 'Staff':
                 $type    = _('Employees');
@@ -511,11 +420,11 @@ function user_categories($_data, $db, $user) {
             'active_users'   => number($data['active_users']),
             'inactive_users' => number($data['inactive_users']),
         );
-
     }
     $total_records = 6;
     $rtext         = sprintf(
-        ngettext('%s user category', '%s user categories', $total_records), number($total_records)
+        ngettext('%s user category', '%s user categories', $total_records),
+        number($total_records)
     );
 
     $response = array(
@@ -532,8 +441,8 @@ function user_categories($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function deleted_users($_data, $db, $user) {
-
+function deleted_users($_data, $db, $user)
+{
     $rtext_label = 'users';
     include_once 'prepare_table/init.php';
 
@@ -542,7 +451,6 @@ function deleted_users($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
-
         switch ($data['User Deleted Type']) {
             case 'Staff':
                 $type = _('Employee');
@@ -568,11 +476,11 @@ function deleted_users($_data, $db, $user) {
             'alias'  => $data['User Deleted Alias'],
             'type'   => $type,
             'date'   => ($data['User Deleted Date'] != '' ? strftime(
-                "%a %e %b %Y %H:%M %Z", strtotime($data['User Deleted Date'])
+                "%a %e %b %Y %H:%M %Z",
+                strtotime($data['User Deleted Date'])
             ) : ''),
 
         );
-
     }
 
     $response = array(
@@ -590,8 +498,8 @@ function deleted_users($_data, $db, $user) {
 }
 
 
-function api_keys($tipo,$_data, $db, $user) {
-
+function api_keys($tipo, $_data, $db, $user)
+{
     $rtext_label = 'api key';
     include_once 'prepare_table/init.php';
 
@@ -601,17 +509,11 @@ function api_keys($tipo,$_data, $db, $user) {
     $adata = array();
 
 
-
-
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['API Key Active'] == 'Yes') {
             $active = '<i class="fa fa-check success"></i> '._('Yes');
-
         } else {
             $active = '<i class="fa fa-ban error"></i> '._('No');
-
         }
 
         switch ($data['API Key Scope']) {
@@ -629,12 +531,10 @@ function api_keys($tipo,$_data, $db, $user) {
         }
 
 
-
-        if($tipo=='profile_api_keys'){
-            $code=sprintf('<span class="link" onclick="change_view(\'profile/api_key/%d\')">%s</span>',  $data['API Key Key'], $data['API Key Code']);
-
-        }else{
-            $code=sprintf('<span class="link" onclick="change_view(\'users/%d/api_key/%d\')">%s</span>', $data['API Key User Key'], $data['API Key Key'], $data['API Key Code']);
+        if ($tipo == 'profile_api_keys') {
+            $code = sprintf('<span class="link" onclick="change_view(\'profile/api_key/%d\')">%s</span>', $data['API Key Key'], $data['API Key Code']);
+        } else {
+            $code = sprintf('<span class="link" onclick="change_view(\'users/%d/api_key/%d\')">%s</span>', $data['API Key User Key'], $data['API Key Key'], $data['API Key Code']);
         }
 
         $adata[] = array(
@@ -645,8 +545,6 @@ function api_keys($tipo,$_data, $db, $user) {
 
             'from' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Valid From'])),
         );
-
-
     }
 
 
@@ -665,8 +563,8 @@ function api_keys($tipo,$_data, $db, $user) {
 }
 
 
-function deleted_api_keys($_data, $db, $user) {
-
+function deleted_api_keys($_data, $db, $user)
+{
     $rtext_label = 'deleted api key';
     include_once 'prepare_table/init.php';
 
@@ -676,8 +574,6 @@ function deleted_api_keys($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
-
-
         switch ($data['API Key Deleted Scope']) {
             case 'Timesheet':
                 $scope = _('Timesheet machine');
@@ -698,8 +594,6 @@ function deleted_api_keys($_data, $db, $user) {
             'scope'        => $scope,
             'deleted_date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['API Key Deleted Date'])),
         );
-
-
     }
 
 
@@ -718,8 +612,8 @@ function deleted_api_keys($_data, $db, $user) {
 }
 
 
-function api_requests($_data, $db, $user) {
-
+function api_requests($_data, $db, $user)
+{
     $rtext_label = 'request';
     include_once 'prepare_table/init.php';
 
@@ -729,10 +623,7 @@ function api_requests($_data, $db, $user) {
 
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             switch ($data['API Key Scope']) {
                 case 'Timesheet':
                     $scope = _('Timesheet');
@@ -788,7 +679,6 @@ function api_requests($_data, $db, $user) {
                 'response_code' => $response_code,
 
             );
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
