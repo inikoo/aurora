@@ -159,7 +159,7 @@ module.exports = function (grunt) {
                     sourceMap: true,
 
                 }, src: [
-                    'js/common.js', 'js/help.js', 'js/keyboard_shortcuts.js', 'js/barcode_scanner.js', 'js/edit.js',
+                    'js/common.js', 'js/keyboard_shortcuts.js', 'js/barcode_scanner.js', 'js/edit.js',
 
                     'js/mixed_recipients.edit.js', 'js/search.js', 'js/table.js', 'js/validation.js', 'js/pdf.js', 'js/edit_webpage_edit.js', 'js/new.js',
                     'js/order.common.js', 'js/order_collection.js', 'js/location_parts.js','js/dropshipping.js','js/attendance.js','js/customer_products.js',
@@ -206,7 +206,7 @@ module.exports = function (grunt) {
                 options: {
 
                     sourceMap: true,
-                }, src: ['js/common.js', 'js/help.js', 'js/keyboard_shortcuts.js', 'js/edit.js', 'js/search.js', 'js/table.js', 'js/validation.js',
+                }, src: ['js/common.js', 'js/keyboard_shortcuts.js', 'js/edit.js', 'js/search.js', 'js/table.js', 'js/validation.js',
 
                     'js/setup/setup.js'
 

@@ -555,3 +555,43 @@ function truncateWithEllipses(text, max) {
     return text.substr(0, max - 1) + (text.length > max ? '&hellip;' : '');
 }
 
+function show_side_content(type) {
+
+
+    $('.side_content').addClass('hide')
+    $('.side_content_icon').removeClass('selected')
+
+
+    $('#notifications .'+type+'_button').addClass('selected')
+
+    $('.side_content.' + type).removeClass('hide')
+    switch (type) {
+        case 'help':
+            help()
+            break;
+        case 'real_time_users':
+            get_real_time_users()
+
+            break;
+    }
+
+
+    var request = "/ar_edit_help.php?tipo=side_block&value=" + type
+
+    $.getJSON(request, function (data) {
+    })
+
+
+}
+
+function get_real_time_users() {
+
+    var request = "/ar_real_time.php?tipo=users";
+
+    $.getJSON(request, function (data) {
+        render_real_time_users_table(data.users_data)
+
+    })
+
+
+}

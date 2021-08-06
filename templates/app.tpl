@@ -256,15 +256,7 @@
         </div>
 
 
-        <div class="help side_content hide">
-            <div class="top">
-                {t}Help{/t}
-            </div>
-            <div class="navigation">
-                <span class="help_title"></span>
-            </div>
-            <div class="content"></div>
-        </div>
+
 
         <div class="real_time_users side_content hide">
             <div class="top">
@@ -278,21 +270,7 @@
             </div>
         </div>
 
-        <div class="whiteboard side_content hide">
-            <div class="top">
-                {t}Whiteboard{/t}
-            </div>
-            <div class="navigation">
-                <span id="whiteboard_content_title" style="font-size:90%;padding-left:5px" class="help_title">{t}Page{/t}</span>
-            </div>
-            <div id="whiteboard_content" data-block="page" class="content" style="min-height: 200px;padding:10px" contenteditable="true"></div>
-            <div class="navigation">
-                <span id="whiteboard_content_tab_title" style="font-size:90%;padding-left:5px" class="help_title">{t}Tab{/t}</span>
-            </div>
-            <div id="whiteboard_content_tab" data-block="tab" class="content" style="min-height: 300px;padding:10px" contenteditable="true"></div>
 
-
-        </div>
 
 
     </aside>
