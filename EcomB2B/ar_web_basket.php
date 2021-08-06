@@ -34,16 +34,13 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-
     case 'get_basket_html':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'device_prefix' => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         )
-                     )
-        );
+        $data = prepare_values($_REQUEST, array(
+                                            'device_prefix' => array(
+                                                'type'     => 'string',
+                                                'optional' => true
+                                            )
+                                        ));
 
         get_basket_html($data, $customer);
 
@@ -51,14 +48,12 @@ switch ($tipo) {
         break;
 
     case 'get_items_html':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'device_prefix' => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         )
-                     )
-        );
+        $data = prepare_values($_REQUEST, array(
+                                            'device_prefix' => array(
+                                                'type'     => 'string',
+                                                'optional' => true
+                                            )
+                                        ));
 
         get_items_html($data, $customer);
 
@@ -72,65 +67,53 @@ switch ($tipo) {
         break;
 
     case 'special_instructions':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'value' => array('type' => 'string'),
+        $data = prepare_values($_REQUEST, array(
+                                            'value' => array('type' => 'string'),
 
-                     )
-        );
+                                        ));
         update_special_instructions($data, $order, $editor);
         break;
 
     case 'invoice_address':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'data' => array('type' => 'json array'),
+        $data = prepare_values($_REQUEST, array(
+                                            'data' => array('type' => 'json array'),
 
-                     )
-        );
+                                        ));
         invoice_address($data, $order, $editor, $website);
         break;
 
     case 'delivery_address':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'data' => array('type' => 'json array'),
+        $data = prepare_values($_REQUEST, array(
+                                            'data' => array('type' => 'json array'),
 
-                     )
-        );
+                                        ));
         delivery_address($data, $order, $editor, $website);
         break;
 
     case 'web_toggle_charge':
-        $data = prepare_values(
-            $_REQUEST, array(
+        $data = prepare_values($_REQUEST, array(
 
-                         'charge_key' => array('type' => 'key'),
-                         'operation'  => array('type' => 'string'),
+                                            'charge_key' => array('type' => 'key'),
+                                            'operation'  => array('type' => 'string'),
 
-                     )
-        );
+                                        ));
         web_toggle_charge($data, $editor, $db, $order, $customer, $website);
         break;
 
     case 'web_toggle_deal_component_choose_by_customer':
-        $data = prepare_values(
-            $_REQUEST, array(
-                         'deal_component_key' => array('type' => 'key'),
-                         'product_id'         => array('type' => 'key'),
-                         'order_transaction_deal_bridge_key'           => array('type' => 'order_transaction_deal_bridge_key'),
+        $data = prepare_values($_REQUEST, array(
+                                            'deal_component_key'                => array('type' => 'key'),
+                                            'product_id'                        => array('type' => 'key'),
+                                            'order_transaction_deal_bridge_key' => array('type' => 'order_transaction_deal_bridge_key'),
 
 
-                     )
-        );
+                                        ));
         web_toggle_deal_component_choose_by_customer($data, $editor, $db, $order, $customer);
         break;
-
 }
 
-function invoice_address($data, $order, $editor, $website) {
-
-
+function invoice_address($data, $order, $editor, $website)
+{
     $address_data = array(
         'Address Line 1'               => '',
         'Address Line 2'               => '',
@@ -144,7 +127,6 @@ function invoice_address($data, $order, $editor, $website) {
 
 
     foreach ($data['data'] as $key => $value) {
-
         if ($key == 'addressLine1') {
             $key = 'Address Line 1';
         } elseif ($key == 'addressLine2') {
@@ -164,7 +146,6 @@ function invoice_address($data, $order, $editor, $website) {
         }
 
         $address_data[$key] = $value;
-
     }
 
 
@@ -173,11 +154,9 @@ function invoice_address($data, $order, $editor, $website) {
 
 
     if ($order->get('Order State') == 'InBasket') {
-        $order->fast_update(
-            array(
-                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
-            )
-        );
+        $order->fast_update(array(
+                                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
+                            ));
     }
 
     $labels = $website->get('Localised Labels');
@@ -200,7 +179,7 @@ function invoice_address($data, $order, $editor, $website) {
         'order_shipping'          => $shipping_amount,
         'order_total'             => $order->get('Total Amount'),
         'ordered_products_number' => $order->get('Number Items'),
-
+        'tax_description'         => $order->get('Tax Description'),
 
         'formatted_invoice_address' => $order->get('Order Invoice Address Formatted'),
 
@@ -217,19 +196,15 @@ function invoice_address($data, $order, $editor, $website) {
 
     );
     echo json_encode($response);
-
-
 }
 
-function delivery_address($data, $order, $editor, $website) {
-
-
+function delivery_address($data, $order, $editor, $website)
+{
     $order->editor = $editor;
 
 
     if ($data['data']['order_for_collection']) {
         $order->update(array('Order For Collection' => 'Yes'));
-
     } else {
         $order->update(array('Order For Collection' => 'No'));
         unset($data['data']['order_for_collection']);
@@ -247,7 +222,6 @@ function delivery_address($data, $order, $editor, $website) {
 
 
         foreach ($data['data'] as $key => $value) {
-
             if ($key == 'addressLine1') {
                 $key = 'Address Line 1';
             } elseif ($key == 'addressLine2') {
@@ -267,21 +241,17 @@ function delivery_address($data, $order, $editor, $website) {
             }
 
             $address_data[$key] = $value;
-
         }
 
         $order->update(array('Order Delivery Address' => json_encode($address_data)));
-
     }
 
 
     if ($order->get('Order State') == 'InBasket') {
-        $order->fast_update(
-            array(
+        $order->fast_update(array(
 
-                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
-            )
-        );
+                                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
+                            ));
     }
 
 
@@ -304,7 +274,7 @@ function delivery_address($data, $order, $editor, $website) {
         'order_shipping'          => $shipping_amount,
         'order_total'             => $order->get('Total Amount'),
         'ordered_products_number' => $order->get('Number Items'),
-
+        'tax_description'         => $order->get('Tax Description'),
 
         'formatted_delivery_address' => $order->get('Order Delivery Address Formatted'),
 
@@ -323,27 +293,20 @@ function delivery_address($data, $order, $editor, $website) {
 
 
     echo json_encode($response);
-
-
 }
 
-function update_special_instructions($data, $order, $editor) {
-
-
+function update_special_instructions($data, $order, $editor)
+{
     $order->editor = $editor;
 
-    $order->fast_update(
-        array('Order Customer Message' => $data['value'])
-    );
+    $order->fast_update(array('Order Customer Message' => $data['value']));
 
 
     if ($order->get('Order State') == 'InBasket') {
-        $order->fast_update(
-            array(
+        $order->fast_update(array(
 
-                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
-            )
-        );
+                                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
+                            ));
     }
 
 
@@ -353,24 +316,22 @@ function update_special_instructions($data, $order, $editor) {
 
     );
     echo json_encode($response);
-
 }
 
-function get_charges_info($order) {
-
-
+function get_charges_info($order)
+{
     $response = array(
         'state' => 200,
         'title' => _('Charges'),
         'text'  => $order->get_charges_public_info()
     );
     echo json_encode($response);
-
 }
 
 
-function get_items_html($data, $customer) {
-    $smarty = new Smarty();
+function get_items_html($data, $customer)
+{
+    $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -408,14 +369,11 @@ function get_items_html($data, $customer) {
     );
 
     echo json_encode($response);
-
-
 }
 
-function get_basket_html($data, $customer) {
-
-
-    $smarty = new Smarty();
+function get_basket_html($data, $customer)
+{
+    $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -426,11 +384,9 @@ function get_basket_html($data, $customer) {
     $order = get_object('Order', $customer->get_order_in_process_key());
 
 
-    $order->fast_update(
-        array(
-            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
-        )
-    );
+    $order->fast_update(array(
+                            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+                        ));
 
 
     $website = get_object('Website', $_SESSION['website_key']);
@@ -491,18 +447,16 @@ function get_basket_html($data, $customer) {
             'empty' => true,
             'html'  => $smarty->fetch($theme.'/blk.basket_no_order.'.$theme.'.EcomB2B'.($data['device_prefix'] != '' ? '.'.$data['device_prefix'] : '').'.tpl'),
         );
-
-
     } else {
-
-
         list(
             $invoice_address_format, $invoice_address_labels, $invoice_used_fields, $invoice_hidden_fields, $invoice_required_fields, $invoice_no_required_fields
             ) = get_address_form_data(
-            ($order->get('Order Invoice Address Country 2 Alpha Code') == '' ? ($customer->get('Customer Invoice Address Country 2 Alpha Code') == '' ? $store->get('Store Home Country Code 2 Alpha') : $customer->get('Customer Invoice Address Country 2 Alpha Code'))
-                : $order->get('Order Invoice Address Country 2 Alpha Code'))
+            ($order->get('Order Invoice Address Country 2 Alpha Code') == '' ? ($customer->get('Customer Invoice Address Country 2 Alpha Code') == '' ? $store->get('Store Home Country Code 2 Alpha') : $customer->get(
+                'Customer Invoice Address Country 2 Alpha Code'
+            )) : $order->get('Order Invoice Address Country 2 Alpha Code'))
 
-            , $website->get('Website Locale')
+            ,
+            $website->get('Website Locale')
         );
 
 
@@ -516,8 +470,10 @@ function get_basket_html($data, $customer) {
             $delivery_address_format, $delivery_address_labels, $delivery_used_fields, $delivery_hidden_fields, $delivery_required_fields, $delivery_no_required_fields
             ) = get_address_form_data(
 
-            ($order->get('Order Delivery Address Country 2 Alpha Code') == '' ? ($customer->get('Customer Delivery Address Country 2 Alpha Code') == '' ? $store->get('Store Home Country Code 2 Alpha') : $customer->get('Customer Delivery Address Country 2 Alpha Code'))
-                : $order->get('Order Delivery Address Country 2 Alpha Code')), $website->get('Website Locale')
+            ($order->get('Order Delivery Address Country 2 Alpha Code') == '' ? ($customer->get('Customer Delivery Address Country 2 Alpha Code') == '' ? $store->get('Store Home Country Code 2 Alpha') : $customer->get(
+                'Customer Delivery Address Country 2 Alpha Code'
+            )) : $order->get('Order Delivery Address Country 2 Alpha Code')),
+            $website->get('Website Locale')
         );
 
         $smarty->assign('delivery_address_labels', $delivery_address_labels);
@@ -535,13 +491,11 @@ function get_basket_html($data, $customer) {
 
 
     echo json_encode($response);
-
 }
 
 
-function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
-
-
+function web_toggle_charge($data, $editor, $db, $order, $customer, $website)
+{
     $charge = get_object('Charge', $data['charge_key']);
     if (!$charge->id) {
         $response = array(
@@ -565,24 +519,17 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
 
 
     if ($data['operation'] == 'add_charge') {
-
         $transaction_data = $order->add_charge($charge);
-
-
     } else {
         $transaction_data = $order->remove_charge($charge);
-
-
     }
 
 
     if ($order->get('Order State') == 'InBasket') {
-        $order->fast_update(
-            array(
+        $order->fast_update(array(
 
-                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
-            )
-        );
+                                'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
+                            ));
     }
 
 
@@ -606,7 +553,6 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
     }
 
     if ($order->get('Order Charges Net Amount') == 0) {
-
         $add_class['order_charges_container'] = 'very_discreet';
 
         $hide[] = 'order_charges_info';
@@ -618,7 +564,6 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
 
 
     if ($order->get('Order Items Discount Amount') == 0) {
-
         $hide[] = 'order_items_gross_container';
         $hide[] = 'order_items_discount_container';
     } else {
@@ -679,19 +624,15 @@ function web_toggle_charge($data, $editor, $db, $order, $customer, $website) {
     );
 
     echo json_encode($response);
-
-
 }
 
-function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $order, $customer) {
-
-
+function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $order, $customer)
+{
     $sql = sprintf('select * from `Order Transaction Deal Bridge`  OTDB  left join `Deal Dimension` DD  on (DD.`Deal Key`=OTDB.`Deal Key`)  where `Order Transaction Deal Key`=%d ', $data['order_transaction_deal_bridge_key']);
 
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-
             if ($row['Product ID'] == $data['product_id']) {
                 $response = array(
                     'state' => 400,
@@ -719,7 +660,6 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
 
 
             if (!array_key_exists($data['product_id'], $allowance_data['options'])) {
-
                 $response = array(
                     'state' => 400,
                     'msg'   => 'product not in offer'
@@ -738,7 +678,10 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
 
 
             $deal_info = sprintf(
-                "%s: %s, %s", ($row['Deal Name Label'] == '' ? _('Offer') : $row['Deal Name Label']), (!empty($row['Deal Term Label']) ? $row['Deal Term Label'] : ''), $deal_component->get('Deal Component Allowance Label')
+                "%s: %s, %s",
+                ($row['Deal Name Label'] == '' ? _('Offer') : $row['Deal Name Label']),
+                (!empty($row['Deal Term Label']) ? $row['Deal Term Label'] : ''),
+                $deal_component->get('Deal Component Allowance Label')
 
             );
 
@@ -747,20 +690,23 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
 
 
             $sql = sprintf(
-                'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ', $product->id, $product->get('Product Current Key'),
-                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['order_transaction_deal_bridge_key']
+                'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ',
+                $product->id,
+                $product->get('Product Current Key'),
+                $product->get('Product Family Category Key'),
+                prepare_mysql('{"selected": "'.$product->id.'"}'),
+                prepare_mysql($deal_info),
+                $data['order_transaction_deal_bridge_key']
             );
 
             $db->exec($sql);
 
 
             if ($order->get('Order State') == 'InBasket') {
-                $order->fast_update(
-                    array(
+                $order->fast_update(array(
 
-                        'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
-                    )
-                );
+                                        'Order Last Updated by Customer' => gmdate('Y-m-d H:i:s')
+                                    ));
             }
 
             global $_locale;
@@ -768,9 +714,7 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
 
             if ($product->get('Product Availability State') == 'OnDemand') {
                 $stock = _('On demand');
-
             } else {
-
                 if (is_numeric($product->get('Product Availability'))) {
                     $stock = number($product->get('Product Availability'));
                 } else {
@@ -800,15 +744,13 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
 
             $sql = "update `Order Transaction Fact` set `Product ID`=?,`Product Key`=?,`OTF Category Family Key`=?,`OTF Category Department Key`=?  where `Order Transaction Fact Key`=?";
 
-            $db->prepare($sql)->execute(
-                array(
-                    $product->id,
-                    $product->get('Product Current Key'),
-                    $product->get('Product Family Category Key'),
-                    $product->get('Product Department Category Key'),
-                    $row['Order Transaction Fact Key']
-                )
-            );
+            $db->prepare($sql)->execute(array(
+                                            $product->id,
+                                            $product->get('Product Current Key'),
+                                            $product->get('Product Family Category Key'),
+                                            $product->get('Product Department Category Key'),
+                                            $row['Order Transaction Fact Key']
+                                        ));
 
 
             $transaction_deal_data = array(
@@ -854,14 +796,10 @@ function web_toggle_deal_component_choose_by_customer($data, $editor, $db, $orde
                 'transaction_deal_data' => $transaction_deal_data
             );
             echo json_encode($response);
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
-
-
 }

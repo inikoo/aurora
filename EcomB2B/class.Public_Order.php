@@ -9,6 +9,8 @@
  Version 3
 
 */
+
+use Aurora\Models\Utils\TaxCategory;
 use Aurora\Traits\ObjectTaxNumberTrait;
 
 
@@ -87,9 +89,6 @@ class Public_Order extends DBW_Table {
 
 
             }
-        } else {
-
-            return;
         }
 
 
@@ -464,7 +463,86 @@ class Public_Order extends DBW_Table {
             case('Estimated Weight'):
 
                 return smart_weight($this->data['Order Estimated Weight']);
+            case 'Tax Number Formatted':
 
+
+                switch ($this->data['Order Tax Number Validation Source']) {
+                    case 'Online':
+                        $source = ' <i class="fal fa-globe"></i>';
+                        break;
+                    case 'Staff':
+                        $source = ' <i class="fal fa-thumbtack"></i>';
+                        break;
+                    default:
+                        $source = '';
+                }
+
+                if ($this->data['Order Tax Number Validation Date'] != '') {
+                    $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+                    if ($_tmp < 3600) {
+                        $date = strftime("%e %b %Y %H:%M:%S %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+                    } elseif ($_tmp < 86400) {
+                        $date = strftime("%e %b %Y %H:%M %Z", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+                    } else {
+                        $date = strftime("%e %b %Y", strtotime($this->data['Order Tax Number Validation Date'].' +0:00'));
+                    }
+                } else {
+                    $date = '';
+                }
+
+                $msg = $this->data['Order Tax Number Validation Message'];
+
+                $title = htmlspecialchars(trim($date.' '.$msg));
+
+                if ($this->data['Order Tax Number'] != '') {
+                    if ($this->data['Order Tax Number Valid'] == 'Yes') {
+                        return sprintf(
+                            '<i style="margin-right: 0" class="fa fa-check success" title="'._('Valid').'"></i> <span title="'.$title.'" >%s</span>',
+                            $this->data['Order Tax Number'].$source
+                        );
+                    } elseif ($this->data['Order Tax Number Valid'] == 'Unknown') {
+                        return sprintf(
+                            '<i style="margin-right: 0" class="fal fa-question-circle discreet" title="'._('Unknown if is valid').'"></i> <span class="discreet" title="'.$title.'">%s</span>',
+                            $this->data['Order Tax Number'].$source
+                        );
+                    } elseif ($this->data['Order Tax Number Valid'] == 'API_Down') {
+                        return sprintf(
+                            '<i style="margin-right: 0"  class="fal fa-question-circle discreet" title="'._('Validity is unknown').'"> </i> <span class="discreet" title="'.$title.'">%s</span> %s',
+                            $this->data['Order Tax Number'],
+                            ' <i  title="'._('Online validation service down').'" class="fa fa-wifi-slash error"></i>'
+                        );
+                    } else {
+                        return sprintf(
+                            '<i style="margin-right: 0" class="fa fa-ban error" title="'._('Invalid').'"></i> <span class="discreet" title="'.$title.'">%s</span>',
+                            $this->data['Order Tax Number'].$source
+                        );
+                    }
+                }
+
+                break;
+
+            case 'Tax Description':
+
+
+                $tax_category=new TaxCategory($this->db);
+                $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
+
+                switch ($tax_category->get('Tax Category Type')) {
+                    case 'Outside':
+                        $tax_description = _('Outside the scope of tax');
+                        break;
+                    case 'EU_VTC':
+                        $tax_description = sprintf(_('EU with %s'), $this->get('Tax Number Formatted'));
+                        break;
+                    default:
+                        $tax_description= '<small class="discreet">'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name');
+
+                }
+
+
+
+                return $tax_description;
             default:
 
 

@@ -99,7 +99,7 @@
                             <td class="text-right order_net">{$order->get('Total Net Amount')}</td>
                         </tr>
                         <tr class="tax ">
-                            <td>{if !empty($labels._total_tax) }{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
+                            <td>{if !empty($labels._total_tax) }{$labels._total_tax}{else}{t}Tax{/t}{/if}<div class="tax_description" style="font-size: small">{$order->get('Tax Description')}</div></td>
 
                             <td class="text-right order_tax">{$order->get('Total Tax Amount')}</td>
                         </tr>

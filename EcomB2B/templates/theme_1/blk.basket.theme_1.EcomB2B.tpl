@@ -127,8 +127,7 @@
                             <td class="text-right order_net">{$order->get('Total Net Amount')}</td>
                         </tr>
                         <tr class="before_total">
-                            <td>{if !empty($labels._total_tax) }{$labels._total_tax}{else}{t}Tax{/t}{/if}</td>
-
+                            <td>{if !empty($labels._total_tax) }{$labels._total_tax}{else}{t}Tax{/t}{/if} <div class="tax_description" style="font-size: small">{$order->get('Tax Description')}</div></td>
                             <td class="text-right order_tax">{$order->get('Total Tax Amount')}</td>
                         </tr>
                         <tr class="total">
@@ -374,7 +373,7 @@
                             <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                             {foreach from=$countries item=country}
-                                <option value="{$country.2alpha}" {if $country.2alpha==$order->get('Order Delivery Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                <option value="{$country['2alpha']}" {if $country['2alpha']==$order->get('Order Delivery Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
                             {/foreach}
 
 
@@ -502,7 +501,7 @@
                             <option value="0" selected disabled>{if !empty($labels.address_country) }{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
                             {foreach from=$countries item=country}
-                                <option value="{$country.2alpha}" {if $country.2alpha==$order->get('Order Invoice Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
+                                <option value="{$country['2alpha']}" {if $country['2alpha']==$order->get('Order Invoice Address Country 2 Alpha Code')}selected{/if} >{$country.name}</option>
                             {/foreach}
 
 
