@@ -297,7 +297,7 @@ try {
 
     $transactions_no_products = array();
 
-    $tax_category = new TaxCategory($this->db);
+    $tax_category = new TaxCategory($db);
     $tax_category->loadWithKey($order->data['Order Tax Category Key']);
     if ($order->data['Order Deal Amount Off']) {
 
