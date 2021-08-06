@@ -9,7 +9,6 @@
 
 */
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/parse_natural_language.php';
 include_once 'utils/data_entry_picking_aid.class.php';

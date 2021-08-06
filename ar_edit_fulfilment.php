@@ -7,7 +7,6 @@
  */
 require 'vendor/autoload.php';
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 
 /** @var PDO $db */

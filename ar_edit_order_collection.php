@@ -9,7 +9,6 @@
 
 */
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 
 if (!isset($_REQUEST['tipo'])) {

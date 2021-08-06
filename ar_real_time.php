@@ -9,7 +9,6 @@
 
 */
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/real_time_functions.php';
 

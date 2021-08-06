@@ -2,21 +2,20 @@
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 define("_DEVEL", isset($_SERVER['devel']));
+/** @var string $dns_host */
+/** @var string $dns_port */
+/** @var string $dns_db */
+/** @var string $dns_user */
+/** @var string $dns_pwd */
 
 require_once 'keyring/dns.php';
 require_once 'keyring/au_deploy_conf.php';
-
 require_once 'vendor/autoload.php';
-
-
 require_once 'utils/sentry.php';
-
-
 require_once 'keyring/key.php';
 include_once 'utils/i18n.php';
 require_once 'utils/general_functions.php';
 require_once 'utils/cached_objects.php';
-
 require_once 'utils/natural_language.php';
 require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
@@ -29,9 +28,7 @@ require_once "class.User.php";
 $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_PORT);
 
-/**
- * @var PDO
- */
+
 $db = new PDO(
     "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
 );
@@ -40,15 +37,8 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 $account = new Account($db);
 
-
 if ($account->get('Account State') != 'Active') {
-
-
-    $target = $_SERVER['PHP_SELF'];
-    if (preg_match('/^\/ar_validation.php$/', $target)) {
-
-
-    } else {
+    if (!preg_match('/^\/ar_validation.php$/', $_SERVER['PHP_SELF'])) {
 
         header('Location: /login.php');
         exit;
@@ -58,7 +48,6 @@ if ($account->get('Account State') != 'Active') {
 
 require_once 'utils/modules.php';
 session_start();
-
 
 $_SESSION['account'] = $account->get('Code');
 
@@ -70,9 +59,7 @@ if (empty($_SESSION['timezone'] ) or !date_default_timezone_set($_SESSION['timez
 $_SESSION['timezone'] = date_default_timezone_get();
 
 
-/**
- * @var Smarty
- */
+
 $smarty = new Smarty();
 $smarty->caching_type = 'redis';
 $smarty->setTemplateDir('templates');
@@ -99,12 +86,10 @@ if (isset($auth_data)) {
 }
 
 
-$is_already_logged_in = (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] ? true : false);
+$is_already_logged_in = (isset($_SESSION['logged_in']) and $_SESSION['logged_in']);
 
 if (!$is_already_logged_in) {
-    $target = $_SERVER['PHP_SELF'];
-    if (!preg_match('/(js|js\.php)$/', $target)) {
-
+    if (!preg_match('/(js|js\.php)$/', $_SERVER['PHP_SELF'])) {
         header('Location: /login.php?ref='.$_SERVER['REQUEST_URI']);
         exit;
     }
@@ -112,14 +97,8 @@ if (!$is_already_logged_in) {
 }
 
 if ($_SESSION['logged_in_page'] != 0) {
-
-
-    $sql = sprintf(
-        "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=%s", prepare_mysql(session_id())
-    );
-    $db->exec($sql);
-
-
+    $sql =  "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=?";
+    $this->db->prepare($sql)->execute([session_id()]);
     session_destroy();
     $_SESSION = [];
     header('Location: /login.php');
@@ -128,14 +107,10 @@ if ($_SESSION['logged_in_page'] != 0) {
 }
 $user = get_object('User', $_SESSION['user_key']);
 
-//$_client_locale='en_GB.UTF-8';
-
-
 if ($user->id) {
     $locale = $user->get('User Preferred Locale');
 
     $user->read_groups();
-
     $user->read_rights();
     $user->read_stores();
     $user->read_warehouses();
@@ -170,17 +145,10 @@ if ($user->id) {
 
 
 $smarty->assign('user', $user);
-
 $smarty->assign('locale', $locale);
-
 set_locale($locale);
-
-
 $smarty->assign('account', $account);
-
-
 $common = '';
-
 $smarty->assign('page_name', basename($_SERVER["PHP_SELF"], ".php"));
 
 

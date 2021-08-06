@@ -10,7 +10,6 @@
  Version 3.0
 */
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/object_functions.php';
 require_once 'helpers/view/get_showcases.php';

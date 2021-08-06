@@ -11,7 +11,6 @@
  Version 3.0
 */
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 
 

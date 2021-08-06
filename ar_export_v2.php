@@ -7,7 +7,6 @@
  *  Version 3.0
  */
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/new_fork.php';

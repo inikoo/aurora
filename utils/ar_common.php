@@ -1,5 +1,5 @@
 <?php
-
+include_once 'common.php';
 if (isset($user) and is_object($user)) {
     $editor = array(
         'Author Name'  => $user->data['User Alias'],
@@ -21,7 +21,8 @@ if (isset($user) and is_object($user)) {
 
 }
 
-function is_type($type, $value) {
+function is_type($type, $value): bool
+{
 
     switch ($type) {
         case('numeric'):
@@ -52,7 +53,6 @@ function is_type($type, $value) {
     return true;
 }
 
-
 function prepare_values($data, $value_names) {
 
 
@@ -65,8 +65,10 @@ function prepare_values($data, $value_names) {
         ));
     }
 
+    $parsed_data=[];
+
     foreach ($value_names as $value_name => $extra_data) {
-        $optional = (isset($extra_data['optional']) and $extra_data['optional'] ? true : false);
+        $optional = (isset($extra_data['optional']) and $extra_data['optional']);
         if (!isset($data[$value_name])) {
 
             if (!$optional) {

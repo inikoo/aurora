@@ -8,7 +8,7 @@
  Version 3
 
 */
-/** @var  $smarty \Smarty */
+/** @var  $smarty Smarty */
 
 require_once 'common.php';
 require_once 'utils/timezones.php';

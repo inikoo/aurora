@@ -13,7 +13,6 @@
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-require_once 'common.php';
 require_once 'utils/ar_common.php';
 require_once 'utils/object_functions.php';
 require_once 'utils/natural_language.php';
