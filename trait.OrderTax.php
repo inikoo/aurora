@@ -191,11 +191,6 @@ trait OrderTax
      */
     function update_tax_per_item($tax_category_key, $update_from_invoice_key)
     {
-        // $account_has_re_tax = false;
-        // if ($account->properties('has_re_tax')) {
-        //     $account_has_re_tax = true;
-        // }
-        // $order_has_re = false;
 
         $edit_otf = $this->prepare_update_tax($update_from_invoice_key);
 

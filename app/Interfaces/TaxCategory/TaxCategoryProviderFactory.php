@@ -16,7 +16,7 @@ class TaxCategoryProviderFactory {
     public static function createProvider(\PDO $db,$type,$args) {
         switch ($type) {
             case 'EUR':
-                return new EUR_TaxCategoryProvider($db,$args['base_country']);
+                return new EUR_TaxCategoryProvider($db,$args['base_country'],$args['RE']);
             case 'ESP':
                 return new ESP_TaxCategoryProvider($db,$args['RE']);
             case 'GBR':
