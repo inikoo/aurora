@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 
 $sql = sprintf("SELECT `Picking Band Key` FROM `Picking Band Dimension`");

@@ -9,7 +9,7 @@
 
 */
 
-include 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 // Check if Families Deapts is in same family
 

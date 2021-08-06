@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 // download this file from  https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html
 $filename = 'cron/eurofxref-hist.csv';

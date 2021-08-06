@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 require_once 'utils/get_addressing.php';
 require_once 'utils/parse_natural_language.php';

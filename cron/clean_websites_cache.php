@@ -9,7 +9,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 $sql  = 'Select `Website Key` from `Website Dimension`';
 $stmt = $db->prepare($sql);

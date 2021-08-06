@@ -12,7 +12,7 @@
 
 
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 
 $file='keyring/nano.key.php';

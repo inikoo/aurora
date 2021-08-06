@@ -10,7 +10,7 @@
 
 */
 
-require_once __DIR__.'/common.php';
+require_once __DIR__.'/cron_common.php';
 
 
 $account->load_acc_data();

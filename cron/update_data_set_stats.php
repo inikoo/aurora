@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 require_once 'class.Data_Sets.php';
 
 $sql = sprintf("SELECT `Data Sets Key`  FROM `Data Sets Dimension` ");

@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 
 $sql  = "select `Store Key`,`Store Website Key`,`Store Department Category Key` from `Store Dimension` ";

@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 
 if ($account->get('Account Add Stock Value Type') != 'Last Price') {

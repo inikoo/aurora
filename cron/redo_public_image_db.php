@@ -10,7 +10,7 @@
 
 */
 
-require_once __DIR__.'/common.php';
+require_once __DIR__.'/cron_common.php';
 /** @var PDO $db */
 
 $print_est=true;

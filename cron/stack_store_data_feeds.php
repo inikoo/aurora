@@ -16,7 +16,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 $print_est = false;
 

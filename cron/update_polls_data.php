@@ -9,7 +9,7 @@
  Version 3
 
 */
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 
 $sql = sprintf('SELECT `Customer Poll Query Option Key` FROM `Customer Poll Query Option Dimension` ');

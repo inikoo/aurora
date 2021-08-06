@@ -6,7 +6,7 @@
  * Time: 11:43
  */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 $sql = "SELECT `Google API Call Details` FROM kbase.`Google API Call Dimension` ORDER BY `Google API Call Key` DESC LIMIT 1";
 $stmt = $db->prepare($sql);

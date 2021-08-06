@@ -10,7 +10,7 @@
  Version 3.0
 */
 
-require 'common.php';
+require_once __DIR__.'/cron_common.php';
 require_once 'utils/natural_language.php';
 require_once 'class.Invoice.php';
 

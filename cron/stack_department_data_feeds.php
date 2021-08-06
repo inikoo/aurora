@@ -15,7 +15,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 $print_est = false;
 

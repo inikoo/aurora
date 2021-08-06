@@ -10,7 +10,7 @@
 
 */
 
-require_once __DIR__.'/common.php';
+require_once __DIR__.'/cron_common.php';
 /** @var PDO $db */
 
 require_once 'class.Part.php';

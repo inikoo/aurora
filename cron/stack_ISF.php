@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 include_once 'class.PartLocation.php';
 
 $print_est = false;

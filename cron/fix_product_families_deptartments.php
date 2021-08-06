@@ -9,7 +9,7 @@
 
 */
 
-include 'common.php';
+require_once __DIR__.'/cron_common.php';
 
 
 $sql         = "select `Store Key` from `Store Dimension` ";

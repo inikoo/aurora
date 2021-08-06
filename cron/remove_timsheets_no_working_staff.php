@@ -11,7 +11,7 @@
 */
 
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 require_once 'class.Staff.php';
 require_once 'class.Timesheet.php';
 require_once 'class.Timesheet_Record.php';

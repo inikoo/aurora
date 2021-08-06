@@ -9,7 +9,7 @@
  Version 3
 
 */
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 require_once 'class.Part.php';
 require_once 'class.Location.php';
 require_once 'class.PartLocation.php';

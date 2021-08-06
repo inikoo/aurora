@@ -9,7 +9,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 require_once 'utils/google_api_functions.php';
 require_once 'keyring/google_dns.php';
 

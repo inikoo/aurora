@@ -10,7 +10,7 @@
 
 */
 
-require_once 'common.php';
+require_once __DIR__.'/cron_common.php';
 require_once 'class.Category.php';
 
 $print_est = true;
