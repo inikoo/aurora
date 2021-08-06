@@ -320,14 +320,14 @@ class Order extends DB_Table
 
                 }
 
+                return $tax_description;
+            case 'Tax Description With Warnings':
+                $tax_description=$this->get('Tax Description');
 
                 if ($this->metadata('original_tax_code') != '' and $this->metadata('original_tax_code') != $this->get('Order Tax Code')) {
                     $tax_description = '<span class="error italic"> <i class="fa fa-exclamation-circle error"></i> ('._('Edited').')</span> '.$tax_description;
                 }
-
                 return $tax_description;
-
-
             case 'Margin':
 
                 if (is_numeric($this->data['Order Margin'])) {

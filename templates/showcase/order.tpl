@@ -932,7 +932,7 @@
                 <td class="aright Total_Tax_Amount">{$order->get('Total Tax Amount')}</td>
             </tr>
             <tr class="subtotal" style="height: auto">
-                <td colspan=2 class="label " style="text-align: center;padding:0px 0px 5px 00px"><span class="small discreet Tax_Description">{$order->get('Tax Description')}</span></td>
+                <td colspan=2 class="label " style="text-align: center;padding:0px 0px 5px 00px"><span class="small discreet Tax_Description">{$order->get('Tax Description With Warnings')}</span></td>
             </tr>
             <tr class="total">
                 <td class="label">{t}Total{/t}</td>

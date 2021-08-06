@@ -269,7 +269,7 @@
     </tr>
     <tr class="total_tsx">
         <td style="border:none" colspan="2"></td>
-        <td colspan="2">{t}Tax{/t}</td>
+        <td colspan="2">{t}Tax{/t}<div  style="font-size: small">{$order->get('Tax Description')}</div></td>
         <td>{$order->get('Total Tax Amount')}</td>
     </tr>
 
