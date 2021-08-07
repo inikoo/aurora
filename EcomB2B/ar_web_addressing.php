@@ -35,8 +35,8 @@ switch ($tipo) {
                 'website_key' => array('type' => 'key')
             )
         );
-        /** @var PDO $db */
-        address_format($db, $data);
+        /** @var Public_Website $website */
+        address_format($website, $data);
         break;
 
 
@@ -50,9 +50,8 @@ switch ($tipo) {
 
 }
 
-function address_format($db, $data) {
+function address_format($website, $data) {
 
-    include_once 'class.Website.php';
 
     if (strlen($data['country_code']) == 3) {
 
@@ -63,7 +62,6 @@ function address_format($db, $data) {
         $country_2alpha_code = $data['country_code'];
     }
 
-    $website=new Website($data['website_key']);
     website_address_format($website, $country_2alpha_code);
 }
 
