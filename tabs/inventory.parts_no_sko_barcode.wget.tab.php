@@ -9,6 +9,8 @@
 
 */
 
+/** @var User $user */
+/** @var array $state */
 
 $tab     = 'inventory.parts_no_sko_barcode.wget';
 $ar_file = 'ar_inventory_tables.php';
@@ -31,10 +33,7 @@ $parameters = array(
 
 );
 
-$smarty->assign('table_top_template', 'js/inventory.parts_no_sko_barcode.tpl.js');
 
 
 include 'utils/get_table_html.php';
 
-
-?>
