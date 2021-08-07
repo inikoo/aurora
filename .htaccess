@@ -4,8 +4,15 @@ SetEnv preview 1
 
 RewriteEngine On
 
-RedirectMatch 403 ^/fork/.*$
-RedirectMatch 403 ^/websocket_server/.*$
+
+<Files ~ "\.tpl$">
+Order allow,deny
+Deny from all
+</Files>
+
+RewriteRule (fork|websocket_server|EcomB2B|box|app_files|cron|server_files) - [R=404,L]
+
+Options -Indexes
 
 
 RewriteRule ^api/ api.php [L]

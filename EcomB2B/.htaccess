@@ -1,5 +1,12 @@
 Options +FollowSymLinks
 RewriteEngine On
+
+<Files ~ "\.tpl$">
+Order allow,deny
+Deny from all
+</Files>
+RedirectMatch 403 ^/server_files/.*$
+
 RewriteRule ^zentrada/ zentrada.php [L]
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
