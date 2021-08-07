@@ -35,7 +35,8 @@
     "ext-curl": "*",
     "spatie/array-to-xml": "^2.16",
     "ext-dom": "*",
-    "ext-fileinfo": "*"
+    "ext-fileinfo": "*",
+    "ext-zip": "*"
   },
   "autoload": {
     "psr-4": {

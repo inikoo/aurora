@@ -286,3 +286,39 @@ function get_address_form_data($country_code, $locale = 'en_GB') {
 }
 
 
+/**
+ * @param $website
+ * @param $country_2alpha_code
+ */
+function website_address_format($website, $country_2alpha_code): void
+{
+    $locale = $website->get('Website Locale');
+
+    $country_2alpha_code = strtoupper($country_2alpha_code);
+
+    list($address_format, $address_labels, $used_fields, $hidden_fields, $required_fields, $no_required_fields) = get_address_form_data($country_2alpha_code, $locale);
+
+
+    $website_localised_labels = $website->get('Localised Labels');
+
+    $labels = array();
+    foreach ($address_labels as $key => $value) {
+        $labels[$key] = ($website_localised_labels[$key.'_'.$value['code']] ?? $value['label']);
+    }
+
+
+    $response = array(
+        'state'              => 200,
+        'address_format'     => $address_format,
+        'address_labels'     => $address_labels,
+        'used_fields'        => $used_fields,
+        'hidden_fields'      => $hidden_fields,
+        'required_fields'    => $required_fields,
+        'no_required_fields' => $no_required_fields,
+
+        'labels' => $labels,
+
+    );
+
+    echo json_encode($response);
+}

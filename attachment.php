@@ -10,9 +10,13 @@
 */
 
 /** @var PDO $db */
-/** @var \User $user */
+/** @var User $user */
 
 require_once 'common.php';
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
+
 require_once 'utils/authorize_file_view.php';
 
 if (!isset($_REQUEST['id'])) {

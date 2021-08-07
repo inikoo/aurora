@@ -9,14 +9,17 @@
 
 */
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'common.php';
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Csv;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 
 if (empty($_REQUEST['id'])) {
@@ -65,15 +68,15 @@ $rows[] = [
     $dn->get('ID').'UP',
     $dn->get('Best Weight'),
     $dn->get('Delivery Note Number Parcels'),
-    str_replace(',',' ',$dn->get('Delivery Note Customer Name')),
-    str_replace(',',' ',$dn->get('Delivery Note Customer Contact Name')),
-    str_replace(',',' ',$dn->get('Delivery Note Address Line 1')),
-    str_replace(',',' ',$dn->get('Delivery Note Address Line 2')),
-    str_replace(',',' ',$dn->get('Delivery Note Address Dependent Locality')),
-    str_replace(',',' ',$dn->get('Delivery Note Address Locality')),
-    str_replace(',',' ',$dn->get('Delivery Note Address Administrative Area')),
+    str_replace(',', ' ', $dn->get('Delivery Note Customer Name')),
+    str_replace(',', ' ', $dn->get('Delivery Note Customer Contact Name')),
+    str_replace(',', ' ', $dn->get('Delivery Note Address Line 1')),
+    str_replace(',', ' ', $dn->get('Delivery Note Address Line 2')),
+    str_replace(',', ' ', $dn->get('Delivery Note Address Dependent Locality')),
+    str_replace(',', ' ', $dn->get('Delivery Note Address Locality')),
+    str_replace(',', ' ', $dn->get('Delivery Note Address Administrative Area')),
     trim($dn->get('Delivery Note Address Sorting Code').' '.$dn->get('Delivery Note Address Postal Code')),
-    (string) $dn->get('Delivery Note Telephone'),
+    (string)$dn->get('Delivery Note Telephone'),
     $dn->get('Delivery Note Address Country 2 Alpha Code'),
     'ST',
     'PP',
@@ -91,13 +94,14 @@ $rows[] = [
 ];
 
 
-
 $j = 1;
 foreach ($rows as $row) {
     foreach ($row as $i => $col) {
-        $char = number2alpha($i+1);
+        $char = number2alpha($i + 1);
         $sheet->setCellValueExplicit(
-            $char.$j, strip_tags($col), DataType::TYPE_STRING
+            $char.$j,
+            strip_tags($col),
+            DataType::TYPE_STRING
         );
     }
     $j++;

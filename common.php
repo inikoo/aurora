@@ -148,7 +148,6 @@ $smarty->assign('user', $user);
 $smarty->assign('locale', $locale);
 set_locale($locale);
 $smarty->assign('account', $account);
-$common = '';
 $smarty->assign('page_name', basename($_SERVER["PHP_SELF"], ".php"));
 
 

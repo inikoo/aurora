@@ -1,29 +1,22 @@
 <?php
-include_once 'common.php';
-if (isset($user) and is_object($user)) {
-    $editor = array(
-        'Author Name'  => $user->data['User Alias'],
-        'Author Alias' => $user->data['User Alias'],
-        'Author Type'  => $user->data['User Type'],
-        'Author Key'   => $user->data['User Parent Key'],
-        'User Key'     => $user->id,
-        'Date'         => gmdate('Y-m-d H:i:s')
-    );
-} else {
-    $editor = array(
-        'Author Name'  => '',
-        'Author Alias' => '',
-        'Author Type'  => '',
-        'Author Key'   => '',
-        'User Key'     => 0,
-        'Date'         => gmdate('Y-m-d H:i:s')
-    );
 
+include_once 'common.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
 }
+$editor = array(
+    'Author Name'  => $user->data['User Alias'],
+    'Author Alias' => $user->data['User Alias'],
+    'Author Type'  => $user->data['User Type'],
+    'Author Key'   => $user->data['User Parent Key'],
+    'User Key'     => $user->id,
+    'Date'         => gmdate('Y-m-d H:i:s')
+);
+
 
 function is_type($type, $value): bool
 {
-
     switch ($type) {
         case('numeric'):
             if (!is_numeric($value)) {
@@ -47,30 +40,27 @@ function is_type($type, $value): bool
                 return false;
             }
             break;
-
     }
 
     return true;
 }
 
-function prepare_values($data, $value_names) {
-
-
+function prepare_values($data, $value_names)
+{
     if (!is_array($data)) {
-        exit(json_encode(
-            array(
-                'state' => 400,
-                'msg'   => 'Error wrong value 1'
-            )
-        ));
+        exit(
+        json_encode(array(
+                        'state' => 400,
+                        'msg'   => 'Error wrong value 1'
+                    ))
+        );
     }
 
-    $parsed_data=[];
+    $parsed_data = [];
 
     foreach ($value_names as $value_name => $extra_data) {
         $optional = (isset($extra_data['optional']) and $extra_data['optional']);
         if (!isset($data[$value_name])) {
-
             if (!$optional) {
                 $response = array(
                     'state' => 400,
@@ -81,8 +71,6 @@ function prepare_values($data, $value_names) {
             } else {
                 continue;
             }
-
-
         }
         $expected_type = $extra_data['type'];
 
@@ -93,27 +81,27 @@ function prepare_values($data, $value_names) {
             case('key'):
             case('numeric'):
                 if (!is_type($expected_type, $data[$value_name])) {
-                    exit(json_encode(
-                        array(
-                            'state' => 400,
-                            'msg'   => 'Error wrong value ('.$value_name.') '.$expected_type.' -> '.$data[$value_name]
-                        )
-                    ));
+                    exit(
+                    json_encode(array(
+                                    'state' => 400,
+                                    'msg'   => 'Error wrong value ('.$value_name.') '.$expected_type.' -> '.$data[$value_name]
+                                ))
+                    );
                 }
 
                 $parsed_data[$value_name] = $data[$value_name];
                 break;
             case('enum'):
                 if (!preg_match(
-                    $extra_data['valid values regex'], $data[$value_name]
-                )
-                ) {
-                    exit(json_encode(
-                        array(
-                            'state' => 400,
-                            'msg'   => "Error wrong value 4 ".$extra_data['valid values regex']."  "
-                        )
-                    ));
+                    $extra_data['valid values regex'],
+                    $data[$value_name]
+                )) {
+                    exit(
+                    json_encode(array(
+                                    'state' => 400,
+                                    'msg'   => "Error wrong value 4 ".$extra_data['valid values regex']."  "
+                                ))
+                    );
                 }
 
                 $parsed_data[$value_name] = $data[$value_name];
@@ -133,15 +121,15 @@ function prepare_values($data, $value_names) {
                         $extra_data['required elements'] as $element_name => $element_type
                     ) {
                         if (!isset($raw_data[$element_name]) or !is_type(
-                                $element_type, $raw_data[$element_name]
-                            )
-                        ) {
-                            exit(json_encode(
-                                array(
-                                    'state' => 400,
-                                    'msg'   => "Error wrong 5 value  $element_name  "
-                                )
-                            ));
+                                $element_type,
+                                $raw_data[$element_name]
+                            )) {
+                            exit(
+                            json_encode(array(
+                                            'state' => 400,
+                                            'msg'   => "Error wrong 5 value  $element_name  "
+                                        ))
+                            );
                         }
                     }
                     foreach ($raw_data as $key => $value) {
@@ -152,12 +140,12 @@ function prepare_values($data, $value_names) {
 
                     $parsed_data[$value_name] = $raw_data;
                 } else {
-                    exit(json_encode(
-                        array(
-                            'state' => 400,
-                            'msg'   => 'Error wrong value json'
-                        )
-                    ));
+                    exit(
+                    json_encode(array(
+                                    'state' => 400,
+                                    'msg'   => 'Error wrong value json'
+                                ))
+                    );
                 }
 
 
@@ -165,7 +153,6 @@ function prepare_values($data, $value_names) {
             default:
                 $parsed_data[$value_name] = $data[$value_name];
         }
-
     }
 
 

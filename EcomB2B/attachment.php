@@ -9,6 +9,13 @@
 
 */
 
+/** @var string $dns_host */
+/** @var string $dns_port */
+/** @var string $dns_db */
+/** @var string $dns_user */
+/** @var string $dns_pwd */
+
+
 require_once '../vendor/autoload.php';
 require_once 'utils/sentry.php';
 
@@ -30,8 +37,9 @@ if (!isset($_REQUEST['id'])) {
 
 
 $sql = sprintf(
-    "SELECT `Attachment Public`,`Subject`,`Subject Key`,`Attachment MIME Type`,`Attachment File Original Name`,`Attachment Data` FROM `Attachment Bridge` B LEFT JOIN  `Attachment Dimension` A ON (A.`Attachment Key`= B.`Attachment Key`) 
-    WHERE `Attachment Bridge Key`=%d  and `Attachment Public`='Yes' and `Subject` in ('Part','Product') ",
+    "SELECT `Attachment Public`,`Subject`,`Subject Key`,`Attachment MIME Type`,`Attachment File Original Name`,`Attachment Data` 
+        FROM `Attachment Bridge` B LEFT JOIN  `Attachment Dimension` A ON (A.`Attachment Key`= B.`Attachment Key`) 
+        WHERE `Attachment Bridge Key`=%d  and `Attachment Public`='Yes' and `Subject` in ('Part','Product') ",
     $attachment_key
 );
 
@@ -56,11 +64,4 @@ if ($result = $db->query($sql)) {
     }
 
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
-
 }
-
-
-?>

@@ -13,6 +13,10 @@
 error_reporting(E_ALL ^ E_DEPRECATED);
 
 require_once 'common.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;

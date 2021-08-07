@@ -509,7 +509,7 @@
         var selected = $("#country_select option:selected")
         console.log(selected.val())
 
-        var request = "ar_web_addressing.php?tipo=address_format&country_code=" + selected.val() + '&website_key={$website->id}'
+        var request = "ar_address.php?tipo=address_format&country_code=" + selected.val() + '&website_key={$website->id}'
 
         console.log(request)
         $.getJSON(request, function (data) {

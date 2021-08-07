@@ -2,23 +2,27 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 19 October 2017 at 15:20:42 GMT+8, Kuala Lumpur, Malaysis
+ Created: 19 October 2017 at 15:20:42 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2017, Inikoo
 
  Version 3
 
 */
-
+/** @var PDO $db */
 
 require_once 'common.php';
-require_once 'utils/object_functions.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 function br2nl($input) {
     return preg_replace('/<br\s?\/?>/ius', "\n", str_replace("\n", "", str_replace("\r", "", htmlspecialchars_decode($input))));
 }
 
 
-function get_product_text($product) {
+function get_product_text($product): string
+{
 
 
     $product->get_webpage();
@@ -36,7 +40,7 @@ function get_product_text($product) {
 
 
     if (isset($content_data['blocks'])) {
-        foreach ($content_data['blocks'] as $key => $data) {
+        foreach ($content_data['blocks'] as $data) {
             if ($data['type'] == 'product') {
                 $text .= strip_tags(br2nl($data['text']))."\n";
             }
@@ -88,7 +92,8 @@ function get_product_text($product) {
 }
 
 
-function get_category_text($db,$category) {
+function get_category_text($db,$category): string
+{
 
 
     $category->get_webpage();
@@ -109,15 +114,8 @@ function get_category_text($db,$category) {
 
     foreach ($content_data['blocks'] as $_key => $block) {
         if ($block['type'] == 'blackboard' ) {
-
-
             foreach ($content_data['blocks'][$_key]['texts'] as $_key2 => $text_data) {
-                if ($block['type'] == 'blackboard' ) {
-
-
                     $text .= strip_tags(br2nl($content_data['blocks'][$_key]['texts'][$_key2]['text']))."\n";
-                }
-
             }
         }
 
@@ -160,9 +158,8 @@ function get_category_text($db,$category) {
 if (empty($_REQUEST['parent']) or empty($_REQUEST['key'])) {
     exit;
 }
-
+$text='';
 $files = array();
-
 $object = get_object($_REQUEST['parent'], $_REQUEST['key']);
 
 
@@ -182,7 +179,7 @@ $text = preg_replace("/\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*/", "
 
 $text = html_entity_decode($text);
 
-$text = preg_replace("/\&apos\;/", "'", $text);
+$text = preg_replace("/&apos;/", "'", $text);
 
 
 //header('Content-disposition: attachment; filename='.$download_name.'.txt');

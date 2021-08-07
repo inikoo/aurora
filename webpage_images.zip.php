@@ -2,17 +2,21 @@
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 19 October 2017 at 13:10:14 GMT+8, Kuala Lumpur, Malaysis
+ Created: 19 October 2017 at 13:10:14 GMT+8, Kuala Lumpur, Malaysia
  Copyright (c) 2015, Inikoo
 
  Version 3
 
 */
 
+/** @var PDO $db */
+
 
 require_once 'common.php';
-require_once 'utils/object_functions.php';
-
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 if (empty($_REQUEST['parent']) or empty($_REQUEST['key'])) {
     exit;
@@ -28,8 +32,6 @@ $download_name = 'images_'.strtolower($object->get('Code'));
 
 $counter = 1;
 foreach ($object->get_images_slideshow() as $data) {
-
-
     $files[] = array(
         'name'      => strtolower($object->get('Code')).sprintf('_%02d', $counter).preg_replace('/^.*\./', '.', $data['name']),
         'image_key' => $data['id'],
@@ -52,15 +54,12 @@ if ($_REQUEST['parent'] == 'category' and $object->get('Category Subject') == 'P
     $stack_index         = 0;
     $product_stack_index = 0;
     if ($result = $db->query($sql)) {
-
         foreach ($result as $row) {
-
             $product = get_object('Product', $row['Product ID']);
 
 
             $counter = 1;
             foreach ($product->get_images_slideshow() as $data) {
-
                 $files[] = array(
                     'name'      => strtolower($product->get('Code')).sprintf('_%02d', $counter),
                     'image_key' => $data['id'],
@@ -68,16 +67,12 @@ if ($_REQUEST['parent'] == 'category' and $object->get('Category Subject') == 'P
                 );
                 $counter++;
             }
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
-
-
 }
 
 
@@ -90,7 +85,6 @@ $zip->open($tmp_file, ZipArchive::CREATE);
 foreach ($files as $file) {
     $image = get_object('image', $file['image_key']);
     $zip->addFile($image->get('Image Path'), $file['folder'].basename($file['name'].'.'.$image->get('Image File Format')));
-
 }
 
 

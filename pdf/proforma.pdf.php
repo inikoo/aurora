@@ -23,8 +23,10 @@ use Mpdf\MpdfException;
 
 
 require_once 'common.php';
-
-require_once 'utils/object_functions.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 
 $id = $_REQUEST['id'] ?? '';

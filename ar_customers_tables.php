@@ -9,15 +9,13 @@
 
 */
 
-require_once 'common.php';
-require_once 'class.Store.php';
-
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
-require_once 'utils/object_functions.php';
-/** @var \User $user */
-/** @var \PDO $db */
-/** @var \Account $account */
+require_once 'class.Store.php';
+
+/** @var User $user */
+/** @var PDO $db */
+/** @var Account $account */
 
 
 if (!$user->can_view('customers')) {

@@ -13,7 +13,6 @@ module.exports = function (grunt) {
                 options: {
                     sourceMap: true,
                 },
-              //  src: ['js_libs/autobahn.v1.js','EcomB2B/js/aurora/web_sockets.js','EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js'],
                   src: ['EcomB2B/js/libs/jquery.hoverIntent.js', 'EcomB2B/js/au_header/menu.js', 'EcomB2B/js/au_header/search.js'],
 
                 dest: 'EcomB2B/assets/desktop.in.min.js'

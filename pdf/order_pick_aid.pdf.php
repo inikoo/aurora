@@ -1,10 +1,17 @@
 <?php
 set_time_limit(300);
 chdir('../');
+/** @var PDO $db */
+/** @var Smarty $smarty */
+/** @var Account $account */
+
 require_once 'vendor/autoload.php';
-require_once 'utils/object_functions.php';
 require_once 'utils/common.pick_aid.php';
 require_once 'common.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 $ids = [];
 if (!empty($_REQUEST['id'])) {
@@ -40,10 +47,11 @@ foreach ($ids as $_key => $id) {
     $mpdf->WriteHTML($html);
 }
 
-if (count($ids) > 1) {
-    $mpdf->Output('pickings.pdf', 'I');
-} else {
+if (count($ids) ==1) {
     $mpdf->Output($delivery_note->get('Delivery Note ID').'_picking.pdf', 'I');
+
+} else {
+    $mpdf->Output('pickings.pdf', 'I');
 }
 
 

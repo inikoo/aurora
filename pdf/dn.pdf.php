@@ -13,28 +13,32 @@ use Mpdf\Mpdf;
 
 chdir('../');
 require_once __DIR__.'/../vendor/autoload.php';
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var PDO $db */
 
+$log_from_token = false;
 
 if (isset($_REQUEST['sak'])) {
-
     include 'keyring/key.php';
     include_once 'utils/general_functions.php';
-
     $key       = md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY);
     $auth_data = json_decode(safeDecrypt(urldecode($_REQUEST['sak']), $key), true);
 
     if (!(isset($auth_data['auth_token']['logged_in']) and $auth_data['auth_token']['logged_in'])) {
         unset($auth_data);
-
+    } else {
+        $log_from_token = true;
     }
 }
 
 
 require_once('common.php');
-require_once 'utils/object_functions.php';
+if (!($user->get('User View') == 'Staff' or $log_from_token)) {
+    exit();
+}
 
-
-$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+$id = $_REQUEST['id'] ?? '';
 if (!$id) {
     exit("no id");
 }
@@ -59,14 +63,10 @@ $smarty->assign('order', $order);
 
 
 $dangerous_goods = array();
-$sql             = sprintf(
-    "select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!='' or `Part Packing Group`!='No' ) group by `Part UN Number`,`Part Packing Group` "
-);
+$sql             = "select `Part UN Number` AS un_number ,`Part Packing Group`  AS part_packing_group,group_concat(`Part Reference`) as parts from  `Inventory Transaction Fact` ITF   LEFT JOIN `Part Dimension` Part ON  (Part.`Part SKU`=ITF.`Part SKU`) WHERE `Delivery Note Key`=?  and (`Part UN Number`!='' or `Part Packing Group`!='No' ) group by `Part UN Number`,`Part Packing Group` ";
 
 $stmt = $db->prepare($sql);
-$stmt->execute(
-    array($delivery_note->id)
-);
+$stmt->execute(array($delivery_note->id));
 while ($row = $stmt->fetch()) {
     if ($row['un_number'] > 1 or $row['part_packing_group'] != 'None') {
         $dangerous_goods[] = $row;
@@ -77,9 +77,7 @@ $smarty->assign('dangerous_goods', $dangerous_goods);
 
 $shipper_data = array();
 
-$sql = sprintf(
-    "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name` FROM `Shipper Dimension` WHERE `Shipper Status`='Active' ORDER BY `Shipper Name` "
-);
+$sql = "SELECT `Shipper Key`,`Shipper Code`,`Shipper Name` FROM `Shipper Dimension` WHERE `Shipper Status`='Active' ORDER BY `Shipper Name` ";
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
@@ -90,10 +88,6 @@ if ($result = $db->query($sql)) {
             'selected'    => ($delivery_note->data['Delivery Note Shipper Code'] == $row['Shipper Code'] ? 1 : 0)
         );
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    print "$sql\n";
-    exit;
 }
 
 
@@ -104,7 +98,6 @@ if (!empty($_REQUEST['locale'])) {
     $_locale = $_REQUEST['locale'];
 } else {
     $_locale = $store->get('Store Locale');
-
 }
 
 
@@ -114,24 +107,21 @@ bindtextdomain("inikoo", "./locales");
 textdomain("inikoo");
 
 
-$mpdf = new Mpdf(
-    [
-        'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
-        'mode'          => 'utf-8',
-        'margin_left'   => 10,
-        'margin_right'  => 10,
-        'margin_top'    => 38,
-        'margin_bottom' => 25,
-        'margin_header' => 10,
-        'margin_footer' => 10
-    ]
-);
+$mpdf = new Mpdf([
+                     'tempDir'       => __DIR__.'/../server_files/pdf_tmp',
+                     'mode'          => 'utf-8',
+                     'margin_left'   => 10,
+                     'margin_right'  => 10,
+                     'margin_top'    => 38,
+                     'margin_bottom' => 25,
+                     'margin_header' => 10,
+                     'margin_footer' => 10
+                 ]);
 
 $mpdf->SetTitle(
     _('Delivery Note').' '.$delivery_note->data['Delivery Note ID']
 );
 $mpdf->SetAuthor($store->data['Store Name']);
-
 
 
 $smarty->assign('store', $store);
@@ -150,7 +140,8 @@ $sql = sprintf(
 LEFT JOIN  `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)  
 LEFT JOIN  `Product Dimension` PD ON (OTF.`Product ID`=PD.`Product ID`)  
 
-WHERE ITF.`Delivery Note Key`=%d AND `Inventory Transaction Type`!='Adjust' ORDER BY `Part Reference`  ", $delivery_note->id
+WHERE ITF.`Delivery Note Key`=%d AND `Inventory Transaction Type`!='Adjust' ORDER BY `Part Reference`  ",
+    $delivery_note->id
 );
 
 if ($result = $db->query($sql)) {

@@ -8,10 +8,13 @@
  Version 3
 
 */
+/** @var Smarty $smarty */
 
 include_once 'common.php';
-include_once 'utils/object_functions.php';
-
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 include_once 'class.Public_Website.php';
 include_once 'class.Public_Webpage.php';
 include_once 'class.Public_Store.php';

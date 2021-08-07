@@ -14,9 +14,9 @@ require_once 'utils/table_functions.php';
 require_once 'utils/object_functions.php';
 require_once 'utils/prepare_table.php';
 
-/** @var \User $user */
+/** @var User $user */
 /** @var PDO $db */
-/** @var \Account $account */
+/** @var Account $account */
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(

@@ -11,11 +11,15 @@
 
 
 require_once 'common.php';
+/** @var User $user */
 
-require_once 'utils/object_functions.php';
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
+
 require_once 'utils/omega_export_functions.php';
 
-$id = isset($_REQUEST['id']) ? $_REQUEST['id'] : '';
+$id = $_REQUEST['id'] ?? '';
 if (!$id) {
     exit;
 }

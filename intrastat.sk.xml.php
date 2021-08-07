@@ -8,16 +8,17 @@ Copyright (c) 2021, Inikoo
 
 Version 2.0
 */
-/** @var \Account $account */
+/** @var Account $account */
 
-/** @var \User $user */
+/** @var User $user */
 
 
 use Spatie\ArrayToXml\ArrayToXml;
 
 require_once 'common.php';
-
-require_once 'utils/object_functions.php';
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 $account->load_properties();
 
 

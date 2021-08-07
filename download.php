@@ -11,7 +11,10 @@
 */
 
 require_once 'common.php';
-
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 
 ini_set('zlib.output_compression', 'Off');
@@ -27,13 +30,12 @@ $download_id = $_REQUEST['file'];
 
 $sql = "SELECT `Download Filename`,`Download Data` FROM `Download Dimension` WHERE `Download Key`=? and `Download Creator Type`='User' and `Download Creator Key`=?";
 
+/** @var PDO $db */
 $stmt = $db->prepare($sql);
-$stmt->execute(
-    array(
-        $download_id,
-        $user->id
-    )
-);
+$stmt->execute(array(
+                   $download_id,
+                   $user->id
+               ));
 if ($row = $stmt->fetch()) {
     $file_path = $row['Download Filename'];
     $blob_data = $row['Download Data'];
@@ -41,7 +43,6 @@ if ($row = $stmt->fetch()) {
     header("HTTP/1.0 404 Not Found");
     exit;
 }
-
 
 
 $path_parts = pathinfo($file_path);
@@ -54,7 +55,7 @@ file_put_contents($file_path, $blob_data);
 
 
 // allow a file to be streamed instead of sent as an attachment
-$is_attachment = isset($_REQUEST['stream']) ? false : true;
+$is_attachment = !isset($_REQUEST['stream']);
 
 // make sure the file exists
 if (is_file($file_path)) {
@@ -79,7 +80,7 @@ if (is_file($file_path)) {
         }
 
         // set the mime type based on extension, add yours if needed.
-        $ctype_default = "application/octet-stream";
+        $content_type_default = "application/octet-stream";
 
         $content_types = array(
             "exe" => "application/octet-stream",
@@ -88,28 +89,24 @@ if (is_file($file_path)) {
             "mpg" => "video/mpeg",
             "avi" => "video/x-msvideo",
         );
-        $ctype         = isset($content_types[$file_ext]) ? $content_types[$file_ext] : $ctype_default;
-        header("Content-Type: ".$ctype);
+        $content_type  = $content_types[$file_ext] ?? $content_type_default;
+        header("Content-Type: ".$content_type);
 
 
+        $range = '';
 
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $begin = 0;
+            $end   = $file_size - 1;
 
-        $range ='';
-
-        if (isset($_SERVER['HTTP_RANGE']))
-        {
-            $begin  = 0;
-            $end  = $file_size - 1;
-
-            if (preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches))
-            {
-                $begin  = intval($matches[1]);
+            if (preg_match('/bytes=\h*(\d+)-(\d*)[\D.*]?/i', $_SERVER['HTTP_RANGE'], $matches)) {
+                $begin = intval($matches[1]);
                 if (!empty($matches[2])) {
-                    $end  = intval($matches[2]);
+                    $end = intval($matches[2]);
                 }
 
-                $range=$begin.'-'. $end;
-            }else{
+                $range = $begin.'-'.$end;
+            } else {
                 if (file_exists($file_path)) {
                     unlink($file_path);
                 }
@@ -117,13 +114,7 @@ if (is_file($file_path)) {
                 header('HTTP/1.1 416 Requested Range Not Satisfiable');
                 exit;
             }
-
-
         }
-
-
-
-
 
 
         //figure out download piece from range (if set)
@@ -131,20 +122,16 @@ if (is_file($file_path)) {
             $seek_start = '';
             $seek_end   = '';
         } else {
-
             list($seek_start, $seek_end) = explode('-', $range, 2);
-
         }
 
         //set start and end based on range (if set), else set defaults
         //also check for invalid ranges.
-        $seek_end   = (empty($seek_end))
-            ? ($file_size - 1)
-            : min(
-                abs(intval($seek_end)), ($file_size - 1)
-            );
-        $seek_start = (empty($seek_start)
-            || $seek_end < abs(
+        $seek_end = (empty($seek_end)) ? ($file_size - 1) : min(
+            abs(intval($seek_end)),
+            ($file_size - 1)
+        );
+        $seek_start = (empty($seek_start) || $seek_end < abs(
                 intval($seek_start)
             )) ? 0 : max(abs(intval($seek_start)), 0);
 
@@ -163,27 +150,21 @@ if (is_file($file_path)) {
         header('Accept-Ranges: bytes');
 
 
-
-        $sql ="INSERT INTO  `Download Attempt Dimension` (`Download Attempt Download Key`,`Download Attempt Creator Type`,`Download Attempt Creator Key`,`Download Attempt Date`)  VALUES (?,?,?,?)";
-        $db->prepare($sql)->execute(
-            array(
-                $download_id,
-                'User',
-                $user->id,
-                gmdate('Y-m-d H:i:s')
-            )
-        );
+        $sql = "INSERT INTO  `Download Attempt Dimension` (`Download Attempt Download Key`,`Download Attempt Creator Type`,`Download Attempt Creator Key`,`Download Attempt Date`)  VALUES (?,?,?,?)";
+        $db->prepare($sql)->execute(array(
+                                        $download_id,
+                                        'User',
+                                        $user->id,
+                                        gmdate('Y-m-d H:i:s')
+                                    ));
 
         $sql = "UPDATE `Download Dimension` SET `Download Attempts`=`Download Attempts`+1 ,`Download Attempt Last Date`=? ,`Download State`='Downloaded'  WHERE `Download Key`=?";
 
 
-        $db->prepare($sql)->execute(
-            array(
-                gmdate('Y-m-d H:i:s'), $download_id
-            )
-        );
-
-
+        $db->prepare($sql)->execute(array(
+                                        gmdate('Y-m-d H:i:s'),
+                                        $download_id
+                                    ));
 
 
         set_time_limit(0);
@@ -192,7 +173,9 @@ if (is_file($file_path)) {
         while (!feof($file)) {
             print(@fread($file, 1024 * 8));
             //ob_flush();
-            if (ob_get_level() > 0) {ob_flush();}
+            if (ob_get_level() > 0) {
+                ob_flush();
+            }
             flush();
             if (connection_status() != 0) {
                 @fclose($file);
@@ -206,16 +189,12 @@ if (is_file($file_path)) {
         if (file_exists($file_path)) {
             unlink($file_path);
         }
-
-        exit;
     } else {
         // file couldn't be opened
         if (file_exists($file_path)) {
             unlink($file_path);
         }
         header("HTTP/1.0 500 Internal Server Error");
-
-        exit;
     }
 } else {
     // file does not exist
@@ -223,9 +202,8 @@ if (is_file($file_path)) {
     if (file_exists($file_path)) {
         unlink($file_path);
     }
-
-    exit;
 }
+
 
 
 

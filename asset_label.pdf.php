@@ -11,21 +11,22 @@
 
 */
 
+/** @var Smarty $smarty */
+/** @var Account $account */
 
 use Mpdf\Mpdf;
 use Mpdf\MpdfException;
 
-require_once 'vendor/autoload.php';
-include_once 'common.php';
-include_once 'utils/object_functions.php';
-include_once 'utils/labels_data.php';
-/** @var \Smarty $smarty */
-/** @var \Account $account */
-
 if (!isset($_REQUEST['object']) or !isset($_REQUEST['key']) or !isset($_REQUEST['type'])) {
     exit('missing basic args');
-
 }
+
+include_once 'common.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
+
 
 
 $object_name = $_REQUEST['object'];

@@ -8,6 +8,11 @@
  Version 3
 
 */
+/** @var User $user */
+/** @var Smarty $smarty */
+/** @var PDO $db */
+/** @var Account $account */
+/** @var Redis $redis */
 
 include_once 'common.php';
 $sql = "UPDATE `User Log Dimension` SET `Logout Date`=NOW()  WHERE `Session ID`=?";

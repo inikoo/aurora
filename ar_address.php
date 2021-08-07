@@ -34,9 +34,17 @@ switch ($tipo) {
                 'country_code' => array('type' => 'string')
             )
         );
-        get_fields_data($db, $data);
+        get_fields_data( $data);
         break;
-
+    case 'address_format':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'country_code' => array('type' => 'string'),
+                         'website_key' => array('type' => 'key')
+                     )
+        );
+        address_format($data);
+        break;
 
     default:
         $response = array(
@@ -45,10 +53,10 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
 
-function get_fields_data($db, $data) {
+function get_fields_data($data) {
 
     if (strlen($data['country_code']) == 3) {
 
@@ -62,14 +70,11 @@ function get_fields_data($db, $data) {
     $country_2alpha_code=strtoupper($country_2alpha_code);
 
     $address_format       = get_address_format($country_2alpha_code);
-    $address_subdivisions = get_address_subdivisions(
-        $country_2alpha_code, $locale = null
-    );
+    //$address_subdivisions = get_address_subdivisions($country_2alpha_code, $locale = null);
 
     $required_fields = $address_format->getRequiredFields();
 
 
-    //print_r($address_format->getUsedSubdivisionFields());
 
     $_address_format = $address_format->getFormat();
     $_address_format = preg_replace('/\//', ' ', $_address_format);
@@ -77,7 +82,7 @@ function get_fields_data($db, $data) {
     $_address_format = preg_replace('/familyName/', 'recipient', $_address_format);
 
 
-    $used_fields = preg_split('/\s+/', preg_replace('/(%|,)/', '', $_address_format));
+    $used_fields = preg_split('/\s+/', preg_replace('/[%,]/', '', $_address_format));
 
 
 
@@ -176,5 +181,19 @@ function get_fields_data($db, $data) {
 
 }
 
+function address_format( $data) {
 
-?>
+
+    if (strlen($data['country_code']) == 3) {
+
+        include_once 'class.Country.php';
+        $country             = new Country('code', $data['country_code']);
+        $country_2alpha_code = $country->get('Country 2 Alpha Code');
+    } else {
+        $country_2alpha_code = $data['country_code'];
+    }
+
+    $website= get_object('Website',$data['website_key']);
+    website_address_format($website, $country_2alpha_code);
+}
+

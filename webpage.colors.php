@@ -8,9 +8,14 @@
  Version 3
 
 */
+/** @var Smarty $smarty */
+/** @var User $user */
 
 include_once 'common.php';
-include_once 'utils/object_functions.php';
+
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 include_once 'class.Public_Website.php';
 include_once 'class.Public_Webpage.php';
@@ -20,7 +25,7 @@ if(!isset($_REQUEST['website_key']) or !is_numeric($_REQUEST['website_key'])){
     exit;
 }
 
-if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
+if (!isset($_REQUEST['theme']) or !preg_match('/^theme_\d+$/', $_REQUEST['theme'])) {
     print 'no theme set up:->'.$_REQUEST['theme'].'<';
     return;
 }

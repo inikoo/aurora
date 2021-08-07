@@ -12,35 +12,6 @@
 include_once 'utils/navigation_functions.php';
 
 
-function get_accounting_server_dashboard_navigation($data, $user, $smarty) {
-
-
-    $sections = get_sections('accounting_server', 'all');
-
-    $sections['dashboard']['selected'] = true;
-
-    $title = _('Accounting');
-
-    $_content = array(
-        'sections_class' => '',
-        'sections'       => $sections,
-        'left_buttons'   => array(),
-        'right_buttons'  => array(),
-        'title'          => $title,
-        'search'         => array(
-            'show'        => false,
-            'placeholder' => _('Search accounting')
-        )
-
-    );
-    $smarty->assign('_content', $_content);
-
-    return array(
-        $_content['search'],
-        $smarty->fetch('top_menu.tpl'),
-        $smarty->fetch('au_header.tpl')
-    );
-}
 
 
 function get_payments_navigation($data, $user, $smarty, $db) {

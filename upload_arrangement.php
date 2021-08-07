@@ -1,4 +1,5 @@
-<?php /** @noinspection DuplicatedCode */
+<?php
+/** @noinspection DuplicatedCode */
 
 /*
 
@@ -18,9 +19,11 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
 require_once 'common.php';
-require_once 'utils/object_functions.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 include_once 'utils/get_export_edit_template_fields.php';
-
 
 
 $creator     = 'Aurora.systems';
@@ -37,8 +40,8 @@ if (!isset($_REQUEST['object'])) {
 }
 $object = get_object($_REQUEST['object'], 0);
 
-$key_field='';
-$valid_fields='';
+$key_field    = '';
+$valid_fields = '';
 
 switch ($object->get_object_name()) {
     case 'Staff':
@@ -53,13 +56,13 @@ switch ($object->get_object_name()) {
         );
         break;
     case 'Prospect':
-        $filename = 'new_prospects';
-        $options  = array();
+        $filename     = 'new_prospects';
+        $options      = array();
         $valid_fields = get_export_edit_template_fields('prospect');
         $key_field    = 'Id: Prospect Key';
         break;
     case 'Supplier Part':
-        $filename = 'new_supplier_parts';
+        $filename     = 'new_supplier_parts';
         $valid_fields = get_export_edit_template_fields('supplier_part');
         $key_field    = 'Id: Supplier Part Key';
         break;
@@ -83,10 +86,7 @@ switch ($object->get_object_name()) {
         break;
     default:
         exit('Object not defined '.$object->get_object_name());
-
 }
-
-
 
 
 $objPHPExcel = new Spreadsheet();
@@ -101,55 +101,45 @@ $char_index = 1;
 
 $char = number2alpha($char_index);
 $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, strip_tags($key_field));
-$objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
-    array(
-        'borders' => array(
-            'bottom' => array(
-                'style' => Border::BORDER_THIN,
-                'color' => array('rgb' => '777777')
-            )
-        )
-    )
-);
+$objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(array(
+                                                                               'borders' => array(
+                                                                                   'bottom' => array(
+                                                                                       'style' => Border::BORDER_THIN,
+                                                                                       'color' => array('rgb' => '777777')
+                                                                                   )
+                                                                               )
+                                                                           ));
 $char_index++;
 
 foreach ($valid_fields as $field) {
-
-
     if ($field['show_for_new']) {
-
-
         $char = number2alpha($char_index);
         $objPHPExcel->getActiveSheet()->setCellValue(
-            $char.$row_index, strip_tags($field['header'])
+            $char.$row_index,
+            strip_tags($field['header'])
         );
 
         if ($field['required']) {
-            $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
-                array(
-                    'font' => array(
-                        'color' => array('rgb' => 'EA3C53'),
+            $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(array(
+                                                                                           'font' => array(
+                                                                                               'color' => array('rgb' => 'EA3C53'),
 
-                    )
+                                                                                           )
 
-                )
-            );
+                                                                                       ));
         }
-        $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(
-            array(
-                'borders' => array(
-                    'bottom' => array(
-                        'style' => Border::BORDER_THIN,
-                        'color' => array('rgb' => '777777')
-                    )
-                )
-            )
-        );
+        $objPHPExcel->getActiveSheet()->getStyle($char.$row_index)->applyFromArray(array(
+                                                                                       'borders' => array(
+                                                                                           'bottom' => array(
+                                                                                               'style' => Border::BORDER_THIN,
+                                                                                               'color' => array('rgb' => '777777')
+                                                                                           )
+                                                                                       )
+                                                                                   ));
 
 
         $char_index++;
     }
-
 }
 
 
@@ -157,18 +147,18 @@ $row_index++;
 $char_index = 1;
 $char       = number2alpha($char_index);
 $objPHPExcel->getActiveSheet()->setCellValue(
-    $char.$row_index, strip_tags('NEW')
+    $char.$row_index,
+    strip_tags('NEW')
 );
 
 $char_index++;
 
 foreach ($valid_fields as $field) {
-
-
     if ($field['show_for_new']) {
         $char = number2alpha($char_index);
         $objPHPExcel->getActiveSheet()->setCellValue(
-            $char.$row_index, strip_tags($field['default_value'])
+            $char.$row_index,
+            strip_tags($field['default_value'])
         );
 
         if ($field['required']) {
@@ -176,13 +166,12 @@ foreach ($valid_fields as $field) {
         }
         $char_index++;
     }
-
 }
 
 $sheet        = $objPHPExcel->getActiveSheet();
 $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
 $cellIterator->setIterateOnlyExistingCells(true);
-/** @var \PhpOffice\PhpSpreadsheet\Cell\Cell $cell */
+/** @var PhpOffice\PhpSpreadsheet\Cell\Cell $cell */
 foreach ($cellIterator as $cell) {
     $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
 }
@@ -192,9 +181,6 @@ try {
     $objPHPExcel->getActiveSheet()->freezePane('A2');
 
     switch ($output_type) {
-
-
-
         case('xls'):
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="'.$filename.'.xls"');
@@ -202,11 +188,7 @@ try {
 
             $objWriter = IOFactory::createWriter($objPHPExcel, 'Xls')->save('php://output');
             break;
-
-
     }
-
-
 } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
 }
 

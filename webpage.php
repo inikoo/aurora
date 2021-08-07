@@ -9,21 +9,23 @@
 
 */
 
-include_once 'common.php';
-include_once 'utils/object_functions.php';
+/** @var Smarty $smarty */
 
+include_once 'common.php';
+/** @var User $user */
+if ($user->get('User View') != 'Staff') {
+    exit;
+}
 
 if (!isset($_REQUEST['webpage_key']) or !is_numeric($_REQUEST['webpage_key'])) {
     exit;
 }
 
-if (!isset($_REQUEST['theme']) or !preg_match('/^theme\_\d+$/', $_REQUEST['theme'])) {
+if (!isset($_REQUEST['theme']) or !preg_match('/^theme_\d+$/', $_REQUEST['theme'])) {
     print 'no theme set up x';
 
     return;
 }
-
-
 
 
 $webpage_key = $_REQUEST['webpage_key'];
@@ -63,7 +65,7 @@ switch ($webpage->get('Webpage Scope')) {
 //print_r($webpage);
 
 
-if ($webpage->get('Webpage Code') == 'register.sys' or  $webpage->get('Webpage Code') == 'clients.sys') {
+if ($webpage->get('Webpage Code') == 'register.sys' or $webpage->get('Webpage Code') == 'clients.sys') {
     $scope_metadata = $webpage->get('Scope Metadata');
 
 
@@ -78,7 +80,6 @@ if ($webpage->get('Webpage Code') == 'register.sys' or  $webpage->get('Webpage C
     $smarty->assign('used_address_fields', $used_fields);
     $smarty->assign('countries', $countries);
     $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
-
 }
 
 
