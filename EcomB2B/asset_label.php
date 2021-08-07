@@ -17,7 +17,7 @@ use Mpdf\Mpdf;
 
 include_once __DIR__.'/common.php';
 
-if (!isset($_REQUEST['object']) or !isset($_REQUEST['key']) or !isset($_REQUEST['type'])) {
+if (!isset($_REQUEST['object']) or !isset($_REQUEST['key']) or !isset($_REQUEST['type'])  or !is_numeric($_REQUEST['key'])   ) {
     exit;
 }
 
@@ -53,6 +53,9 @@ if (!in_array($type, array(
 }
 
 $object = get_object($object_name, $key);
+if(!$object->id){
+    exit;
+}
 
 
 if ($type == 'carton' or $type == 'carton_with_image') {
