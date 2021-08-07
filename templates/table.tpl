@@ -243,7 +243,7 @@
                         <td class="width_20">
                             <i data-stop="0" onclick="stop_export(this)" class="stop_export fa button fa-hand-paper error hide" title="{t}Stop{/t}"></i>
                         </td>
-                        <td class="export_button link" data-type="excel" onclick="export_table(this)" data-ar_url="{if $version=='v2'}/ar_export_v2.php{else}/x1ar_export.php{/if}"><i class="fa fa-file-excel fa-fw"></i><span class="excel">Excel</span><span class="csv hide">CSV</span</td>
+                        <td class="export_button link" data-type="excel" onclick="export_table(this)" data-ar_url="{if $version=='v2'}/ar_export_v2.php{else}/ar_export.php{/if}"><i class="fa fa-file-excel fa-fw"></i><span class="excel">Excel</span><span class="csv hide">CSV</span</td>
                     </tr>
 
                     <tr>
