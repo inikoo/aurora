@@ -170,11 +170,14 @@ class prepare_table {
     function initialize_from_session($tab) {
 
 
-        //print_r($_SESSION['table_state'][$tab]);
-        //exit;
+
         $this->parameters = $_SESSION['table_state'][$tab];
         $this->f_value    = $_SESSION['table_state'][$tab]['f_value'];
-        //$this->parameters['f_field']
+
+        $this->number_results = $_SESSION['table_state'][$tab]['nr']??1000;
+        $this->start_from     = 0;
+        $this->sort_key       =$_SESSION['table_state'][$tab]['nr']??'id';
+        $this->sort_direction = ( ($_SESSION['table_state'][$tab]['od']??-1)?'desc':'');
 
     }
 
