@@ -12,6 +12,7 @@
 chdir('../');
 require_once __DIR__.'/../vendor/autoload.php';
 
+
 use Aurora\Models\Utils\TaxCategory;
 use CommerceGuys\Addressing\Country\CountryRepository;
 use Mpdf\Mpdf;
@@ -23,6 +24,9 @@ use Mpdf\MpdfException;
 
 
 require_once 'common.php';
+
+require_once 'class.Country.php';
+
 /** @var User $user */
 if ($user->get('User View') != 'Staff') {
     exit;
