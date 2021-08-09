@@ -17,6 +17,8 @@
 use Mpdf\Mpdf;
 use Mpdf\MpdfException;
 
+include_once 'utils/labels_data.php';
+
 if (!isset($_REQUEST['object']) or !isset($_REQUEST['key']) or !isset($_REQUEST['type'])) {
     exit('missing basic args');
 }
@@ -66,7 +68,8 @@ if (!in_array(
              'unit',
              'carton',
              'pallet',
-             'box'
+             'box',
+             'unit_ingredients'
 
 
          )
@@ -86,10 +89,10 @@ $object = get_object($object_name, $key);
 
 
 
-if ( $size == '' or $set_up=='') {
+if ( $size == '' ) {
     if ($object_name == 'fulfilment_asset') {
 
-
+        /** @var Fulfilment_Asset  $object */
 
         if(isset($object->get_labels_data()[$type])){
             $label_data =$object->get_labels_data()[$type];
@@ -174,11 +177,7 @@ if (isset($_REQUEST['with_account_signature']) and $_REQUEST['with_account_signa
 $smarty->assign('with_account_signature', $with_account_signature);
 
 
-if (isset($_REQUEST['custom_text'])) {
-    $custom_text = $_REQUEST['custom_text'];
-} else {
-    $custom_text = '';
-}
+$custom_text = $_REQUEST['custom_text'] ?? '';
 $smarty->assign('custom_text', $custom_text);
 
 
