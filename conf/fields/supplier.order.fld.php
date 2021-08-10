@@ -67,7 +67,7 @@ $object_fields = array(
     ),
 
     array(
-        'label'      => _('Estimated procession dates'),
+        'label'      => _('Estimated process dates'),
         'show_title' => true,
         'class'=>(($object->get('State Index')<40 or  $object->get('State Index')>70) ?'hide':''),
 

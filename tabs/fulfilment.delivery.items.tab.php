@@ -37,7 +37,7 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
     );
 } else {
     switch ($state['_object']->get('Fulfilment Delivery State')) {
-        case 'InProcess':
+
         case 'Received':
             $tab         = 'fulfilment.delivery.assets';
             $table_views = array('overview' => array('label' => _('Overview')));
@@ -52,21 +52,7 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
 
             );
 
-            /*
-            $table_buttons[] = array(
-                'icon'         => 'upload',
-                'title'        => _('Upload assets'),
-                'id'           => 'upload_order_items',
-                'class'        => (($fulfilment_delivery->get('Fulfilment Delivery State') == 'InProcess' or $fulfilment_delivery->get('Fulfilment Delivery State') == 'Received') ? ' ' : 'hide'),
-                'upload_items' => array(
-                    'tipo'       => 'add_item',
-                    'parent'     => 'Fulfilment_Delivery',
-                    'parent_key' => $fulfilment_delivery->id,
-                    'field'      => 'Fulfilment Delivery Units'
-                )
 
-            );
-            */
 
             $table_buttons[] = array(
                 'icon'  => 'edit_add',
@@ -80,10 +66,12 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
                 'id'                   => 'add_fulfilment_asset',
                 'class'                => 'items_operation'.(($fulfilment_delivery->get('Fulfilment Delivery State') == 'InProcess' or $fulfilment_delivery->get('Fulfilment Delivery State') == 'Received') ? ' ' : 'hide'),
                 'add_fulfilment_asset' => array(
+                    'ar_url'      => '/ar_edit_fulfilment.php',
                     'metadata' => json_encode(
                         array(
                             'parent'     => 'Fulfilment_Delivery',
                             'parent_key' => $fulfilment_delivery->id,
+                            'ar_url'=>''
                         )
                     )
 
@@ -138,7 +126,7 @@ if ($state['_object']->get('Fulfilment Delivery Type') == 'Part') {
             break;
         default:
             $tab = 'fulfilment.delivery.assets';
-
+            $tipo        = 'fulfilment.delivery.assets';
             $table_views = array('overview' => array('label' => _('Overview')),);
             break;
     }

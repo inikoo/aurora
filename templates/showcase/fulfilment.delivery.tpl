@@ -38,7 +38,7 @@
                 <span class="state ">{t}Received{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Fulfilment_Delivery_Received_Date">&nbsp;{$delivery->get('Received Date')}</span> <span class="start_date">{$delivery->get('Creation Date')}
+                <span class="Fulfilment_Delivery_Estimated_or_Received_Date">&nbsp;{$delivery->get('Estimated or Received Date')}</span> <span class="start_date">{$delivery->get('Creation Date')}
             </div>
             <div class="dot">
             </div>
@@ -316,8 +316,17 @@
 
 
         <table class="info_block acenter">
+            <tr class="info_in_process {if $delivery->get('Fulfilment Delivery State')!='InProcess'}hide{/if}">
 
-            <tr>
+                <td style="text-align: center" colspan="2">
+
+                    <span><i class="fal fa-pallet-alt fa-fw discreet" aria-hidden="true"></i>  <span
+                                class="Fulfilment_Delivery_Estimated_Pallets">{$delivery->get('Estimated Pallets')}</span></span>
+                    <span style="padding-left:20px"><i class="fal fa-box-alt fa-fw discreet" aria-hidden="true"></i>  <span
+                                class="Fulfilment_Delivery_Estimated_Boxes">{$delivery->get('Estimated Boxes')}</span></span>
+                </td>
+            </tr>
+            <tr class="info_received  {if $delivery->get('Fulfilment Delivery State')=='InProcess'}hide{/if}">
 
                 <td style="text-align: center" colspan="2">
 

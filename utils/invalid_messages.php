@@ -38,7 +38,7 @@ function get_invalid_message($type) {
                 'not_integer' => sprintf(
                     _('Value has to be a positive integer. e.g. %s'), rand(5, 25)
                 ),
-                'negative'    => sprintf(_('Value has to be a positive')),
+                'negative'    => _('Value has to be a positive'),
                 'too_big'     => sprintf(
                     _('The maximum value is %s'), '4294967295'
                 ),
@@ -64,7 +64,7 @@ function get_invalid_message($type) {
                 'not_integer' => sprintf(
                     _('Value has to be a positive integer. e.g. %s'), rand(5, 25)
                 ),
-                'negative'    => sprintf(_('Value has to be a positive')),
+                'negative'    => _('Value has to be a positive'),
                 'too_big'     => sprintf(_('The maximum value is %s'), '65535'),
                 'empty'       => _("Value can't be empty"),
 
@@ -75,7 +75,7 @@ function get_invalid_message($type) {
                 'not_integer' => sprintf(
                     _('Value has to be a positive integer. e.g. %s'), rand(5, 25)
                 ),
-                'negative'    => sprintf(_('Value has to be a positive')),
+                'negative'    => _('Value has to be a positive'),
                 'too_big'     => sprintf(_('The maximum value is %s'), '255'),
                 'empty'       => _("Value can't be empty"),
 

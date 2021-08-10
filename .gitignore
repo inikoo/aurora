@@ -128,3 +128,4 @@ cron/set_up_web_menu.php
 /cron/fix_orphan_invoice_tax_bridge.php
 /cron/set_up_tax_authority.php
 /cron/test_new_tax_engine.php
+/.env

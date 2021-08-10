@@ -1,0 +1,1 @@
+ALTER TABLE `Fulfilment Delivery Dimension` ADD `Fulfilment Delivery Estimated Pallets` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Fulfilment Delivery Estimated Receiving Date`, ADD `Fulfilment Delivery Estimated Boxes` SMALLINT UNSIGNED NULL DEFAULT NULL AFTER `Fulfilment Delivery Estimated Pallets`;

@@ -14,11 +14,12 @@ include_once 'class.DB_Table.php';
 include_once 'trait.AttachmentSubject.php';
 include_once 'trait.NotesSubject.php';
 
-class Fulfilment_Delivery extends DB_Table {
+class Fulfilment_Delivery extends DB_Table
+{
     use  NotesSubject, AttachmentSubject;
 
-    function __construct($arg1 = false, $arg2 = false) {
-
+    function __construct($arg1 = false, $arg2 = false)
+    {
         global $db;
         $this->db = $db;
 
@@ -33,7 +34,6 @@ class Fulfilment_Delivery extends DB_Table {
 
                 return;
             }
-
         }
 
         if (is_numeric($arg1)) {
@@ -42,19 +42,20 @@ class Fulfilment_Delivery extends DB_Table {
             return;
         }
         $this->get_data($arg1, $arg2);
-
     }
 
 
-    function get_data($key, $id) {
-
+    function get_data($key, $id)
+    {
         if ($key == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Key`=%d", $id
+                "SELECT * FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Key`=%d",
+                $id
             );
         } elseif ($key == 'public id' or $key == 'public_id') {
             $sql = sprintf(
-                "SELECT * FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Public ID`=%s", prepare_mysql($id)
+                "SELECT * FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Public ID`=%s",
+                prepare_mysql($id)
             );
         } else {
             exit('Fulfilment Delivery get_data unknown key:'.$key);
@@ -65,8 +66,8 @@ class Fulfilment_Delivery extends DB_Table {
         }
     }
 
-    function create($data) {
-
+    function create($data)
+    {
         $this->editor = $data['editor'];
 
 
@@ -87,13 +88,14 @@ class Fulfilment_Delivery extends DB_Table {
                 } else {
                     $base_data[$key] = _trim($value);
                 }
-
             }
         }
 
 
         $sql = sprintf(
-            "INTO `Fulfilment Delivery Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+            "INTO `Fulfilment Delivery Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($base_data)).'`',
+            join(',', array_fill(0, count($base_data), '?'))
         );
 
         $stmt = $this->db->prepare("INSERT ".$sql);
@@ -106,8 +108,6 @@ class Fulfilment_Delivery extends DB_Table {
         }
 
         if ($stmt->execute()) {
-
-
             $this->new = 1;
 
             $this->id = $this->db->lastInsertId();
@@ -122,21 +122,22 @@ class Fulfilment_Delivery extends DB_Table {
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                $history_data,
+                true,
+                'No',
+                'Changes',
+                $this->get_object_name(),
+                $this->id
             );
-
-
         } else {
             print_r($stmt->errorInfo());
             print "Error can not create Fulfilment Delivery\n $sql\n";
         }
-
-
     }
 
 
-    function get($key = '') {
-
+    function get($key = '')
+    {
         if (!$this->id) {
             return '';
         }
@@ -153,7 +154,6 @@ class Fulfilment_Delivery extends DB_Table {
                 return $formatted_id;
             case ('State'):
                 switch ($this->data['Fulfilment Delivery State']) {
-
                     case 'InProcess':
                         return _('In process');
 
@@ -205,7 +205,6 @@ class Fulfilment_Delivery extends DB_Table {
                         return $this->get('Placed Date');
                     default:
                         return '';
-
                 }
 
 
@@ -219,11 +218,9 @@ class Fulfilment_Delivery extends DB_Table {
 
                         if ($this->get('Fulfilment Delivery Number Checked Items') > 0) {
                             $progress = '('._('Checking').' '.percentage($this->get('Fulfilment Delivery Number Checked Items'), $this->get('Fulfilment Delivery Number Dispatched Items'), 0).')';
-
                         }
                         if ($this->get('Fulfilment Delivery Number Placed Items') > 0) {
                             $progress = '('._('Placing').' '.percentage($this->get('Fulfilment Delivery Number Placed Items'), $this->get('Fulfilment Delivery Number Dispatched Items'), 0).')';
-
                         }
 
                         return $progress;
@@ -232,7 +229,6 @@ class Fulfilment_Delivery extends DB_Table {
 
                         if ($this->get('Fulfilment Delivery Number Placed Items') > 0) {
                             $progress = '('._('Placing').' '.percentage($this->get('Fulfilment Delivery Number Placed Items'), $this->get('Fulfilment Delivery Number Dispatched Items'), 0).')';
-
                         }
 
                         return $progress;
@@ -246,7 +242,6 @@ class Fulfilment_Delivery extends DB_Table {
                     }
 
                     return strftime("%e %b %Y", strtotime($this->get('Fulfilment Delivery Checked Date')));
-
                 } elseif ($this->get('State Index') < 40) {
                     return '';
                 } elseif ($this->get('State Index') < 50) {
@@ -257,7 +252,8 @@ class Fulfilment_Delivery extends DB_Table {
                     }
 
                     return strftime(
-                        "%e %b %Y", strtotime($this->data['Fulfilment Delivery Checked Date'].' +0:00')
+                        "%e %b %Y",
+                        strtotime($this->data['Fulfilment Delivery Checked Date'].' +0:00')
                     );
                 }
 
@@ -269,9 +265,10 @@ class Fulfilment_Delivery extends DB_Table {
                 } elseif ($this->get('State Index') < 50) {
                     if ($this->get('Fulfilment Delivery Number Placed Items') > 0) {
                         return percentage(
-                            $this->get('Fulfilment Delivery Number Placed Items'), $this->get(
-                            'Fulfilment Delivery Number Dispatched Items'
-                        )
+                            $this->get('Fulfilment Delivery Number Placed Items'),
+                            $this->get(
+                                'Fulfilment Delivery Number Dispatched Items'
+                            )
                         );
                     } else {
                         return '';
@@ -284,8 +281,17 @@ class Fulfilment_Delivery extends DB_Table {
                     }
 
                     return strftime(
-                        "%e %b %Y", strtotime($this->data['Fulfilment Delivery Placed Date'].' +0:00')
+                        "%e %b %Y",
+                        strtotime($this->data['Fulfilment Delivery Placed Date'].' +0:00')
                     );
+                }
+
+            case 'Estimated or Received Date':
+
+                if ($this->data['Fulfilment Delivery State'] == 'InProcess') {
+                    return '<span class="italic very_discreet">℮ '.$this->get('Estimated Receiving Date').'</span>';
+                } else {
+                    return $this->get('Received Date');
                 }
 
 
@@ -294,19 +300,20 @@ class Fulfilment_Delivery extends DB_Table {
             case 'Received Date':
             case 'Placed Date':
             case 'Cancelled Date':
+            case 'Estimated Receiving Date':
                 if ($this->data['Fulfilment Delivery '.$key] == '') {
                     return '';
                 }
 
                 return strftime("%e %b %Y", strtotime($this->data['Fulfilment Delivery '.$key].' +0:00'));
 
-
+            case 'Estimated Pallets':
+            case 'Estimated Boxes':
+                return ($this->data ['Fulfilment Delivery '.$key] == '' ? '<span class="super_discreet">?</span>' : number($this->data ['Fulfilment Delivery '.$key]));
             case 'Number Items':
             case 'Number Ordered Items':
             case 'Number Items Without PO':
                 return number($this->data ['Fulfilment Delivery '.$key]);
-
-
         }
 
 
@@ -320,11 +327,11 @@ class Fulfilment_Delivery extends DB_Table {
 
 
         return '';
-
     }
 
 
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
+    function update_field_switcher($field, $value, $options = '', $metadata = '')
+    {
         switch ($field) {
             case 'Fulfilment Delivery Public ID':
                 $this->update_field($field, $value, $options);
@@ -347,8 +354,14 @@ class Fulfilment_Delivery extends DB_Table {
             case 'Fulfilment Delivery State':
                 $this->update_state($value);
                 break;
-
-
+            case 'Fulfilment Delivery Estimated Receiving Date':
+                $this->update_field($field, $value, $options);
+                $this->update_metadata=[
+                    'class_html'=>[
+                        'Fulfilment_Delivery_Estimated_or_Received_Date'=>$this->get('Estimated or Received Date')
+                    ]
+                ];
+                break;
             case 'History Note':
                 $this->add_note($value, '', '', $metadata['deletable']);
                 break;
@@ -360,19 +373,16 @@ class Fulfilment_Delivery extends DB_Table {
 
                 if (array_key_exists($field, $base_data)) {
                     if ($value != $this->data[$field]) {
-
                         $this->update_field($field, $value, $options);
                     }
                 }
 
                 break;
         }
-
-
     }
 
-    function update_state($value) {
-
+    function update_state($value)
+    {
         $date = gmdate('Y-m-d H:i:s');
 
 
@@ -413,7 +423,12 @@ class Fulfilment_Delivery extends DB_Table {
                     'Action'           => 'edited'
                 );
                 $this->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    $history_data,
+                    true,
+                    'No',
+                    'Changes',
+                    $this->get_object_name(),
+                    $this->id
                 );
 
 
@@ -453,7 +468,12 @@ class Fulfilment_Delivery extends DB_Table {
                 );
 
                 $this->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                    $history_data,
+                    true,
+                    'No',
+                    'Changes',
+                    $this->get_object_name(),
+                    $this->id
                 );
 
 
@@ -462,12 +482,10 @@ class Fulfilment_Delivery extends DB_Table {
 
             default:
                 exit('unknown FD state '.$value);
-
         }
 
         if (!$skip_update_totals) {
             $this->update_totals();
-
         }
 
 
@@ -486,11 +504,10 @@ class Fulfilment_Delivery extends DB_Table {
             'operations'  => $operations,
             'state_index' => $this->get('State Index')
         );
-
     }
 
-    function update_totals() {
-
+    function update_totals()
+    {
         $number_items = 0;
         if ($this->get('Fulfilment Delivery Type') == 'Asset') {
             $sql  = "select count(*) as num from `Fulfilment Asset Dimension` where `Fulfilment Asset Fulfilment Delivery Key`=? ";
@@ -503,8 +520,6 @@ class Fulfilment_Delivery extends DB_Table {
             while ($row = $stmt->fetch()) {
                 $number_items = $row['num'];
             }
-
-
         }
 
         $this->fast_update(
@@ -512,17 +527,14 @@ class Fulfilment_Delivery extends DB_Table {
                 'Fulfilment Delivery Number Items' => $number_items
             ]
         );
-
     }
 
     /**
      * @throws \Exception
      */
-    function delete(): string {
-
+    function delete(): string
+    {
         if ($this->data['Fulfilment Delivery State'] == 'InProcess') {
-
-
             $sql = "DELETE FROM `Fulfilment Delivery Dimension` WHERE `Fulfilment Delivery Key`=?";
             $this->db->prepare($sql)->execute(
                 array(
@@ -579,15 +591,21 @@ class Fulfilment_Delivery extends DB_Table {
             );
 
             $customer->add_subject_history(
-                $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+                $history_data,
+                true,
+                'No',
+                'Changes',
+                $customer->get_object_name(),
+                $customer->id
             );
 
 
             return sprintf(
-                'fulfilment/%d/customers/%s/%d', $this->data['Fulfilment Delivery Warehouse Key'], ($this->data['Fulfilment Delivery Type'] == 'Part' ? 'dropshipping' : 'asset_keeping'), $this->data['Fulfilment Delivery Customer Key']
+                'fulfilment/%d/customers/%s/%d',
+                $this->data['Fulfilment Delivery Warehouse Key'],
+                ($this->data['Fulfilment Delivery Type'] == 'Part' ? 'dropshipping' : 'asset_keeping'),
+                $this->data['Fulfilment Delivery Customer Key']
             );
-
-
         } else {
             $this->error = true;
             $this->msg   = 'Can not deleted submitted Fulfilment Delivery';
@@ -596,26 +614,30 @@ class Fulfilment_Delivery extends DB_Table {
         }
     }
 
-    function get_field_label($field) {
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Fulfilment Delivery Public ID':
                 $label = _('customer delivery reference');
                 break;
-            case 'Fulfilment Delivery Incoterm':
-
+            case 'Fulfilment Delivery Estimated Receiving Date':
+                $label = _('estimated delivery date');
+                break;
+            case 'Fulfilment Delivery Estimated Pallets':
+                $label = _('estimated pallets');
+                break;
+            case 'Fulfilment Delivery Estimated Boxes':
+                $label = _('estimated boxes');
+                break;
             default:
                 $label = $field;
-
         }
 
         return $label;
-
     }
 
-    function create_multiple_fulfilment_asset($number, $data) {
-
+    function create_multiple_fulfilment_asset($number, $data)
+    {
         $this->calculate_totals = false;
 
         if (!is_numeric($number) or $number < 1) {
@@ -624,7 +646,6 @@ class Fulfilment_Delivery extends DB_Table {
             return [
                 'assets_added' => 0
             ];
-
         }
 
         if ($number > 500) {
@@ -633,7 +654,6 @@ class Fulfilment_Delivery extends DB_Table {
             return [
                 'assets_added' => 0
             ];
-
         }
 
         for ($i = 0; $i < $number; $i++) {
@@ -648,11 +668,10 @@ class Fulfilment_Delivery extends DB_Table {
         return [
             'assets_added' => $number
         ];
-
     }
 
-    function create_fulfilment_asset($data) {
-
+    function create_fulfilment_asset($data)
+    {
         $data['Fulfilment Asset Fulfilment Delivery Key'] = $this->id;
         $data['Fulfilment Asset Warehouse Key']           = $this->get('Fulfilment Delivery Warehouse Key');
         $data['Fulfilment Asset Customer Key']            = $this->get('Fulfilment Delivery Customer Key');
@@ -676,7 +695,6 @@ class Fulfilment_Delivery extends DB_Table {
                 )
             );
             if ($row = $stmt->fetch() and $row['num'] > 0) {
-
                 $this->error          = true;
                 $this->msg            = sprintf(_('Duplicated reference (%s)'), $data['Fulfilment Asset Reference']);
                 $this->error_code     = 'duplicate_fulfilment_asset_reference';
@@ -702,7 +720,6 @@ class Fulfilment_Delivery extends DB_Table {
                         ]
                     );
                 } else {
-
                     $this->warning          = true;
                     $this->msg              = sprintf(_('Location not found (%s)'), $location_code);
                     $this->warning_code     = 'warning_asset_location_not_found';
@@ -724,7 +741,6 @@ class Fulfilment_Delivery extends DB_Table {
 
             return false;
         }
-
     }
 
 

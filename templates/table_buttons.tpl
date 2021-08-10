@@ -50,7 +50,7 @@
 
     </div>
 {/if}
-{if isset($button.add_fulfilment_asset)}{include file="add_fulfilment_asset.tpl" data=$button.add_fulfilment_asset trigger={$button.id}}{/if}
+{if isset($button.add_fulfilment_asset)}{include file="add_fulfilment_asset.tpl"     data=$button.add_fulfilment_asset trigger={$button.id}}{/if}
 
 {if isset($button.add_item)}{include file="add_item.tpl" data=$button.add_item trigger={$button.id}}{/if}
 {if isset($button.add_item_to_portfolio)}{include file="add_item_to_portfolio.tpl" data=$button.add_item_to_portfolio trigger=$button.id}{/if}
