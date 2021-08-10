@@ -2069,6 +2069,9 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
             }
         }
     } elseif ($data['section'] == 'delivery') {
+
+
+
         if ($data['module'] == 'suppliers') {
             $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
             $_content['tabs']['supplier.delivery.costing']['class']    = 'hide';
@@ -2150,7 +2153,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                     break;
 
             }
-        } elseif ($data['module'] == 'production') {
+        }
+        elseif ($data['module'] == 'production') {
             $_content['tabs']['supplier.delivery.items_done']['class'] = 'hide';
             $_content['tabs']['supplier.delivery.costing']['class']    = 'hide';
 
@@ -2231,6 +2235,16 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
                     break;
 
             }
+        }
+        elseif($data['module'] == 'fulfilment'){
+            switch ($data['_object']->get('Fulfilment Delivery State')) {
+                case 'InProcess':
+                    $_content['tabs']['fulfilment.delivery.details']['selected'] = true;
+                    $_content['tabs']['fulfilment.delivery.items']['class'] = 'hide';
+
+                    break;
+            }
+
         }
     } elseif ($data['section'] == 'webpage') {
 
@@ -2404,6 +2418,8 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
 
 
     }
+
+
 
 
     // print_r($_content['subtabs']);

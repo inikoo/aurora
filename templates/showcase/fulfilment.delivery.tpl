@@ -44,49 +44,27 @@
             </div>
         </li>
 
-        {if $delivery->get('State Index')<0  and  $delivery->get('Received Date')!='' and  $delivery->get('Checked Date')==''   }
-            <li id="received_node" class="li  cancelled">
-                <div class="label">
-                    <span class="state ">{t}Cancelled{/t}</span>
-                </div>
-                <div class="timestamp">
-                    <span >&nbsp;{$delivery->get('Cancelled Date')}</span>
-                </div>
-                <div class="dot">
-                </div>
-            </li>
-        {/if}
 
-        <li id="checked_node"
-            class="li  {if $delivery->get('State Index')>=50  or ($delivery->get('State Index')<0 and  $delivery->get('Checked Date')!='')   }complete{/if}">
-            <div class="label">
-                <span class="state">{t}Checked{/t}</span>
-            </div>
-            <div class="timestamp">
-                <span class="Fulfilment_Delivery_Checked_Percentage_or_Date">&nbsp;{$delivery->get('Checked Percentage or Date')}</span>
-            </div>
-            <div class="dot">
-            </div>
-        </li>
 
-        {if $delivery->get('State Index')<0  and  $delivery->get('Checked Date')!=''  }
-            <li id="received_node" class="li  cancelled">
-                <div class="label">
-                    <span class="state ">{t}Cancelled{/t}</span>
-                </div>
-                <div class="timestamp">
-                    <span >&nbsp;{$delivery->get('Cancelled Date')}</span>
-                </div>
-                <div class="dot">
-                </div>
-            </li>
-        {/if}
+
 
 
         <li id="placed_node"
             class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=100}complete{/if}">
             <div class="label">
                 <span class="state">{t}Booked in{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span class="Fulfilment_Delivery_Placed_Percentage_or_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+        <li id="placed_node"
+            class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=100}complete{/if}">
+            <div class="label">
+                <span class="state">{t}Contract created{/t}</span>
             </div>
             <div class="timestamp">
                 <span class="Fulfilment_Delivery_Placed_Percentage_or_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span>

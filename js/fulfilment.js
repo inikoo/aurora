@@ -498,4 +498,63 @@ function delete_fulfilment_asset_from_table(element) {
 
 }
 
+function post_fulfilment_delivery_state_change(data,element) {
+
+
+    if(data.transaction_data!= undefined){
+        const tr=$(element).closest('tr')
+        for (var key in data.transaction_data) {
+            tr.find('.col_' + key).html(data.transaction_data[key])
+        }
+
+    }
+
+    for (var key in data.update_metadata.class_html) {
+        $('.' + key).html(data.update_metadata.class_html[key])
+    }
+    for (var key in data.update_metadata.hide) {
+        $('.' + data.update_metadata.hide[key]).addClass('hide')
+    }
+    for (var key in data.update_metadata.show) {
+        $('.' + data.update_metadata.show[key]).removeClass('hide')
+    }
+    $('.order_operation').addClass('hide')
+    for (var key in data.update_metadata.operations) {
+        $('#' + data.update_metadata.operations[key]).removeClass('hide')
+    }
+
+    $('.timeline .li').removeClass('complete')
+
+
+    if (data['update_metadata']['state_index'] >= 40) {
+        $('#received_node').addClass('complete')
+    }
+
+
+    $('.info_in_process').addClass('hide')
+    $('.info_received').removeClass('hide')
+    $('#tab_fulfilment\\.delivery\\.items').removeClass('hide');
+
+
+    console.log(data['update_metadata']['state_index'])
+
+    if (data['update_metadata']['state_index'] === 10) {
+
+        $('.info_in_process').removeClass('hide')
+        $('.info_received').addClass('hide')
+
+
+        $('#tab_fulfilment\\.delivery\\.items').addClass('hide');
+
+        change_tab('fulfilment.delivery.details')
+    } else if (data['update_metadata']['state_index'] === 40) {
+
+        change_tab('fulfilment.delivery.items')
+
+    }
+
+
+
+}
+
 

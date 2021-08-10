@@ -142,7 +142,6 @@ class Fulfilment_Delivery extends DB_Table
             return '';
         }
 
-
         switch ($key) {
             case 'Formatted ID':
 
@@ -163,7 +162,8 @@ class Fulfilment_Delivery extends DB_Table
                         return _('Checked');
                     case 'Placed':
                         return _('Booked in');
-
+                    case 'InOrder':
+                        return _('Contract created');
                     case 'Cancelled':
                         return _('Cancelled');
                     default:
@@ -185,6 +185,8 @@ class Fulfilment_Delivery extends DB_Table
                         return 50;
                     case 'Placed':
                         return 60;
+                    case 'Contracted':
+                        return 100;
                     case 'Cancelled':
                         return -10;
                     default:
@@ -498,7 +500,8 @@ class Fulfilment_Delivery extends DB_Table
                 'Fulfilment_Delivery_Costing_Date'    => '&nbsp;'.$this->get('Costing Date'),
 
                 'Fulfilment_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
-                'Fulfilment_Delivery_Number_Received_Items'   => $this->get('Number Received Items')
+                'Fulfilment_Delivery_Number_Received_Items'   => $this->get('Number Received Items'),
+                'Fulfilment_Delivery_Estimated_or_Received_Date'=>$this->get('Estimated or Received Date')
 
             ),
             'operations'  => $operations,

@@ -322,7 +322,7 @@ function save_order_operation(element) {
         metadata['Delivery Note Key']=data.replacement_key;
     }
 
-    var form_data = new FormData();
+    const form_data = new FormData();
 
     form_data.append("tipo", 'edit_field')
     form_data.append("object", object)
@@ -331,11 +331,11 @@ function save_order_operation(element) {
     form_data.append("value", value)
     form_data.append("metadata", JSON.stringify(metadata))
 
-    var request = $.ajax({
+    const request = $.ajax({
 
         url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
 
-    })
+    });
 
 
     request.done(function (data) {
@@ -375,6 +375,7 @@ function save_order_operation(element) {
             }
 
             $('.timeline .li').removeClass('complete')
+
 
 
             if(object == 'order'){
@@ -566,8 +567,7 @@ function save_order_operation(element) {
                     post_production_job_order_state_change(data)
 
 
-                }
-            else{
+                } else{
                     if (data.update_metadata.state_index >= 30) {
                         $('#submitted_node').addClass('complete')
                     }
@@ -641,7 +641,9 @@ function save_order_operation(element) {
 
 
             }
-
+            else if (object == 'fulfilment_delivery'){
+                post_fulfilment_delivery_state_change(data)
+            }
 
         } else if (data.state == 400) {
 
