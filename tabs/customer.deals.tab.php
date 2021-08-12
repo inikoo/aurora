@@ -9,6 +9,10 @@
 
 */
 
+/** @var User $user */
+/** @var PDO $db */
+/** @var Smarty $smarty */
+/** @var array $state */
 
 $tab     = 'customer.deals';
 $ar_file = 'ar_marketing_tables.php';
@@ -39,13 +43,15 @@ $parameters = array(
 
 
 $table_buttons   = array();
+
 /*
 $table_buttons[] = array(
     'icon'      => 'plus',
     'title'     => _('New offer'),
-    'reference' => "products/".$state['parent_key']."/category/".$state['key']."/deal_component/new"
+    'reference' => "customers/".$state['parent_key']."/".$state['key']."/deals/new"
 );
 */
+
 $smarty->assign('table_buttons', $table_buttons);
 
 
