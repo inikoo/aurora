@@ -128,6 +128,14 @@ class Product extends Asset
         }
 
         switch ($key) {
+
+            case 'Service Code':
+            case 'Service Name':
+            case 'Service Price':
+            case 'Service Unit Label':
+                return $this->get(preg_replace('/Service/','Product',$key));
+
+
             case 'Image':
 
 
@@ -253,8 +261,9 @@ class Product extends Asset
                     $this->data['Product Price'],
                     $this->data['Store Currency Code']
                 );
-
-                if ($this->data['Product Units Per Case'] != 1 and $this->data['Product Units Per Case'] > 0) {
+                if ($this->data['Product Units Per Case'] ==1 ) {
+                    $price .= '/'.$this->data['Product Unit Label'];
+                }elseif ($this->data['Product Units Per Case']  > 1) {
                     $price .= ' ('.money(
                             $this->data['Product Price'] / $this->data['Product Units Per Case'],
                             $this->data['Store Currency Code']
@@ -1214,8 +1223,7 @@ class Product extends Asset
 
     function update_availability($use_fork = true)
     {
-
-        if($this->data['Product Type']=='Service'){
+        if ($this->data['Product Type'] == 'Service') {
             return;
         }
 
@@ -1655,7 +1663,7 @@ class Product extends Asset
 
     function get_web_state(): string
     {
-        if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0 and  $this->data['Product Type'] =='Product'  )) {
+        if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0 and $this->data['Product Type'] == 'Product')) {
             return 'Offline';
         }
         switch ($this->data['Product Web Configuration']) {
@@ -1668,9 +1676,9 @@ class Product extends Asset
             case 'Online Auto':
 
 
-                if($this->data['Product Type'] =='Service' ){
+                if ($this->data['Product Type'] == 'Service') {
                     return 'For Sale';
-                }else {
+                } else {
                     if ($this->data['Product Number of Parts'] == 0) {
                         return 'Offline';
                     } else {
@@ -2305,6 +2313,16 @@ class Product extends Asset
 
 
         switch ($field) {
+
+            case 'Service Code':
+            case 'Service Name':
+            case 'Service Price':
+            case 'Service Unit Label':
+
+                $this->update_field_switcher(preg_replace('/Service/','Product',$field), $value, $options , $metadata );
+
+                break;
+
             case 'Product Customer Key':
 
 
@@ -2346,7 +2364,7 @@ class Product extends Asset
                     $this->id
                 );
 
-
+                break;
             case 'Product Webpage Name':
 
 
