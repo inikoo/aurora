@@ -1778,6 +1778,12 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'label'   => _('Status'),
                 'checked' => 1
             ),
+            array(
+                'name'    => '`Product Type`',
+                'label'   => _('Type'),
+                'checked' => 1
+            ),
+
 
             array(
                 'name'    => '`Product Code`',
