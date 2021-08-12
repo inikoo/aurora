@@ -2337,9 +2337,6 @@ class Order extends DB_Table
             $old_used_deals = $this->get_used_deals();
 
 
-            $this->update_number_products();
-            //$this->update_insurance();
-
             $this->update_discounts_items();
             $this->update_totals();
 
@@ -2355,7 +2352,6 @@ class Order extends DB_Table
             $this->update_totals();
 
 
-            $this->update_number_products();
 
             $new_used_deals = $this->get_used_deals();
 
@@ -2445,10 +2441,6 @@ WHERE `Order Transaction Fact Key`=?";
 
             $old_used_deals = $this->get_used_deals();
 
-
-            $this->update_number_products();
-            //$this->update_insurance();
-
             $this->update_discounts_items();
             $this->update_totals();
 
@@ -2464,7 +2456,6 @@ WHERE `Order Transaction Fact Key`=?";
             $this->update_totals();
 
 
-            $this->update_number_products();
 
             $new_used_deals = $this->get_used_deals();
 
@@ -2504,35 +2495,6 @@ WHERE `Order Transaction Fact Key`=?";
         }
     }
 
-    function update_number_products()
-    {
-        $this->data['Order Number Products'] = $this->get_number_products();
-        $sql                                 = sprintf(
-            "UPDATE `Order Dimension` SET `Order Number Products`=%d WHERE `Order Key`=%d",
-            $this->data['Order Number Products'],
-            $this->id
-        );
-        $this->db->exec($sql);
-    }
-
-    function get_number_products()
-    {
-        $number = 0;
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Transaction Fact` WHERE `Order Key`=%d  ",
-            $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            if ($row = $result->fetch()) {
-                $number = ($row['num'] == '' ? 0 : $row['num']);
-            }
-        }
-
-
-        return $number;
-    }
 
 
     function create_refund($date, $transactions, $tax_only = false): Invoice

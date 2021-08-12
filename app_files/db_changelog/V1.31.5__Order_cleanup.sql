@@ -1,0 +1,1 @@
+ALTER TABLE `Order Dimension` DROP `Order Number Products`;
