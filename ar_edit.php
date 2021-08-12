@@ -3091,7 +3091,24 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Product.php';
 
 
-            //print_r($data['fields_data']);
+            if($data['fields_data']['Product Type']=='Service'){
+
+                $data['fields_data']['Product Code']=$data['fields_data']['Service Code'];
+                $data['fields_data']['Product Name']=$data['fields_data']['Service Name'];
+                $data['fields_data']['Product Price']=$data['fields_data']['Service Price'];
+                $data['fields_data']['Product Unit Label']=$data['fields_data']['Service Unit Label'];
+                $data['fields_data']['Product Units Per Case']=1;
+                $data['fields_data']['Product Type']='Service';
+                unset($data['fields_data']['Product Parts']);
+                unset($data['fields_data']['Service Code']);
+                unset($data['fields_data']['Service Name']);
+                unset($data['fields_data']['Service Price']);
+                unset($data['fields_data']['Service Unit Label']);
+
+            }else{
+                $data['fields_data']['Product Type']='Product';
+            }
+
 
             $object = $parent->create_product($data['fields_data']);
 

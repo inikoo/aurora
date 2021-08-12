@@ -1282,8 +1282,11 @@ function get_product_navigation($data, $smarty, $user, $db, $account) {
         $sections[$_section]['selected'] = true;
     }
 
-
-    $title = '<i class="fa fa-cube" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>';
+    $icon='fa-cube';
+    if($object->get('Product Type')=='Service'){
+        $icon='fa-spa';
+    }
+    $title = '<i class="fa '.$icon.'" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code">'.$object->get('Code').'</span>';
 
     $product_parts = $object->get_parts('objects');
 

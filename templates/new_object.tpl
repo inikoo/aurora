@@ -211,7 +211,7 @@
                      </td>
 
 
-                    <td  id="{$field.id}_container" class="{$field.type} new" field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{if isset($overwrite_parent_key)}{$overwrite_parent_key}{else}{$state.parent_key}{/if}'>
+                    <td  id="{$field.id}_container" class="{$field.type} new  new_field_container  " field="{$field.id}" _required="{$required}" field_type='{$edit}' server_validation='{$server_validation}' object='{$object_name}' key='{$state.key}' parent='{$state.parent}' parent_key='{if isset($overwrite_parent_key)}{$overwrite_parent_key}{else}{$state.parent_key}{/if}'>
 
                      {if $edit!='custom'  }
                     <span id="{$field.id}_formatted_value" class="{$field.id} formatted_value hide" ondblclick="open_edit_field('{$object_name}','{$state.key}','{$field.id}')">

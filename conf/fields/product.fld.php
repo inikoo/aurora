@@ -11,569 +11,590 @@
 */
 
 
-include_once 'utils/static_data.php';
-include_once 'utils/country_functions.php';
-
-if ($user->can_edit('parts')) {
-    $part_edit = true;
-} else {
-    $part_edit = false;
-
-}
-
-$options_Packing_Group = array(
-    'None' => _('None'),
-    'I'    => 'I',
-    'II'   => 'II',
-    'III'  => 'III'
-);
-
-$options_status            = array(
-    'Active'       => _('Active'),
-    'Suspended'    => _('Suspended'),
-    'Discontinued' => _('Discontinued')
-);
-$options_web_configuration = array(
-    'Online Auto'               => _('Automatic'),
-    //	'Online Force For Sale'=>_('For sale').' <i class="fa fa-thumbtack" aria-hidden="true"></i>' ,
-    'Online Force Out of Stock' => _('Out of stock').' <i class="fa fa-thumbtack" aria-hidden="true"></i>',
-    'Offline'                   => _('Offline')
-);
+function get_product_fields(Product $product, User $user, PDO $db, $options): array
+{
+    include_once 'utils/static_data.php';
+    include_once 'utils/country_functions.php';
 
 
-$parts_data    = $object->get_parts_data();
-$number_parts  = count($parts_data);
-$linked_fields = array();
-if ($number_parts == 1 and isset($parts_data[0]['Linked Fields']) and is_array(
-        $parts_data[0]['Linked Fields']
-    )) {
-    $linked_fields = array_flip($parts_data[0]['Linked Fields']);
-}
-
-if (count($object->get_parts()) == 1) {
-
-    $fields_linked = true;
-} else {
-    $fields_linked = false;
-
-}
-
-if (isset($options['new']) and $options['new']) {
-    $new = true;
-} else {
-    $new = false;
-}
+    $edit = $user->can_edit('stores');
 
 
-$options_Unit_Type = array(
-    'Piece' => _('Piece'),
-    'Gram'  => _('Gram'),
-    'Liter' => _('Liter')
-);
-asort($options_Unit_Type);
+    if ($user->can_edit('parts')) {
+        $part_edit = true;
+    } else {
+        $part_edit = false;
+    }
+
+    $options_Packing_Group = array(
+        'None' => _('None'),
+        'I'    => 'I',
+        'II'   => 'II',
+        'III'  => 'III'
+    );
+
+    $options_status            = array(
+        'Active'       => _('Active'),
+        'Suspended'    => _('Suspended'),
+        'Discontinued' => _('Discontinued')
+    );
+    $options_web_configuration = array(
+        'Online Auto'               => _('Automatic'),
+        //	'Online Force For Sale'=>_('For sale').' <i class="fa fa-thumbtack" aria-hidden="true"></i>' ,
+        'Online Force Out of Stock' => _('Out of stock').' <i class="fa fa-thumbtack" aria-hidden="true"></i>',
+        'Offline'                   => _('Offline')
+    );
 
 
-if ($object->get('Product Family Category Key')) {
-    include_once 'class.Category.php';
-    $family       = new Category($object->get('Product Family Category Key'));
-    $family_label = $family->get('Code').', '.$family->get('Label');
-} else {
-    $family_label = '';
-}
+    //$parts_data    = $product->get_parts_data();
+    //$number_parts  = count($parts_data);
+    /*
+    $linked_fields = array();
+    if ($number_parts == 1 and isset($parts_data[0]['Linked Fields']) and is_array($parts_data[0]['Linked Fields'])) {
+        $linked_fields = array_flip($parts_data[0]['Linked Fields']);
+    }
+*/
+    if (count($product->get_parts()) == 1) {
+        $fields_linked = true;
+    } else {
+        $fields_linked = false;
+    }
+
+    if (isset($options['new']) and $options['new']) {
+        $new = true;
+    } else {
+        $new = false;
+    }
 
 
-$linked_fields  = $object->get_linked_fields_data();
-$product_fields = array(
+    $options_Unit_Type = array(
+        'Piece' => _('Piece'),
+        'Gram'  => _('Gram'),
+        'Liter' => _('Liter')
+    );
+    asort($options_Unit_Type);
 
+    /*
+        if ($product->get('Product Family Category Key')) {
+            include_once 'class.Category.php';
+            $family       = new Category($product->get('Product Family Category Key'));
+            $family_label = $family->get('Code').', '.$family->get('Label');
+        } else {
+            $family_label = '';
+        }
+    */
 
-    array(
-        'label'      => _('Status'),
-        'show_title' => true,
-        'class'      => 'hide',
-        'fields'     => array(
-            array(
-                'render' => ($new ? false : true),
-                'id'     => 'Product_Status',
-                'edit'   => ($edit ? 'option' : ''),
+    //  $linked_fields = $product->get_linked_fields_data();
+    $product_fields =array(
 
-                'options'         => $options_status,
-                'value'           => htmlspecialchars($object->get('Product Status')),
-                'formatted_value' => $object->get('Status'),
-                'label'           => ucfirst($object->get_field_label('Product Status')),
-                'required'        => ($new ? false : true),
-                'type'            => 'skip'
-            ),
-            array(
-                'render' => ($new ? false : ($object->get('Product Status') == 'Active' ? true : false)),
-                'id'     => 'Product_Web_Configuration',
-                'edit'   => ($edit ? 'option' : ''),
+        array(
+            'label'      => _('Type'),
+            'show_title' => true,
+            'class'      => ($new ? '' : 'hide'),
+            'fields'     => array(
+                array(
+                    'render' => $new,
+                    'id'     => 'Product_Type',
+                    'edit'   => ($edit ? 'no_icon' : ''),
 
-                'options'         => $options_web_configuration,
-                'value'           => htmlspecialchars($object->get('Product Web Configuration')),
-                'formatted_value' => $object->get('Web Configuration'),
-                'label'           => ucfirst($object->get_field_label('Web Configuration')),
-                'required'        => ($new ? false : true),
-                'type'            => 'skip'
-            ),
-        )
-    ),
+                    'value'           => 'Product',
+                    'formatted_value' => '<input id="Product_Type" value="Product" type="hidden"/><div id="product_type_options"><span data-value="Product" class="product_type_option padding_right_20"><i class="far fa-dot-circle"></i> '._('Product').'</span>
+                                                <span data-value="Service" class="product_type_option discreet_on_hover button"><i class="far fa-circle"></i> '._('Service').'</span></div>',
+                    'label'           => ucfirst($product->get_field_label('Product Type')),
+                    'required'        => false,
+                    'type'            => 'value'
 
-
-    array(
-        'label'      => _('Id'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'id'   => 'Product_Code',
-                'edit' => ($edit ? 'string' : ''),
-
-                'value'             => htmlspecialchars(
-                    $object->get('Product Code')
                 ),
-                'formatted_value'   => $object->get('Code'),
-                'label'             => ucfirst($object->get_field_label('Product Code')),
-                'required'          => true,
-                'server_validation' => json_encode(
-                    array(
-                        'tipo'       => 'check_for_duplicates',
-                        'parent'     => 'store',
-                        'parent_key' => ($new ? $options['store_key'] : $object->get('Product Store Key')),
-                        'object'     => 'Product',
-                        'key'        => $object->id
-                    )
-                ),
-                'type'              => 'value'
-            ),
 
-            array(
-                'id'              => 'Product_CPNP_Number',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => $object->get('Product CPNP Number'),
-                'formatted_value' => $object->get('CPNP Number'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product CPNP Number')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Product_UFI',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => $object->get('Product UFI'),
-                'formatted_value' => $object->get('UFI'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product UFI')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-
-        )
-    ),
-    array(
-        'label'      => _('Parts'),
-        'show_title' => true,
-        'fields'     => array(
-            array(
-                'id'              => 'Product_Parts',
-                'edit'            => 'parts_list',
-                'value'           => $object->get('Product Parts'),
-                'formatted_value' => $object->get('Parts'),
-                'label'           => ucfirst($object->get_field_label('Product Parts')),
-                'required'        => false,
-                'type'            => 'value'
             )
+        ),
 
-        )
-    ),
+        array(
+            'label'      => _('Status'),
+            'show_title' => true,
+            'class'      => ($new?'hide':''),
+            'fields'     => array(
+                array(
+                    'render' => !$new,
+                    'id'     => 'Product_Status',
+                    'edit'   => ($edit ? 'option' : ''),
 
-    array(
-        'label'      => _('Family'),
-        'show_title' => true,
-        'fields'     => array(
-            array(
-                'id'                       => 'Product_Family_Category_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'families',
-                'parent'                   => 'store',
-                'parent_key'               => ($new ? $options['store_key'] : $object->get('Product Store Key')),
-                'value'                    => htmlspecialchars($object->get('Product Family Category Key')),
-                'formatted_value'          => $object->get('Family Category Key'),
-                'stripped_formatted_value' => '',
-                'label'                    => _('Family'),
-                'required'                 => true,
-                'type'                     => 'value'
-
-
-            ),
-
-            array(
-                'id'   => 'Product_Label_in_Family',
-                'edit' => ($edit ? 'string' : ''),
-
-                'value'           => htmlspecialchars($object->get('Product Label in Family')),
-                'formatted_value' => $object->get('Label in Family'),
-                'label'           => ucfirst($object->get_field_label('Product Label in Family')),
-                'required'        => false,
-                'type'            => 'value'
-
-            ),
-
-        )
-    ),
-
-    array(
-        'label'      => _('Outer'),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'render' => true,
-
-                'id'   => 'Product_Units_Per_Case',
-                'edit' => ($edit ? 'numeric' : ''),
-
-                'value'           => $object->get('Product Units Per Case'),
-                'formatted_value' => $object->get('Units Per Case'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Units Per Case')
+                    'options'         => $options_status,
+                    'value'           => htmlspecialchars($product->get('Product Status')),
+                    'formatted_value' => $product->get('Status'),
+                    'label'           => ucfirst($product->get_field_label('Product Status')),
+                    'required'        => !$new,
+                    'type'            => 'skip'
                 ),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => true,
-                'type'            => 'value'
-            ),
+                array(
+                    'render' => (!$new && $product->get('Product Status') == 'Active'),
+                    'id'     => 'Product_Web_Configuration',
+                    'edit'   => ($edit ? 'option' : ''),
 
-
-            array(
-                'id'   => 'Product_Price',
-                'edit' => ($edit ? 'amount' : ''),
-
-                'value'           => $object->get('Product Price'),
-                'formatted_value' => $object->get('Price'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Price')
+                    'options'         => $options_web_configuration,
+                    'value'           => htmlspecialchars($product->get('Product Web Configuration')),
+                    'formatted_value' => $product->get('Web Configuration'),
+                    'label'           => ucfirst($product->get_field_label('Web Configuration')),
+                    'required'        => !$new,
+                    'type'            => 'skip'
                 ),
-                'invalid_msg'     => get_invalid_message('amount'),
-                'required'        => true,
-                'type'            => 'value'
-            ),
+            )
+        ),
 
 
-        )
-    ),
-
-    array(
-        'label'      => _('Retail unit'),
-        'show_title' => true,
-        'fields'     => array(
-            array(
-                'id'   => 'Product_Unit_Label',
-                'edit' => ($edit ? 'string' : ''),
-
-                'value'           => ($new
-                    ? _('piece')
-                    : $object->get(
-                        'Product Unit Label'
-                    )),
-                'formatted_value' => ($new
-                    ? _('piece')
-                    : $object->get(
-                        'Unit Label'
-                    )),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Unit Label')
-                ),
-                'required'        => true,
-                'type'            => 'value'
-
-            ),
-
-            array(
-                'id'   => 'Product_Name',
-                'edit' => ($edit ? 'string' : ''),
-
-                'value'           => htmlspecialchars(
-                    $object->get('Product Name')
-                ),
-                'formatted_value' => $object->get('Name'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Name')
-                ),
-                'required'        => true,
-                'type'            => 'value'
-
-
-            ),
-
-            array(
-                'id'   => 'Product_Unit_RRP',
-                'edit' => ($edit ? 'amount' : ''),
-
-                'value'           => $object->get('Product Unit RRP'),
-                'formatted_value' => $object->get('Unit RRP'),
-                'label'           => ucfirst(
-                    $object->get_field_label('Product Unit RRP')
-                ),
-                'invalid_msg'     => get_invalid_message('amount'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-            array(
-                'id'              => 'Product_Unit_Weight',
-                'edit'            => ($part_edit ? 'numeric' : ''),
-                'render'          => !$new,
-                'value'           => $object->get('Product Unit Weight'),
-                'formatted_value' => $object->get('Unit Weight'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product Unit Weight')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'invalid_msg'     => get_invalid_message('numeric'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Product_Unit_Dimensions',
-                'edit'            => ($part_edit ? 'dimensions' : ''),
-                'render'          => !$new,
-                'value'           => $object->get('Unit Dimensions'),
-                'formatted_value' => $object->get('Unit Dimensions'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product Unit Dimensions')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'invalid_msg'     => get_invalid_message('numeric'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-
-
-        )
-    ),
-
-    array(
-        'label'      => _('Customer'),
-        'show_title' => true,
-        'fields'     => array(
-            array(
-                'id'                       => 'Product_Customer_Key',
-                'edit'                     => 'dropdown_select',
-                'scope'                    => 'customers',
-                'parent'                   => 'store',
-                'parent_key'               => ($new ? $options['store_key'] : $object->get('Product Store Key')),
-                'value'                    => $object->get('Product Customer Key'),
-                'formatted_value'          => $object->get('Customer Key'),
-                'stripped_formatted_value' => '',
-                'label'                    => _('Customer'),
-                'required'                 => true,
-                'type'                     => 'value'
-
-
-            ),
-
-
-        )
-    ),
-
-    array(
-        'label'      => _('Properties'),
-        'show_title' => true,
-        'class'      => ($new ? 'hide' : ''),
-        'fields'     => array(
-
-            array(
-                'id'   => 'Product_Materials',
-                //'linked'=>$fields_linked,
-                'edit' => ($part_edit ? 'textarea' : ''),
-
-                'render' => ($new ? false : true),
-
-                'value'           => htmlspecialchars($object->get('Product Materials')),
-                'formatted_value' => $object->get('Materials'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product Materials')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'                       => 'Product_Origin_Country_Code',
-                'edit'                     => ($part_edit ? 'country_select' : ''),
-                'render'                   => ($new ? false : true),
-                'options'                  => get_countries($db),
-                'scope'                    => 'countries',
-                'value'                    => strtolower(country_3alpha_to_2alpha($object->get('Product Origin Country Code'))),
-                'formatted_value'          => $object->get('Origin Country Code'),
-                'stripped_formatted_value' => ($object->get(
-                    'Product Origin Country Code'
-                ) != '' ? $object->get('Origin Country').' ('.$object->get(
-                        'Product Origin Country Code'
-                    ).')' : ''),
-                'label'                    => ucfirst(
-                        $object->get_field_label('Product Origin Country Code')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'required'                 => false,
-                //'type'=>'value'
-            ),
-            array(
-                'id'              => 'Product_Tariff_Code',
-                'edit'            => ($part_edit ? 'numeric' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => $object->get('Product Tariff Code'),
-                'formatted_value' => $object->get('Tariff Code'),
-                'label'           => ucfirst($object->get_field_label('Product Tariff Code')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-
-            ),
-            array(
-                'id'              => 'Product_Duty_Rate',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => $object->get('Product Duty Rate'),
-                'formatted_value' => $object->get('Duty Rate'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product Duty Rate')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Product_HTSUS_Code',
-                'edit'            => ($part_edit ? 'numeric' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => $object->get('Product HTSUS Code'),
-                'formatted_value' => $object->get('HTSUS Code'),
-                'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img src="/art/flags/us.png"/></span> '.($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
-                'invalid_msg'     => get_invalid_message('string'),
-                'required'        => false,
-                'type'            => 'value'
-
-            ),
-
-        )
-    ),
-
-
-    array(
-        'label'      => _('Health & Safety'),
-        'class'      => ($new ? 'hide' : ''),
-        'show_title' => true,
-        'fields'     => array(
-
-            array(
-                'id'              => 'Product_UN_Number',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => htmlspecialchars(
-                    $object->get('Product UN Number')
-                ),
-                'formatted_value' => $object->get('UN Number'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product UN Number')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Product_UN_Class',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => htmlspecialchars(
-                    $object->get('Product UN Class')
-                ),
-                'formatted_value' => $object->get('UN Class'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product UN Class')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Product_Packing_Group',
-                'edit'            => ($part_edit ? 'option' : ''),
-                'render'          => ($new ? false : true),
-                'options'         => $options_Packing_Group,
-                'value'           => htmlspecialchars(
-                    $object->get('Product Packing Group')
-                ),
-                'formatted_value' => $object->get('Packing Group'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product Packing Group')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Product_Proper_Shipping_Name',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => htmlspecialchars(
-                    $object->get('Product Proper Shipping Name')
-                ),
-                'formatted_value' => $object->get('Proper Shipping Name'),
-                'label'           => ucfirst(
-                        $object->get_field_label('Product Proper Shipping Name')
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'required'        => false,
-                'type'            => 'value'
-            ),
-            array(
-                'id'              => 'Product_Hazard_Identification_Number',
-                'edit'            => ($part_edit ? 'string' : ''),
-                'render'          => ($new ? false : true),
-                'value'           => htmlspecialchars(
-                    $object->get('Product Hazard Identification Number')
-                ),
-                'formatted_value' => $object->get(
-                    'Hazard Identification Number'
-                ),
-                'label'           => ucfirst(
-                        $object->get_field_label(
-                            'Product Hazard Identification Number'
+        array(
+            'label'      => _('Service'),
+            'show_title' => true,
+            'class'      => 'service_field '.(($new or $product->get('Product Type') == 'Product') ? 'hide' : ''),
+            'fields'     => array(
+                array(
+                    'id'                => 'Service_Code',
+                    'edit'              => ($edit ? 'string' : ''),
+                    'class'             => 'service_field '.(($new or $product->get('Product Type') == 'Product' )? 'hide' : ''),
+                    'value'             => htmlspecialchars($product->get('Product Code')),
+                    'formatted_value'   => $product->get('Code'),
+                    'label'             => ucfirst($product->get_field_label('Product Code')),
+                    'required'          => true,
+                    'server_validation' => json_encode(
+                        array(
+                            'tipo'       => 'check_for_duplicates',
+                            'field'      => 'Product_Code',
+                            'parent'     => 'store',
+                            'parent_key' => ($new ? $options['store_key'] : $product->get('Product Store Key')),
+                            'object'     => 'Product',
+                            'key'        => $product->id
                         )
-                    ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
-                            'Linked to part value'
-                        ).'"></i>' : ''),
-                'required'        => false,
-                'type'            => 'value'
+                    ),
+                    'type'              => 'value skip'
+                ),
+                array(
+                    'id'              => 'Service_Name',
+                    'edit'            => ($edit ? 'string' : ''),
+                    'class'           => 'service_field '.(($new or $product->get('Product Type') == 'Product' )? 'hide' : ''),
+                    'value'           => htmlspecialchars($product->get('Product Name')),
+                    'formatted_value' => $product->get('Name'),
+                    'label'           => _('Description'),
+                    'required'        => true,
+                    'type'            => 'value skip'
+
+
+                ),
+
+                array(
+                    'id'              => 'Service_Price',
+                    'edit'            => ($edit ? 'amount' : ''),
+                    'class'           => 'service_field '.(($new or $product->get('Product Type') == 'Product' )? 'hide' : ''),
+                    'value'           => $product->get('Product Price'),
+                    'formatted_value' => $product->get('Price'),
+                    'label'           => _('Unit price'),
+                    'invalid_msg'     => get_invalid_message('amount'),
+                    'required'        => true,
+                    'type'            => 'value skip'
+                ),
+                array(
+                    'id'              => 'Service_Unit_Label',
+                    'class'           => 'service_field '.(($new or $product->get('Product Type') == 'Product' )? 'hide' : ''),
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => ($new ? _('') : $product->get('Product Unit Label')),
+                    'formatted_value' => ($new ? _('') : $product->get('Unit Label')),
+                    'label'           => ucfirst($product->get_field_label('Product Unit Label')),
+                    'required'        => true,
+                    'type'            => 'value skip'
+                ),
             )
-        )
+        ),
 
 
-    ),
+        array(
+            'label'      => _('Id'),
+            'show_title' => true,
+            'class'      => 'product_field '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+            'fields'     => array(
+
+                array(
+                    'id'                => 'Product_Code',
+                    'class'             => 'product_field  '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'edit'              => ($edit ? 'string' : ''),
+                    'value'             => htmlspecialchars($product->get('Product Code')),
+                    'formatted_value'   => $product->get('Code'),
+                    'label'             => ucfirst($product->get_field_label('Product Code')),
+                    'required'          => true,
+                    'server_validation' => json_encode(
+                        array(
+                            'tipo'       => 'check_for_duplicates',
+                            'parent'     => 'store',
+                            'parent_key' => ($new ? $options['store_key'] : $product->get('Product Store Key')),
+                            'object'     => 'Product',
+                            'key'        => $product->id
+                        )
+                    ),
+                    'type'              => 'value'
+                ),
+
+                array(
+                    'id'              => 'Product_CPNP_Number',
+                    'edit'            => ($part_edit ? 'string' : ''),
+                    'class'           => 'product_field  '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'render'          => !$new,
+                    'value'           => $product->get('Product CPNP Number'),
+                    'formatted_value' => $product->get('CPNP Number'),
+                    'label'           => ucfirst($product->get_field_label('Product CPNP Number')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_UFI',
+                    'edit'            => ($part_edit ? 'string' : ''),
+                    'class'           => 'product_field  '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'render'          => !$new,
+                    'value'           => $product->get('Product UFI'),
+                    'formatted_value' => $product->get('UFI'),
+                    'label'           => ucfirst(
+                            $product->get_field_label('Product UFI')
+                        ).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._(
+                                'Linked to part value'
+                            ).'"></i>' : ''),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+
+            )
+        ),
+        array(
+            'label'      => _('Parts'),
+            'show_title' => true,
+            'class'      => 'product_field '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+            'fields'     => array(
+                array(
+                    'id'              => 'Product_Parts',
+                    'class'           => 'product_field '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'edit'            => 'parts_list',
+                    'value'           => $product->get('Product Parts'),
+                    'formatted_value' => $product->get('Parts'),
+                    'label'           => ucfirst($product->get_field_label('Product Parts')),
+                    'required'        => false,
+                    'type'            => 'value'
+                )
+
+            )
+        ),
+
+        array(
+            'label'      => _('Family'),
+            'show_title' => true,
+            'fields'     => array(
+                array(
+                    'id'                       => 'Product_Family_Category_Key',
+                    'edit'                     => 'dropdown_select',
+                    'scope'                    => 'families',
+                    'parent'                   => 'store',
+                    'parent_key'               => ($new ? $options['store_key'] : $product->get('Product Store Key')),
+                    'value'                    => htmlspecialchars($product->get('Product Family Category Key')),
+                    'formatted_value'          => $product->get('Family Category Key'),
+                    'stripped_formatted_value' => '',
+                    'label'                    => _('Family'),
+                    'required'                 => true,
+                    'type'                     => 'value'
+
+
+                ),
+
+                array(
+                    'id'              => 'Product_Label_in_Family',
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => htmlspecialchars($product->get('Product Label in Family')),
+                    'formatted_value' => $product->get('Label in Family'),
+                    'label'           => ucfirst($product->get_field_label('Product Label in Family')),
+                    'required'        => false,
+                    'type'            => 'value'
+
+                ),
+
+            )
+        ),
+
+
+        array(
+            'label'      => _('Outer'),
+            'show_title' => true,
+             'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+            'fields'     => array(
+
+                array(
+                    'render'          => true,
+                    'id'              => 'Product_Units_Per_Case',
+                    'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+
+                    'edit'            => ($edit ? 'numeric' : ''),
+                    'value'           => $product->get('Product Units Per Case'),
+                    'formatted_value' => $product->get('Units Per Case'),
+                    'label'           => ucfirst($product->get_field_label('Product Units Per Case')),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => true,
+                    'type'            => 'value'
+                ),
+
+
+                array(
+                    'id'              => 'Product_Price',
+                    'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+
+                    'edit'            => ($edit ? 'amount' : ''),
+                    'value'           => $product->get('Product Price'),
+                    'formatted_value' => $product->get('Price'),
+                    'label'           => ucfirst($product->get_field_label('Product Price')),
+                    'invalid_msg'     => get_invalid_message('amount'),
+                    'required'        => true,
+                    'type'            => 'value'
+                ),
+
+
+            )
+        ),
+
+        array(
+            'label'      => _('Retail unit'),
+            'show_title' => true,
+             'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+            'fields'     => array(
+                array(
+                    'id'              => 'Product_Unit_Label',
+                     'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => ($new ? _('piece') : $product->get('Product Unit Label')),
+                    'formatted_value' => ($new ? _('piece') : $product->get('Unit Label')),
+                    'label'           => ucfirst($product->get_field_label('Product Unit Label')),
+                    'required'        => true,
+                    'type'            => 'value'
+
+                ),
+
+                array(
+                    'id'              => 'Product_Name',
+                     'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => htmlspecialchars($product->get('Product Name')),
+                    'formatted_value' => $product->get('Name'),
+                    'label'           => ucfirst($product->get_field_label('Product Name')),
+                    'required'        => true,
+                    'type'            => 'value'
+
+
+                ),
+
+                array(
+                    'id'              => 'Product_Unit_RRP',
+                     'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'edit'            => ($edit ? 'amount' : ''),
+                    'value'           => $product->get('Product Unit RRP'),
+                    'formatted_value' => $product->get('Unit RRP'),
+                    'label'           => ucfirst($product->get_field_label('Product Unit RRP')),
+                    'invalid_msg'     => get_invalid_message('amount'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+                array(
+                    'id'              => 'Product_Unit_Weight',
+                    'edit'            => ($part_edit ? 'numeric' : ''),
+                    'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+
+                    'render'          => !$new,
+                    'value'           => $product->get('Product Unit Weight'),
+                    'formatted_value' => $product->get('Unit Weight'),
+                    'label'           => ucfirst($product->get_field_label('Product Unit Weight')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'invalid_msg'     => get_invalid_message('numeric'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_Unit_Dimensions',
+                    'edit'            => ($part_edit ? 'dimensions' : ''),
+                    'class'      => 'product_field '.((!$new  and  $product->get('Product Type') == 'Service') ? 'hide' : ''),
+
+                    'render'          => !$new,
+                    'value'           => $product->get('Unit Dimensions'),
+                    'formatted_value' => $product->get('Unit Dimensions'),
+                    'label'           => ucfirst($product->get_field_label('Product Unit Dimensions')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'invalid_msg'     => get_invalid_message('numeric'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+
+            )
+        ),
+
+        array(
+            'label'      => _('Customer'),
+            'show_title' => true,
+            'class'      => ($new ? 'hide' : ''),
+            'fields'     => array(
+                array(
+                    'id'                       => 'Product_Customer_Key',
+                    'edit'                     => ($new ? '' : 'dropdown_select'),
+                    'render'                   => !$new,
+                    'scope'                    => 'customers',
+                    'parent'                   => 'store',
+                    'parent_key'               => ($new ? $options['store_key'] : $product->get('Product Store Key')),
+                    'value'                    => $product->get('Product Customer Key'),
+                    'formatted_value'          => $product->get('Customer Key'),
+                    'stripped_formatted_value' => '',
+                    'label'                    => _('Customer'),
+                    'required'                 => true,
+                    'type'                     => ''
+
+
+                ),
+
+
+            )
+        ),
 
 
 
-);
 
 
+
+
+    );
+
+    if($product->get('Product Type') == 'Product') {
+        $product_fields[] = array(
+            'label'      => _('Properties'),
+            'show_title' => true,
+            'class'      => ($new ? 'hide' : ''),
+            'fields'     => array(
+
+                array(
+                    'id'   => 'Product_Materials',
+                    //'linked'=>$fields_linked,
+                    'edit' => ($part_edit ? 'textarea' : ''),
+
+                    'render' => !$new,
+
+                    'value'           => htmlspecialchars($product->get('Product Materials')),
+                    'formatted_value' => $product->get('Materials'),
+                    'label'           => ucfirst($product->get_field_label('Product Materials')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'                       => 'Product_Origin_Country_Code',
+                    'edit'                     => ($part_edit ? 'country_select' : ''),
+                    'render'                   => !$new,
+                    'options'                  => get_countries($db),
+                    'scope'                    => 'countries',
+                    'value'                    => strtolower(country_3alpha_to_2alpha($product->get('Product Origin Country Code'))),
+                    'formatted_value'          => $product->get('Origin Country Code'),
+                    'stripped_formatted_value' => ($product->get('Product Origin Country Code') != '' ? $product->get('Origin Country').' ('.$product->get('Product Origin Country Code').')' : ''),
+                    'label'                    => ucfirst($product->get_field_label('Product Origin Country Code')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'required'                 => false,
+                    //'type'=>'value'
+                ),
+                array(
+                    'id'              => 'Product_Tariff_Code',
+                    'edit'            => ($part_edit ? 'numeric' : ''),
+                    'render'          => !$new,
+                    'value'           => $product->get('Product Tariff Code'),
+                    'formatted_value' => $product->get('Tariff Code'),
+                    'label'           => ucfirst($product->get_field_label('Product Tariff Code')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => false,
+                    'type'            => 'value'
+
+                ),
+                array(
+                    'id'              => 'Product_Duty_Rate',
+                    'edit'            => ($part_edit ? 'string' : ''),
+                    'render'          => !$new,
+                    'value'           => $product->get('Product Duty Rate'),
+                    'formatted_value' => $product->get('Duty Rate'),
+                    'label'           => ucfirst($product->get_field_label('Product Duty Rate')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_HTSUS_Code',
+                    'edit'            => ($part_edit ? 'numeric' : ''),
+                    'render'          => !$new,
+                    'value'           => $product->get('Product HTSUS Code'),
+                    'formatted_value' => $product->get('HTSUS Code'),
+                    'label'           => '<span title="Harmonized Tariff Schedule of the United States Code ">HTS US <img alt="us" src="/art/flags/us.png"/></span> '.($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'invalid_msg'     => get_invalid_message('string'),
+                    'required'        => false,
+                    'type'            => 'value'
+
+                ),
+
+            )
+        );
+        $product_fields[] = array(
+            'label'      => _('Health & Safety'),
+            'class'      => ($new ? 'hide' : ''),
+            'show_title' => true,
+            'fields'     => array(
+
+                array(
+                    'id'              => 'Product_UN_Number',
+                    'edit'            => ($part_edit ? 'string' : ''),
+                    'render'          => !$new,
+                    'value'           => htmlspecialchars($product->get('Product UN Number')),
+                    'formatted_value' => $product->get('UN Number'),
+                    'label'           => ucfirst($product->get_field_label('Product UN Number')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_UN_Class',
+                    'edit'            => ($part_edit ? 'string' : ''),
+                    'render'          => !$new,
+                    'value'           => htmlspecialchars($product->get('Product UN Class')),
+                    'formatted_value' => $product->get('UN Class'),
+                    'label'           => ucfirst($product->get_field_label('Product UN Class')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_Packing_Group',
+                    'edit'            => ($part_edit ? 'option' : ''),
+                    'render'          => !$new,
+                    'options'         => $options_Packing_Group,
+                    'value'           => htmlspecialchars($product->get('Product Packing Group')),
+                    'formatted_value' => $product->get('Packing Group'),
+                    'label'           => ucfirst($product->get_field_label('Product Packing Group')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_Proper_Shipping_Name',
+                    'edit'            => ($part_edit ? 'string' : ''),
+                    'render'          => !$new,
+                    'value'           => htmlspecialchars($product->get('Product Proper Shipping Name')),
+                    'formatted_value' => $product->get('Proper Shipping Name'),
+                    'label'           => ucfirst($product->get_field_label('Product Proper Shipping Name')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_Hazard_Identification_Number',
+                    'edit'            => ($part_edit ? 'string' : ''),
+                    'render'          => !$new,
+                    'value'           => htmlspecialchars($product->get('Product Hazard Identification Number')),
+                    'formatted_value' => $product->get('Hazard Identification Number'),
+                    'label'           => ucfirst($product->get_field_label('Product Hazard Identification Number')).($fields_linked ? ' <i  class="discreet fa fa-link"  title="'._('Linked to part value').'"></i>' : ''),
+                    'required'        => false,
+                    'type'            => 'value'
+                )
+            )
+
+
+        );
+    }
+
+    return $product_fields;
+}

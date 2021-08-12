@@ -129,3 +129,4 @@ cron/set_up_web_menu.php
 /cron/set_up_tax_authority.php
 /cron/test_new_tax_engine.php
 /.env
+/public/js/bundle.js

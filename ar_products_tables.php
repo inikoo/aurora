@@ -184,18 +184,23 @@ function products($_data, $db, $user, $account) {
                 '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']
             );
 
+            $icon='fa-cube';
+            if($data['Product Type']=='Service'){
+                $icon='fa-spa';
+            }
+
             switch ($data['Product Status']) {
                 case 'Active':
-                    $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
+                    $status = sprintf('<i class="fa %s" aria-hidden="true" title="%s"></i>',$icon, _('Active'));
                     break;
                 case 'Discontinuing':
-                    $status = sprintf('<i class="fa fa-cube warning" aria-hidden="true" title="%s"></i>', _('Discontinuing'));
+                    $status = sprintf('<i class="fa %s warning" aria-hidden="true" title="%s"></i>', $icon,_('Discontinuing'));
                     break;
                 case 'Discontinued':
-                    $status = sprintf('<i class="fal fa-cube very_discreet" aria-hidden="true" title="%s"></i>', _('Discontinued'));
+                    $status = sprintf('<i class="fal %s very_discreet" aria-hidden="true" title="%s"></i>',$icon, _('Discontinued'));
                     break;
                 case 'Suspended':
-                    $status = sprintf('<i class="fa fa-cube error" aria-hidden="true" title="%s"></i>', _('Suspended'));
+                    $status = sprintf('<i class="fa %s error" aria-hidden="true" title="%s"></i>', $icon,_('Suspended'));
                     break;
                 default:
                     $status = $data['Product Status'];

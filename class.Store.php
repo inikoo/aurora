@@ -19,13 +19,10 @@ include_once 'class.DB_Table.php';
 class Store extends DB_Table
 {
 
-    /**
-     * @var PDO
-     */
-    public $db;
+
 
     public Smarty $smarty;
-    public bool $fork;
+
 
     function __construct($a1, $a2 = false, $a3 = false, $_db = false)
     {
@@ -3196,6 +3193,9 @@ class Store extends DB_Table
         $this->new_product = false;
 
         $data['editor'] = $this->editor;
+
+
+
 
 
         if (!isset($data['Product Code']) or $data['Product Code'] == '') {

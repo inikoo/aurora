@@ -275,7 +275,7 @@
     </div>
 
 
-    <div style="width: 770px">
+    <div style="width: 770px" class="{if $product->get('Product Type')=='Service'}hide{/if}">
 
 
 

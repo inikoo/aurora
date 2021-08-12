@@ -7,12 +7,11 @@
  */
 
 include_once 'utils/invalid_messages.php';
-include_once 'conf/object_fields.php';
 include_once 'conf/fields/fulfilment.asset.fld.php';
 
 /** @var User $user */
-/** @var \PDO $db */
-/** @var \Smarty $smarty */
+/** @var PDO $db */
+/** @var Smarty $smarty */
 /** @var array $state */
 
 

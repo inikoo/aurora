@@ -1214,6 +1214,11 @@ class Product extends Asset
 
     function update_availability($use_fork = true)
     {
+
+        if($this->data['Product Type']=='Service'){
+            return;
+        }
+
         $use_pipelines = true;
 
         $old_availability_state = $this->get('Product Availability State');
@@ -1542,12 +1547,7 @@ class Product extends Asset
         }
 
 
-        //   if ($old_web_state != $web_state) {
-        //   $this->update_availability($use_fork);
-        //  }
-
-
-        $web_availability_updated = ($old_web_availability != $web_availability ? true : false);
+        $web_availability_updated = $old_web_availability != $web_availability;
 
 
         if ($web_availability_updated) {
@@ -1559,7 +1559,7 @@ class Product extends Asset
                            ));
             while ($row = $stmt->fetch()) {
                 /**
-                 * @var $category \Category
+                 * @var $category Category
                  */
                 $category = get_object('Category', $row['Category Key']);
                 $category->update_product_category_products_data();
@@ -1653,9 +1653,9 @@ class Product extends Asset
         }
     }
 
-    function get_web_state()
+    function get_web_state(): string
     {
-        if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0)) {
+        if (!($this->data['Product Status'] == 'Active' or $this->data['Product Status'] == 'Discontinuing') or ($this->data['Product Number of Parts'] == 0 and  $this->data['Product Type'] =='Product'  )) {
             return 'Offline';
         }
         switch ($this->data['Product Web Configuration']) {
@@ -1667,13 +1667,18 @@ class Product extends Asset
 
             case 'Online Auto':
 
-                if ($this->data['Product Number of Parts'] == 0) {
-                    return 'Offline';
-                } else {
-                    if ($this->data['Product Availability'] > 0 or $this->data['Product Availability State'] == 'OnDemand') {
-                        return 'For Sale';
+
+                if($this->data['Product Type'] =='Service' ){
+                    return 'For Sale';
+                }else {
+                    if ($this->data['Product Number of Parts'] == 0) {
+                        return 'Offline';
                     } else {
-                        return 'Out of Stock';
+                        if ($this->data['Product Availability'] > 0 or $this->data['Product Availability State'] == 'OnDemand') {
+                            return 'For Sale';
+                        } else {
+                            return 'Out of Stock';
+                        }
                     }
                 }
 

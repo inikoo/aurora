@@ -944,12 +944,13 @@ function check_for_duplicates($data, $db, $user, $account) {
         case 'Product':
             switch ($field) {
                 case 'Product Code':
-
+                case 'Service Code':
 
                     $invalid_msg = _('Product code already used');
 
                     $sql = sprintf(
-                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ", prepare_mysql($data['value']), $data['parent_key']
+                        "SELECT P.`Product ID` AS `key` ,`Product Code` AS field FROM `Product Dimension` P WHERE  `Product Code`=%s  AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ",
+                        prepare_mysql($data['value']), $data['parent_key']
 
                     );
 

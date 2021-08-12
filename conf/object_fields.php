@@ -365,16 +365,6 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
 
             return $object_fields;
 
-        case 'Product':
-        case 'StoreProduct':
-
-            $object->get_webpage();
-            include 'fields/product.fld.php';
-
-            /** @var array $product_fields */
-            return $product_fields;
-
-
         case 'Supplier':
 
 

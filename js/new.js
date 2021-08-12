@@ -85,56 +85,57 @@ function hide_options(field) {
 function get_form_validation_state() {
 
 
-    if($('#fields').attr('object')=='Mailshot'){
+    let form_validation;
+    if ($('#fields').attr('object') == 'Mailshot') {
         return get_mailshot_form_validation_state();
-    }else{
+    } else {
         form_validation = 'valid';
 
         $(".value").each(function (index) {
 
-            var field = $(this).attr('field')
-            //console.log(index)
-            //console.log($(this).attr('id'))
 
-            if($(this).attr('field_type')=='date_interval'   ){
-                component_validation = 'valid'
+            if(!$(this).hasClass('skip')) {
 
-            }else{
-                if ($('#' + field + '_field').hasClass('invalid')) {
-                    component_validation = 'invalid'
+                const field = $(this).attr('field');
+                //console.log(index)
+                //console.log($(this).attr('id'))
 
-
-
-                } else if ($('#' + field + '_field').hasClass('valid')) {
+                let component_validation;
+                if ($(this).attr('field_type') === 'date_interval') {
                     component_validation = 'valid'
-                } else {
-                    component_validation = 'potentially_valid'
 
+                } else {
+                    if ($('#' + field + '_field').hasClass('invalid')) {
+                        component_validation = 'invalid'
+
+
+                    } else if ($('#' + field + '_field').hasClass('valid')) {
+                        component_validation = 'valid'
+                    } else {
+                        component_validation = 'potentially_valid'
+
+                    }
+                }
+
+
+                if (component_validation !== 'valid') {
+                    console.log('#' + field + '_field')
+                    console.log($('#' + field + '_field'))
+                    console.log(field + ' ' + component_validation)
+                }
+                //if (component_validation == 'invalid' || component_validation == 'potentially_valid')
+                if (component_validation === 'invalid') {
+                    form_validation = 'invalid';
+                }
+
+                if (form_validation === 'invalid') {
+                    return;
+                }
+
+                if (component_validation === 'potentially_valid') {
+                    form_validation = 'potentially_valid';
                 }
             }
-
-
-
-
-
-             if (component_validation != 'valid') {
-                 console.log('#' + field + '_field')
-                 console.log($('#' + field + '_field'))
-                 console.log(field + ' ' + component_validation)
-             }
-            //if (component_validation == 'invalid' || component_validation == 'potentially_valid')
-            if (component_validation == 'invalid') {
-                form_validation = 'invalid';
-            }
-
-            if (form_validation == 'invalid') {
-                return;
-            }
-
-            if (component_validation == 'potentially_valid') {
-                form_validation = 'potentially_valid';
-            }
-
 
         });
 
@@ -227,6 +228,7 @@ function save_new_object(object, form_type) {
 
 
 
+            let value;
             var field = $(this).attr('field')
             var field_type = $(this).attr('field_type')
 
@@ -328,18 +330,19 @@ function save_new_object(object, form_type) {
                 //console.log('#' + field+'_field')
                // console.log( '#' + field+'_toggle')
 
-                var value = $('#' + field+'_field').find(  '.' + field+'_toggle').hasClass('fa-toggle-on')
+                value = $('#' + field+'_field').find(  '.' + field+'_toggle').hasClass('fa-toggle-on');
             }else if(field_type == 'button_radio_options') {
-                var value = $('#' + field+'_field').hasClass('selected')
+                value = $('#' + field + '_field').hasClass('selected');
             }else if(field_type == 'input_with_field') {
-                var value = $('#' + field+'_field').val()
+                value = $('#' + field+'_field').val();
             }else if(field_type == 'asset') {
-                var value = $('#Asset_Key').val()
+                value = $('#Asset_Key').val();
             }else if(field_type == 'list') {
-                var value = $('#List_Key').val()
+                value = $('#List_Key').val();
             }else {
-                var value = $('#' + field).val()
+                value = $('#' + field).val();
             }
+            console.log(field_type)
             //console.log($(this).attr('id') + ' ' + field + ' ' + $(this).closest('tr').hasClass('hide'))
             fields_data[field.replace(re, ' ')] = value
         });

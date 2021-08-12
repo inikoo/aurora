@@ -45,17 +45,17 @@ switch ($parameters['parent']) {
     case('stores'):
     case('account'):
         $where = sprintf(
-            " where `Product Type`='Product' and `Product Store Key` in (%s) ", join(',', $user->stores)
+            " where `Product Store Key` in (%s) ", join(',', $user->stores)
         );
         break;
     case('store'):
         $where = sprintf(
-            " where  `Product Type`='Product' and `Product Store Key`=%d", $parameters['parent_key']
+            " where `Product Store Key`=%d", $parameters['parent_key']
         );
         break;
     case('customer_product'):
         $where = sprintf(
-            " where  `Product Type`='Product' and `Product Customer Key`=%d", $parameters['parent_key']
+            " where `Product Customer Key`=%d", $parameters['parent_key']
         );
         break;
 
@@ -316,7 +316,7 @@ $sql_totals
 
 
 $fields
-    = " `Product Customer Key`, `Product Total Acc Quantity Ordered`,P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
+    = " `Product Type`,`Product Customer Key`, `Product Total Acc Quantity Ordered`,P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
 `Product 1 Year Ago Invoiced Amount`,`Product 2 Year Ago Invoiced Amount`,`Product 3 Year Ago Invoiced Amount`,`Product 4 Year Ago Invoiced Amount`,`Product 5 Year Ago Invoiced Amount`,
 `Product 1 Quarter Ago Invoiced Amount`,`Product 2 Quarter Ago Invoiced Amount`,`Product 3 Quarter Ago Invoiced Amount`,`Product 4 Quarter Ago Invoiced Amount`,
 `Product 1 Quarter Ago 1YB Invoiced Amount`,`Product 2 Quarter Ago 1YB Invoiced Amount`,`Product 3 Quarter Ago 1YB Invoiced Amount`,`Product 4 Quarter Ago 1YB Invoiced Amount`,

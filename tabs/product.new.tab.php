@@ -9,31 +9,35 @@
 
 */
 
+/** @var User $user */
+/** @var PDO $db */
+/** @var Smarty $smarty */
+/** @var array $state */
 
 include_once 'utils/invalid_messages.php';
+include_once 'conf/fields/product.fld.php';
 
+if ($user->can_edit('stores') and in_array($state['store']->id, $user->stores)) {
+    $object_fields = get_product_fields(
+        $state['_object'],  $user, $db, array(
+                             'new' => true,
+                             'store_key' => $state['store']->id
+                         )
+    );
 
-include_once 'conf/object_fields.php';
-include_once 'class.Product.php';
+    $smarty->assign('state', $state);
+    $smarty->assign('object', $state['_object']);
+    $smarty->assign('object_name', $state['_object']->get_object_name());
+    $smarty->assign('object_fields', $object_fields);
 
-$object_fields = get_object_fields(
-    $state['_object'], $db, $user, $smarty, array(
-        'new' => true,
-        'store_key' => $state['store']->id
-    )
-);
+    try {
+        $html = $smarty->fetch('new_object.tpl');
+    } catch (Exception $e) {
+    }
+} else {
+    try {
+        $html = $smarty->fetch('access_denied.tpl');
+    } catch (Exception $e) {
+    }
+}
 
-
-$smarty->assign('state', $state);
-$smarty->assign('object', $state['_object']);
-
-
-$smarty->assign('object_name', $state['_object']->get_object_name());
-
-
-$smarty->assign('object_fields', $object_fields);
-
-
-$html = $smarty->fetch('new_object.tpl');
-
-?>
