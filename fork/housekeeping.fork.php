@@ -9,8 +9,8 @@
 
 include_once 'utils/send_zqm_message.class.php';
 
-function fork_housekeeping($job) {
-
+function fork_housekeeping($job)
+{
     global $account, $db;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
@@ -23,7 +23,6 @@ function fork_housekeeping($job) {
     print $data['type']."\n";
     //return true;
     switch ($data['type']) {
-
         case 'website_user_visit':
 
             include_once 'utils/network_functions.php';
@@ -35,10 +34,8 @@ function fork_housekeeping($job) {
             $ip = 'unknown';
             if (!empty($data['server_data']['HTTP_CF_CONNECTING_IP'])) {
                 $ip = $data['server_data']['HTTP_CF_CONNECTING_IP'];
-
             } elseif (!empty($data['server_data']['REMOTE_ADDR'])) {
                 $ip = $data['server_data']['REMOTE_ADDR'];
-
             }
 
 
@@ -63,16 +60,11 @@ function fork_housekeeping($job) {
 
 
             if ($geolocation_data['Location'] == '') {
-
                 if (!empty($data['server_data']['HTTP_CF_IPCOUNTRY'])) {
                     $webuser_data['location'] = '<img src="/art/flags/'.strtolower($data['server_data']['HTTP_CF_IPCOUNTRY']).'.png">';
-
                 } else {
                     $webuser_data['location'] = '<img src="/art/flags/zz.png"> <span class="italic very_discreet">'._('Unknown').'</span>';
-
                 }
-
-
             } else {
                 $webuser_data['location'] = $geolocation_data['Location'];
                 /*
@@ -88,7 +80,6 @@ function fork_housekeeping($job) {
                  }
 
                 */
-
             }
 
             $webpage_label = '';
@@ -98,8 +89,6 @@ function fork_housekeeping($job) {
                 array($data['webpage_key'])
             );
             if ($row = $stmt->fetch()) {
-
-
                 if ($row['Webpage Code'] == 'home.sys') {
                     $webpage_label = '<i class="fal fa-home"></i> '._('Home');
                 } elseif ($row['Webpage Code'] == 'basket.sys' or $row['Webpage Code'] == 'client_basket.sys' or $row['Webpage Code'] == 'client_order_new.sys') {
@@ -140,7 +129,6 @@ function fork_housekeeping($job) {
                 $webuser_data['webpage_label'] = sprintf('<span class="button" onclick="change_view(\'website/%d/webpage/%d\')">%s</span>', $data['session_data']['website_key'], $data['webpage_key'], $webpage_label);
                 $webuser_data['webpage_key']   = $row['Page Key'];
                 $webuser_data['webpage_url']   = $row['Webpage URL'];
-
             }
 
             $sql  = 'select `Customer Store Key`,`Customer Name`, `Customer Key`  from `Customer Dimension`   where `Customer Key`=? ';
@@ -149,11 +137,8 @@ function fork_housekeeping($job) {
                 array($data['session_data']['customer_key'])
             );
             if ($row = $stmt->fetch()) {
-
-
                 $webuser_data['customer_label'] = sprintf('<span class="button" onclick="change_view(\'customers/%d/%d\')">%s</span>', $row['Customer Store Key'], $row['Customer Key'], $row['Customer Name']);
                 $webuser_data['customer_key']   = $row['Customer Key'];
-
             }
 
             $sql = "SELECT `Order Key`,`Order Total Net Amount`,`Order Currency`,`Order Public ID` ,`Order Store Key` FROM `Order Dimension` WHERE `Order Customer Key`=? AND `Order State`='InBasket' ";
@@ -163,17 +148,12 @@ function fork_housekeeping($job) {
                 array($data['session_data']['customer_key'])
             );
             if ($row = $stmt->fetch()) {
-
-
                 $webuser_data['order_net']           = $row['Order Total Net Amount'];
                 $webuser_data['order_net_formatted'] =
                     sprintf('<span title="%s" class="button" onclick="change_view(\'orders/%d/%d\')">%s</span>', $row['Order Public ID'], $row['Order Store Key'], $row['Order Key'], money($row['Order Total Net Amount'], $row['Order Currency']));
-
-
             } else {
                 $webuser_data['order_net']           = '';
                 $webuser_data['order_net_formatted'] = '';
-
             }
 
 
@@ -181,8 +161,6 @@ function fork_housekeeping($job) {
 
 
             if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
-
-
                 /*
                 $sql  = 'select `Website Key` from `Website Dimension`';
                 $stmt = $db->prepare($sql);
@@ -251,8 +229,6 @@ function fork_housekeeping($job) {
                         )
                     )
                 );
-
-
             }
 
             $sql = 'update `Customer Dimension` set `Customer Last Website Visit`=? where `Customer Key`=? ';
@@ -272,29 +248,31 @@ function fork_housekeeping($job) {
             $date = gmdate('Y-m-d H:i:s');
 
             $sql = sprintf(
-                "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Key`=%d order by `Order Last Updated Date` desc ", $data['store_key']
+                "SELECT `Order Key` FROM `Order Dimension`  left join `Store Dimension` on (`Store Key`=`Order Store Key`) where `Order State`='InBasket'and `Store Key`=%d order by `Order Last Updated Date` desc ",
+                $data['store_key']
             );
 
             $counter = 0;
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-
-
                     if ($counter < 100) {
                         $operation = 'update_order_in_basket';
                     } else {
                         $operation = 'update_order_in_basket_low_priority';
-
                     }
 
                     $sql = sprintf(
                         'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql($operation), $row['Order Key'], prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                        prepare_mysql($date),
+                        prepare_mysql($date),
+                        prepare_mysql($operation),
+                        $row['Order Key'],
+                        prepare_mysql($date)
 
                     );
                     $db->exec($sql);
                     $counter++;
-
                 }
             }
 
@@ -316,7 +294,9 @@ function fork_housekeeping($job) {
                 }
 
                 $sql = sprintf(
-                    "INSERT INTO `Feedback Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_data)).'`', join(',', array_fill(0, count($feedback_data), '?'))
+                    "INSERT INTO `Feedback Dimension` (%s) values (%s)",
+                    '`'.join('`,`', array_keys($feedback_data)).'`',
+                    join(',', array_fill(0, count($feedback_data), '?'))
                 );
 
                 $stmt = $db->prepare($sql);
@@ -333,8 +313,6 @@ function fork_housekeeping($job) {
 
 
                     if (isset($feedback['itf'])) {
-
-
                         $feedback_itf_data = array(
                             'Feedback ITF Feedback Key' => $feedback_id,
                         );
@@ -346,39 +324,37 @@ function fork_housekeeping($job) {
                         );
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d', $feedback['original_itf']
+                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d',
+                            $feedback['original_itf']
                         );
 
                         if ($result = $db->query($sql)) {
                             if ($row = $result->fetch()) {
-
                                 $feedback_itf_data['Feedback ITF Original Key'] = $row['Inventory Transaction Key'];
                                 $feedback_otf_data['Feedback OTF Original Key'] = $row['Map To Order Transaction Fact Key'];
-
-
                             }
                         }
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d', $feedback['itf']
+                            'select `Inventory Transaction Key`,`Map To Order Transaction Fact Key` from `Inventory Transaction Fact` where `Inventory Transaction Key`=%d',
+                            $feedback['itf']
                         );
 
                         if ($result = $db->query($sql)) {
                             if ($row = $result->fetch()) {
-
                                 $feedback_itf_data['Feedback ITF Post Operation Key'] = $row['Inventory Transaction Key'];
 
                                 if ($row['Map To Order Transaction Fact Key'] != $feedback_otf_data['Feedback OTF Original Key']) {
                                     $feedback_otf_data['Feedback OTF Post Operation Key'] = $row['Map To Order Transaction Fact Key'];
                                 }
-
-
                             }
                         }
 
 
                         $sql = sprintf(
-                            "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_itf_data)).'`', join(',', array_fill(0, count($feedback_itf_data), '?'))
+                            "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)",
+                            '`'.join('`,`', array_keys($feedback_itf_data)).'`',
+                            join(',', array_fill(0, count($feedback_itf_data), '?'))
                         );
 
                         $stmt = $db->prepare($sql);
@@ -394,7 +370,9 @@ function fork_housekeeping($job) {
 
 
                         $sql = sprintf(
-                            "INSERT INTO `Feedback OTF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_otf_data)).'`', join(',', array_fill(0, count($feedback_otf_data), '?'))
+                            "INSERT INTO `Feedback OTF Bridge` (%s) values (%s)",
+                            '`'.join('`,`', array_keys($feedback_otf_data)).'`',
+                            join(',', array_fill(0, count($feedback_otf_data), '?'))
                         );
 
                         $stmt = $db->prepare($sql);
@@ -408,11 +386,7 @@ function fork_housekeeping($job) {
                         }
 
                         $stmt->execute();
-
-
                     } elseif (isset($feedback['otf'])) {
-
-
                         $feedback_otf_data = array(
                             'Feedback OTF Feedback Key'       => $feedback_id,
                             'Feedback OTF Original Key'       => (isset($feedback['original_otf']) ? $feedback['original_otf'] : ''),
@@ -422,7 +396,9 @@ function fork_housekeeping($job) {
 
 
                         $sql = sprintf(
-                            "INSERT INTO `Feedback OTF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_otf_data)).'`', join(',', array_fill(0, count($feedback_otf_data), '?'))
+                            "INSERT INTO `Feedback OTF Bridge` (%s) values (%s)",
+                            '`'.join('`,`', array_keys($feedback_otf_data)).'`',
+                            join(',', array_fill(0, count($feedback_otf_data), '?'))
                         );
 
                         $stmt = $db->prepare($sql);
@@ -438,13 +414,12 @@ function fork_housekeeping($job) {
                         $stmt->execute();
 
                         $sql = sprintf(
-                            'select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d', $feedback['original_otf']
+                            'select `Inventory Transaction Key` from `Inventory Transaction Fact` where `Map To Order Transaction Fact Key`=%d',
+                            $feedback['original_otf']
                         );
 
                         if ($result = $db->query($sql)) {
                             foreach ($result as $row) {
-
-
                                 $feedback_itf_data = array(
                                     'Feedback ITF Feedback Key' => $feedback_id,
                                     'Feedback ITF Original Key' => $row['Inventory Transaction Key'],
@@ -452,7 +427,9 @@ function fork_housekeeping($job) {
 
 
                                 $sql = sprintf(
-                                    "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_itf_data)).'`', join(',', array_fill(0, count($feedback_itf_data), '?'))
+                                    "INSERT INTO `Feedback ITF Bridge` (%s) values (%s)",
+                                    '`'.join('`,`', array_keys($feedback_itf_data)).'`',
+                                    join(',', array_fill(0, count($feedback_itf_data), '?'))
                                 );
 
                                 $stmt = $db->prepare($sql);
@@ -465,18 +442,13 @@ function fork_housekeeping($job) {
                                 }
 
                                 $stmt->execute();
-
                             }
                         } else {
                             print_r($error_info = $db->errorInfo());
                             print "$sql\n";
                             exit;
                         }
-
-
                     } elseif (isset($feedback['onptf'])) {
-
-
                         $feedback_otf_data = array(
                             'Feedback ONPTF Feedback Key'       => $feedback_id,
                             'Feedback ONPTF Original Key'       => (isset($feedback['original_onptf']) ? $feedback['original_onptf'] : ''),
@@ -486,7 +458,9 @@ function fork_housekeeping($job) {
 
 
                         $sql = sprintf(
-                            "INSERT INTO `Feedback ONPTF Bridge` (%s) values (%s)", '`'.join('`,`', array_keys($feedback_otf_data)).'`', join(',', array_fill(0, count($feedback_otf_data), '?'))
+                            "INSERT INTO `Feedback ONPTF Bridge` (%s) values (%s)",
+                            '`'.join('`,`', array_keys($feedback_otf_data)).'`',
+                            join(',', array_fill(0, count($feedback_otf_data), '?'))
                         );
 
                         $stmt = $db->prepare($sql);
@@ -500,12 +474,8 @@ function fork_housekeeping($job) {
                         }
 
                         $stmt->execute();
-
                     }
-
-
                 }
-
             }
 
 
@@ -537,8 +507,6 @@ function fork_housekeeping($job) {
                 foreach ($result2 as $row2) {
                     $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
                     $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
-
-
                 }
             }
 
@@ -546,12 +514,14 @@ function fork_housekeeping($job) {
         case 'update_parts_stock_run':
             include_once 'utils/new_fork.php';
             new_housekeeping_fork(
-                'au_long_operations', array(
-                'type'               => 'update_parts_stock_run',
-                'parts_data'         => $data['parts_data'],
-                'editor'             => $editor,
-                'all_parts_min_date' => $data['all_parts_min_date'],
-            ), $account->get('Account Code')
+                'au_long_operations',
+                array(
+                    'type'               => 'update_parts_stock_run',
+                    'parts_data'         => $data['parts_data'],
+                    'editor'             => $editor,
+                    'all_parts_min_date' => $data['all_parts_min_date'],
+                ),
+                $account->get('Account Code')
             );
 
             break;
@@ -560,11 +530,13 @@ function fork_housekeeping($job) {
 
             include_once 'utils/new_fork.php';
             new_housekeeping_fork(
-                'au_long_operations', array(
-                'type'     => 'part_stock_run',
-                'part_sku' => $data['part_sku'],
-                'editor'   => $editor,
-            ), $account->get('Account Code')
+                'au_long_operations',
+                array(
+                    'type'     => 'part_stock_run',
+                    'part_sku' => $data['part_sku'],
+                    'editor'   => $editor,
+                ),
+                $account->get('Account Code')
             );
 
             break;
@@ -584,7 +556,8 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                "SELECT `Category Key` FROM `Category Bridge` WHERE `Subject`='Part' AND `Subject Key`=%d", $part->sku
+                "SELECT `Category Key` FROM `Category Bridge` WHERE `Subject`='Part' AND `Subject Key`=%d",
+                $part->sku
             );
 
             if ($result = $db->query($sql)) {
@@ -625,7 +598,6 @@ function fork_housekeeping($job) {
                     break;
                 default:
                     $part_status = $part->get('Part Status');
-
             }
 
 
@@ -659,10 +631,7 @@ function fork_housekeeping($job) {
             $deal     = get_object('Deal', $data['deal_key']);
             $campaign = get_object('Campaign', $deal->get('Deal Campaign Key'));
             if ($deal->get('Deal Status') == 'Active' and !$deal->get('Deal Voucher Key')) {
-
-
                 switch ($campaign->get('Deal Campaign Code')) {
-
                     case 'CA':
 
 
@@ -675,7 +644,8 @@ function fork_housekeeping($job) {
 
                     default:
                         $sql = sprintf(
-                            'SELECT `Order Key`  FROM `Order Dimension` where  `Order State`="InBasket"  and `Order Store Key`=%d ', $deal->get('Deal Store Key')
+                            'SELECT `Order Key`  FROM `Order Dimension` where  `Order State`="InBasket"  and `Order Store Key`=%d ',
+                            $deal->get('Deal Store Key')
                         );
                         break;
                 }
@@ -683,8 +653,6 @@ function fork_housekeeping($job) {
 
                 if ($result = $db->query($sql)) {
                     foreach ($result as $row) {
-
-
                         $order          = get_object('Order', $row['Order Key']);
                         $old_used_deals = $order->get_used_deals();
                         $order->update_totals();
@@ -712,7 +680,6 @@ function fork_housekeeping($job) {
                         $date = gmdate('Y-m-d H:i:s');
 
                         foreach ($campaigns_diff as $campaign_key) {
-
                             if ($campaign_key > 0) {
                                 $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
@@ -728,7 +695,6 @@ function fork_housekeeping($job) {
                                     ]
                                 );
                             }
-
                         }
 
                         foreach ($deal_diff as $deal_key) {
@@ -771,8 +737,6 @@ function fork_housekeeping($job) {
                     print "$sql\n";
                     exit;
                 }
-
-
             }
             $campaign->update_number_of_deals();
 
@@ -803,7 +767,6 @@ function fork_housekeeping($job) {
 
                     if ($result = $db->query($sql)) {
                         foreach ($result as $row) {
-
                             //print_r($row);
                             $order = get_object('Order', $row['Order Key']);
 
@@ -832,7 +795,6 @@ function fork_housekeeping($job) {
                             $date = gmdate('Y-m-d H:i:s');
 
                             foreach ($campaigns_diff as $campaign_key) {
-
                                 if ($campaign_key > 0) {
                                     $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
@@ -848,7 +810,6 @@ function fork_housekeeping($job) {
                                         ]
                                     );
                                 }
-
                             }
 
                             foreach ($deal_diff as $deal_key) {
@@ -1066,7 +1027,6 @@ function fork_housekeeping($job) {
                 foreach ($result as $row) {
                     $charge = get_object('Charge', $row['Charge Key']);
                     $charge->update_charge_usage();
-
                 }
             } else {
                 print_r($error_info = $db->errorInfo());
@@ -1080,24 +1040,29 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                "DELETE FROM `Customer Correlation` WHERE `Customer A Key`=%d OR `Customer B Key`=%s", $data['customer_key'], $data['customer_key']
+                "DELETE FROM `Customer Correlation` WHERE `Customer A Key`=%d OR `Customer B Key`=%s",
+                $data['customer_key'],
+                $data['customer_key']
             );
             $db->exec($sql);
 
             $db->exec($sql);
             $sql = sprintf(
-                "DELETE FROM `List Customer Bridge` WHERE `Customer Key`=%d", $data['customer_key']
+                "DELETE FROM `List Customer Bridge` WHERE `Customer Key`=%d",
+                $data['customer_key']
             );
             $db->exec($sql);
 
             $sql = sprintf(
-                "DELETE FROM `Customer Send Post` WHERE `Customer Key`=%d", $data['customer_key']
+                "DELETE FROM `Customer Send Post` WHERE `Customer Key`=%d",
+                $data['customer_key']
             );
             $db->exec($sql);
 
 
             $sql = sprintf(
-                "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d", $data['customer_key']
+                "DELETE FROM `Category Bridge` WHERE `Subject`='Customer' AND `Subject Key`=%d",
+                $data['customer_key']
             );
             $db->exec($sql);
 
@@ -1164,7 +1129,6 @@ function fork_housekeeping($job) {
                 foreach ($result as $row) {
                     $charge = get_object('Charge', $row['Transaction Type Key']);
                     $charge->update_charge_usage();
-
                 }
             }
 
@@ -1180,7 +1144,8 @@ function fork_housekeeping($job) {
             $deals     = array();
             $campaigns = array();
             $sql       = sprintf(
-                "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d", $order->id
+                "SELECT `Deal Component Key`,`Deal Key`,`Deal Campaign Key` FROM  `Order Deal Bridge` WHERE `Order Key`=%d",
+                $order->id
             );
 
 
@@ -1221,37 +1186,30 @@ function fork_housekeeping($job) {
 
             if ($result = $website->db->query($sql)) {
                 foreach ($result as $row) {
-
                     $webpage         = get_object('Webpage', $row['Page Key']);
                     $webpage->editor = $website->editor;
 
 
                     if ($webpage->get('Webpage State') == 'Ready') {
                         $webpage->publish();
-
                     }
-
-
                 }
             }
 
 
             $sql = sprintf(
-                "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Product') AND `Webpage State`='Ready'  ", $website->id
+                "SELECT `Page Key` FROM `Page Store Dimension`  P LEFT JOIN `Webpage Type Dimension` WTD ON (WTD.`Webpage Type Key`=P.`Webpage Type Key`)  WHERE `Webpage Website Key`=%d AND `Webpage Scope`  IN ('Product') AND `Webpage State`='Ready'  ",
+                $website->id
             );
 
             if ($result = $website->db->query($sql)) {
                 foreach ($result as $row) {
-
                     $webpage         = get_object('Webpage', $row['Page Key']);
                     $webpage->editor = $website->editor;
 
                     if ($webpage->get('Webpage State') == 'Ready') {
                         $webpage->publish();
-
                     }
-
-
                 }
             }
 
@@ -1270,7 +1228,6 @@ function fork_housekeeping($job) {
 
 
             if ($customer->get('Customer Tax Number') != '') {
-
                 $customer->update_tax_number_valid('Auto');
             }
 
@@ -1282,17 +1239,17 @@ function fork_housekeeping($job) {
                 $website = get_object('Website', $website_user->get('Website User Website Key'));
 
                 $website->update_users_data();
-
             }
 
 
             $sql = sprintf(
-                'select `Prospect Key` from `Prospect Dimension`  where `Prospect Store Key`=%d and `Prospect Main Plain Email`=%s and `Prospect Customer Key` is  NULL ', $customer->get('Store Key'), prepare_mysql($customer->get('Customer Main Plain Email'))
+                'select `Prospect Key` from `Prospect Dimension`  where `Prospect Store Key`=%d and `Prospect Main Plain Email`=%s and `Prospect Customer Key` is  NULL ',
+                $customer->get('Store Key'),
+                prepare_mysql($customer->get('Customer Main Plain Email'))
 
             );
             if ($result = $db->query($sql)) {
                 if ($row = $result->fetch()) {
-
                     $prospect         = get_object('Prospect', $row['Prospect Key']);
                     $prospect->editor = $data['editor'];
                     if ($prospect->id) {
@@ -1300,7 +1257,12 @@ function fork_housekeeping($job) {
                         if ($result2 = $db->query($sql)) {
                             foreach ($result2 as $row2) {
                                 $sql = sprintf(
-                                    "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)", $customer->id, $row2['History Key'], prepare_mysql($row2['Deletable']), prepare_mysql($row2['Strikethrough']), prepare_mysql($row2['Type'])
+                                    "INSERT INTO `Customer History Bridge` VALUES (%d,%d,%s,%s,%s)",
+                                    $customer->id,
+                                    $row2['History Key'],
+                                    prepare_mysql($row2['Deletable']),
+                                    prepare_mysql($row2['Strikethrough']),
+                                    prepare_mysql($row2['Type'])
                                 );
                                 //print "$sql\n";
                                 $db->exec($sql);
@@ -1417,7 +1379,8 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ', $data['order_key']
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ',
+                $data['order_key']
             );
             // print "$sql\n";
             if ($result = $db->query($sql)) {
@@ -1451,7 +1414,8 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ', $data['delivery_note_key']
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ',
+                $data['delivery_note_key']
             );
             // print "$sql\n";
 
@@ -1506,7 +1470,8 @@ function fork_housekeeping($job) {
 
 
             $sql = sprintf(
-                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ', $order->id
+                'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE `Order Key`=%d  ',
+                $order->id
             );
             // print "$sql\n";
             if ($result = $db->query($sql)) {
@@ -1534,9 +1499,11 @@ function fork_housekeeping($job) {
 
             $published_email_template->send($customer, $send_data);
             if ($published_email_template->sent) {
-
                 $sql = sprintf(
-                    'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)', $order->id, $published_email_template->email_tracking->id, prepare_mysql('Order Notification')
+                    'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)',
+                    $order->id,
+                    $published_email_template->email_tracking->id,
+                    prepare_mysql('Order Notification')
                 );
 
                 $db->exec($sql);
@@ -1557,8 +1524,6 @@ function fork_housekeeping($job) {
 
 
             if (count($recipients) > 0) {
-
-
                 $email_template_type      = get_object('Email_Template_Type', 'New Order|'.$website->get('Website Store Key'), 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
                 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
@@ -1575,11 +1540,7 @@ function fork_housekeeping($job) {
 
                 foreach ($recipients as $recipient) {
                     $published_email_template->send($recipient, $send_data, $smarty);
-
-
                 }
-
-
             }
 
 
@@ -1605,7 +1566,6 @@ function fork_housekeeping($job) {
 
 
             if ($order->get('Order For Collection') == 'No') {
-
                 $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
                 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
@@ -1624,8 +1584,6 @@ function fork_housekeeping($job) {
 
 
                 if ($published_email_template->sent) {
-
-
                     $stmt = $db->prepare("INSERT INTO `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) VALUES (?, ?, ?)");
                     $stmt->execute(
                         array(
@@ -1634,8 +1592,6 @@ function fork_housekeeping($job) {
                             'Dispatch Notification'
                         )
                     );
-
-
                 }
             }
 
@@ -1661,8 +1617,6 @@ function fork_housekeeping($job) {
             $timeseries      = get_time_series_config();
             $timeseries_data = $timeseries['Customer'];
             foreach ($timeseries_data as $time_series_data) {
-
-
                 $time_series_data['Timeseries Parent']     = 'Customer';
                 $time_series_data['Timeseries Parent Key'] = $customer->id;
                 $time_series_data['editor']                = $editor;
@@ -1670,8 +1624,6 @@ function fork_housekeeping($job) {
 
                 $object_timeseries = new Timeseries('find', $time_series_data, 'create');
                 $customer->update_timeseries_record($object_timeseries, gmdate('Y-m-d'), gmdate('Y-m-d'));
-
-
             }
 
             $customer->index_elastic_search(
@@ -1686,7 +1638,6 @@ function fork_housekeeping($job) {
 
 
             if ($account->properties('google_drive_folder_key')) {
-
                 $google_drive = new google_drive($account, 'keyring/goggle_drive.'.DNS_ACCOUNT_CODE.'.token.json');
 
                 $invoice = get_object('Invoice', $data['invoice_key']);
@@ -1721,8 +1672,6 @@ function fork_housekeeping($job) {
         case 'update_sent_emails_data':
 
             if (!empty($data['email_mailshot_key'])) {
-
-
                 $email_campaign = get_object('email_campaign', $data['email_mailshot_key']);
                 $email_campaign->update_sent_emails_totals();
 
@@ -1768,19 +1717,15 @@ function fork_housekeeping($job) {
                         )
                     )
                 );
-
             }
 
             if (!empty($data['email_template_key'])) {
                 $email_template = get_object('email_template', $data['email_template_key']);
                 $email_template->update_sent_emails_totals();
-
-
             }
             if (!empty($data['email_template_type_key'])) {
                 $email_template_type = get_object('email_template_type', $data['email_template_type_key']);
                 $email_template_type->update_sent_emails_totals();
-
             }
 
 
@@ -1793,7 +1738,6 @@ function fork_housekeeping($job) {
             $email_campaign->editor = $data['editor'];
 
             if ($email_campaign->id) {
-
                 $email_campaign->update_estimated_recipients();
                 $email_campaign->send_mailshot();
             }
@@ -1806,8 +1750,6 @@ function fork_housekeeping($job) {
 
 
             if ($mailshot->id) {
-
-
                 $max_thread = 1;
 
                 $sql = "select `Email Tracking Thread` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=?  and `Email Tracking State`='Ready' group by `Email Tracking Thread`";
@@ -1866,10 +1808,7 @@ function fork_housekeeping($job) {
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-
-
                     if ($row['Inventory Transaction Type'] == 'Sale') {
-
                         $part = get_object('Part', $row['Part SKU']);
 
 
@@ -1877,7 +1816,12 @@ function fork_housekeeping($job) {
                             $date = gmdate('Y-m-d H:i:s');
                             $sql  = sprintf(
                                 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('part_sales'), $part->id, prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                                prepare_mysql($date),
+                                prepare_mysql($date),
+                                prepare_mysql('part_sales'),
+                                $part->id,
+                                prepare_mysql($date)
 
                             );
                             $db->exec($sql);
@@ -1890,11 +1834,7 @@ function fork_housekeeping($job) {
                                 $part_categories[$part_category_key] = $part_category_key;
                             }
                         }
-
-
                     }
-
-
                 }
             }
 
@@ -1903,7 +1843,12 @@ function fork_housekeeping($job) {
                 $date = gmdate('Y-m-d H:i:s');
                 $sql  = sprintf(
                     'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('part_category_sales'), $part_category_key, prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                    prepare_mysql($date),
+                    prepare_mysql($date),
+                    prepare_mysql('part_category_sales'),
+                    $part_category_key,
+                    prepare_mysql($date)
 
                 );
                 $db->exec($sql);
@@ -1917,7 +1862,12 @@ function fork_housekeeping($job) {
                     $date = gmdate('Y-m-d H:i:s');
                     $sql  = sprintf(
                         'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('supplier_sales'), $supplier->id, prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                        prepare_mysql($date),
+                        prepare_mysql($date),
+                        prepare_mysql('supplier_sales'),
+                        $supplier->id,
+                        prepare_mysql($date)
 
                     );
                     $db->exec($sql);
@@ -1926,15 +1876,18 @@ function fork_housekeeping($job) {
                         $suppliers_categories[$supplier_category_key] = $supplier_category_key;
                     }
                 }
-
-
             }
 
             foreach ($suppliers_categories as $supplier_category_key) {
                 $date = gmdate('Y-m-d H:i:s');
                 $sql  = sprintf(
                     'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (%s,%s,%s,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('supplier_category_sales'), $supplier_category_key, prepare_mysql($date)
+                      ON DUPLICATE KEY UPDATE `Stack Last Update Date`=%s ,`Stack Counter`=`Stack Counter`+1 ',
+                    prepare_mysql($date),
+                    prepare_mysql($date),
+                    prepare_mysql('supplier_category_sales'),
+                    $supplier_category_key,
+                    prepare_mysql($date)
 
                 );
                 $db->exec($sql);
@@ -1966,7 +1919,6 @@ function fork_housekeeping($job) {
                 $part_location->update_stock();
 
                 $returned_parts[$part_location->part->id] = $part_location->part->id;
-
             }
 
             if (count($returned_parts) > 0) {
@@ -2022,7 +1974,6 @@ function fork_housekeeping($job) {
 
 
                 foreach ($returned_parts as $part_sku) {
-
                     $part = get_object('Part', $part_sku);
 
 
@@ -2061,8 +2012,6 @@ function fork_housekeeping($job) {
 
                     $timeseries_data = $timeseries['PartCategory'];
                     foreach ($timeseries_data as $time_series_data) {
-
-
                         $time_series_data['Timeseries Parent']     = 'Category';
                         $time_series_data['Timeseries Parent Key'] = $category->id;
                         $time_series_data['editor']                = $editor;
@@ -2070,10 +2019,7 @@ function fork_housekeeping($job) {
 
                         $object_timeseries = new Timeseries('find', $time_series_data, 'create');
                         $category->update_part_timeseries_record($object_timeseries, $data['date'], gmdate('Y-m-d'));
-
-
                     }
-
                 }
 
 
@@ -2083,8 +2029,6 @@ function fork_housekeeping($job) {
 
                     $timeseries_data = $timeseries['Supplier'];
                     foreach ($timeseries_data as $time_series_data) {
-
-
                         $time_series_data['Timeseries Parent']     = 'Supplier';
                         $time_series_data['Timeseries Parent Key'] = $supplier->id;
                         $time_series_data['editor']                = $editor;
@@ -2092,8 +2036,6 @@ function fork_housekeeping($job) {
 
                         $object_timeseries = new Timeseries('find', $time_series_data, 'create');
                         $supplier->update_timeseries_record($object_timeseries, $data['date'], gmdate('Y-m-d'));
-
-
                     }
 
 
@@ -2105,12 +2047,10 @@ function fork_housekeeping($job) {
                             $supplier->update_previous_quarters_data();
                             $supplier->update_previous_years_data();
                         }
-
                     }
                     foreach ($supplier->get_categories() as $supplier_category_key) {
                         $suppliers_categories[$supplier_category_key] = $supplier_category_key;
                     }
-
                 }
 
                 foreach ($suppliers_categories as $supplier_category_key) {
@@ -2144,8 +2084,6 @@ function fork_housekeeping($job) {
                     }
                     */
                 }
-
-
             }
 
 
@@ -2167,7 +2105,12 @@ function fork_housekeeping($job) {
 
             $sql = sprintf(
                 'insert into `Stack BiKey Dimension` (`Stack BiKey Creation Date`,`Stack BiKey Last Update Date`,`Stack BiKey Operation`,`Stack BiKey Object Key One`,`Stack BiKey Object Key Two`) values (%s,%s,%s,%d,%d) 
-                      ON DUPLICATE KEY UPDATE `Stack BiKey Last Update Date`=%s ,`Stack BiKey Counter`=`Stack BiKey Counter`+1 ', prepare_mysql($date), prepare_mysql($date), prepare_mysql('update_part_location_isf'), $data['part_sku'], $data['location_key'],
+                      ON DUPLICATE KEY UPDATE `Stack BiKey Last Update Date`=%s ,`Stack BiKey Counter`=`Stack BiKey Counter`+1 ',
+                prepare_mysql($date),
+                prepare_mysql($date),
+                prepare_mysql('update_part_location_isf'),
+                $data['part_sku'],
+                $data['location_key'],
                 prepare_mysql($date)
 
             );
@@ -2199,7 +2142,6 @@ function fork_housekeeping($job) {
                 if ($po->id) {
                     $po->update_totals();
                 }
-
             }
 
 
@@ -2223,7 +2165,6 @@ function fork_housekeeping($job) {
                         $supplier_part->part->update_next_deliveries_data();
                     }
                 }
-
             }
 
 
@@ -2257,20 +2198,18 @@ function fork_housekeeping($job) {
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-
-
                     $sql = sprintf(
                         'update `Purchase Order Transaction Fact` set `Purchase Order Net Amount`=%.2f ,`Purchase Order Extra Cost Amount`=%.2f where `Purchase Order Transaction Fact Key`=%d  ',
 
-                        $row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'], $row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'], $row['Purchase Order Transaction Fact Key']
+                        $row['Supplier Part Unit Cost'] * $row['Purchase Order Ordering Units'],
+                        $row['Supplier Part Unit Extra Cost'] * $row['Purchase Order Ordering Units'],
+                        $row['Purchase Order Transaction Fact Key']
                     );
 
                     //print "$sql\n";
                     $db->exec($sql);
 
                     $purchase_orders[$row['Purchase Order Key']] = $row['Purchase Order Key'];
-
-
                 }
             }
 
@@ -2283,7 +2222,6 @@ function fork_housekeeping($job) {
                 if ($purchase_order->id) {
                     $purchase_order->update_totals();
                 }
-
             }
 
 
@@ -2338,15 +2276,15 @@ function fork_housekeeping($job) {
             $product          = get_object('product', $data['product_id']);
             $states_to_change = "'In Process','Out of Stock in Basket'";
             $sql              = sprintf(
-                "SELECT `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF  WHERE `Product ID`=%d   AND `Product Key`!=%d AND  `Current Dispatching State` IN (%s) AND `Invoice Key` IS NULL ", $product->id,
-                $product->get('Product Current Key'), $states_to_change
+                "SELECT `Order Key`,`Delivery Note Key`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF  WHERE `Product ID`=%d   AND `Product Key`!=%d AND  `Current Dispatching State` IN (%s) AND `Invoice Key` IS NULL ",
+                $product->id,
+                $product->get('Product Current Key'),
+                $states_to_change
 
             );
 
             if ($result = $db->query($sql)) {
                 foreach ($result as $row) {
-
-
                     $sql = "UPDATE `Order Transaction Fact` SET  `Product Key`=?,  `Order Transaction Gross Amount`=?, `Order Transaction Total Discount Amount`=0	, `Order Transaction Amount`=?  WHERE `Order Transaction Fact Key`=?";
 
                     $db->prepare($sql)->execute(
@@ -2362,9 +2300,6 @@ function fork_housekeeping($job) {
                     $order          = get_object('Order', $row['Order Key']);
                     $old_used_deals = $order->get_used_deals();
 
-
-                    $order->update_number_products();
-                    //$order->update_insurance();
 
                     $order->update_discounts_items();
                     $order->update_totals();
@@ -2390,7 +2325,6 @@ function fork_housekeeping($job) {
                     $date = gmdate('Y-m-d H:i:s');
 
                     foreach ($campaigns_diff as $campaign_key) {
-
                         if ($campaign_key > 0) {
                             $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
@@ -2406,7 +2340,6 @@ function fork_housekeeping($job) {
                                 ]
                             );
                         }
-
                     }
 
                     foreach ($deal_diff as $deal_key) {
@@ -2442,14 +2375,7 @@ function fork_housekeeping($job) {
                             );
                         }
                     }
-
-                    $order->update_number_products();
                 }
-
-
-            } else {
-                print_r($error_info = $db->errorInfo());
-                exit;
             }
 
 
@@ -2472,15 +2398,12 @@ function fork_housekeeping($job) {
 
 
             if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
-
-
                 $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.$webpage->get('Webpage Code');
                 $redis->set($url_cache_key, $webpage->id);
                 $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtoupper($webpage->get('Webpage Code'));
                 $redis->set($url_cache_key, $webpage->id);
                 $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtolower($webpage->get('Webpage Code'));
                 $redis->set($url_cache_key, $webpage->id);
-
             }
 
 
@@ -2512,8 +2435,6 @@ function fork_housekeeping($job) {
             $recipients = $store->get_notification_recipients_objects('Invoice Deleted');
 
             if (count($recipients) > 0) {
-
-
                 $email_template_type      = get_object('Email_Template_Type', 'Invoice Deleted|'.$store->id, 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
                 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
@@ -2530,11 +2451,7 @@ function fork_housekeeping($job) {
 
                 foreach ($recipients as $recipient) {
                     $published_email_template->send($recipient, $send_data, $smarty);
-
-
                 }
-
-
             }
 
             $customer = get_object('Customer', $data['customer_key']);
@@ -2590,8 +2507,6 @@ function fork_housekeeping($job) {
             $recipients = $store->get_notification_recipients_objects('Delivery Note Undispatched');
 
             if (count($recipients) > 0) {
-
-
                 $email_template_type      = get_object('Email_Template_Type', 'Delivery Note Undispatched|'.$store->id, 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
                 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
@@ -2609,11 +2524,7 @@ function fork_housekeeping($job) {
 
                 foreach ($recipients as $recipient) {
                     $published_email_template->send($recipient, $send_data, $smarty);
-
-
                 }
-
-
             }
 
             $account->load_acc_data();
@@ -2664,8 +2575,6 @@ function fork_housekeeping($job) {
 
 
             if (count($recipients) > 0) {
-
-
                 $email_template_type      = get_object('Email_Template_Type', 'New Customer|'.$website->get('Website Store Key'), 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
                 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
@@ -2680,13 +2589,8 @@ function fork_housekeeping($job) {
 
 
                 foreach ($recipients as $recipient) {
-
                     $published_email_template->send($recipient, $send_data, $smarty);
-
-
                 }
-
-
             }
 
 
@@ -2710,8 +2614,6 @@ function fork_housekeeping($job) {
 
                     $published_email_template->send($customer, $send_data);
                 }
-
-
             }
 
             break;
@@ -2739,10 +2641,9 @@ function fork_housekeeping($job) {
                         $_customers      = ' ('.$category->properties('donut_marketing_customers').' '._('customers').')';
                         $update_metadata = array('new_donut_mailshot' => _('Create donut mailshot').$_customers);
                         break;
-
                 }
             } elseif ($data['object'] == 'product') {
-                /** @var Product  $product */
+                /** @var Product $product */
                 $product = get_object('Product', $data['key']);
 
                 switch ($data['tipo']) {
@@ -2763,7 +2664,6 @@ function fork_housekeeping($job) {
                         $update_metadata = array('new_donut_mailshot' => _('Create donut mailshot').$_customers);
 
                         break;
-
                 }
             }
 
@@ -2837,7 +2737,6 @@ function fork_housekeeping($job) {
                 case 'Deal Campaign Name':
 
                     if ($deal_campaign->data['Deal Campaign Code'] == 'VL' or $deal_campaign->data['Deal Campaign Code'] == 'OR') {
-
                         $sql  = "select  `Deal Key` from   `Deal Dimension`  WHERE `Deal Campaign Key`=?";
                         $stmt = $db->prepare($sql);
                         $stmt->execute(
@@ -2854,8 +2753,6 @@ function fork_housekeeping($job) {
                                 )
                             );
                         }
-
-
                     }
                     break;
             }
@@ -2870,13 +2767,11 @@ function fork_housekeeping($job) {
             $children = [];
             foreach ($webpage->get_category_children_webpage_keys() as $child_webpage_key) {
                 $children[] = get_object('Webpage', $child_webpage_key);
-
             }
 
             chdir(AU_PATH);
             foreach ($children as $_webpage) {
                 $_webpage->refresh_cache();
-
             }
 
 
@@ -2893,22 +2788,18 @@ function fork_housekeeping($job) {
             if ($data['update_in_warehouse']) {
                 $store->update_orders_in_warehouse_data();
                 $account->update_orders_in_warehouse_data();
-
             }
             if ($data['update_packed_done']) {
                 $store->update_orders_packed_done_data();
                 $account->update_orders_packed_done_data();
-
             }
             if ($data['update_approved']) {
                 $store->update_orders_approved_data();
                 $account->update_orders_approved_data();
-
             }
             if ($data['update_dispatched_today']) {
                 $store->update_orders_dispatched_today();
                 $account->update_orders_dispatched_today();
-
             }
 
             break;
@@ -2934,11 +2825,9 @@ function fork_housekeeping($job) {
             if ($object->id) {
                 try {
                     $object->index_elastic_search($ES_hosts, false, $data['indices']);
-
                 } catch (Exception $e) {
                     echo 'Caught exception: ', $e->getMessage(), "\n";
                 }
-
             }
 
             break;
@@ -2993,12 +2882,10 @@ function fork_housekeeping($job) {
 
 
                 if (microtime(true) > $show_feedback) {
-
                     $msg = _('Adding barcodes');
                     $msg .= ' <span style="font-weight: bold" class="'.($added > 0 ? 'success' : '').'">'.sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
                     if ($duplicated > 0) {
                         $msg .= ' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
-
                     }
                     if ($error > 0) {
                         $msg .= ' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
@@ -3022,7 +2909,6 @@ function fork_housekeeping($job) {
 
                     $show_feedback = (float)microtime(true) + .250;
                 }
-
             }
 
 
@@ -3030,7 +2916,6 @@ function fork_housekeeping($job) {
             $msg .= ' <span style="font-weight: bold" class="success">'.sprintf(ngettext('%s barcode added', '%s barcodes added', $added), number($added)).'</span>';
             if ($duplicated > 0) {
                 $msg .= ' <span class="error">'.sprintf(ngettext('%s duplicated', '%s duplicates', $duplicated), number($duplicated)).'</span>';
-
             }
             if ($error > 0) {
                 $msg .= ' <span class="error">'.sprintf(ngettext('%s error', '%s errors', $error), number($error)).'</span>';
@@ -3123,7 +3008,6 @@ function fork_housekeeping($job) {
             break;
         default:
             break;
-
     }
 
     $db = null;
