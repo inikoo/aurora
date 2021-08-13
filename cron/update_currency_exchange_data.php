@@ -46,7 +46,7 @@ $sql = sprintf('SELECT `Part SKU` FROM `Part Dimension` ORDER BY `Part SKU`  ');
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $part = new Part($row['Part SKU']);
-        print $part->sku."\r";
+        print $part->id."\r";
         $part->update_cost();
     }
 

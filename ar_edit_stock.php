@@ -475,7 +475,7 @@ function get_part_locations_html($account, $db, $user, $editor, $data, $smarty) 
 
 
     $part = get_object('Part', $data['part_sku']);
-    if (!$part->sku) {
+    if (!$part->id) {
         $response = array(
             'state' => 400,
             'msg'   => 'part not found'
@@ -512,7 +512,7 @@ function edit_part_stock_check($data, $editor, $smarty) {
 
     $part         = get_object('Part', $data['part_sku']);
     $part->editor = $editor;
-    if (!$part->sku) {
+    if (!$part->id) {
         $response = array(
             'state' => 400,
             'msg'   => 'part not found'
@@ -526,7 +526,7 @@ function edit_part_stock_check($data, $editor, $smarty) {
         $location = get_object('Location', $stock_to_update_data['location_key']);
         if ($location->id) {
 
-            $part_location = get_object('PartLocation', $part->sku.'_'.$location->id);
+            $part_location = get_object('PartLocation', $part->id.'_'.$location->id);
 
             $note = $stock_to_update_data['note'];
 
@@ -586,7 +586,7 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
 
 
     $part = get_object('Part', $data['part_sku']);
-    if (!$part->sku) {
+    if (!$part->id) {
         $response = array(
             'state' => 400,
             'msg'   => 'part not found'
@@ -605,7 +605,7 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
 
             $part_location_data = array(
                 'Location Key' => $location->id,
-                'Part SKU'     => $part->sku,
+                'Part SKU'     => $part->id,
                 'editor'       => $editor
             );
             new PartLocation('find', $part_location_data, 'create');
@@ -619,7 +619,7 @@ function edit_part_linked_locations($account, $db, $user, $editor, $data, $smart
         $location = get_object('Location', $location_key);
         if ($location->id) {
 
-            $part_location = new PartLocation($part->sku, $location->id);
+            $part_location = new PartLocation($part->id, $location->id);
 
             if ($part_location->ok) {
                 $part_location->editor = $editor;
@@ -685,7 +685,7 @@ function new_part_location($account, $db, $user, $editor, $data, $smarty) {
 
 
     $part = get_object('Part', $data['part_sku']);
-    if (!$part->sku) {
+    if (!$part->id) {
         $response = array(
             'state' => 400,
             'msg'   => 'part not found'
@@ -874,7 +874,7 @@ function edit_part_move_stock($editor, $data, $smarty) {
 
 
     $part = get_object('Part', $data['part_sku']);
-    if (!$part->sku) {
+    if (!$part->id) {
         $response = array(
             'state' => 400,
             'msg'   => 'part not found'
@@ -931,7 +931,7 @@ function edit_part_move_stock($editor, $data, $smarty) {
             exit;
         }
 
-        $part_location_from = new PartLocation($part->sku, $movement['from_location_key']);
+        $part_location_from = new PartLocation($part->id, $movement['from_location_key']);
 
         if (!$part_location_from->ok) {
             $response = array(
@@ -946,7 +946,7 @@ function edit_part_move_stock($editor, $data, $smarty) {
         $part_location_from->editor = $editor;
 
 
-        //$part_location_to         = new PartLocation($part->sku, $movement['to_location_key']);
+        //$part_location_to         = new PartLocation($part->id, $movement['to_location_key']);
         //$part_location_to->editor = $editor;
 
 
@@ -979,7 +979,7 @@ function edit_part_move_stock($editor, $data, $smarty) {
     $response = array('state' => 200);
 
 
-    $part = get_object('part', $part->sku);
+    $part = get_object('part', $part->id);
 
     $smarty->assign('part_sku', $part->id);
     $smarty->assign('part', $part);
@@ -1145,7 +1145,7 @@ function place_part($account, $db, $user, $editor, $data, $smarty) {
 
 
     $part = get_object('Part', $data['part_sku']);
-    if (!$part->sku) {
+    if (!$part->id) {
         $response = array(
             'state' => 400,
             'msg'   => 'part not found'
@@ -1274,7 +1274,7 @@ LEFT JOIN `Supplier Part Historic Dimension` SPH ON (POTF.`Supplier Part Histori
                 new_housekeeping_fork(
                     'au_housekeeping', array(
                     'type'     => 'part_stock_run',
-                    'part_sku' => $part_location->part->sku,
+                    'part_sku' => $part_location->part->id,
                 ), $account->get('Account Code')
                 );
 

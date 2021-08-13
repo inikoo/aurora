@@ -1331,7 +1331,7 @@ class Supplier extends SubjectSupplier {
 
                         }
 
-                        $supplier_part->update(array('Supplier Part Part SKU' => $part->sku));
+                        $supplier_part->update(array('Supplier Part Part SKU' => $part->id));
                         $supplier_part->get_data('id', $supplier_part->id);
 
 
@@ -1388,7 +1388,7 @@ class Supplier extends SubjectSupplier {
 
                     }
                 } else {
-                    $supplier_part->update(array('Supplier Part Part SKU' => $part->sku));
+                    $supplier_part->update(array('Supplier Part Part SKU' => $part->id));
                     $supplier_part->get_data('id', $supplier_part->id);
 
 

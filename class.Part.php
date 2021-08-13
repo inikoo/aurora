@@ -20,7 +20,6 @@ class Part extends Asset
 {
 
 
-    public ?int $sku;
     public bool $trigger_discontinued;
 
     function __construct($arg1, $arg2 = false, $arg3 = false, $_db = false)
@@ -31,6 +30,7 @@ class Part extends Asset
         } else {
             $this->db = $_db;
         }
+
 
         $this->table_name           = 'Part';
         $this->ignore_fields        = array('Part SKU');
@@ -87,7 +87,6 @@ class Part extends Asset
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id         = $this->data['Part SKU'];
-            $this->sku        = $this->id;
             $this->properties = json_decode($this->data['Part Properties'], true);
         }
     }
@@ -204,7 +203,7 @@ class Part extends Asset
 
         if ($stmt->execute()) {
             $this->id  = $this->db->lastInsertId();
-            $this->sku = $this->id;
+            $this->id = $this->id;
             $this->new = true;
 
             $sql = "INSERT INTO `Part Data` (`Part SKU`) VALUES(".$this->id.");";
@@ -2515,7 +2514,7 @@ class Part extends Asset
 
                     $sql = sprintf(
                         "DELETE FROM `Part Material Bridge` WHERE `Part SKU`=%d ",
-                        $this->sku
+                        $this->id
                     );
                     $this->db->exec($sql);
                 } else {
@@ -2525,7 +2524,7 @@ class Part extends Asset
 
                     $sql = sprintf(
                         "DELETE FROM `Part Material Bridge` WHERE `Part SKU`=%d ",
-                        $this->sku
+                        $this->id
                     );
 
                     $this->db->exec($sql);
@@ -2534,7 +2533,7 @@ class Part extends Asset
                         if ($material_data['id'] > 0) {
                             $sql = sprintf(
                                 "INSERT INTO `Part Material Bridge` (`Part SKU`, `Material Key`, `Ratio`, `May Contain`) VALUES (%d, %d, %s, %s) ",
-                                $this->sku,
+                                $this->id,
                                 $material_data['id'],
                                 prepare_mysql($material_data['ratio']),
                                 prepare_mysql($material_data['may_contain'])
@@ -3199,7 +3198,7 @@ class Part extends Asset
         `Can Pick`, datediff(CURDATE(), `Part Location Last Audit`) AS days_last_audit,`Part Location Last Audit` 
         FROM `Part Location Dimension` PL LEFT JOIN `Location Dimension` L ON (L.`Location Key`=PL.`Location Key`)  WHERE `Part SKU`=%d  %s
         ORDER BY %s",
-            $this->sku,
+            $this->id,
             $where,
             $_order
         );
@@ -3215,7 +3214,7 @@ class Part extends Asset
                 } elseif ($scope == 'objects') {
                     $part_locations[$row['Location Key']] = new Location($row['Location Key']);
                 } elseif ($scope == 'part_location_object') {
-                    $part_locations[$row['Location Key']] = new  PartLocation($this->sku.'_'.$row['Location Key']);
+                    $part_locations[$row['Location Key']] = new  PartLocation($this->id.'_'.$row['Location Key']);
                 } else {
                     /*
                     $picking_location_icon = sprintf(
@@ -3349,7 +3348,7 @@ class Part extends Asset
                 );
 
 
-                $this->get_data('sku', $this->sku);
+                $this->get_data('sku', $this->id);
             }
 
             $this->update_weight_status();
@@ -3734,7 +3733,7 @@ class Part extends Asset
         $number_real_locations = 0;
         $sql                   = sprintf(
             "SELECT count(*) as num  FROM `Part Location Dimension` WHERE `Part SKU`=%d  and `Location Key`!=%d",
-            $this->sku,
+            $this->id,
             $unknown_location_key
         );
         if ($result = $this->db->query($sql)) {
@@ -3865,7 +3864,7 @@ class Part extends Asset
 
         $sql = sprintf(
             "SELECT B.`Category Key` FROM `Category Dimension` C LEFT JOIN `Category Bridge` B ON (B.`Category Key`=C.`Category Key`) WHERE `Subject`='Part' AND `Subject Key`=%d AND `Category Branch Type`!='Root'",
-            $this->sku
+            $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -4617,7 +4616,7 @@ class Part extends Asset
                 $this->new_object = true;
 
 
-                $supplier_part->update(array('Supplier Part Part SKU' => $this->sku));
+                $supplier_part->update(array('Supplier Part Part SKU' => $this->id));
                 $supplier_part->get_data('id', $supplier_part->id);
 
                 $supplier->update_supplier_parts();
@@ -4711,7 +4710,7 @@ class Part extends Asset
                     WHERE `Part SKU`=?  and `Picking Pipeline Store Key`=?";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(array(
-                               $this->sku,
+                               $this->id,
                                $store_scope
                            ));
             if ($row = $stmt->fetch()) {
@@ -4723,7 +4722,7 @@ class Part extends Asset
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->sku
+                           $this->id
                        ));
         if ($row = $stmt->fetch()) {
             return $row['Location Key'];
@@ -5163,7 +5162,7 @@ class Part extends Asset
                         '1st_day_month'           => (bool)preg_match('/\d{4}-\d{2}-01/', $row['Date']),
                         '1st_day_quarter'         => (bool)preg_match('/\d{4}-(01|04|07|10)-01/', $row['Date']),
                         '1st_day_week'            => gmdate('w', strtotime($row['Date'])) == 0,
-                        'sku'                     => $this->sku,
+                        'sku'                     => $this->id,
                         'locations'               => array_keys($location_keys),
                         'warehouses'              => array_keys($warehouse_keys),
                         'stock_on_hand'           => $stock_on_hand,

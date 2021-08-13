@@ -2567,7 +2567,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'box',
-                        'reference' => 'part/'.$state['_parent']->sku
+                        'reference' => 'part/'.$state['_parent']->id
                     );
                     $branch[] = array(
                         'label'     => _('Image'),
@@ -2893,7 +2893,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'box',
-                        'reference' => 'part/'.$state['_parent']->sku
+                        'reference' => 'part/'.$state['_parent']->id
                     );
                     $branch[] = array(
                         'label'     => _('Upload attachment'),
@@ -2910,7 +2910,7 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                     $branch[] = array(
                         'label'     => '<span class="id Part_Reference">'.$state['_parent']->get('Reference').'</span>',
                         'icon'      => 'box',
-                        'reference' => 'part/'.$state['_parent']->sku
+                        'reference' => 'part/'.$state['_parent']->id
                     );
                     $branch[] = array(
                         'label'     => '<span class="id Attachment_Caption">'.$state['_object']->get('Caption').'</span>',

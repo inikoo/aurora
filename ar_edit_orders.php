@@ -2214,7 +2214,7 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
 
         $locations .= '<div style="height: 32px">'.get_delivery_note_fast_track_packing_item_location(
 
-                'Yes', $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), 1, $part_location->part->sku,
+                'Yes', $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), 1, $part_location->part->id,
                 (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
             ).'</div>';
 
@@ -2222,7 +2222,7 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
                 'Yes', $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
                 ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->sku, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->id, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
             ).'</div>';
 
     }
@@ -2290,14 +2290,14 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
 
         $locations .= '<div style="height: 32px">'.get_item_location(
                 $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
-                1, $part_location->part->sku, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
+                1, $part_location->part->id, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
             ).'</div>';
         //function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_picked_offline_input(
                 $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
                 ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->sku, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->id, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
             ).'</div>';
 
     }

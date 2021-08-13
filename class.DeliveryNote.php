@@ -257,7 +257,7 @@ class DeliveryNote extends DB_Table {
 
             $part = get_object('Part', $part_data['Part SKU']);
 
-            if ($part->sku) {
+            if ($part->id) {
 
                 $required = $part_data['Ratio'] * $to_sell_quantity;
                 $given    = $part_data['Ratio'] * $bonus_qty;
@@ -2267,7 +2267,7 @@ class DeliveryNote extends DB_Table {
             'location_components'        => get_item_location(
                 $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'),
 
-                $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'), $part_location->part->get('Part Distinct Locations'), $part_location->part->sku, $row['Inventory Transaction Key'], $this->id
+                $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'), $part_location->part->get('Part Distinct Locations'), $part_location->part->id, $row['Inventory Transaction Key'], $this->id
             ),
             'pending'                    => $pending,
 
@@ -2591,7 +2591,7 @@ class DeliveryNote extends DB_Table {
             ),
             'location_components'        => get_item_location(
                 $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
-                $part_location->part->get('Part Distinct Locations'), $part_location->part->sku, $row['Inventory Transaction Key'], $this->id
+                $part_location->part->get('Part Distinct Locations'), $part_location->part->id, $row['Inventory Transaction Key'], $this->id
             ),
             'pending'                    => $pending,
 

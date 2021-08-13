@@ -133,7 +133,7 @@ class PartLocation extends DB_Table {
             $this->error = true;
             $this->msg   = _('Part not found');
         } else {
-            $this->part_sku = $this->part->sku;
+            $this->part_sku = $this->part->id;
         }
 
         $sql = sprintf(

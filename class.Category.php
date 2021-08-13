@@ -1757,12 +1757,12 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     include_once 'class.Part.php';
 
                     $part     = new Part($subject_key);
-                    $abstract = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> '._(
+                    $abstract = _('Part').': <a href="part.php?sku='.$part->id.'">SKU'.sprintf('%05d', $part->id).'</a> '._(
                             'disassociated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                         );
-                    $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part Package Description'].') '._(
+                    $details  = _('Part').': <a href="part.php?sku='.$part->id.'">SKU'.sprintf('%05d', $part->id).'</a> ('.$part->data['Part Package Description'].') '._(
                             'disassociated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
@@ -1772,12 +1772,12 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     include_once 'class.Location.php';
 
                     $location = new Location($subject_key);
-                    $abstract = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> '._(
+                    $abstract = _('Part').': <a href="part.php?sku='.$part->id.'">SKU'.sprintf('%05d', $part->id).'</a> '._(
                             'disassociated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                         );
-                    $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('%05d', $part->sku).'</a> ('.$part->data['Part Package Description'].') '._(
+                    $details  = _('Part').': <a href="part.php?sku='.$part->id.'">SKU'.sprintf('%05d', $part->id).'</a> ('.$part->data['Part Package Description'].') '._(
                             'disassociated with category'
                         ).sprintf(
                             ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
@@ -2581,10 +2581,10 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                     case('Part'):
 
                         $part     = get_object('Part', $subject_key);
-                        $abstract = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> '._('associated with category').sprintf(
+                        $abstract = _('Part').': <a href="part.php?sku='.$part->id.'">SKU'.sprintf('05%d', $part->id).'</a> '._('associated with category').sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']
                             );
-                        $details  = _('Part').': <a href="part.php?sku='.$part->sku.'">SKU'.sprintf('05%d', $part->sku).'</a> ('.$part->data['Part Package Description'].') '._(
+                        $details  = _('Part').': <a href="part.php?sku='.$part->id.'">SKU'.sprintf('05%d', $part->id).'</a> ('.$part->data['Part Package Description'].') '._(
                                 'associated with category'
                             ).sprintf(
                                 ' <a href="part_category.php?id=%d">%s</a>', $this->id, $this->data['Category Code']

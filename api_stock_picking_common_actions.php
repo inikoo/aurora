@@ -484,7 +484,7 @@ switch ($_REQUEST['action']) {
 
 
         $part = get_object('Part', $_REQUEST['part_sku']);
-        if (!$part->sku) {
+        if (!$part->id) {
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'part not found'
