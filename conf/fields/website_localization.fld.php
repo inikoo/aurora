@@ -347,6 +347,25 @@ $object_fields = array(
         )
     ),
     array(
+        'label'      => _('Profile'),
+        'show_title' => true,
+        'fields'     => array(
+
+            array(
+                'id'         => 'Localised_Labels_balance',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_balance']) ? _('Balance') : $labels['_balance']),
+                'label'      => _('Balance (Customer credits)'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+
+
+        )
+    ),
+    array(
         'label'      => _('Order'),
         'show_title' => true,
         'fields'     => array(

@@ -18,6 +18,10 @@
 
     <div class="table_top">
         <span class="title"><span class="Customer_Name">{$customer->get('Customer Name')}</span> <span class="small italic padding_left_10">{t}Customer ID{/t}: {$customer->id}</span></span>
+
+        <span style="float: right;padding-right: 20px">
+        {if !empty($labels._balance) }{$labels._balance}{else}{t}Balance{/t}{/if} <span class="title">{$customer->get('Account Balance')}</span>
+    </div>
     </div>
 
 

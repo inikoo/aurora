@@ -2,7 +2,7 @@
 <!--
  About:
  Author: Raul Perusquia <raul@inikoo.com>
- Created: 31 July 2017 at 10:41:58 CEST, 
+ Created: 31 July 2017 at 10:41:58 CEST,
  Copyright (c) 2017, Inikoo
 
  Version 3
@@ -17,10 +17,14 @@
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-bottom:{$bottom_margin}px">
 
-
     <div class="table_top">
         <span class="title"><span class="Customer_Name">{$customer->get('Customer Name')}</span> <span class="small italic padding_left_10">{t}Customer ID{/t}: {$customer->id}</span></span>
+    <span style="float: right;padding-right: 20px">
+        {if !empty($labels._balance) }{$labels._balance}{else}{t}Balance{/t}{/if} <span class="title">{$customer->get('Account Balance')}</span>
     </div>
+
+    </div>
+
 
     <div class="text_blocks container "  style="padding-top:{$top_margin}px;">
 

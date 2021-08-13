@@ -11,7 +11,11 @@
 
 
 <div class="table_top" style="height: auto;line-height: initial;border-top:1px solid #ccc">
-    <span class="title"><span class="Customer_Name">{$customer->get('Customer Name')}</span><br> <span class="small italic padding_left_10">{t}Customer ID{/t}: {$customer->id}</span></span>
+    <span class="title"><span class="Customer_Name">{$customer->get('Customer Name')}</span><br>
+        <span class="small italic padding_left_10">{t}Customer ID{/t}: {$customer->id}</span></span>
+    <span style="float: right;padding-right: 10px">
+        {if !empty($labels._balance) }{$labels._balance}{else}{t}Balance{/t}{/if} <span style="font-weight: bold">{$customer->get('Account Balance')}</span>
+</div>
 </div>
 
 <div class="menu-bottom-bar menu-bottom-bar-three color-menu-bar menu-bottom-bar-text flat-menu-bar">
