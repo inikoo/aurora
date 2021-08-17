@@ -51,7 +51,7 @@ switch ($tipo) {
 function find_products($db, $website, $customer, $data) {
 
 
-    $max_results = 5;
+    $max_results = 10;
     $q           = trim($data['product_code']);
 
 
@@ -73,17 +73,20 @@ function find_products($db, $website, $customer, $data) {
 
 
     $sql =
-        "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability`,`Product Web State`,`Customer Portfolio Reference` from `Product Dimension`  left join  `Customer Portfolio Fact` on (`Product ID`=`Customer Portfolio Product ID`)  where `Product Store Key`=? and  `Product Web State` in ('For Sale','Out of Stock') and `Product Code` like ? order by  `Product Code` limit "
+        "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability`,`Product Web State`,`Customer Portfolio Reference` from `Product Dimension`  left join  `Customer Portfolio Fact` on (`Product ID`=`Customer Portfolio Product ID` and `Customer Portfolio Customer Key`=?) 
+     where    `Product Store Key`=? and  `Product Web State` in ('For Sale','Out of Stock') and `Product Code` like ? order by  `Product Code` limit "
         .$max_results * 2;
 
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
+            $customer->id,
             $website->get('Website Store Key'),
             $q.'%'
 
         )
     );
+
 
 
     while ($row = $stmt->fetch()) {
@@ -120,8 +123,12 @@ function find_products($db, $website, $customer, $data) {
         );
     }
 
+
+
+
     $sql =
-        "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability`,`Product Web State`,`Customer Portfolio Reference` from  `Customer Portfolio Fact` left join    `Product Dimension`  on (`Product ID`=`Customer Portfolio Product ID`)    where `Customer Portfolio Customer Key`=? and  `Product Web State` in ('For Sale','Out of Stock') and `Customer Portfolio Reference` like ? order by  `Customer Portfolio Reference` limit "
+        "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability`,`Product Web State`,`Customer Portfolio Reference` from  `Customer Portfolio Fact` left join    `Product Dimension`  on (`Product ID`=`Customer Portfolio Product ID`) 
+            where `Customer Portfolio Customer Key`=? and  `Product Web State` in ('For Sale','Out of Stock') and `Customer Portfolio Reference` like ? order by  `Customer Portfolio Reference` limit "
         .$max_results * 2;
 
     $stmt = $db->prepare($sql);
