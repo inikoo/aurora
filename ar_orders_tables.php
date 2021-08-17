@@ -1924,32 +1924,33 @@ function order_items($_data, $db, $user) {
             ).'</span> <span class="'.($data['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($data['Order Transaction Total Discount Amount'], $data['Order Currency Code']).'</span></span>';
 
 
-        $packing = '<span id="transaction_packing_'.$data['Order Transaction Fact Key'].'" class="small _transaction_packing">';
-        if ($data['Product Number of Parts'] <= 0) {
-            $packing .= '<span class="error">'._('No parts').'</span>';
-        } elseif ($data['Product Number of Parts'] > 1) {
-            $packing .= '<span class="dicreet italic">'._('Multi part').'</span>';
-        } else {
+        $packing='';
+        if($data['Order Transaction Product Type']=='Product') {
+            $packing = '<span id="transaction_packing_'.$data['Order Transaction Fact Key'].'" class="small _transaction_packing">';
+            if ($data['Product Number of Parts'] <= 0) {
+                $packing .= '<span class="error">'._('No parts').'</span>';
+            } elseif ($data['Product Number of Parts'] > 1) {
+                $packing .= '<span class="dicreet italic">'._('Multi part').'</span>';
+            } else {
+                if ($data['Product Units Per Case'] != 1 and $data['Product Units Per Case'] != $properties['packing_sko']) {
+                    $packing .= '<i class="fa-fw fal fa-stop-circle" title="'._('Units').'"></i>';
 
-            if ($data['Product Units Per Case'] != 1 and $data['Product Units Per Case'] != $properties['packing_sko']) {
-                $packing .= '<i class="fa-fw fal fa-stop-circle" title="'._('Units').'"></i>';
 
+                    $packing .= ' '.number($data['Order Quantity'] * $data['Product Units Per Case']);
+                }
+                if ($properties['packing_sko'] > 0) {
+                    $packing .= '<i class="padding_left_5 fa-fw fal fa-box" title="'._('SKOs').'"></i> '.number($data['Order Quantity'] * $properties['packing_sko']);
+                }
+                if ($properties['packing_carton'] > 0 and $properties['packing_carton'] != $properties['packing_sko']) {
+                    $packing .= '<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Cartons').'"></i> '.float2rat($data['Order Quantity'] * $properties['packing_carton']);
+                }
 
-                $packing .= ' '.number($data['Order Quantity'] * $data['Product Units Per Case']);
+                if ($properties['packing_batch'] > 0) {
+                    $packing .= '<i class="padding_left_5 fa-fw fal fa-fill-drip" title="'._('Batch').'"></i> '.number($data['Order Quantity'] * $properties['packing_batch']);
+                }
             }
-            if ($properties['packing_sko'] > 0) {
-                $packing .= '<i class="padding_left_5 fa-fw fal fa-box" title="'._('SKOs').'"></i> '.number($data['Order Quantity'] * $properties['packing_sko']);
-            }
-            if ($properties['packing_carton'] > 0 and $properties['packing_carton'] != $properties['packing_sko']) {
-                $packing .= '<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Cartons').'"></i> '.float2rat($data['Order Quantity'] * $properties['packing_carton']);
-            }
-
-            if ($properties['packing_batch'] > 0) {
-                $packing .= '<i class="padding_left_5 fa-fw fal fa-fill-drip" title="'._('Batch').'"></i> '.number($data['Order Quantity'] * $properties['packing_batch']);
-            }
-
+            $packing .= '</span>';
         }
-        $packing .= '</span>';
 
         $adata[] = array(
 

@@ -542,8 +542,12 @@
                     {else}
                         <span title="{t}Estimated weight{/t}" class="  margin_right_20 Order_Estimated_Weight">{$order->get('Estimated Weight')}</span>
                     {/if}
-                    <span "><i class="fal fa-cube fa-fw " title="{t}Number of items{/t}"></i> <span class="Order_Number_items">{$order->get('Number Items')}</span></span>
-                    <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " title="{t}Number discounted items{/t}"></i> <span
+                    <span ><i class="fal fa-cube fa-fw " title="{t}Number of items{/t}"></i> <span class="Order_Number_Ordered_Products">{$order->get('Number Ordered Products')}</span></span>
+                    <span ><i class="fal fa-spa fa-fw " title="{t}Number of services{/t}"></i> <span class="Order_Number_Services">{$order->get('Number Services')}</span></span>
+
+
+                    <span style="padding-left:20px"><i class="fa fa-tag fa-fw  " title="{t}Number discounted items{/t}"></i>
+                        <span
                                 class="Order_Number_Items_with_Deals">{$order->get('Number Items with Deals')}</span></span>
                     <span class="error {if $order->get('Order Number Items Out of Stock')==0}hide{/if}" style="padding-left:20px">
                         <i class="fa fa-cube fa-fw" title="{t}Number out of stock items{/t}"></i>

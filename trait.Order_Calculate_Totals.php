@@ -9,14 +9,15 @@
  Version 3.0
 
 */
+
 use Aurora\Models\Utils\TaxCategory;
 
-trait Order_Calculate_Totals {
+trait Order_Calculate_Totals
+{
 
 
-
-    function update_totals() {
-
+    function update_totals()
+    {
         $old_total = $this->get('Order Total Amount');
 
 
@@ -31,6 +32,25 @@ trait Order_Calculate_Totals {
 
         $replacement_costs = 0;
         $items_cost        = 0;
+
+
+        $number_products = 0;
+        $number_services = 0;
+
+        $sql  = "select count(*) as num,`Order Transaction Product Type` FROM `Order Transaction Fact` WHERE `Order Key`=? AND `Order Transaction Type`='Order'  and `Order Quantity`>0 group by `Order Transaction Product Type` ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            array(
+                $this->id
+            )
+        );
+        while ($row = $stmt->fetch()) {
+            if ($row['Order Transaction Product Type'] == 'Product') {
+                $number_products = $row['num'];
+            } elseif ($row['Order Transaction Product Type'] == 'Service') {
+                $number_services = $row['num'];
+            }
+        }
 
 
         $sql = "SELECT
@@ -94,10 +114,8 @@ trait Order_Calculate_Totals {
         $profit = $items_net_for_profit_calculation - $items_cost - $replacement_costs;
 
 
-
-
         // to do AU-105 Order Refund/Replacement insights
-       // $number_with_problems = ??
+        // $number_with_problems = ??
 
         $total_net = 0;
         $total_tax = 0;
@@ -122,9 +140,6 @@ trait Order_Calculate_Totals {
         }
 
 
-
-
-
         $sql  = "SELECT  `Order No Product Transaction Tax Category Key`, sum(`Transaction Net Amount`) AS net  FROM `Order No Product Transaction Fact` WHERE `Order Key`=?  AND `Type`='Order' GROUP BY `Order No Product Transaction Tax Category Key`";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -142,8 +157,6 @@ trait Order_Calculate_Totals {
 
 
         foreach ($data as $tax_category_key => $amount) {
-
-
             $total_net += round($amount, 2);
 
 
@@ -157,7 +170,6 @@ trait Order_Calculate_Totals {
             }
 
             $total_tax += $tax;
-
         }
 
         $total = round($total_net + $total_tax, 2);
@@ -203,7 +215,6 @@ trait Order_Calculate_Totals {
                     $total_insurance_gross_amount += $row['gross'];
 
                     break;
-
             }
         }
 
@@ -242,7 +253,6 @@ trait Order_Calculate_Totals {
         $margin = ($total_items_net == 0 ? '' : $profit / $total_items_net);
 
         if ($this->data['Order State'] == 'Cancelled') {
-
             $profit            = 0;
             $margin            = '';
             $items_cost        = 0;
@@ -286,10 +296,17 @@ trait Order_Calculate_Totals {
                 'Order Profit Amount'        => $profit,
                 'Order Margin'               => $margin,
                 'Order Items Cost'           => $items_cost,
-                'Order Replacement Cost'     => $replacement_costs
+                'Order Replacement Cost'     => $replacement_costs,
+
+                'Order Number Ordered Products' => $number_products,
+                'Order Number Services'         => $number_services
+
 
             )
         );
+
+
+
 
         $this->update_payment_state();
         $this->update_order_estimated_weight();
@@ -298,12 +315,11 @@ trait Order_Calculate_Totals {
         if ($old_total != $this->get('Order Total Amount')) {
             $this->fork_index_elastic_search();
         }
-
     }
 
 
-    function update_order_estimated_weight() {
-
+    function update_order_estimated_weight()
+    {
         $order_estimated_weight = 0;
 
         $sql =
@@ -322,8 +338,6 @@ trait Order_Calculate_Totals {
                 'Order Estimated Weight' => $order_estimated_weight,
             )
         );
-
-
     }
 
 

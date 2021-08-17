@@ -9,6 +9,7 @@
  Version 3.0
 
 */
+
 use Aurora\Models\Utils\TaxCategory;
 
 trait OrderItems
@@ -26,7 +27,6 @@ trait OrderItems
         $otf_key = 0;
 
         $gross_discounts = 0;
-
 
 
         $order_type = $data['Order Type'] ?? $this->data['Order Type'];
@@ -166,7 +166,6 @@ trait OrderItems
 
 
             if ($total_quantity > 0) {
-
                 $tax_category = new TaxCategory($this->db);
                 $tax_category->loadWithKey($this->data['Order Tax Category Key']);
 
@@ -185,8 +184,8 @@ trait OrderItems
                                       `Order Date`,`Order Last Updated Date`,
 			                            `Product Key`,`Product ID`,`Current Dispatching State`,`Current Payment State`,`Customer Key`,
                                       `Order Key`,`Order Quantity`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,
-                                      `Store Key`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`)
-VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
+                                      `Store Key`,`Delivery Note Key`,`Cost Supplier`,`Order Transaction Metadata`,`Order Transaction Product Type`)
+VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
 
 
                 $this->db->prepare($sql)->execute(array(
@@ -218,7 +217,8 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                                                       $this->data['Order Store Key'],
                                                       $dn_key,
                                                       $cost,
-                                                      '{}'
+                                                      '{}',
+                                                      $product->get('Product Type')
                                                   ));
 
 
@@ -490,6 +490,8 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?)   ";
                     'Amount_Off_Discount_Percentage' => $this->get('Amount Off Percentage'),
                     'To_Pay_Amount_Absolute'         => $this->get('To Pay Amount Absolute'),
                     'Order_Estimated_Weight'         => $this->get('Estimated Weight'),
+                    'Order_Number_Ordered_Products'  => $this->get('Number Ordered Products'),
+                    'Order_Number_Services'          => $this->get('Number Services'),
 
 
                 ),

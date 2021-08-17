@@ -9,6 +9,10 @@
 
 */
 
+/** @var PDO $db */
+/** @var Account $account */
+/** @var User $user */
+
 require_once 'utils/ar_common.php';
 require_once 'utils/table_functions.php';
 require_once 'utils/text_functions.php';
@@ -1680,7 +1684,7 @@ function find_products($db, $data) {
 
 
     $sql = sprintf(
-        "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
+        "select `Product Type`,`Product Availability State`,`Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability` from `Product Dimension` where  `Product Code` like '%s%%' %s order by `Product Code` limit $max_results ", $q, $where
     );
 
 
@@ -1700,9 +1704,15 @@ function find_products($db, $data) {
                 $candidates[$row['Product ID']] = 500 * $factor;
             }
 
+
+            $stock='';
+            if($row['Product Type']=='Product' and $row['Product Availability State']!='OnDemand'){
+                $stock=  ', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>';
+            }
+
             $candidates_data[$row['Product ID']] = array(
                 'Product Code'        => $row['Product Code'],
-                'Product Name'        => $row['Product Name'].', <span style="font-style: italic"  class="'.($row['Product Availability'] <= 0 ? 'error' : '').'" >'._('Stock').': '.number($row['Product Availability']).'</span>',
+                'Product Name'        => $row['Product Name'].$stock,
                 'Product Current Key' => $row['Product Current Key']
 
             );

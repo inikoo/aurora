@@ -202,13 +202,11 @@ class Public_Product {
 
 
 
-            case 'Product Current Key':
-                return $this->data[$key];
 
 
 
             case 'Ordered Quantity':
-
+                $ordered_quantity='';
 
                 $sql = sprintf(
                     "SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=%d", $arg1, $this->id
@@ -224,10 +222,6 @@ class Public_Product {
                         $ordered_quantity = '';
 
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
                 return $ordered_quantity;
@@ -235,6 +229,7 @@ class Public_Product {
 
 
             case 'Product Name':
+            case 'Product Type':
             case 'Product Cost':
             case 'Product Price':
             case 'Product Unit Weight':
@@ -245,6 +240,7 @@ class Public_Product {
             case 'Product Department Category Key':
             case 'Product Web State':
             case 'Product Customer Key':
+            case 'Product Current Key':
             return $this->data[$key];
 
 
@@ -259,7 +255,7 @@ class Public_Product {
                 }
 
 
-                break;
+
 
             case 'Origin':
                 if ($this->data['Product Origin Country Code'] != '') {
