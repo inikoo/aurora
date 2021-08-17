@@ -198,7 +198,7 @@ $transactions = array();
 
 $sql = sprintf(
     "SELECT   `Product CPNP Number`,`Product Barcode Number`,`Product Origin Country Code`,`Delivery Note Quantity` as Qty, `Order Transaction Amount` as Amount, `Product Package Weight`,`Order Transaction Amount`,`Delivery Note Quantity`,`Order Transaction Total Discount Amount`,`Order Transaction Out of Stock Amount`,`Order Currency Code`,`Order Transaction Gross Amount`,
-`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code` as `Product Code`
+`Product Currency`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code` as `Product Code`,`Order Quantity`,`Order Transaction Product Type`
  FROM 
  `Order Transaction Fact` OTF  LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
  
@@ -229,6 +229,10 @@ if ($result = $db->query($sql)) {
         $name  = $row['Product History Name'];
         $price = $row['Product History Price'];
 
+
+        if($row['Order Transaction Product Type']=='Service'){
+            $row['Qty']=$row['Order Quantity'];
+        }
 
         if ($pro_mode) {
 
@@ -323,6 +327,7 @@ if ($result = $db->query($sql)) {
 
 
         }
+
 
 
         $row['Description'] = $description;

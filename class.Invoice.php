@@ -25,7 +25,7 @@ class Invoice extends DB_Table
 {
 
     use Address;
-    
+
     public array $metadata;
 
     /**
@@ -33,11 +33,11 @@ class Invoice extends DB_Table
      */
     function __construct($arg1 = false, $arg2 = false, $arg3 = false)
     {
-        $this->table_name      = 'Invoice';
-        $this->ignore_fields   = array('Invoice Key');
+        $this->table_name    = 'Invoice';
+        $this->ignore_fields = array('Invoice Key');
 
-        $this->deleted         = false;
-        $this->metadata        = array();
+        $this->deleted  = false;
+        $this->metadata = array();
 
         global $db;
         $this->db = $db;
@@ -1191,7 +1191,7 @@ class Invoice extends DB_Table
         $keys   = '(';
         $values = 'values (';
         foreach ($base_data as $key => $value) {
-            $keys .= "`$key`,";
+            $keys   .= "`$key`,";
             $values .= prepare_mysql($value).",";
         }
 
@@ -1309,8 +1309,6 @@ class Invoice extends DB_Table
 
 
             $this->update_billing_region();
-
-
 
 
             $history_data = array(
@@ -1562,7 +1560,7 @@ class Invoice extends DB_Table
                 break;
             case 'Invoice Address':
 
-                $this->update_address('',json_decode($value, true));
+                $this->update_address('', json_decode($value, true));
 
                 /** @var Order $order */
                 $order         = get_object('Order', $this->data['Invoice Order Key']);
@@ -1622,8 +1620,8 @@ class Invoice extends DB_Table
         foreach ($tax_transactions_data as $tax_category_key => $amount) {
             $tax_category = new TaxCategory($this->db);
             $tax_category->loadWithKey($tax_category_key);
-            $tax          = round($tax_category->get('Tax Category Rate') * $amount, 2);
-            $total_tax    += $tax;
+            $tax       = round($tax_category->get('Tax Category Rate') * $amount, 2);
+            $total_tax += $tax;
 
             $this->save_tax_bridge($tax_category, $tax, $amount);
         }
@@ -1951,7 +1949,7 @@ class Invoice extends DB_Table
 
         $sql = "SELECT `Invoice Date`,
 O.`Order Transaction Fact Key`,`Order Currency Code`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,
-`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`
+`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,`Product History Code`,`Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Product Type`,`Order Quantity`
 
 
 FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.`Product Key`=PH.`Product Key`) left join  `Product Dimension` P on (PH.`Product ID`=P.`Product ID`) WHERE `Invoice Key`=?";
@@ -2002,7 +2000,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
                 if ($this->get('Invoice Type') == 'Invoice') {
-                    $quantity = number($row['Delivery Note Quantity']);
+                    $quantity = number(($row['Order Transaction Product Type']=='Product'?$row['Delivery Note Quantity']:$row['Order Quantity']));
                     $factor   = 1;
                 } else {
                     $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $row['Order Transaction Amount'] / $row['Product History Price']).'</span>';
@@ -2013,6 +2011,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
                 $items_data[] = array(
                     'product_pid' => $row['Product ID'],
                     'code'        => $row['Product History Code'],
+                    'type'        => $row['Order Transaction Product Type'],
                     'description' => $description,
                     'quantity'    => $quantity,
                     'net'         => money($factor * $row['Order Transaction Amount'], $row['Order Currency Code'])
@@ -2081,7 +2080,6 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
         foreach ($_category_keys as $_category_key) {
-
             $_category = new Category($_category_key);
             $_category->update_children_data();
             $_category->update_subjects_data();

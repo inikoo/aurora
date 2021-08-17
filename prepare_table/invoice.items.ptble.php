@@ -42,7 +42,7 @@ $sql_totals
 $fields
     = "`Store Key`,
 O.`Order Transaction Fact Key`,`Product Currency`,`Product History Price`,`Product History Code`,`Order Transaction Amount`,`Delivery Note Quantity`,`Product History Name`,`Product History Price`,`Product Units Per Case`,`Product Name`,`Product RRP`,`Product Tariff Code`,`Product Tariff Code`,P.`Product ID`,
-`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Currency Code`,`Transaction Tax Rate`
+`Order Transaction Total Discount Amount`,`Order Transaction Gross Amount`,`Order Currency Code`,`Transaction Tax Rate`,`Order Transaction Product Type`,`Order Quantity`
 
 ";
 

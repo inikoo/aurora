@@ -1865,21 +1865,28 @@ function order_items($_data, $db, $user) {
 
         }
 
+        if($data['Order Transaction Product Type']=='Product') {
+            if ($data['Order Quantity'] != $data['Delivery Note Quantity'] and in_array(
+                    $customer_order->get('Order State'), array(
+                                                           'PackedDone',
+                                                           'Approved',
+                                                           'Dispatched'
+                                                       )
+                )) {
+                $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'), number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
+                $weight   = weight($data['Product Package Weight'] * $data['Delivery Note Quantity'], 'Kg', 3, false, true);
+            } else {
+                $quantity = number($data['Order Quantity']);
+                $weight   = weight($data['Product Package Weight'] * $data['Order Quantity'], 'Kg', 3, false, true);
 
-        if ($data['Order Quantity'] != $data['Delivery Note Quantity'] and in_array(
-                $customer_order->get('Order State'), array(
-                                                       'PackedDone',
-                                                       'Approved',
-                                                       'Dispatched'
-                                                   )
-            )) {
-            $quantity = '<span class="discreet " title="'.sprintf(_('%s ordered by customer'), number($data['Order Quantity'])).'" >(<span class="strikethrough">'.number($data['Order Quantity']).'</span>)</span> '.number($data['Delivery Note Quantity']);
-            $weight   = weight($data['Product Package Weight'] * $data['Delivery Note Quantity'], 'Kg', 3, false, true);
-        } else {
+            }
+        }else{
+            $weight='';
             $quantity = number($data['Order Quantity']);
-            $weight   = weight($data['Product Package Weight'] * $data['Order Quantity'], 'Kg', 3, false, true);
-
         }
+
+
+
 
         if (in_array(
             $customer_order->get('Order State'), array(
@@ -2238,7 +2245,12 @@ function invoice_items($_data, $db, $user) {
 
 
         if ($type == 'Invoice') {
-            $quantity = number($data['Delivery Note Quantity']);
+            if($data['Order Transaction Product Type']=='Product') {
+                $quantity = number($data['Delivery Note Quantity']);
+            }else{
+                $quantity = number($data['Order Quantity']);
+
+            }
 
         } else {
             $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $data['Order Transaction Amount'] / $data['Product History Price']).'</span>';

@@ -1,4 +1,5 @@
 <?php
+
 /*
   File: Delivery Note.php
 
@@ -15,11 +16,11 @@ include_once 'class.Order.php';
 include_once 'class.Product.php';
 
 
-class DeliveryNote extends DB_Table {
+class DeliveryNote extends DB_Table
+{
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
-
-
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false)
+    {
         global $db;
         $this->db = $db;
 
@@ -54,18 +55,19 @@ class DeliveryNote extends DB_Table {
     }
 
 
-    function get_data($tipo, $tag) {
+    function get_data($tipo, $tag)
+    {
         if ($tipo == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Delivery Note Dimension` WHERE  `Delivery Note Key`=%d", $tag
+                "SELECT * FROM `Delivery Note Dimension` WHERE  `Delivery Note Key`=%d",
+                $tag
             );
         } elseif ($tipo == 'public_id') {
             $sql = sprintf(
-                "SELECT * FROM `Delivery Note Dimension` WHERE  `Delivery Note ID`=%s", prepare_mysql($tag)
+                "SELECT * FROM `Delivery Note Dimension` WHERE  `Delivery Note ID`=%s",
+                prepare_mysql($tag)
             );
-
         } else {
-
             // print
             return;
         }
@@ -75,16 +77,11 @@ class DeliveryNote extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id         = $this->data['Delivery Note Key'];
             $this->properties = json_decode($this->data['Delivery Note Properties'], true);
-
-
         }
-
-
     }
 
-    protected function create($dn_data, $order) {
-
-
+    protected function create($dn_data, $order)
+    {
         $base_data = $this->base_data();
 
         $this->editor = $dn_data['editor'];
@@ -102,7 +99,9 @@ class DeliveryNote extends DB_Table {
         $base_data['Delivery Note Delivery Data'] = '{}';
 
         $sql = sprintf(
-            "INSERT INTO `Delivery Note Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+            "INSERT INTO `Delivery Note Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($base_data)).'`',
+            join(',', array_fill(0, count($base_data), '?'))
         );
 
 
@@ -116,8 +115,6 @@ class DeliveryNote extends DB_Table {
 
 
         if ($stmt->execute()) {
-
-
             $this->id = $this->db->query("SELECT LAST_INSERT_ID()")->fetchColumn();
             if (!$this->id) {
                 throw new Exception('Error inserting '.$this->table_name);
@@ -129,8 +126,6 @@ class DeliveryNote extends DB_Table {
             if (!is_array($this->data)) {
                 throw new Exception('Error data not '.$this->id.' loaded '.$this->table_name);
                 Sentry\captureMessage('Error  '.$this->id.'  '.$base_data['Delivery Note ID'].'   '.$this->table_name);
-
-
             }
 
             $store = get_object('Store', $this->get('Store Key'));
@@ -150,42 +145,46 @@ class DeliveryNote extends DB_Table {
             $distinct_items         = 0;
 
 
-            $sql = sprintf(
-                'SELECT `Order Bonus Quantity`,`Product Package Weight`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)     WHERE `Order Key`=%d  AND (`Delivery Note Key` IS NULL OR `Delivery Note Key`=0)',
-                $order->id
+            $sql = "SELECT `Order Bonus Quantity`,`Product Package Weight`,`Order Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)  
+            WHERE `Order Key`=? and `Order Transaction Product Type`='Product'  AND (`Delivery Note Key` IS NULL OR `Delivery Note Key`=0)";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(
+                [
+                    $order->id
+                ]
             );
+            while ($row = $stmt->fetch()) {
+                $estimated_weight       = ($row['Order Quantity'] + $row['Order Bonus Quantity']) * $row['Product Package Weight'];
+                $total_estimated_weight += $estimated_weight;
+                $distinct_items++;
+                $sql = "UPDATE  `Order Transaction Fact` SET `Order Last Updated Date`=?,`Delivery Note Key`=? WHERE `Order Transaction Fact Key`=?";
 
 
-            if ($result = $this->db->query($sql)) {
-                foreach ($result as $row) {
-                    $estimated_weight       = ($row['Order Quantity'] + $row['Order Bonus Quantity']) * $row['Product Package Weight'];
-                    $total_estimated_weight += $estimated_weight;
-                    $distinct_items++;
-                    $sql = "UPDATE  `Order Transaction Fact` SET `Order Last Updated Date`=?,`Delivery Note Key`=? WHERE `Order Transaction Fact Key`=?";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $this->data['Delivery Note Date Created'],
+                        $this->data['Delivery Note Key'],
+                        $row['Order Transaction Fact Key']
 
-
-                    $this->db->prepare($sql)->execute(
-                        array(
-                            $this->data['Delivery Note Date Created'],
-                            $this->data['Delivery Note Key'],
-                            $row['Order Transaction Fact Key']
-
-                        )
-                    );
-
-
-                }
+                    )
+                );
             }
 
 
+
+
             $sql = sprintf(
-                'SELECT `Order No Product Transaction Fact Key` FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND (`Delivery Note Key` IS NULL  OR `Delivery Note Key`=0) ', $order->id
+                'SELECT `Order No Product Transaction Fact Key` FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d AND (`Delivery Note Key` IS NULL  OR `Delivery Note Key`=0) ',
+                $order->id
             );
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
                     $sql = sprintf(
-                        "UPDATE  `Order No Product Transaction Fact` SET `Delivery Note Date`=%s,`Delivery Note Key`=%d WHERE `Order No Product Transaction Fact Key`=%d", prepare_mysql($this->data['Delivery Note Date Created']), $this->id,
+                        "UPDATE  `Order No Product Transaction Fact` SET `Delivery Note Date`=%s,`Delivery Note Key`=%d WHERE `Order No Product Transaction Fact Key`=%d",
+                        prepare_mysql($this->data['Delivery Note Date Created']),
+                        $this->id,
                         $row['Order No Product Transaction Fact Key']
 
                     );
@@ -205,7 +204,11 @@ class DeliveryNote extends DB_Table {
             );
             while ($row = $stmt->fetch()) {
                 $this->create_inventory_transaction_fact_item(
-                    $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'], $row['Order Bonus Quantity'], gmdate('Y-m-d H:i:s')
+                    $row['Product ID'],
+                    $row['Order Transaction Fact Key'],
+                    $row['Order Quantity'],
+                    $row['Order Bonus Quantity'],
+                    gmdate('Y-m-d H:i:s')
                 );
             }
 
@@ -222,20 +225,15 @@ class DeliveryNote extends DB_Table {
             $this->update_totals();
 
             $this->fork_index_elastic_search();
-
-
         } else {
             exit ("$sql \n Error can not create dn header");
         }
 
         return $this;
-
-
     }
 
-    function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date) {
-
-
+    function create_inventory_transaction_fact_item($product_id, $map_to_otf_key, $to_sell_quantity, $bonus_qty, $date)
+    {
         $product = get_object('Product', $product_id);
 
 
@@ -244,7 +242,9 @@ class DeliveryNote extends DB_Table {
         $state = 'Ready to Pick';
 
         $sql = sprintf(
-            "UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s WHERE `Order Transaction Fact Key`=%d  ", prepare_mysql($state), $map_to_otf_key
+            "UPDATE `Order Transaction Fact` SET `Current Dispatching State`=%s WHERE `Order Transaction Fact Key`=%d  ",
+            prepare_mysql($state),
+            $map_to_otf_key
         );
         $this->db->exec($sql);
 
@@ -254,11 +254,9 @@ class DeliveryNote extends DB_Table {
         // print_r($part_list);
 
         foreach ($part_list as $part_data) {
-
             $part = get_object('Part', $part_data['Part SKU']);
 
             if ($part->id) {
-
                 $required = $part_data['Ratio'] * $to_sell_quantity;
                 $given    = $part_data['Ratio'] * $bonus_qty;
                 $weight   = $part->get('Part Package Weight') * ($required + $given);
@@ -290,51 +288,58 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s) ", "'Info'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
+					%s,%s,%d,%d,%d,%d,%s) ",
+                    "'Info'",
+                    "'OIP'",
+                    prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']),
+                    prepare_mysql($picking_note),
 
-                    $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part_data['Part SKU']), $location_key,
+                    $weight,
+                    prepare_mysql($this->get('Delivery Note Date')),
+                    prepare_mysql($this->get('Delivery Note Date')),
+                    $this->id,
+                    prepare_mysql($part_data['Part SKU']),
+                    $location_key,
 
 
-                    0, "'Order In Process'", 0, $required, $given, 0,
+                    0,
+                    "'Order In Process'",
+                    0,
+                    $required,
+                    $given,
+                    0,
 
 
-                    prepare_mysql($this->data['Delivery Note Metadata']), prepare_mysql($note),
+                    prepare_mysql($this->data['Delivery Note Metadata']),
+                    prepare_mysql($note),
 
                     $supplier_part_key,
 
                     $supplier_part_historic_key,
 
-                    $supplier_key, $map_to_otf_key, prepare_mysql($part_index.';'.$part_data['Ratio'].';0')
+                    $supplier_key,
+                    $map_to_otf_key,
+                    prepare_mysql($part_index.';'.$part_data['Ratio'].';0')
                 );
                 $this->db->exec($sql);
 
 
                 $part_index++;
-
             }
 
             if ($part_index == 0) {
-
                 exit ("\nWarning no part in product ".$product->id." on $date\n");
-
             }
-
-
         }
-
-
     }
 
-    function get($key) {
-
-
+    function get($key)
+    {
         if (!$this->id) {
             return '';
         }
 
         switch ($key) {
-
-
             case 'label_fail':
 
 
@@ -342,7 +347,6 @@ class DeliveryNote extends DB_Table {
                     return 'Yes';
                 } else {
                     return 'No';
-
                 }
 
             case 'dispatched_since':
@@ -416,7 +420,6 @@ class DeliveryNote extends DB_Table {
                     return $this->get('Picked Percentage or Datetime');
                 } else {
                     return $this->get('Packed Percentage or Datetime');
-
                 }
 
 
@@ -433,40 +436,31 @@ class DeliveryNote extends DB_Table {
                     } else {
                         return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                     }
-
-
                 } elseif ($this->get('State Index') < 20) {
                     return '';
                 } else {
-
-
                     if ($this->get('Delivery Note Number Picked Items') == $this->get('Delivery Note Number To Pick Items')) {
-
                         if ($this->get('Delivery Note Date Start Picking') == '') {
                             return '';
                         }
 
 
                         if ($this->get('Delivery Note Date Finish Picking') != '') {
-
                             if ($this->get('Delivery Note Date Finish Picking') == $this->get('Delivery Note Date Finish Packing')) {
                                 return '<i class="fa fa-arrow-right" aria-hidden="true"></i>';
-
                             } else {
                                 return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Finish Picking').' +0:00'));
-
                             }
                         } else {
                             return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                         }
-
                     } else {
                         return sprintf(
-                            '<span title="%s">%s</span>', $this->get('Delivery Note Number Picked Items').'/'.$this->get('Delivery Note Number To Pick Items'), percentage($this->get('Delivery Note Number Picked Items'), $this->get('Delivery Note Number To Pick Items'))
+                            '<span title="%s">%s</span>',
+                            $this->get('Delivery Note Number Picked Items').'/'.$this->get('Delivery Note Number To Pick Items'),
+                            percentage($this->get('Delivery Note Number Picked Items'), $this->get('Delivery Note Number To Pick Items'))
                         );
                     }
-
-
                 }
 
 
@@ -487,15 +481,10 @@ class DeliveryNote extends DB_Table {
                     } else {
                         return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                     }
-
-
                 } elseif ($this->get('State Index') < 40) {
                     return '';
                 } else {
-
-
                     if ($this->get('Delivery Note Number Packed Items') == $this->get('Delivery Note Number To Pick Items')) {
-
                         if ($this->get('Delivery Note Date Start Picking') == '') {
                             return '';
                         }
@@ -506,14 +495,13 @@ class DeliveryNote extends DB_Table {
                         } else {
                             return strftime("%e %b %y %H:%M", strtotime($this->get('Delivery Note Date Start Picking').' +0:00'));
                         }
-
                     } else {
                         return sprintf(
-                            '<span title="%s">%s</span>', $this->get('Delivery Note Number Packed Items').'/'.$this->get('Delivery Note Number To Pick Items'), percentage($this->get('Delivery Note Number Packed Items'), $this->get('Delivery Note Number To Pick Items'))
+                            '<span title="%s">%s</span>',
+                            $this->get('Delivery Note Number Packed Items').'/'.$this->get('Delivery Note Number To Pick Items'),
+                            percentage($this->get('Delivery Note Number Packed Items'), $this->get('Delivery Note Number To Pick Items'))
                         );
                     }
-
-
                 }
 
 
@@ -522,8 +510,6 @@ class DeliveryNote extends DB_Table {
 
             case ('State'):
                 switch ($this->data['Delivery Note State']) {
-
-
                     case 'Ready to be Picked':
                         return _('Ready to be picked');
                         break;
@@ -548,10 +534,8 @@ class DeliveryNote extends DB_Table {
                     case 'Dispatched':
                         if ($this->data['Delivery Note Dispatch Method'] == 'Collection') {
                             return _('Collected');
-
                         } else {
                             return _('Dispatched');
-
                         }
 
                         break;
@@ -571,8 +555,6 @@ class DeliveryNote extends DB_Table {
                 break;
             case ('Abbreviated State'):
                 switch ($this->data['Delivery Note State']) {
-
-
                     case 'Ready to be Picked':
                         return _('Waiting');
                         break;
@@ -649,7 +631,8 @@ class DeliveryNote extends DB_Table {
                 }
 
                 return strftime(
-                    "%e %b %y %H:%M", strtotime($this->data["Delivery Note $key"].' +0:00')
+                    "%e %b %y %H:%M",
+                    strtotime($this->data["Delivery Note $key"].' +0:00')
                 );
                 break;
 
@@ -663,15 +646,17 @@ class DeliveryNote extends DB_Table {
                 include_once 'utils/natural_language.php';
 
                 if ($this->data['Delivery Note Weight Source'] == 'Given') {
-
-
                     if ($this->data['Delivery Note Estimated Weight'] < 1) {
                         $estimated_weight = weight(
-                            $this->data['Delivery Note Estimated Weight'], 'Kg', 3
+                            $this->data['Delivery Note Estimated Weight'],
+                            'Kg',
+                            3
                         );
                     } else {
                         $estimated_weight = weight(
-                            $this->data['Delivery Note Estimated Weight'], 'Kg', 0
+                            $this->data['Delivery Note Estimated Weight'],
+                            'Kg',
+                            0
                         );
                     }
 
@@ -682,11 +667,15 @@ class DeliveryNote extends DB_Table {
                 } else {
                     if ($this->data['Delivery Note Estimated Weight'] < 1) {
                         $weight = weight(
-                            $this->data['Delivery Note Estimated Weight'], 'Kg', 3
+                            $this->data['Delivery Note Estimated Weight'],
+                            'Kg',
+                            3
                         );
                     } else {
                         $weight = weight(
-                            $this->data['Delivery Note Estimated Weight'], 'Kg', 0
+                            $this->data['Delivery Note Estimated Weight'],
+                            'Kg',
+                            0
                         );
                     }
 
@@ -702,11 +691,15 @@ class DeliveryNote extends DB_Table {
                 } else {
                     if ($this->data['Delivery Note Estimated Weight'] < 1) {
                         $weight = weight(
-                            $this->data['Delivery Note Estimated Weight'], 'Kg', 3
+                            $this->data['Delivery Note Estimated Weight'],
+                            'Kg',
+                            3
                         );
                     } else {
                         $weight = weight(
-                            $this->data['Delivery Note Estimated Weight'], 'Kg', 0
+                            $this->data['Delivery Note Estimated Weight'],
+                            'Kg',
+                            0
                         );
                     }
 
@@ -728,26 +721,26 @@ class DeliveryNote extends DB_Table {
                     return $this->data['Delivery Note Weight'];
                 } else {
                     return $this->data['Delivery Note Estimated Weight'];
-
                 }
 
             case('Consignment'):
 
 
                 if ($this->data['Delivery Note Dispatch Method'] != 'Collection') {
-
-
                     if ($this->data['Delivery Note Shipper Key'] != '') {
                         $shipper     = $this->get('Shipper');
                         $consignment = sprintf(
-                            '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\')"  title="%s" >%s</span>', $this->data['Delivery Note Warehouse Key'], $this->data['Delivery Note Shipper Key'], $shipper->get('Name'), $shipper->get('Code')
+                            '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\')"  title="%s" >%s</span>',
+                            $this->data['Delivery Note Warehouse Key'],
+                            $this->data['Delivery Note Shipper Key'],
+                            $shipper->get('Name'),
+                            $shipper->get('Code')
 
                         );
 
                         if ($this->data['Delivery Note Shipper Tracking'] != '') {
                             $consignment .= ' '.$this->data['Delivery Note Shipper Tracking'];
                         }
-
                     } else {
                         $consignment = '<span class="discreet italic">'._('Courier not set').'</span>';
                     }
@@ -861,8 +854,6 @@ class DeliveryNote extends DB_Table {
             case 'Delivery Address':
 
                 return $this->get('Delivery Note Address Formatted');
-
-
         }
 
 
@@ -878,9 +869,8 @@ class DeliveryNote extends DB_Table {
         return false;
     }
 
-    function update_totals() {
-
-
+    function update_totals()
+    {
         $old_weight = $this->get('Weight');
 
         $ordered          = 0;
@@ -899,8 +889,6 @@ class DeliveryNote extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
-
                 $ordered          = $row['ordered'];
                 $picked           = $row['picked'];
                 $packed           = $row['packed'];
@@ -908,7 +896,6 @@ class DeliveryNote extends DB_Table {
                 $ordered_parts    = $row['ordered_parts'];
                 $estimated_weight = $row['estimated_weight'];
                 $items_cost       = -1 * $row['items_cost'];
-
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -933,13 +920,11 @@ class DeliveryNote extends DB_Table {
         if ($old_weight != $this->get('Weight')) {
             $this->fork_index_elastic_search();
         }
-
     }
 
 
-    protected function create_replacement($dn_data, $transactions) {
-
-
+    protected function create_replacement($dn_data, $transactions)
+    {
         $base_data = $this->base_data();
 
         $this->editor = $dn_data['editor'];
@@ -956,7 +941,9 @@ class DeliveryNote extends DB_Table {
 
 
         $sql = sprintf(
-            "INSERT INTO `Delivery Note Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($base_data)).'`', join(',', array_fill(0, count($base_data), '?'))
+            "INSERT INTO `Delivery Note Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($base_data)).'`',
+            join(',', array_fill(0, count($base_data), '?'))
         );
 
 
@@ -970,7 +957,6 @@ class DeliveryNote extends DB_Table {
 
 
         if ($stmt->execute()) {
-
             $this->id = $this->db->lastInsertId();
             if (!$this->id) {
                 throw new Exception('Error inserting (replacement) '.$this->table_name);
@@ -983,19 +969,16 @@ class DeliveryNote extends DB_Table {
             $feedback = array();
 
             foreach ($transactions as $transaction_key => $transaction_data) {
-
-
                 if ($transaction_data['type'] == 'itf') {
-
                     $sql = sprintf(
-                        'SELECT * FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P  ON (ITF.`Part SKU`=P.`Part SKU`)     WHERE `Inventory Transaction Key`=%d  ', $transaction_data['id']
+                        'SELECT * FROM `Inventory Transaction Fact` ITF LEFT JOIN `Part Dimension` P  ON (ITF.`Part SKU`=P.`Part SKU`)     WHERE `Inventory Transaction Key`=%d  ',
+                        $transaction_data['id']
                     );
 
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-
-                            /** @var $part Part*/
+                            /** @var $part Part */
                             $part         = get_object('part', $row['Part SKU']);
                             $location_key = $part->get_picking_location_key($this->data['Delivery Note Store Key']);
 
@@ -1021,21 +1004,38 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s) ", "'Info'", "'OIP'", prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']), prepare_mysql($picking_note),
+					%s,%s,%d,%d,%d,%d,%s) ",
+                                "'Info'",
+                                "'OIP'",
+                                prepare_mysql($this->data['Delivery Note Address Country 2 Alpha Code']),
+                                prepare_mysql($picking_note),
 
-                                $weight, prepare_mysql($this->get('Delivery Note Date')), prepare_mysql($this->get('Delivery Note Date')), $this->id, prepare_mysql($part->id), $location_key,
+                                $weight,
+                                prepare_mysql($this->get('Delivery Note Date')),
+                                prepare_mysql($this->get('Delivery Note Date')),
+                                $this->id,
+                                prepare_mysql($part->id),
+                                $location_key,
 
 
-                                0, "'Order In Process'", 0, $required, $given, 0,
+                                0,
+                                "'Order In Process'",
+                                0,
+                                $required,
+                                $given,
+                                0,
 
 
-                                prepare_mysql($this->data['Delivery Note Metadata']), prepare_mysql(''),
+                                prepare_mysql($this->data['Delivery Note Metadata']),
+                                prepare_mysql(''),
 
                                 $supplier_part_key,
 
                                 $supplier_part_historic_key,
 
-                                $supplier_key, $row['Map To Order Transaction Fact Key'], prepare_mysql($row['Map To Order Transaction Fact Metadata'])
+                                $supplier_key,
+                                $row['Map To Order Transaction Fact Key'],
+                                prepare_mysql($row['Map To Order Transaction Fact Metadata'])
                             );
 
 
@@ -1052,11 +1052,8 @@ class DeliveryNote extends DB_Table {
                             $_feedback        = $transaction_data['feedback'];
                             $_feedback['itf'] = $replacement_itf;
                             $feedback[]       = $_feedback;
-
-
                         }
                     }
-
                 }
             }
 
@@ -1064,47 +1061,46 @@ class DeliveryNote extends DB_Table {
             require_once 'utils/new_fork.php';
 
             new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'       => 'feedback',
-                'feedback'   => $feedback,
-                'user_key'   => $this->editor['User Key'],
-                'parent'     => 'Replacement',
-                'parent_key' => $this->id,
-                'store_key'  => $this->get('Store Key'),
-                'editor'     => $this->editor
-            ), DNS_ACCOUNT_CODE, $this->db
+                'au_housekeeping',
+                array(
+                    'type'       => 'feedback',
+                    'feedback'   => $feedback,
+                    'user_key'   => $this->editor['User Key'],
+                    'parent'     => 'Replacement',
+                    'parent_key' => $this->id,
+                    'store_key'  => $this->get('Store Key'),
+                    'editor'     => $this->editor
+                ),
+                DNS_ACCOUNT_CODE,
+                $this->db
             );
 
 
             $this->update_totals();
-
-
         } else {
             exit ("$sql \n Error can not create dn header");
         }
 
         return $this;
-
-
     }
 
 
     //  New methods
 
-    function update_inventory_transaction_fact($otf_key, $quantity_to_sell, $bonus_quantity) {
-
+    function update_inventory_transaction_fact($otf_key, $quantity_to_sell, $bonus_quantity)
+    {
         $date = gmdate("Y-m-d H:i:s");
 
         $sql = sprintf(
-            "SELECT `Inventory Transaction Key`,`Map To Order Transaction Fact Metadata`,`Part SKU` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d AND `Map To Order Transaction Fact Key`=%d ", $this->id, $otf_key
+            "SELECT `Inventory Transaction Key`,`Map To Order Transaction Fact Metadata`,`Part SKU` FROM `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d AND `Map To Order Transaction Fact Key`=%d ",
+            $this->id,
+            $otf_key
         );
 
 
         $transactions = 0;
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
-
                 $transactions++;
 
                 $metadata = preg_split('/;/', $row['Map To Order Transaction Fact Metadata']);
@@ -1118,7 +1114,10 @@ class DeliveryNote extends DB_Table {
                 $weight = $part->get('Part Package Weight') * ($required + $given);
 
                 $sql = sprintf(
-                    "UPDATE `Inventory Transaction Fact` SET `Required`=%f,`Given`=%f,`Inventory Transaction Weight`=%f WHERE `Inventory Transaction Key`=%d ", $required, $given, $weight,
+                    "UPDATE `Inventory Transaction Fact` SET `Required`=%f,`Given`=%f,`Inventory Transaction Weight`=%f WHERE `Inventory Transaction Key`=%d ",
+                    $required,
+                    $given,
+                    $weight,
 
                     $row['Inventory Transaction Key']
 
@@ -1126,14 +1125,11 @@ class DeliveryNote extends DB_Table {
 
 
                 $this->db->exec($sql);
-
-
             }
         }
 
 
         if ($transactions == 0) {
-
             $sql = sprintf(
                 'SELECT OTF.`Product ID`,`Product Package Weight`,`Order Bonus Quantity`,`Order Quantity`,`Order Bonus Quantity`,`Order Transaction Fact Key` FROM `Order Transaction Fact` OTF LEFT JOIN `Product History Dimension` PH  ON (OTF.`Product Key`=PH.`Product Key`)  LEFT JOIN `Product Dimension` P  ON (PH.`Product ID`=P.`Product ID`)     WHERE `Order Transaction Fact Key`=%d ',
                 $otf_key
@@ -1141,10 +1137,12 @@ class DeliveryNote extends DB_Table {
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
-
                     $this->create_inventory_transaction_fact_item(
-                        $row['Product ID'], $row['Order Transaction Fact Key'], $row['Order Quantity'] + $row['Order Bonus Quantity'], $row['Order Bonus Quantity'], $date
+                        $row['Product ID'],
+                        $row['Order Transaction Fact Key'],
+                        $row['Order Quantity'] + $row['Order Bonus Quantity'],
+                        $row['Order Bonus Quantity'],
+                        $date
                     );
                 }
             } else {
@@ -1153,15 +1151,11 @@ class DeliveryNote extends DB_Table {
                 exit;
             }
         }
-
-
     }
 
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
+    function update_field_switcher($field, $value, $options = '', $metadata = '')
+    {
         switch ($field) {
-
             case 'Delivery Note Address':
                 if (!preg_match('/force/', $options) and ($this->get('State Index') >= 90 or $this->get('State Index') <= 0)) {
                     return;
@@ -1199,7 +1193,6 @@ class DeliveryNote extends DB_Table {
 
                     $shipper->update_shipper_usage();
                 } else {
-
                     $this->fast_update(array('Delivery Note Shipper Tracking' => ''));
                     $this->update_metadata = array(
                         'class_html' => array(
@@ -1286,8 +1279,8 @@ class DeliveryNote extends DB_Table {
         }
     }
 
-    function update_state($value, $options = '{}', $metadata = array()) {
-
+    function update_state($value, $options = '{}', $metadata = array())
+    {
         include_once 'utils/new_fork.php';
 
 
@@ -1305,8 +1298,6 @@ class DeliveryNote extends DB_Table {
         $old_state = $this->get('Delivery Note State');
 
         switch ($value) {
-
-
             case 'Ready to be Picked':
 
                 if ($this->get('State Index') != 20) {
@@ -1383,16 +1374,19 @@ class DeliveryNote extends DB_Table {
 
 
                 if ($this->get('State Index') >= 20 or $this->get('State Index') <= 70) {
-
                     if ($this->data['Delivery Note Date Start Packing'] == '') {
                         $this->update_field(
-                            'Delivery Note Date Start Packing', $date, 'no_history'
+                            'Delivery Note Date Start Packing',
+                            $date,
+                            'no_history'
                         );
                     }
 
 
                     $this->update_field(
-                        'Delivery Note State', $value, 'no_history'
+                        'Delivery Note State',
+                        $value,
+                        'no_history'
                     );
                 }
 
@@ -1413,8 +1407,6 @@ class DeliveryNote extends DB_Table {
                     $order         = get_object('order', $this->data['Delivery Note Order Key']);
                     $order->editor = $this->editor;
                     $order->update_state('Packed', json_encode(array('date' => $date)));
-
-
                 }
 
                 break;
@@ -1443,8 +1435,6 @@ class DeliveryNote extends DB_Table {
 
                 $this->update_totals();
                 if ($this->data['Delivery Note Type'] == 'Order') {
-
-
                     // todo make it work for multiple parts
 
                     $sql = sprintf(
@@ -1455,8 +1445,6 @@ class DeliveryNote extends DB_Table {
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-
-
                             $to_pack = $row['Required'] + $row['Given'];
 
                             if ($to_pack == 0) {
@@ -1478,13 +1466,16 @@ class DeliveryNote extends DB_Table {
                              `No Shipped Due Out of Stock`=ROUND((`Order Quantity`+`Order Bonus Quantity`)*(1-%f),8),
                             `Order Transaction Out of Stock Amount`=`Order Transaction Amount`*(1-%f) ,
                                `Order Transaction Amount`=`Order Transaction Amount`*%f 
-                                     WHERE `Order Transaction Fact Key`=%d ', $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $ratio_of_packing, $otf
+                                     WHERE `Order Transaction Fact Key`=%d ',
+                                $ratio_of_packing,
+                                $ratio_of_packing,
+                                $ratio_of_packing,
+                                $ratio_of_packing,
+                                $otf
                             );
 
 
                             $this->db->exec($sql);
-
-
                         }
                     }
 
@@ -1502,28 +1493,24 @@ class DeliveryNote extends DB_Table {
 
                     $order->update_state('PackedDone', json_encode(array('date' => $date)));
                     $order->update_totals();
-
-
                 } else {
-
-
                     $history_data = array(
                         'History Abstract' => _('Replacement packed and closed'),
                         'History Details'  => '',
                     );
 
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-
                 }
 
 
                 new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'              => 'delivery_note_packed_done',
-                    'delivery_note_key' => $this->id,
-                    'customer_key'      => $this->get('Delivery Note Customer Key'),
-                ), $account->get('Account Code')
+                    'au_housekeeping',
+                    array(
+                        'type'              => 'delivery_note_packed_done',
+                        'delivery_note_key' => $this->id,
+                        'customer_key'      => $this->get('Delivery Note Customer Key'),
+                    ),
+                    $account->get('Account Code')
                 );
 
                 $operations = array(
@@ -1551,14 +1538,12 @@ class DeliveryNote extends DB_Table {
                                                          'Shortages'
                                                      )
                 )) {
-
                     if (!($this->get('State Index') == 80 or $this->get('State Index') == 90)) {
                         $this->error = true;
                         $this->msg   = 'Replacement note must be closed or approved to dispatch';
 
                         return;
                     }
-
                 } else {
                     if ($this->get('State Index') != 80) {
                         $this->error = true;
@@ -1566,7 +1551,6 @@ class DeliveryNote extends DB_Table {
 
                         return;
                     }
-
                 }
 
 
@@ -1579,22 +1563,19 @@ class DeliveryNote extends DB_Table {
 
                 $this->update_totals();
                 if ($this->data['Delivery Note Type'] == 'Order') {
-
-
                     // todo make it work for multiple parts
 
 
                     $sql = sprintf(
                         'SELECT `Order Transaction Gross Amount`,`Order Transaction Total Discount Amount`,`Order Transaction Amount`,`Order Transaction Out of Stock Amount`,`Packed`,`Required`,`Given`, `Out of Stock`,`No Authorized`,`Not Found`,`No Picked Other`,  `Map To Order Transaction Fact Key` ,`Order Transaction Metadata`
-                          FROM `Inventory Transaction Fact` ITF left join `Order Transaction Fact`  on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) WHERE  ITF.`Delivery Note Key`=%d ', $this->id
+                          FROM `Inventory Transaction Fact` ITF left join `Order Transaction Fact`  on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`) WHERE  ITF.`Delivery Note Key`=%d ',
+                        $this->id
                     );
 
                     //print "$sql\n";
 
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-
-
                             $metadata = json_decode($row['Order Transaction Metadata'], true);
 
                             if (isset($metadata['ota_bk'])) {
@@ -1613,8 +1594,6 @@ class DeliveryNote extends DB_Table {
                                     $otf
                                 ]
                             );
-
-
                         }
                     }
 
@@ -1631,27 +1610,24 @@ class DeliveryNote extends DB_Table {
                     $order->update_totals();
                     $order->update(array('Order State' => 'Undo PackedDone'));
                     $order->update_totals();
-
-
                 } else {
-
                     $history_data = array(
                         'History Abstract' => _('Replacement opened'),
                         'History Details'  => '',
                     );
 
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-
                 }
 
 
                 new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'              => 'delivery_note_packed_done',
-                    'delivery_note_key' => $this->id,
-                    'customer_key'      => $this->get('Delivery Note Customer Key'),
-                ), $account->get('Account Code')
+                    'au_housekeeping',
+                    array(
+                        'type'              => 'delivery_note_packed_done',
+                        'delivery_note_key' => $this->id,
+                        'customer_key'      => $this->get('Delivery Note Customer Key'),
+                    ),
+                    $account->get('Account Code')
                 );
 
                 $operations = array(
@@ -1672,7 +1648,8 @@ class DeliveryNote extends DB_Table {
 
 
                 $sql = sprintf(
-                    "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=0 WHERE `Delivery Note Key`=%d ", $this->id
+                    "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=0 WHERE `Delivery Note Key`=%d ",
+                    $this->id
                 );
                 //print "$sql\n";
                 $this->db->exec($sql);
@@ -1693,7 +1670,9 @@ class DeliveryNote extends DB_Table {
                 }
                 $this->update_field('Delivery Note Date Dispatched Approved', $date, 'no_history');
                 $this->update_field(
-                    'Delivery Note State', $value, 'no_history'
+                    'Delivery Note State',
+                    $value,
+                    'no_history'
                 );
 
 
@@ -1702,16 +1681,14 @@ class DeliveryNote extends DB_Table {
 
                 if ($result3 = $this->db->query($sql)) {
                     foreach ($result3 as $row3) {
-
                         $sql = sprintf(
-                            "SELECT `Invoice Currency Exchange Rate`,`Order Transaction Fact Key`,`Order Transaction Amount`,`Delivery Note Quantity` FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d ", $row3['Map To Order Transaction Fact Key']
+                            "SELECT `Invoice Currency Exchange Rate`,`Order Transaction Fact Key`,`Order Transaction Amount`,`Delivery Note Quantity` FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d ",
+                            $row3['Map To Order Transaction Fact Key']
                         );
 
 
                         if ($result = $this->db->query($sql)) {
                             foreach ($result as $row) {
-
-
                                 $itf_transfer_factor = array();
                                 $sum_itfs            = 0;
 
@@ -1722,7 +1699,6 @@ class DeliveryNote extends DB_Table {
 
                                 if ($result2 = $this->db->query($sql)) {
                                     foreach ($result2 as $row2) {
-
                                         $cost = $row2['Part Cost in Warehouse'];
                                         if (!$cost) {
                                             $cost = $row2['Part Cost'];
@@ -1741,7 +1717,6 @@ class DeliveryNote extends DB_Table {
                                         $itf_transfer_factor[$key] = 1;
                                     }
                                 } else {
-
                                     if ($sum_itfs == 0 and $number_of_itf > 0) {
                                         foreach ($itf_transfer_factor as $key => $value) {
                                             $itf_transfer_factor[$key] = 1 / $number_of_itf;
@@ -1759,19 +1734,16 @@ class DeliveryNote extends DB_Table {
 
                                 foreach ($itf_transfer_factor as $key => $value) {
                                     $sql = sprintf(
-                                        "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=%f WHERE `Inventory Transaction Key`=%d ", $amount_in * $value, $key
+                                        "UPDATE  `Inventory Transaction Fact`  SET `Amount In`=%f WHERE `Inventory Transaction Key`=%d ",
+                                        $amount_in * $value,
+                                        $key
                                     );
 
                                     $this->db->exec($sql);
-
                                 }
-
-
                             }
                         }
                     }
-
-
                 }
 
                 $history_data = array(
@@ -1810,11 +1782,8 @@ class DeliveryNote extends DB_Table {
                     } else {
                         $value = 'Packed Done';
                     }
-
-
                 } else {
                     $value = 'Approved';
-
                 }
 
                 $this->fast_update(
@@ -1826,10 +1795,7 @@ class DeliveryNote extends DB_Table {
                 );
 
                 if ($this->data['Delivery Note Type'] == 'Order') {
-
                     $order->update_state('un_dispatch');
-
-
                 }
 
                 $note = _('Delivery note un dispatched');
@@ -1848,13 +1814,15 @@ class DeliveryNote extends DB_Table {
 
 
                 new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'              => 'delivery_note_un_dispatched',
-                    'user_key'          => $this->editor['User Key'],
-                    'delivery_note_key' => $this->id,
-                    'note'              => $metadata['note']
+                    'au_housekeeping',
+                    array(
+                        'type'              => 'delivery_note_un_dispatched',
+                        'user_key'          => $this->editor['User Key'],
+                        'delivery_note_key' => $this->id,
+                        'note'              => $metadata['note']
 
-                ), $account->get('Account Code')
+                    ),
+                    $account->get('Account Code')
                 );
                 $order->fork_index_elastic_search();
 
@@ -1879,8 +1847,6 @@ class DeliveryNote extends DB_Table {
                 $order         = get_object('Order', $this->data['Delivery Note Order Key']);
                 $order->editor = $this->editor;
                 if ($this->data['Delivery Note Type'] == 'Order') {
-
-
                     $order->update_state('Dispatched', json_encode(array('date' => $date)), array('delivery_note_key' => $this->id));
 
 
@@ -1890,29 +1856,25 @@ class DeliveryNote extends DB_Table {
                     );
 
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-
                 } else {
-
-
                     $history_data = array(
                         'History Abstract' => _('Replacement note dispatched'),
                         'History Details'  => '',
                     );
 
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-
                 }
 
 
                 new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'              => 'delivery_note_dispatched',
-                    'user_key'          => $this->editor['User Key'],
-                    'delivery_note_key' => $this->id,
+                    'au_housekeeping',
+                    array(
+                        'type'              => 'delivery_note_dispatched',
+                        'user_key'          => $this->editor['User Key'],
+                        'delivery_note_key' => $this->id,
 
-                ), $account->get('Account Code')
+                    ),
+                    $account->get('Account Code')
                 );
                 $order->fork_index_elastic_search();
                 break;
@@ -1951,29 +1913,27 @@ class DeliveryNote extends DB_Table {
 
 
                 $sql = sprintf(
-                    "SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Section`='OIP'  ", $this->id
+                    "SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Section`='OIP'  ",
+                    $this->id
                 );
 
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-
                         $sql = sprintf("UPDATE `Inventory Transaction Fact`  SET   `Inventory Transaction Type`='FailSale' , `Inventory Transaction Section`='NoDispatched'  WHERE `Inventory Transaction Key`=%d  ", $row['Inventory Transaction Key']);
                         $this->db->exec($sql);
-
-
                     }
                 }
 
 
                 $sql = sprintf(
-                    "SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Type`='Sale' AND `Inventory Transaction Section`='Out'", $this->id
+                    "SELECT * FROM `Inventory Transaction Fact`  WHERE  `Delivery Note Key`=%d  AND `Inventory Transaction Type`='Sale' AND `Inventory Transaction Section`='Out'",
+                    $this->id
                 );
 
 
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
-
                         $sql = sprintf(
                             "UPDATE `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`='Movement',  `Inventory Transaction Type`='FailSale' , `Inventory Transaction Section`='NoDispatched'  WHERE `Inventory Transaction Key`=%d  ",
                             $row['Inventory Transaction Key']
@@ -2006,21 +1966,40 @@ class DeliveryNote extends DB_Table {
 					%f,%s,%s,%d,%s,%d,
 					%s,%s,%.2f,%f,%f,%f,
 
-					%s,%s,%d,%d,%d,%d,%s,%d,%d) ", "'Movement'", "'NoDispatched'", prepare_mysql(''), prepare_mysql(''),
+					%s,%s,%d,%d,%d,%d,%s,%d,%d) ",
+                            "'Movement'",
+                            "'NoDispatched'",
+                            prepare_mysql(''),
+                            prepare_mysql(''),
 
-                            $row['Inventory Transaction Weight'], prepare_mysql($date), prepare_mysql($date), $this->id, prepare_mysql($row['Part SKU']), $location_key,
+                            $row['Inventory Transaction Weight'],
+                            prepare_mysql($date),
+                            prepare_mysql($date),
+                            $this->id,
+                            prepare_mysql($row['Part SKU']),
+                            $location_key,
 
 
-                            -1 * $row['Inventory Transaction Quantity'], "'Restock'", -1 * $row['Inventory Transaction Amount'], 0, 0, 0,
+                            -1 * $row['Inventory Transaction Quantity'],
+                            "'Restock'",
+                            -1 * $row['Inventory Transaction Amount'],
+                            0,
+                            0,
+                            0,
 
 
-                            prepare_mysql($row['Metadata']), prepare_mysql($note),
+                            prepare_mysql($row['Metadata']),
+                            prepare_mysql($note),
 
                             $row['Supplier Product ID'],
 
-                            $row['Supplier Product Historic Key'], $row['Supplier Key'], $row['Map To Order Transaction Fact Key'],
+                            $row['Supplier Product Historic Key'],
+                            $row['Supplier Key'],
+                            $row['Map To Order Transaction Fact Key'],
 
-                            prepare_mysql($row['Map To Order Transaction Fact Metadata']), $row['Inventory Transaction Key'], $picker_key
+                            prepare_mysql($row['Map To Order Transaction Fact Metadata']),
+                            $row['Inventory Transaction Key'],
+                            $picker_key
                         );
 
                         // print "$sql\n";
@@ -2029,7 +2008,6 @@ class DeliveryNote extends DB_Table {
 
 
                         $returned_part_locations[] = $row['Part SKU'].'_'.$row['Location Key'];
-
                     }
                 }
 
@@ -2041,19 +2019,13 @@ class DeliveryNote extends DB_Table {
                                                          'Shortages'
                                                      )
                 )) {
-
-
                     $history_data = array(
                         'History Abstract' => _('Replacement cancelled'),
                         'History Details'  => '',
                     );
 
                     $this->add_subject_history($history_data, $force_save = true, $deletable = 'No', $type = 'Changes', $this->get_object_name(), $this->id, $update_history_records_data = true);
-
-
                 } else {
-
-
                     $history_data = array(
                         'History Abstract' => _('Delivery note cancelled'),
                         'History Details'  => '',
@@ -2063,8 +2035,6 @@ class DeliveryNote extends DB_Table {
 
 
                     $order->update(array('Order State' => 'Delivery Note Cancelled'));
-
-
                 }
 
                 $_date = $this->data['Delivery Note Date Start Picking'];
@@ -2073,18 +2043,18 @@ class DeliveryNote extends DB_Table {
                 }
                 if ($_date == '') {
                     $_date = $date;
-
-
                 }
                 new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'                    => 'delivery_note_cancelled',
-                    'date'                    => gmdate('Y-m-d', strtotime($_date.' +0:00')),
-                    'returned_part_locations' => $returned_part_locations,
-                    'customer_key'            => $this->get('Delivery Note Customer Key'),
-                    'delivery_note_key'       => $this->id
+                    'au_housekeeping',
+                    array(
+                        'type'                    => 'delivery_note_cancelled',
+                        'date'                    => gmdate('Y-m-d', strtotime($_date.' +0:00')),
+                        'returned_part_locations' => $returned_part_locations,
+                        'customer_key'            => $this->get('Delivery Note Customer Key'),
+                        'delivery_note_key'       => $this->id
 
-                ), $account->get('Account Code')
+                    ),
+                    $account->get('Account Code')
                 );
 
 
@@ -2142,12 +2112,10 @@ class DeliveryNote extends DB_Table {
         }
 
         return false;
-
     }
 
-    function update_item($data) {
-
-
+    function update_item($data)
+    {
         switch ($data['field']) {
             case 'Picked':
                 return $this->update_item_picked_quantity($data);
@@ -2160,15 +2128,12 @@ class DeliveryNote extends DB_Table {
 
             default:
                 return false;
-
         }
-
-
     }
 
 
-    function update_item_picked_quantity($data) {
-
+    function update_item_picked_quantity($data)
+    {
         include_once('class.Location.php');
         include_once('class.PartLocation.php');
         include_once('utils/order_handing_functions.php');
@@ -2200,7 +2165,6 @@ class DeliveryNote extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
                 // print_r($row);
                 $qty = $row['Picked'] + $qty;
 
@@ -2226,7 +2190,13 @@ class DeliveryNote extends DB_Table {
 
                 $sql = sprintf(
                     "UPDATE `Inventory Transaction Fact` SET  `Inventory Transaction Type`='Sale' ,`Inventory Transaction Section`='Out',`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
-                    $qty, -1 * $qty, $transaction_value, prepare_mysql($date), prepare_mysql($date), prepare_mysql($data['picker_key']), $data['transaction_key']
+                    $qty,
+                    -1 * $qty,
+                    $transaction_value,
+                    prepare_mysql($date),
+                    prepare_mysql($date),
+                    prepare_mysql($data['picker_key']),
+                    $data['transaction_key']
                 );
 
                 $this->db->exec($sql);
@@ -2237,7 +2207,6 @@ class DeliveryNote extends DB_Table {
 
                 $pending = $to_pick - $qty;
                 $picked  = $qty;
-
             }
         }
 
@@ -2248,9 +2217,7 @@ class DeliveryNote extends DB_Table {
         $state = 'Picking';
 
         if ($this->get('Delivery Note Number Picked Items') == $this->get('Delivery Note Number To Pick Items')) {
-
             $state = 'Picked';
-
         }
 
         $this->update_state($state);
@@ -2259,15 +2226,34 @@ class DeliveryNote extends DB_Table {
         $this->update_metadata = array(
             'state_index'                => $this->get('State Index'),
             'picked_quantity_components' => get_item_picked(
-                $pending, $part_location->get('Quantity On Hand'), $row['Inventory Transaction Key'], $row['Part SKU'], $picked, $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
-                $part_location->part->get('Part Reference'), $part_location->part->get('Part Reference'), $part_location->part->get('Part Reference'), base64_encode(
+                $pending,
+                $part_location->get('Quantity On Hand'),
+                $row['Inventory Transaction Key'],
+                $row['Part SKU'],
+                $picked,
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Reference'),
+                $part_location->part->get('Part Reference'),
+                $part_location->part->get('Part Reference'),
+                base64_encode(
                     $part_location->part->get('Part Package Description').($part_location->part->get('Picking Note') != '' ? ' <span>('.$part_location->part->get('Picking Note').'</span>' : '')
-                ), $part_location->part->get('Part Main Image Key')
+                ),
+                $part_location->part->get('Part Main Image Key')
             ),
             'location_components'        => get_item_location(
-                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'),
+                $pending,
+                $part_location->get('Quantity On Hand'),
+                $date,
+                $part_location->location->id,
+                $part_location->location->get('Code'),
 
-                $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'), $part_location->part->get('Part Distinct Locations'), $part_location->part->id, $row['Inventory Transaction Key'], $this->id
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Distinct Locations'),
+                $part_location->part->id,
+                $row['Inventory Transaction Key'],
+                $this->id
             ),
             'pending'                    => $pending,
 
@@ -2286,7 +2272,6 @@ class DeliveryNote extends DB_Table {
                 $smarty->assign('dn', $this);
                 $this->update_metadata['class_html']['picking_options'] = $smarty->fetch('delivery_note.options.picking.tpl');
             }
-
         }
 
 
@@ -2294,12 +2279,10 @@ class DeliveryNote extends DB_Table {
             'transaction_key' => $transaction_key,
             'qty'             => $qty + 0
         );
-
-
     }
 
-    function update_item_not_picked_quantity($data) {
-
+    function update_item_not_picked_quantity($data)
+    {
         include_once('class.Location.php');
         include_once('class.PartLocation.php');
 
@@ -2325,7 +2308,6 @@ class DeliveryNote extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
                 // print_r($row);
 
 
@@ -2333,11 +2315,14 @@ class DeliveryNote extends DB_Table {
 
 
                 if ($qty <= $row['pending']) {
-
                     $transaction_value = $row['Part Cost'] * $qty;
 
                     $sql = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ", $qty, $transaction_value, prepare_mysql($date), prepare_mysql($data['picker_key']),
+                        "UPDATE `Inventory Transaction Fact` SET `Out of Stock`=%f ,`Out of Stock Lost Amount`=%f ,`Date`=%s ,`Picker Key`=%s WHERE `Inventory Transaction Key`=%d  ",
+                        $qty,
+                        $transaction_value,
+                        prepare_mysql($date),
+                        prepare_mysql($data['picker_key']),
                         $data['transaction_key']
                     );
 
@@ -2361,34 +2346,23 @@ class DeliveryNote extends DB_Table {
                     if ($pending == 0) {
                         $picked_time = sprintf(_('Picked: %s'), strftime("%a %e %b %y %H:%M %Z", strtotime($date).' +0:00'));
                         $location    = sprintf('<i class="fa fa-fw fa-check super_discreet %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $picked_time);
-
                     } elseif ($part_location->get('Quantity On Hand') <= 0) {
-
                         if ($part_location->part->get('Part Current On Hand Stock') >= $pending) {
                             $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
                         } else {
                             $location = sprintf('<i class="fa fa-fw fa-star-o error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
                         }
-
-
                     } else {
                         if ($part_location->get('Quantity On Hand') < $pending) {
                             if ($part_location->part->get('Part Current On Hand Stock') >= $pending) {
                                 $location = sprintf('<i class="fa fa-fw fa-bookmark-o fa-flip-vertical warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
                             } else {
                                 if ($part_location->get('Quantity On Hand') < 1) {
                                     $location = sprintf('<i class="fa  fa-fw no_stock_location  fa-circle error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
-
                                 } else {
                                     $location = sprintf('<i class="fa fa-fw fa-star-half-o error %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
                                 }
-
-
                             }
-
                         } else {
                             if ($part_location->get('Quantity On Hand') < $stock_quantity_safe_limit) {
                                 $location = sprintf('<i class="fa fa-fw fa-star warning %s" aria-hidden="true" title="%s"></i> ', $location_stock_icon_class, $stock_in_location);
@@ -2399,7 +2373,10 @@ class DeliveryNote extends DB_Table {
                     }
 
                     $location .= sprintf(
-                        '<span class="%s location"  location_key = "%d" >%s </span >', ($pending > 0 ? 'discreet' : ''), $part_location->location->id, $part_location->location->get('Code')
+                        '<span class="%s location"  location_key = "%d" >%s </span >',
+                        ($pending > 0 ? 'discreet' : ''),
+                        $part_location->location->id,
+                        $part_location->location->get('Code')
                     );
 
 
@@ -2410,7 +2387,15 @@ class DeliveryNote extends DB_Table {
  <input class="picked_qty width_50" style="background-color:rgba(192,216,144, 0.2)" ondblclick="show_check_dialog(this)" value="%s" readonly >
   <i  class="fa  fa-check fa-fw button add_picked " aria-hidden="true"></i></span><span data-settings=\'{"field": "Picked", "transaction_key":%d,"item_key":%d ,"on":1 }\' class="picked_quantity %s"  >
                     <input class="picked_qty width_50" value="%s" ovalue="%s"> <i onClick="save_item_qty_change(this)" class="fa  fa-plus fa-fw button add_picked %s" aria-hidden="true">
-                </span>', ($pending == 0 ? '' : 'hide'), number($picked), $row['Inventory Transaction Key'], $row['Part SKU'], ($pending != 0 ? '' : 'hide'), $picked, $picked, ''
+                </span>',
+                        ($pending == 0 ? '' : 'hide'),
+                        number($picked),
+                        $row['Inventory Transaction Key'],
+                        $row['Part SKU'],
+                        ($pending != 0 ? '' : 'hide'),
+                        $picked,
+                        $picked,
+                        ''
                     );
 
                     //=========
@@ -2442,17 +2427,12 @@ class DeliveryNote extends DB_Table {
                         'transaction_key' => $transaction_key,
                         'qty'             => $qty + 0
                     );
-
-
                 } else {
                     $this->error = true;
                     $this->msg   = 'Trying to set as not picked more items than required';
 
                     return;
-
                 }
-
-
             } else {
                 $this->error = true;
                 $this->msg   = 'Itf not found';
@@ -2464,16 +2444,13 @@ class DeliveryNote extends DB_Table {
             print "$sql\n";
             exit;
         }
-
-
         //=========
 
 
     }
 
-    function update_item_packed_quantity($data) {
-
-
+    function update_item_packed_quantity($data)
+    {
         include_once('class.Location.php');
         include_once('class.PartLocation.php');
         include_once('utils/order_handing_functions.php');
@@ -2497,13 +2474,10 @@ class DeliveryNote extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
-
                 $to_pick = $row['pending'] + $row['Picked'];
 
 
                 if ($qty <= $to_pick) {
-
                     //   $location = new Location($row['Location Key']);
 
                     // $qty = $row['Picked'] + $qty;
@@ -2513,8 +2487,6 @@ class DeliveryNote extends DB_Table {
                         $updating_picking  = true;
                         $picked            = $qty;
                         $transaction_value = $picked * $row['Part Cost'];
-
-
                     } else {
                         $updating_picking  = false;
                         $picked            = $row['Picked'];
@@ -2526,7 +2498,11 @@ class DeliveryNote extends DB_Table {
                     if ($updating_picking) {
                         $sql = sprintf(
                             "UPDATE `Inventory Transaction Fact` SET  `Inventory Transaction Type`='Sale' ,`Inventory Transaction Section`='Out',`Picked`=%f,`Inventory Transaction Quantity`=%f,`Inventory Transaction Amount`=%f,`Date Picked`=%s WHERE `Inventory Transaction Key`=%d  ",
-                            $picked, -1 * $picked, $transaction_value, prepare_mysql($date), $data['transaction_key']
+                            $picked,
+                            -1 * $picked,
+                            $transaction_value,
+                            prepare_mysql($date),
+                            $data['transaction_key']
                         );
 
                         $this->db->exec($sql);
@@ -2536,13 +2512,15 @@ class DeliveryNote extends DB_Table {
                     }
 
                     $sql = sprintf(
-                        "UPDATE `Inventory Transaction Fact` SET  `Packed`=%f,`Date Picked`=%s,`Date`=%s ,`Packer Key`=%s WHERE `Inventory Transaction Key`=%d  ", $qty, prepare_mysql($date), prepare_mysql($date), prepare_mysql($data['packer_key']),
+                        "UPDATE `Inventory Transaction Fact` SET  `Packed`=%f,`Date Picked`=%s,`Date`=%s ,`Packer Key`=%s WHERE `Inventory Transaction Key`=%d  ",
+                        $qty,
+                        prepare_mysql($date),
+                        prepare_mysql($date),
+                        prepare_mysql($data['packer_key']),
                         $data['transaction_key']
                     );
 
                     $this->db->exec($sql);
-
-
                     //   print $_pending;
 
 
@@ -2551,15 +2529,12 @@ class DeliveryNote extends DB_Table {
                     $this->msg   = 'Error, trying to pack more items than required';
 
                     return;
-
                 }
 
 
                 $pending         = $to_pick - $qty;
                 $pending_picking = $to_pick - $picked;
                 $packed          = $qty;
-
-
             }
         }
 
@@ -2571,7 +2546,6 @@ class DeliveryNote extends DB_Table {
 
         if ($this->get('Delivery Note Number Packed Items') == $this->get('Delivery Note Number To Pick Items')) {
             $state = 'Packed';
-
         }
 
 
@@ -2581,17 +2555,37 @@ class DeliveryNote extends DB_Table {
         $this->update_metadata = array(
             'state_index'                => $this->get('State Index'),
             'picked_quantity_components' => get_item_picked(
-                $pending_picking, $part_location->get('Quantity On Hand'), $row['Inventory Transaction Key'], $row['Part SKU'], $picked, $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
-                $part_location->part->get('Part Reference'), $part_location->part->get('Part Package Description'), $part_location->part->get('Part Main Image Key')
+                $pending_picking,
+                $part_location->get('Quantity On Hand'),
+                $row['Inventory Transaction Key'],
+                $row['Part SKU'],
+                $picked,
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Reference'),
+                $part_location->part->get('Part Package Description'),
+                $part_location->part->get('Part Main Image Key')
 
 
             ),
             'packed_quantity_components' => get_item_packed(
-                $pending, $row['Inventory Transaction Key'], $row['Part SKU'], $packed
+                $pending,
+                $row['Inventory Transaction Key'],
+                $row['Part SKU'],
+                $packed
             ),
             'location_components'        => get_item_location(
-                $pending, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
-                $part_location->part->get('Part Distinct Locations'), $part_location->part->id, $row['Inventory Transaction Key'], $this->id
+                $pending,
+                $part_location->get('Quantity On Hand'),
+                $date,
+                $part_location->location->id,
+                $part_location->location->get('Code'),
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                $part_location->part->get('Part Distinct Locations'),
+                $part_location->part->id,
+                $row['Inventory Transaction Key'],
+                $this->id
             ),
             'pending'                    => $pending,
 
@@ -2609,12 +2603,10 @@ class DeliveryNote extends DB_Table {
             'transaction_key' => $transaction_key,
             'qty'             => $qty + 0
         );
-
-
     }
 
-    function delete(): string {
-
+    function delete(): string
+    {
         /**
          * @var $customer \Customer
          */
@@ -2625,7 +2617,8 @@ class DeliveryNote extends DB_Table {
         $parts_to_update_stock = array();
 
         $sql = sprintf(
-            "SELECT `Part SKU`,`Location Key` FROM  `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d  AND `Inventory Transaction Type`='Order In Process'  ", $this->id
+            "SELECT `Part SKU`,`Location Key` FROM  `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d  AND `Inventory Transaction Type`='Order In Process'  ",
+            $this->id
         );
 
         if ($result = $this->db->query($sql)) {
@@ -2636,13 +2629,15 @@ class DeliveryNote extends DB_Table {
 
 
         $sql = sprintf(
-            "DELETE FROM  `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d   ", $this->id
+            "DELETE FROM  `Inventory Transaction Fact` WHERE `Delivery Note Key`=%d   ",
+            $this->id
         );
         $this->db->exec($sql);
 
 
         $sql = sprintf(
-            "UPDATE   `Order Transaction Fact` SET  `Current Dispatching State`='In Process' ,  `Delivery Note Key`=NULL  WHERE `Delivery Note Key`=%d  AND `Current Dispatching State`='Ready to Pick'  ", $this->id
+            "UPDATE   `Order Transaction Fact` SET  `Current Dispatching State`='In Process' ,  `Delivery Note Key`=NULL  WHERE `Delivery Note Key`=%d  AND `Current Dispatching State`='Ready to Pick'  ",
+            $this->id
         );
         $this->db->exec($sql);
 
@@ -2659,12 +2654,14 @@ class DeliveryNote extends DB_Table {
 
 
         $sql = sprintf(
-            "DELETE FROM  `Delivery Note Dimension` WHERE `Delivery Note Key`=%d  ", $this->id
+            "DELETE FROM  `Delivery Note Dimension` WHERE `Delivery Note Key`=%d  ",
+            $this->id
         );
         $this->db->exec($sql);
 
         $sql = sprintf(
-            "DELETE FROM  `Order Delivery Note Bridge` WHERE `Delivery Note Key`=%d  ", $this->id
+            "DELETE FROM  `Order Delivery Note Bridge` WHERE `Delivery Note Key`=%d  ",
+            $this->id
         );
         $this->db->exec($sql);
 
@@ -2676,8 +2673,6 @@ class DeliveryNote extends DB_Table {
                                                  'Shortages'
                                              )
         )) {
-
-
             if ($order->get('Order State') != 'Cancelled') {
                 $order->update(
                     array(
@@ -2685,8 +2680,6 @@ class DeliveryNote extends DB_Table {
                     )
                 );
             }
-
-
         }
 
 
@@ -2694,22 +2687,24 @@ class DeliveryNote extends DB_Table {
         $order->update_number_replacements();
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'      => 'update_delivery_note_warehouse_state',
-            'store_key' => $this->get('Delivery Note Store Key')
-        ), DNS_ACCOUNT_CODE, $this->db
+            'au_housekeeping',
+            array(
+                'type'      => 'update_delivery_note_warehouse_state',
+                'store_key' => $this->get('Delivery Note Store Key')
+            ),
+            DNS_ACCOUNT_CODE,
+            $this->db
         );
 
 
         $this->fork_index_elastic_search();
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
-
     }
 
 
-    function get_formatted_parcels(): string {
-
+    function get_formatted_parcels(): string
+    {
         if (!is_numeric($this->data['Delivery Note Number Parcels'])) {
             return '';
         }
@@ -2743,10 +2738,9 @@ class DeliveryNote extends DB_Table {
         return number($this->data['Delivery Note Number Parcels']).' '.$parcel_type;
     }
 
-    function get_field_label($field) {
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Delivery Note Number Parcels':
                 $label = _('number parcels');
                 break;
@@ -2760,15 +2754,13 @@ class DeliveryNote extends DB_Table {
 
             default:
                 $label = $field;
-
         }
 
         return $label;
-
     }
 
-    function update_delivery_note_picking_locations() {
-
+    function update_delivery_note_picking_locations()
+    {
         $state_index = $this->get('State Index');
 
         if ($state_index < 0) {
@@ -2809,16 +2801,12 @@ class DeliveryNote extends DB_Table {
                     $row['Inventory Transaction Key']
                 )
             );
-
-
         }
-
-
     }
 
 
-    function get_shipping_parameters($shipper) {
-
+    function get_shipping_parameters($shipper)
+    {
         $account = get_object('Account', 1);
         $account->load_acc_data();
 
@@ -2856,7 +2844,6 @@ class DeliveryNote extends DB_Table {
                 'end'   => $pick_up_end,
                 'ready' => date('H:i'),
             ];
-
         }
 
 
@@ -2881,7 +2868,6 @@ class DeliveryNote extends DB_Table {
         );
         $parcel_index = 0;
         while ($row = $stmt->fetch()) {
-
             if ($this->get('State Index') > 70) {
                 if ($row['packed'] == 0) {
                     continue;
@@ -2896,11 +2882,7 @@ class DeliveryNote extends DB_Table {
 
 
             if (!isset($parcels[$parcel_index]->items)) {
-
-
                 $parcels[$parcel_index]->items = [$row['Order Transaction Fact Key']];
-
-
             } else {
                 array_push($parcels[$parcel_index]->items, $row['Order Transaction Fact Key']);
             }
@@ -2911,7 +2893,6 @@ class DeliveryNote extends DB_Table {
             } else {
                 $parcel_index++;
             }
-
         }
 
 
@@ -2971,20 +2952,15 @@ class DeliveryNote extends DB_Table {
         );
 
         return $post;
-
-
     }
 
 
-    function get_label($service = '', $reference2 = '') {
-
-
+    function get_label($service = '', $reference2 = '')
+    {
         $shipper = get_object('Shipper', $this->data['Delivery Note Shipper Key']);
 
 
         if ($shipper->id and $shipper->get('Shipper API Key')) {
-
-
             $curl = curl_init();
 
             $account = get_object('Account', 1);
@@ -3016,7 +2992,6 @@ class DeliveryNote extends DB_Table {
 
             if (empty($service)) {
                 if ($shipper->get('Shipper Code') == 'APC') {
-
                     $sql  = "select count(*) as num from `Inventory Transaction Fact` ITF left join `Part Dimension` PD on (ITF.`Part SKU`=PD.`Part SKU`) where `Delivery Note Key`=? and `Part UN Number`!='' and `Required`>0 ";
                     $stmt = $this->db->prepare($sql);
                     $stmt->execute(
@@ -3035,7 +3010,6 @@ class DeliveryNote extends DB_Table {
 
             if (!empty($service)) {
                 $post['service_type'] = $service;
-
             }
 
             $this->fast_update_json_field('Delivery Note Properties', 'last_shipment_service_type', $service);
@@ -3061,7 +3035,6 @@ class DeliveryNote extends DB_Table {
 
 
             if ($http_code == 200) {
-
                 $this->fast_update(
                     [
                         'Delivery Note Shipper Tracking'  => $response['tracking_number'],
@@ -3075,9 +3048,7 @@ class DeliveryNote extends DB_Table {
                 return [
                     'status' => 'success'
                 ];
-
             } elseif ($http_code == 599) {
-
                 $error_shipments = $this->properties('label_error_shipments');
                 if ($error_shipments == '') {
                     $error_shipments = [];
@@ -3100,26 +3071,22 @@ class DeliveryNote extends DB_Table {
                 return [
                     'status' => 'fail'
                 ];
-
             } else {
                 return [
                     'status' => 'unknown_fail'
                 ];
             }
-
-
         }
 
 
         return [
             'status' => 'unknown_fail'
         ];
-
     }
 
 
-    function update_shipper_services($shipper, $debug = false) {
-
+    function update_shipper_services($shipper, $debug = false)
+    {
         $post = $this->get_shipping_parameters($shipper);
         $curl = curl_init();
 
@@ -3160,47 +3127,34 @@ class DeliveryNote extends DB_Table {
         if ($http_code == 200) {
             $res = json_decode($tmp, true);
             $this->fast_update_json_field('Delivery Note Properties', 'shipper_services_'.$shipper->id, json_encode($res['services']));
-
         }
-
-
     }
 
 
-    function update_shippers_services($debug = false) {
-
+    function update_shippers_services($debug = false)
+    {
         $sql  = "select `Shipper Key`,`Shipper Metadata` from `Shipper Dimension` where `Shipper API Key`>0   ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array()
         );
         while ($row = $stmt->fetch()) {
-
             if ($row['Shipper Metadata'] != '') {
                 $metadata = json_decode($row['Shipper Metadata'], true);
                 if (!empty($metadata['services'])) {
-
-
                     if ($metadata['services'] == 'api') {
                         $this->update_shipper_services(get_object('Shipper', $row['Shipper Key']), $debug);
                     } else {
                         $this->fast_update_json_field('Delivery Note Properties', 'shipper_services_'.$row['Shipper Key'], json_encode($metadata['services']));
-
                     }
-
                 }
-
-
             }
-
         }
-
-
     }
 
 
-    function get_shippers_services() {
-
+    function get_shippers_services()
+    {
         $sql  = "select `Shipper Key`  from `Shipper Dimension` where `Shipper API Key`>0   ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -3209,29 +3163,25 @@ class DeliveryNote extends DB_Table {
 
         $services = [];
         while ($row = $stmt->fetch()) {
-
             $shipper = get_object('Shipper', $row['Shipper Key']);
 
             // $_services=$shipper->get_services($this);
 
             $services[$row['Shipper Key']] = $shipper->get_services($this);
-
-
         }
 
         return $services;
-
     }
 
 
-    function properties($key) {
+    function properties($key)
+    {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
 
-    function update_address($fields, $options = '') {
-
-
+    function update_address($fields, $options = '')
+    {
         $old_value = $this->get("Delivery Address");
 
 
@@ -3244,14 +3194,13 @@ class DeliveryNote extends DB_Table {
 
 
         foreach ($fields as $field => $value) {
-
-
             $this->update_field(
-                'Delivery Note '.$field, $value, 'no_history'
+                'Delivery Note '.$field,
+                $value,
+                'no_history'
             );
             if ($this->updated) {
                 $updated_fields_number++;
-
             }
         }
 
@@ -3262,25 +3211,24 @@ class DeliveryNote extends DB_Table {
 
 
         if ($this->updated) {
-
             $this->update_address_formatted_fields();
 
 
             if (!preg_match('/no_history/i', $options)) {
-
                 $this->add_changelog_record(
-                    "Delivery Note Address", $old_value, $this->get("Delivery Address"), '', $this->table_name, $this->id
+                    "Delivery Note Address",
+                    $old_value,
+                    $this->get("Delivery Address"),
+                    '',
+                    $this->table_name,
+                    $this->id
                 );
-
             }
-
-
         }
-
     }
 
-    function update_address_formatted_fields($type = 'Delivery') {
-
+    function update_address_formatted_fields($type = 'Delivery')
+    {
         include_once 'utils/get_addressing.php';
 
         $address_fields = array(
@@ -3311,7 +3259,9 @@ class DeliveryNote extends DB_Table {
 
 
         $this->update_field(
-            'Delivery Note Address Checksum', $new_checksum, 'no_history'
+            'Delivery Note Address Checksum',
+            $new_checksum,
+            'no_history'
         );
 
 
@@ -3353,19 +3303,19 @@ class DeliveryNote extends DB_Table {
 
         $this->update_field('Delivery Note Address Formatted', $xhtml_address, 'no_history');
         $this->update_field(
-            'Delivery Note Address Postal Label', $postal_label_formatter->format($address), 'no_history'
+            'Delivery Note Address Postal Label',
+            $postal_label_formatter->format($address),
+            'no_history'
         );
-
     }
 
-    function update_uuid() {
-
+    function update_uuid()
+    {
         $this->fast_update(['Delivery Note UUID' => md5(uniqid('', true))]);
     }
 
-    function get_picking_packing_bands() {
-
-
+    function get_picking_packing_bands()
+    {
         $account = get_object('Account', 1);
         $account->load_acc_data();
         $default_picking_amount = $account->properties('default_picking_band_amount');
@@ -3421,11 +3371,8 @@ class DeliveryNote extends DB_Table {
                         $picking_amount           = $picking_band->get('Picking Band Amount');
                         $picking_band_historic_id = $picking_band->get_historic_id();
                     }
-
-
                 } else {
                     $picking_amount = $default_picking_amount;
-
                 }
 
 
@@ -3442,7 +3389,6 @@ class DeliveryNote extends DB_Table {
                     }
                 } else {
                     $packing_amount = $default_packing_amount;
-
                 }
 
 
@@ -3467,7 +3413,6 @@ class DeliveryNote extends DB_Table {
                     $qty_packing = $account->properties('max_part_packing_qty');
                 } else {
                     $qty_packing = $qty;
-
                 }
 
 
@@ -3492,10 +3437,7 @@ class DeliveryNote extends DB_Table {
                     'reference'                => $part->get('Reference')
 
                 ];
-
-
             }
-
         }
 
         if ($total_picking_band_amount < $account->properties('min_dn_picking_bonus_amount')) {
@@ -3514,13 +3456,10 @@ class DeliveryNote extends DB_Table {
             $total_packing_band_amount,
             $itf_band
         ];
-
-
     }
 
-    function update_picking_packing_bands() {
-
-
+    function update_picking_packing_bands()
+    {
         if ($this->get('State Index') < 80) {
             return;
         }
@@ -3532,10 +3471,7 @@ class DeliveryNote extends DB_Table {
         }
 
         foreach ($itf_bands as $itf_key => $itf_band_data) {
-
-
             if ($itf_band_data['picking_amount'] > 0) {
-
                 $sql = "insert into `ITF Picking Band Bridge`  (`ITF Picking Band ITF Key`,`ITF Picking Band Type`,`ITF Picking Band Picking Band Key`,`ITF Picking Band Picking Band Historic Key`,`ITF Picking Band Amount`,`ITF Picking Band Cartons`,`ITF Picking Band SKOs`)  values (?,?,?,?,?,?,?) 
 ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band Picking Band Historic Key`=?,`ITF Picking Band Amount`=? ,`ITF Picking Band Cartons`=?,`ITF Picking Band SKOs`=?  ";
 
@@ -3570,7 +3506,6 @@ ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band 
             }
 
             if ($itf_band_data['packing_amount'] > 0) {
-
                 $sql = "insert into `ITF Picking Band Bridge`  (`ITF Picking Band ITF Key`,`ITF Picking Band Type`,`ITF Picking Band Picking Band Key`,`ITF Picking Band Picking Band Historic Key`,`ITF Picking Band Amount`,`ITF Picking Band Cartons`,`ITF Picking Band SKOs`)  values (?,?,?,?,?,?,?) 
 ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band Picking Band Historic Key`=?,`ITF Picking Band Amount`=? ,`ITF Picking Band Cartons`=?,`ITF Picking Band SKOs`=? ";
 
@@ -3601,7 +3536,6 @@ ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band 
                     )
                 );
             }
-
         }
 
 
@@ -3613,8 +3547,6 @@ ON DUPLICATE KEY UPDATE `ITF Picking Band Picking Band Key`=?,`ITF Picking Band 
 
             ]
         );
-
-
     }
 
 
