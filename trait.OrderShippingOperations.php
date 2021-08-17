@@ -189,7 +189,7 @@ trait OrderShippingOperations {
     function get_shipping($shipping_zone_schema_key = false) {
 
 
-        if ($this->data['Order Number Items'] == 0) {
+        if ($this->data['Order Number Ordered Products'] == 0) {
             return array(
                 0,
                 0,

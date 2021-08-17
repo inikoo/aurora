@@ -358,12 +358,24 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
                         'undo_submit_operations'
                     );
                 } else {
-                    $operations = array(
-                        'send_to_warehouse_operations',
-                        'cancel_operations',
-                        'undo_submit_operations',
-                        'proforma_operations'
-                    );
+
+                    if ($this->get('Order Number Ordered Products') == 0) {
+                        $operations = array(
+                            'invoice_services_operations',
+                            'cancel_operations',
+                            'undo_submit_operations',
+                            'proforma_operations'
+                        );
+                    }else{
+                        $operations = array(
+                            'send_to_warehouse_operations',
+                            'cancel_operations',
+                            'undo_submit_operations',
+                            'proforma_operations'
+                        );
+                    }
+
+
                 }
             } elseif ($this->get('Order State') == 'InWarehouse') {
                 $operations = array('cancel_operations');

@@ -481,7 +481,23 @@
                     </div>
                 </div>
 
-                <div id="send_to_warehouse_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Items')==0   }hide{/if}">
+                <div id="invoice_services_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Ordered Products')>0  or  $order->get('Order Number Services')==0  }hide{/if}">
+                    <div class="square_button right  " title="{t}Send to warehouse{/t}">
+                        <i class="fas fa-file-invoice-dollar" aria-hidden="true" onclick="toggle_order_operation_dialog('invoice_services')"></i>
+                        <table id="invoice_services_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
+                            </tr>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('invoice_services')"></i></td>
+                                <td class="aright"><span data-data='{  "field": "Order State","value": "InvoiceServices","dialog_name":"invoice_services"}' id="invoice_services_save_buttons" class="valid save button"
+                                                         onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="send_to_warehouse_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Ordered Products')==0   }hide{/if}">
                     <div class="square_button right  " title="{t}Send to warehouse{/t}">
                         <i class="fas fa-dolly-flatbed-alt" aria-hidden="true" onclick="toggle_order_operation_dialog('send_to_warehouse')"></i>
                         <table id="send_to_warehouse_dialog" class="order_operation_dialog hide">

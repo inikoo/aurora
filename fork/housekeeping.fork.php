@@ -1545,7 +1545,32 @@ function fork_housekeeping($job)
 
 
             break;
+        case 'order_completed':
+            /** @var Order $order */
+            $order         = get_object('Order', $data['order_key']);
 
+
+            $store = get_object('Store', $order->get('Store Key'));
+
+
+            $store->update_orders();
+            $account->update_orders();
+
+            $order->send_review_invitation();
+
+
+            $customer         = get_object('Customer', $order->get('Order Customer Key'));
+            $customer->editor = $editor;
+
+            //todo send email invoice done
+
+
+
+            $account->update_inventory_dispatched_data('ytd');
+            $account->update_inventory_dispatched_data('qtd');
+            $account->update_inventory_dispatched_data('all');
+
+            break;
         case 'order_dispatched':
             /** @var Order $order */
             $order         = get_object('Order', $data['order_key']);

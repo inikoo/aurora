@@ -1593,12 +1593,102 @@ class Order extends DB_Table
 
                     break;
 
+
+                case 'InvoiceServices':
+                    include_once('class.Invoice.php');
+                    if (!$this->data['Order State'] == 'InProcess') {
+                        $this->error = true;
+                        $this->msg   = 'Order is not in process';
+
+                        return false;
+                    }
+                    $this->update_field('Order State', $value, 'no_history');
+
+
+                    $extra_data = [];
+
+                        $this->fast_update_json_field('Order Metadata', 'ups', false);
+
+
+                    $invoice = $this->create_invoice($date, $extra_data);
+
+
+
+                    $this->update_field('Order Invoiced Date', $date, 'no_history');
+                    $this->update_field('Order Date', $date, 'no_history');
+                    $this->update_field('Order Invoice Key', $invoice->id, 'no_history');
+
+
+                    $this->fast_update_json_field('Order Metadata', 'original_tax_code', $this->get('Order Tax Code'));
+                    $this->fast_update_json_field('Order Metadata', 'original_tax_description', $this->get('Tax Description'));
+
+                    $history_data = array(
+                        'History Abstract' => _('Order invoiced'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->table_name, $this->id);
+
+
+
+
+                    $sql = sprintf(
+
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Ready to Ship' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    $this->update_field('Order State', 'Dispatched', 'no_history');
+                    $this->update_field('Order Dispatched Date', $date, 'no_history');
+
+
+                    $history_data = array(
+                        'History Abstract' => _('Order completed'),
+                        'History Details'  => '',
+                    );
+                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->get_object_name(), $this->id);
+
+                    $operations = array();
+
+
+                    $sql = sprintf(
+                        "UPDATE `Order Transaction Fact` SET `Current Dispatching State`='Dispatched' WHERE `Order Key`=%d  AND `Current Dispatching State` NOT IN ('No Picked Due Out of Stock','No Picked Due No Authorised','No Picked Due Not Found','No Picked Due Other','Out of Stock in Basket')  ",
+                        $this->id
+
+                    );
+
+                    $this->db->exec($sql);
+
+
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
+
+
+                    $customer->fast_update(array(
+                                               'Customer Last Dispatched Order Key'  => $this->id,
+                                               'Customer Last Dispatched Order Date' => gmdate('Y-m-d', strtotime($date.' +0:00'))
+                                           ));
+
+
+                    new_housekeeping_fork(
+                        'au_housekeeping',
+                        array(
+                            'type'              => 'order_completed',
+                            'order_key'         => $this->id,
+                        ),
+                        $account->get('Account Code')
+                    );
+
+
+
+
+                    break;
                 case 'Approved':
 
 
                     include_once('class.Invoice.php');
-
-
                     if (!$this->data['Order State'] == 'PackedDone') {
                         $this->error = true;
                         $this->msg   = 'Order is not in packed done';
