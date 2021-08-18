@@ -234,7 +234,11 @@ class User extends DB_Table {
             }
 
         }
+        $base_data['User View'] = 'Staff';
 
+        if(!in_array($base_data['User Type'],['Staff','Administrator','Warehouse','Contractor','Agent'])) {
+            $base_data['User View'] = 'Staff';
+        }
 
         if ($base_data['User Type'] == 'Staff') {
 
@@ -257,6 +261,7 @@ class User extends DB_Table {
         if ($base_data['User Type'] == 'Administrator') {
             $base_data['User Alias'] = _('Administrator');
         }
+
 
 
         $keys   = '(';
