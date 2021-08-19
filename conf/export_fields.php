@@ -1025,11 +1025,7 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'checked' => 1
             ),
 
-            array(
-                'name'    => '`Supplier Part Status`',
-                'label'   => _('Availability'),
-                'checked' => 1
-            ),
+         
 
             array(
                 'name'    => '`Supplier Part On Demand`',

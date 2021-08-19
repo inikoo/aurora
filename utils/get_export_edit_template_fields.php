@@ -252,7 +252,7 @@ function get_export_edit_template_fields($object) {
                 'show_for_new'  => true,
                 'required'      => false,
                 'header'        => 'Unit dimensions'.' (l x w x h) in cm',
-                'name'          => 'Part Part Unit Dimensions',
+                'name'          => 'Part Unit Dimensions',
                 'label'         => _('Unit dimensions'),
                 'checked'       => 0
             ),
@@ -270,7 +270,7 @@ function get_export_edit_template_fields($object) {
                 'show_for_new'  => true,
                 'required'      => false,
                 'header'        => 'SKO dimensions'.' (l x w x h) in cm',
-                'name'          => 'Part Part Package Dimensions',
+                'name'          => 'Part Package Dimensions',
                 'label'         => _('SKO dimensions'),
                 'checked'       => 0
             ),

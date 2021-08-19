@@ -22,8 +22,8 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 
-function fork_export($job) {
-
+function fork_export($job)
+{
     global $account, $db;// remove the global $db and $account is removed
 
     require_once 'vendor/autoload.php';
@@ -82,13 +82,11 @@ function fork_export($job) {
 
 
     if ($sql_count != '') {
-
         if ($result = $db->query($sql_count)) {
             if ($row = $result->fetch()) {
                 $number_rows = $row['num'];
             }
         }
-
     } else {
         $stmt = $db->prepare($sql_data);
 
@@ -96,7 +94,6 @@ function fork_export($job) {
         $stmt->execute();
 
         $number_rows = $stmt->rowCount();
-
     }
 
 
@@ -137,7 +134,6 @@ function fork_export($job) {
     $row_index = 1;
 
     if (empty($fork_data['fields']) or $fork_data['fields'] == '') {
-
         $sql = sprintf("update `Download Dimension` set `Download State`='Error' where `Download Key`=%d  ", $download_key);
         $db->exec($sql);
 
@@ -150,15 +146,11 @@ function fork_export($job) {
             'inventory_stock_history_day_stock'       => 'sum(`Quantity On Hand`)',
             'inventory_stock_history_day_stock_value' => 'sum(`Value At Cost`) '
         );
-
-
     } else {
-
         $placeholders = array(
             'inventory_stock_history_day_stock'       => 'sum(`Quantity On Hand`)',
             'inventory_stock_history_day_stock_value' => 'sum(`Value At Day Cost`) '
         );
-
     }
 
 
@@ -172,40 +164,33 @@ function fork_export($job) {
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
-
-
-
             if ($row_index == 1) {
-
-
                 $char_index = 1;
 
                 foreach ($fork_data['fields'] as $_key) {
-
-
                     if (isset($fork_data['field_set'][$_key]['labels'])) {
-
                         foreach ($fork_data['field_set'][$_key]['labels'] as $label) {
                             $char = number2alpha($char_index);
                             $objPHPExcel->getActiveSheet()->setCellValue(
-                                $char.$row_index, strip_tags($label)
+                                $char.$row_index,
+                                strip_tags($label)
                             );
                             $char_index++;
                         }
-
-
                     } else {
                         if (isset($fork_data['field_set'][$_key]['type']) and $fork_data['field_set'][$_key]['type'] == 'dynamic_headers') {
-
-
-
                             $sql = 'select '.sprintf(
-                                    '%s as element from %s %s %s %s', $fork_data['field_set'][$_key]['header_field'], $fork_data['sql_table'], $fork_data['field_set'][$_key]['header_table'], $fork_data['sql_where'], $fork_data['field_set'][$_key]['header_group_by']
+                                    '%s as element from %s %s %s %s',
+                                    $fork_data['field_set'][$_key]['header_field'],
+                                    $fork_data['sql_table'],
+                                    $fork_data['field_set'][$_key]['header_table'],
+                                    $fork_data['sql_where'],
+                                    $fork_data['field_set'][$_key]['header_group_by']
                                 );
 
 
                             $dynamic_fields = [];
-                            $stmt2           = $db->prepare($sql);
+                            $stmt2          = $db->prepare($sql);
                             $stmt2->execute();
                             while ($row2 = $stmt2->fetch()) {
                                 $dynamic_fields[$row2['element']] = '';
@@ -217,46 +202,45 @@ function fork_export($job) {
                             if (isset($fork_data['field_set'][$_key]['header_prefix'])) {
                                 $prefix = $fork_data['field_set'][$_key]['header_prefix'];
                             }
-                            
+
                             foreach ($dynamic_fields as $key => $dynamic_field) {
                                 $char = number2alpha($char_index);
                                 $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $prefix.$key);
                                 $char_index++;
                             }
-
-
                         } else {
+
                             $char = number2alpha($char_index);
                             $objPHPExcel->getActiveSheet()->setCellValue(
-                                $char.$row_index, strip_tags($fork_data['field_set'][$_key]['label'])
+                                $char.$row_index,
+                                strip_tags($fork_data['field_set'][$_key]['label'])
                             );
+
+                            //print "$char.$row_index ".strip_tags($fork_data['field_set'][$_key]['label'])."\n";
+
                             $char_index++;
                         }
                     }
-
-
                 }
 
                 $row_index++;
             }
 
 
-            $char_index = 1;
-            $real_char_index=1;
+            $char_index      = 1;
+            $real_char_index = 1;
             //print_r($row);
             foreach ($row as $sql_field => $value) {
                 $char = number2alpha($char_index);
 
 
-                //  print ">>>>>>>>> $value\n";
+                //print ">>>>>>>>> $sql_field ==> $value\n";
 
                 if ($sql_field == 'Part Materials') {
-
+                    //print "XXXX Materials\n";
 
                     $materials = '';
                     if ($value != '') {
-
-
                         $materials_data = json_decode($value, true);
 
 
@@ -273,13 +257,16 @@ function fork_export($job) {
 
 
                             $materials .= sprintf(
-                                ', %s%s', $may_contain_tag, $material_data['name']
+                                ', %s%s',
+                                $may_contain_tag,
+                                $material_data['name']
                             );
 
 
                             if ($material_data['ratio'] > 0) {
                                 $materials .= sprintf(
-                                    ' (%s)', percentage($material_data['ratio'], 1)
+                                    ' (%s)',
+                                    percentage($material_data['ratio'], 1)
                                 );
                             }
                         }
@@ -287,22 +274,95 @@ function fork_export($job) {
                         $materials = ucfirst(
                             preg_replace('/^, /', '', $materials)
                         );
-
                     }
 
 
                     $value = $materials;
                 }
 
+                if($sql_field=='Part Unit Dimensions' or $sql_field=='Part Package Dimensions'){
+
+
+
+                    $dimensions = '';
+
+
+                    if ($value != '') {
+                        $data = json_decode($value, true);
+                        if ($data) {
+                            include_once 'utils/units_functions.php';
+                            switch ($data['type']) {
+                                case 'Rectangular':
+                                    $dimensions = number(
+                                            convert_units(
+                                                $data['l'], 'm', $data['units']
+                                            )
+                                        ).'x'.number(
+                                            convert_units(
+                                                $data['w'], 'm', $data['units']
+                                            )
+                                        ).'x'.number(
+                                            convert_units(
+                                                $data['h'], 'm', $data['units']
+                                            )
+                                        ).' ('.$data['units'].')';
+                                    break;
+                                case 'Sheet':
+                                    $dimensions = number(
+                                            convert_units(
+                                                $data['l'], 'm', $data['units']
+                                            )
+                                        ).'x'.number(
+                                            convert_units(
+                                                $data['w'], 'm', $data['units']
+                                            )
+                                        ).' ('.$data['units'].')';
+                                    break;
+                                case 'Cilinder':
+                                    $dimensions = number(
+                                            convert_units(
+                                                $data['h'], 'm', $data['units']
+                                            )
+                                        ).'x'.number(
+                                            convert_units(
+                                                $data['w'], 'm', $data['units']
+                                            )
+                                        ).' ('.$data['units'].')';
+                                    break;
+                                case 'Sphere':
+                                    $dimensions = 'D:'.number(
+                                            convert_units(
+                                                $data['h'], 'm', $data['units']
+                                            )
+                                        ).' ('.$data['units'].')';
+
+                                    break;
+
+                                case 'String':
+                                    $dimensions = 'L.'.number(
+                                            convert_units(
+                                                $data['l'], 'm', $data['units']
+                                            )
+                                        ).' ('.$data['units'].')';
+
+                                    break;
+
+
+                                default:
+                                    $dimensions = '';
+                            }
+                        }
+                    }
+                    $value = $dimensions;
+
+                }
+
                 if ($sql_field == 'Part Main Image Key') {
-
                     if ($value > 0) {
-
-
                         $columns_no_resize[] = $char;
 
-                        $objDrawing = new Drawing();    //create object for Worksheet drawing
-                        $objDrawing->setName('Image');        //set name to image
+                        $objDrawing = new Drawing();               //create object for Worksheet drawing
+                        $objDrawing->setName('Image');             //set name to image
                         $objDrawing->setDescription('Item image'); //set description to image
 
 
@@ -330,7 +390,6 @@ function fork_export($job) {
 
 
                         if (!file_exists($cached_image_path)) {
-
                             if (!is_dir('cache/'.$original_image->get('Image File Checksum')[0])) {
                                 mkdir('cache/'.$original_image->get('Image File Checksum')[0]);
                             }
@@ -388,8 +447,8 @@ function fork_export($job) {
 
 
                         $objDrawing->setPath($cached_image_path);
-                        $objDrawing->setOffsetX(10);                       //setOffsetX works properly
-                        $objDrawing->setOffsetY(10);                       //setOffsetY works properly
+                        $objDrawing->setOffsetX(10);                          //setOffsetX works properly
+                        $objDrawing->setOffsetY(10);                          //setOffsetY works properly
                         $objDrawing->setCoordinates($char.$row_index);        //set image to cell
 
 
@@ -408,83 +467,74 @@ function fork_export($job) {
 
 
                         $objPHPExcel->getActiveSheet()->getRowDimension($row_index)->setRowHeight(220);
-
-
                     }
 
 
                     $objPHPExcel->getActiveSheet()->getColumnDimension($char)->setWidth(220);
-
-                } else {
-
-
-                    $type = '';
-                    if (!empty($fork_data['fields'][$real_char_index - 1])) {
-                        $field_index = $fork_data['fields'][$real_char_index - 1];
-                        if (!empty($fork_data['field_set'][$field_index]['type'])) {
-                            $type = $fork_data['field_set'][$field_index]['type'];
-                        }
-                    }
+                }
 
 
-                    //print ">>>>>>>> $type <<<<<<<\n";
-
-
-                    if ($type == 'html' or $type == 'dynamic_headers') {
-                        $_value = $value;
-                    } else {
-                        $value  = str_replace("\xc2\xa0", ' ', $value);
-                        $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
-                    }
-
-
-                    if ($type == 'text') {
-                        $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
-                    } elseif ($type == 'dynamic_headers') {
-
-
-                        $dynamic_fields = $fork_data['field_set'][$fork_data['fields'][$real_char_index - 1]]['dynamic_fields'];
-
-
-                        foreach (preg_split('/,/', $_value) as $_values_data) {
-
-                            $values_data = preg_split('/\|/', $_values_data);
-
-                            $dynamic_fields[$values_data[0]]=$values_data[1];
-
-
-
-                            // print_r($values_data);
-                            // exit;
-
-                        }
-
-                        foreach ($dynamic_fields as  $dynamic_field) {
-                            $char = number2alpha($char_index);
-                            $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $dynamic_field);
-                            $char_index++;
-                        }
-                        $char_index--;
-
-
-
-                    } else {
-                        $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+                $type = '';
+                if (!empty($fork_data['fields'][$real_char_index - 1])) {
+                    $field_index = $fork_data['fields'][$real_char_index - 1];
+                    if (!empty($fork_data['field_set'][$field_index]['type'])) {
+                        $type = $fork_data['field_set'][$field_index]['type'];
                     }
                 }
 
+
+                //print ">>>>>>>> $type <<<<<<<\n";
+
+
+                if ($type == 'html' or $type == 'dynamic_headers') {
+                    $_value = $value;
+                } else {
+                    $value  = str_replace("\xc2\xa0", ' ', $value);
+                    $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
+                }
+
+
+                if ($type == 'text') {
+                    //print "$char.$row_index $_value\n";
+                    $objPHPExcel->getActiveSheet()->setCellValueExplicit($char.$row_index, $_value, DataType::TYPE_STRING);
+                } elseif ($type == 'dynamic_headers') {
+                    $dynamic_fields = $fork_data['field_set'][$fork_data['fields'][$real_char_index - 1]]['dynamic_fields'];
+
+
+                    foreach (preg_split('/,/', $_value) as $_values_data) {
+                        $values_data = preg_split('/\|/', $_values_data);
+
+                        $dynamic_fields[$values_data[0]] = $values_data[1];
+
+
+                        // print_r($values_data);
+                        // exit;
+
+                    }
+
+                    foreach ($dynamic_fields as $dynamic_field) {
+                        $char = number2alpha($char_index);
+                        $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $dynamic_field);
+                        $char_index++;
+                    }
+                    $char_index--;
+                } else {
+                    //print "$char.$row_index $_value\n";
+                    $objPHPExcel->getActiveSheet()->setCellValue($char.$row_index, $_value);
+                }
+
+
                 $real_char_index++;
                 $char_index++;
-
             }
 
             $row_index++;
 
+
             if (microtime(true) > $show_feedback) {
-
-
                 $sql = sprintf(
-                    'select `Download State` from  `Download Dimension` where `Download Key`=%d  ', $download_key
+                    'select `Download State` from  `Download Dimension` where `Download Key`=%d  ',
+                    $download_key
 
                 );
 
@@ -520,13 +570,10 @@ function fork_export($job) {
                 }
 
                 $show_feedback = microtime(true) + .400;
-
-
             }
-
         }
     }
-   // exit('caca2');
+    // exit('caca2');
 
     $sheet = $objPHPExcel->getActiveSheet();
 
@@ -534,15 +581,12 @@ function fork_export($job) {
     $cellIterator->setIterateOnlyExistingCells(true);
 
     foreach ($cellIterator as $cell) {
-
         // print_r($cell->getColumn());
         if (in_array($cell->getColumn(), $columns_no_resize)) {
             $sheet->getColumnDimension($cell->getColumn())->setWidth(250);
         } else {
             $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
-
         }
-
     }
 
 
@@ -555,7 +599,6 @@ function fork_export($job) {
     //print ">>> $output_type <<<<";
 
     switch ($output_type) {
-
         case('csv'):
             $output_file = $download_path.$output_filename.'.'.$output_type;
             IOFactory::createWriter($objPHPExcel, 'Csv')->setDelimiter(',')->setEnclosure('')->setLineEnding("\r\n")->setSheetIndex(0)->save($output_file);
@@ -575,7 +618,6 @@ function fork_export($job) {
             $objPHPExcel->getActiveSheet()->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
             IOFactory::createWriter($objPHPExcel, 'Pdf')->save($output_file);
             break;
-
     }
 
 
@@ -616,7 +658,7 @@ function fork_export($job) {
 
 
     unlink($output_file);
-
+   // exit('caca');
 
     return false;
 }

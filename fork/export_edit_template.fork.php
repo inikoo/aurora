@@ -325,8 +325,11 @@ function fork_export_edit_template($job) {
                     );
 
                     foreach ($fields as $field) {
-                        //print_r($object);
-                        //print $field['name'];
+                        //print  $object->get($field['name'])."\n";
+                        //print $field['name']."\n";
+
+
+
                         $data_rows[] = array(
                             'cell_type' => (isset($field['cell_type']) ? $field['cell_type'] : 'auto'),
                             'value'     => $object->get($field['name']),
