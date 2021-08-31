@@ -3080,6 +3080,19 @@ function get_tab_defaults_data(): array {
             //'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
             //'elements'      => get_elements_option('supplier_deliveries')
         ),
+        'fulfilment.deliveries'                => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'number',
+            'from'        => '',
+            'to'          => '',
+            'period'      => 'all',
+            //'elements_type' => array_keys(get_elements_option('supplier_deliveries'))[0],
+            //'elements'      => get_elements_option('supplier_deliveries')
+        ),
         'inventory.parts'                    => array(
             'view'            => 'overview',
             'sort_key'        => 'id',

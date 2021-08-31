@@ -5568,6 +5568,14 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                 $parent_key = $key;
 
 
+                            }elseif ($view_path[1] == 'deliveries') {
+                                $section = 'deliveries';
+                                $object  = '';
+
+                                $parent     = 'warehouse';
+                                $parent_key = $key;
+
+
                             } elseif ($view_path[1] == 'customers') {
                                 $section    = 'customers';
                                 $object     = '';

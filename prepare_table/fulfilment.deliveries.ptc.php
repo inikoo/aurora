@@ -41,6 +41,7 @@ class prepare_table_fulfilment_deliveries extends prepare_table {
         $this->where = 'where true ';
         $this->table = '`Fulfilment Delivery Dimension` D  left join `Store Dimension` on (`Fulfilment Delivery Store Key`=`Store Key`)  ';
 
+
         if ($this->parameters['parent'] == 'warehouse') {
 
             $this->where = sprintf(
@@ -180,9 +181,25 @@ class prepare_table_fulfilment_deliveries extends prepare_table {
                 $customer_delivery_reference = '<span class="discreet italic">'._('No set').'</span>';
             }
 
+            if ($data['Fulfilment Delivery State'] == 'InProcess') {
+                $received_date= '<span class="italic very_discreet">℮ '.strftime(
+                        "%e %b %Y",
+                        strtotime($data['Fulfilment Delivery Estimated Receiving Date'].' +0:00')
+                    ).'</span>';
+            } else {
+                $received_date= strftime(
+                    "%e %b %Y",
+                    strtotime($data['Fulfilment Delivery Received Date'].' +0:00')
+                );
+            }
+
+
             $this->table_data[] = array(
                 'id'                          => (integer)$data['Fulfilment Delivery Key'],
                 'date'                        => strftime("%e %b %Y", strtotime($data['Fulfilment Delivery Creation Date'].' +0:00')),
+                'received_date'                        => $received_date,
+
+
                 'last_date'                   => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Fulfilment Delivery Last Updated Date'].' +0:00')),
                 'customer'                    => sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_customer, $data['Fulfilment Delivery Customer Name']),
                 'customer_delivery_reference' => $customer_delivery_reference,

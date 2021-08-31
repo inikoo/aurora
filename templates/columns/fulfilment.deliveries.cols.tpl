@@ -24,7 +24,14 @@ sortType: "toggle",
 {if $sort_key=='formatted_id'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
 cell: Backgrid.HtmlCell.extend({ })
 },
-
+{
+name: "customer",
+label: "{t}Customer{/t}",
+editable: false,
+sortType: "toggle",
+{if $sort_key=='customer'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ } ),
+},
 {
 name: "customer_delivery_reference",
 label: "{t}Reference{/t}",
@@ -36,7 +43,7 @@ cell: Backgrid.HtmlCell.extend({ } ),
 
 {
 name: "date",
-label: "{t}Date{/t}",
+label: "{t}Creation date{/t}",
 editable: false,
 defaultOrder:1,
 sortType: "toggle",
@@ -44,7 +51,6 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
-,
 {
 name: "received_date",
 label: "{t}Receive date{/t}",

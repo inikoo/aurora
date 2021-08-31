@@ -90,6 +90,48 @@ function get_locations_navigation($data, $smarty): array {
 }
 
 
+function get_deliveries_navigation($data, $smarty): array {
+
+
+    $warehouse = new Warehouse($data['parent_key']);
+
+
+    $left_buttons = array();
+
+
+    $right_buttons = array();
+    $sections      = get_sections($data['module'], $warehouse->id);
+
+    if (isset($sections[$data['section']])) {
+        $sections[$data['section']]['selected'] = true;
+    }
+
+
+    $_content = array(
+
+        'sections_class' => '',
+        'sections'       => $sections,
+
+        'left_buttons'  => $left_buttons,
+        'right_buttons' => $right_buttons,
+        'title'         => _('Fulfilment deliveries').' <span class="id small hide">('.$warehouse->get('Warehouse Code').')</span>',
+        'search'        => array(
+            'show'        => true,
+            'placeholder' => _('Search fulfilment')
+        )
+
+    );
+    $smarty->assign('_content', $_content);
+
+    return array(
+        $_content['search'],
+        $smarty->fetch('top_menu.tpl'),
+        $smarty->fetch('au_header.tpl')
+    );
+
+}
+
+
 /** @noinspection DuplicatedCode */
 function get_location_navigation($data, $smarty, $user, $db, $account): array {
 

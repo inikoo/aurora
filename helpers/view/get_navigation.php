@@ -1453,6 +1453,8 @@ function get_navigation($user, $smarty, $data, $db, $account) {
                     return get_dashboard_navigation($data, $smarty, $user, $db, $account);
                 case ('locations'):
                     return get_locations_navigation($data, $smarty, $user, $db, $account);
+                case ('deliveries'):
+                    return get_deliveries_navigation($data, $smarty, $user, $db, $account);
                 case ('location'):
                     return get_location_navigation($data, $smarty, $user, $db, $account);
                 case ('customers'):

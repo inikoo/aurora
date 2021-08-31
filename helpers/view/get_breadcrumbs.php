@@ -3562,6 +3562,32 @@ function get_breadcrumbs($db, $state, $user, $smarty, $account): array {
                     );
 
                     break;
+                case 'locations':
+                    $branch[] = array(
+                        'label'     => _('Fulfilment'),
+                        'icon'      => 'tachometer',
+                        'reference' => 'fulfilment/'.$state['current_warehouse'].'/dashboard'
+                    );
+                    $branch[] = array(
+                        'label'     => _('Locations'),
+                        'icon'      => 'pallet',
+                        'reference' => ''
+                    );
+
+                    break;
+                case 'deliveries':
+                    $branch[] = array(
+                        'label'     => _('Fulfilment'),
+                        'icon'      => 'tachometer',
+                        'reference' => 'fulfilment/'.$state['current_warehouse'].'/dashboard'
+                    );
+                    $branch[] = array(
+                        'label'     => _('Deliveries'),
+                        'icon'      => 'truck',
+                        'reference' => ''
+                    );
+
+                    break;
                 case 'asset_keeping_customer':
                     $branch[] = array(
                         'label'     => _('Fulfilment'),

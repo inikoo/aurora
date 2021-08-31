@@ -26,7 +26,7 @@ function get_fulfilment_module(): array {
                 )
             ),
 
-
+/*
             'fulfilment_parts' => array(
                 'type'      => 'navigation',
                 'label'     => _('Stored items'),
@@ -44,6 +44,10 @@ function get_fulfilment_module(): array {
 
 
             ),
+*/
+
+
+
             'fulfilment_part'  => array(
                 'type'           => 'object',
                 'subtabs_parent' => array(
@@ -422,6 +426,30 @@ function get_fulfilment_module(): array {
                 )
 
             ),
+
+            'deliveries' => array(
+
+                'type'      => 'navigation',
+                'label'     => _('Deliveries'),
+                'icon'      => 'truck',
+                'reference' => 'fulfilment/%d/deliveries',
+                'tabs'      => array(
+
+
+                    'fulfilment.deliveries' => array(
+                        'label'             => _('Deliveries'),
+                        'icon'              => 'truck',
+                        'dynamic_reference' => 'fulfilment/%d/deliveries',
+
+                    ),
+
+                )
+
+            ),
+
+
+
+
             'delivery'          => array(
                 'type' => 'object',
                 'tabs' => array(
