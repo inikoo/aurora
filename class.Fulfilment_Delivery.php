@@ -357,7 +357,9 @@ class Fulfilment_Delivery extends DB_Table
                 $this->update_state($value);
                 break;
             case 'Fulfilment Delivery Estimated Receiving Date':
-                $this->update_field($field, $value, $options);
+            case 'Fulfilment Delivery Received Date':
+
+            $this->update_field($field, $value, $options);
                 $this->update_metadata=[
                     'class_html'=>[
                         'Fulfilment_Delivery_Estimated_or_Received_Date'=>$this->get('Estimated or Received Date')

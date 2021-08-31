@@ -64,6 +64,22 @@ function get_fulfilment_delivery_fields(Fulfilment_Delivery $fulfilment_delivery
 
                 ),
                 array(
+
+
+                    'id'     => 'Fulfilment_Delivery_Received_Date',
+                    'edit'   => ($edit ? 'date' : ''),
+                    'render' => $fulfilment_delivery->get('State Index') >=40 and  $fulfilment_delivery->get('State Index') <100,
+
+                    'time'            => '00:00:00',
+                    'value'           => $fulfilment_delivery->get('Fulfilment Delivery Received Date'),
+                    'formatted_value' => $fulfilment_delivery->get('Received Date'),
+                    'label'           => ucfirst($fulfilment_delivery->get_field_label('Fulfilment Delivery Received Date')),
+                    'invalid_msg'     => get_invalid_message('date'),
+                    'required'        => true,
+
+
+                ),
+                array(
                     'id'     => 'Fulfilment_Delivery_Estimated_Pallets',
                     'edit'   => ($edit ? 'smallint_unsigned' : ''),
                     'render' => $fulfilment_delivery->get('State Index') == 10,
