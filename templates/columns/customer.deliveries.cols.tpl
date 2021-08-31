@@ -44,7 +44,7 @@ sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
-,
+
 {
 name: "received_date",
 label: "{t}Receive date{/t}",

@@ -12,9 +12,11 @@
 include_once 'utils/prepare_table.php';
 
 
-class prepare_table_fulfilment_deliveries extends prepare_table {
+class prepare_table_fulfilment_deliveries extends prepare_table
+{
 
-    function __construct($db, $accounts, $user) {
+    function __construct($db, $accounts, $user)
+    {
         parent::__construct(...func_get_args());
         $this->record_label = [
             [
@@ -35,41 +37,42 @@ class prepare_table_fulfilment_deliveries extends prepare_table {
     }
 
 
-    function prepare_table() {
-
-
+    function prepare_table()
+    {
         $this->where = 'where true ';
         $this->table = '`Fulfilment Delivery Dimension` D  left join `Store Dimension` on (`Fulfilment Delivery Store Key`=`Store Key`)  ';
 
 
         if ($this->parameters['parent'] == 'warehouse') {
-
             $this->where = sprintf(
-                'where   `Fulfilment Delivery Warehouse Key`=%d', $this->parameters['parent_key']
+                'where   `Fulfilment Delivery Warehouse Key`=%d',
+                $this->parameters['parent_key']
             );
-
-
         } elseif ($this->parameters['parent'] == 'customer') {
             $this->where = sprintf(
-                'where   `Fulfilment Delivery Customer Key`=%d  ', $this->parameters['parent_key']
+                'where   `Fulfilment Delivery Customer Key`=%d  ',
+                $this->parameters['parent_key']
             );
         }
 
         if (isset($this->parameters['period'])) {
             include_once 'utils/date_functions.php';
             $tmp = calculate_interval_dates(
-                $this->db, $this->parameters['period'], $this->parameters['from'], $this->parameters['to']
+                $this->db,
+                $this->parameters['period'],
+                $this->parameters['from'],
+                $this->parameters['to']
             );
 
             $where_interval = prepare_mysql_dates(
-                $tmp[1], $tmp[2], 'D.`Fulfilment Delivery Date`'
+                $tmp[1],
+                $tmp[2],
+                'D.`Fulfilment Delivery Date`'
             );
             $this->where    .= $where_interval['mysql'];
         }
 
         if (isset($parameters['elements_type'])) {
-
-
             switch ($parameters['elements_type']) {
                 case('state'):
                     $_elements            = '';
@@ -97,12 +100,10 @@ class prepare_table_fulfilment_deliveries extends prepare_table {
 
 
         if (($this->parameters['f_field'] == 'number') and $this->f_value != '') {
-
             $this->wheref = sprintf(
-                '  and  `Fulfilment Delivery Public ID`  like "%%%s%%" ', addslashes($this->f_value)
+                '  and  `Fulfilment Delivery Public ID`  like "%%%s%%" ',
+                addslashes($this->f_value)
             );
-
-
         }
 
 
@@ -128,19 +129,15 @@ class prepare_table_fulfilment_deliveries extends prepare_table {
 ';
 
         $this->sql_totals = "select "."count(Distinct D.`Fulfilment Delivery Key`) as num from $this->table $this->where ";
-
-
     }
 
-    function get_data() {
-
-
+    function get_data()
+    {
         $sql = "select $this->fields from $this->table $this->where $this->wheref order by $this->order $this->order_direction limit $this->start_from,$this->number_results";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         while ($data = $stmt->fetch()) {
-
             switch ($data['Fulfilment Delivery State']) {
                 case 'InProcess':
                     $state = sprintf('%s', _('In Process'));
@@ -182,12 +179,12 @@ class prepare_table_fulfilment_deliveries extends prepare_table {
             }
 
             if ($data['Fulfilment Delivery State'] == 'InProcess') {
-                $received_date= '<span class="italic very_discreet">℮ '.strftime(
+                $received_date = '<span class="italic very_discreet">℮ '.strftime(
                         "%e %b %Y",
                         strtotime($data['Fulfilment Delivery Estimated Receiving Date'].' +0:00')
                     ).'</span>';
             } else {
-                $received_date= strftime(
+                $received_date = strftime(
                     "%e %b %Y",
                     strtotime($data['Fulfilment Delivery Received Date'].' +0:00')
                 );
@@ -197,18 +194,13 @@ class prepare_table_fulfilment_deliveries extends prepare_table {
             $this->table_data[] = array(
                 'id'                          => (integer)$data['Fulfilment Delivery Key'],
                 'date'                        => strftime("%e %b %Y", strtotime($data['Fulfilment Delivery Creation Date'].' +0:00')),
-                'received_date'                        => $received_date,
-
-
+                'received_date'               => $received_date,
                 'last_date'                   => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Fulfilment Delivery Last Updated Date'].' +0:00')),
                 'customer'                    => sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_customer, $data['Fulfilment Delivery Customer Name']),
                 'customer_delivery_reference' => $customer_delivery_reference,
                 'formatted_id'                => sprintf('<span class="link" onclick="change_view(\'%s\')" >%06d</span>  ', $_link_customer.'/delivery/'.$data['Fulfilment Delivery Key'], $data['Fulfilment Delivery Key']),
                 'state'                       => $state,
             );
-
-
         }
-
     }
 }
