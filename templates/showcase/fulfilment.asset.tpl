@@ -74,17 +74,69 @@
 
 
     <div class="block " style="align-items: stretch;flex: 1;">
-        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
+        <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
+            <div id="back_operations">
+                <div id="undo_booked_out_operations"
+                     class=" undo_booked_out_operation order_operation {if $asset->get('Fulfilment Asset State')!='BookedOut'  }hide{/if}">
+                    <div class="square_button left" title="{t}Undo book Out{/t}">
+                        <i class="fa fa-sign-out error fa-flip-horizontal fa-fw" aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('undo_booked_out')"></i>
+                        <table id="undo_booked_out_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Undo book out{/t}<br><span class="small error">{t}Remember to book in the location again{/t}</span></td>
+                            </tr>
 
-            <span class="Fulfilment_Asset_State"> {$asset->get('State')} </span>
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('undo_booked_out')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Fulfilment Asset State","value": "BookedIn","dialog_name":"undo_booked_out"}'
+                                            id="undo_booked_out_save_buttons" class="valid save button"
+                                            onclick="save_assets_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
-        </div>
+            </div>
+             <span style="float:left;padding-left:10px;padding-top:5px;text-align: center"
+                   class="Fulfilment_Asset_State"> {$asset->get('State')} </span>
+
+            <div id="forward_operations">
+                <div id="booked_out_operations"
+                     class=" order_operation booked_out_operation {if $asset->get('Fulfilment Asset State')!='BookedIn'  }hide{/if}">
+                    <div class="square_button right" title="{t}Book Out{/t}">
+                        <i class="fa fa-sign-out fa-fw" aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('booked_out')"></i>
+                        <table id="booked_out_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td class="label" colspan="2">{t}Book out{/t}</td>
+                            </tr>
+
+                            <tr class="changed buttons">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('booked_out')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Fulfilment Asset State","value": "BookedOut","dialog_name":"booked_out"}'
+                                            id="booked_out_save_buttons" class="valid save button"
+                                            onclick="save_assets_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+            </div>
         <div class="location " style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
 
             <span class="Fulfilment_Asset_Location_Key"> {$asset->get('Formatted Location')} </span>
 
         </div>
-        <div  style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
+        <div class="{if  $asset->get('State Index')>=80 }hide{/if}" style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
             <span class="pdf_label_container pdf_label_container_pallet {if $asset->get('Fulfilment Asset Type')!='Pallet'}hide{/if} ">
                     <img alt="{t}Download{/t}" class="button pdf_link  left_pdf_label_mark top_pdf_label_mark"
                          onclick="download_pdf_from_ui($('.pdf_asset_dialog.pallet'),'fulfilment_asset',{$asset->id},'pallet')" style="width: 50px;height:16px;position: relative;top:2px"
@@ -110,7 +162,7 @@
                 <i class="fa fa-sign-in" title="{t}Received{/t}"></i>
             </div>
             <div>
-                <span class="Received_Date"> {$asset->get('From')} </span>
+                <span class="Fulfilment_Asset_From"> {$asset->get('From')} </span>
 
             </div>
 
@@ -121,7 +173,7 @@
                 <i class="fa fa-sign-out" title="{t}Booked out{/t}"></i>
             </div>
             <div>
-                <span class="Booked_Out_Date"> {$asset->get('To')} </span>
+                <span class="Fulfilment_Asset_To"> {$asset->get('To')} </span>
 
             </div>
 

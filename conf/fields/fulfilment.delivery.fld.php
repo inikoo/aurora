@@ -68,7 +68,7 @@ function get_fulfilment_delivery_fields(Fulfilment_Delivery $fulfilment_delivery
 
                     'id'     => 'Fulfilment_Delivery_Received_Date',
                     'edit'   => ($edit ? 'date' : ''),
-                    'render' => $fulfilment_delivery->get('State Index') >=40 and  $fulfilment_delivery->get('State Index') <100,
+                    'render' => $fulfilment_delivery->get('State Index') >=40 and  $fulfilment_delivery->get('State Index') <=60,
 
                     'time'            => '00:00:00',
                     'value'           => $fulfilment_delivery->get('Fulfilment Delivery Received Date'),

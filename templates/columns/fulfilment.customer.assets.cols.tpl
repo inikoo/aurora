@@ -66,14 +66,21 @@ editable: false,
 cell: "html"
 
 },
+{
+name: "state",
+label: "{t}State{/t}",
+sortable:false,
+editable: false,
+cell: "html"
+
+},
 
 {
-name: "edit_location",
+name: "location",
 label: "{t}Location{/t}",
 sortable:false,
 editable: false,
 cell: Backgrid.HtmlCell.extend({
-className: "width_250"
 
 } )
 

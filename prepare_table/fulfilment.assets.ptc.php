@@ -60,14 +60,17 @@ class prepare_table_fulfilment_assets extends prepare_table
             }
         }
 
-        if (isset($parameters['elements_type'])) {
-            switch ($parameters['elements_type']) {
+        
+    
+
+        if (isset($this->parameters['elements_type'])) {
+            switch ($this->parameters['elements_type']) {
                 case('state'):
                     $_elements            = '';
                     $num_elements_checked = 0;
 
                     //'InProcess', 'Stored', 'Returned
-                    foreach ($parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value) {
+                    foreach ($this->parameters['elements'][$this->parameters['elements_type']]['items'] as $_key => $_value) {
                         $_value = $_value['selected'];
                         if ($_value) {
                             $num_elements_checked++;
@@ -77,7 +80,7 @@ class prepare_table_fulfilment_assets extends prepare_table
 
                     if ($_elements == '') {
                         $this->where .= ' and false';
-                    } elseif ($num_elements_checked < 4) {
+                    } elseif ($num_elements_checked < 6) {
                         $_elements   = preg_replace('/^,/', '', $_elements);
                         $this->where .= ' and `Fulfilment Asset State` in ('.$_elements.')';
                     }
@@ -86,10 +89,10 @@ class prepare_table_fulfilment_assets extends prepare_table
         }
 
 
-        if (($this->parameters['f_field'] == 'reference') and $this->f_value != '') {
+        if (($this->parameters['f_field'] == 'id') and $this->f_value != '') {
             $this->wheref = sprintf(
-                '  and  `Fulfilment Asset Reference`  like "%s%%" ',
-                addslashes($this->f_value)
+                '  and  ( `Fulfilment Asset Reference`  like "%s%%"  or `Fulfilment Asset Key` like "%s%%"   )',
+                addslashes($this->f_value), addslashes($this->f_value)
             );
         }
 
@@ -168,8 +171,14 @@ class prepare_table_fulfilment_assets extends prepare_table
                 $asset_reference = '<span class="super_discreet italic">'._('No set')."</span>";
             }
 
+
+            $_link_location = 'locations/'.$data['Fulfilment Asset Warehouse Key'].'/'.$data['Location Key'];
+
+            $location = sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_location, $data['Location Code']);
+
+
             if ($data['Fulfilment Asset State'] == 'Received') {
-                $location = ' 
+                $edit_location = ' 
             
             
             <div class="asset_location_container" data-asset_key="'.$data['Fulfilment Asset Key'].'" >
@@ -190,11 +199,8 @@ class prepare_table_fulfilment_assets extends prepare_table
                 </div>
                </div>
 			';
-            }else{
-               // $_link_location = 'fulfilment/'.$data['Fulfilment Asset Warehouse Key'].'/locations/'.$data['Location Key'];
-                 $_link_location = 'locations/'.$data['Fulfilment Asset Warehouse Key'].'/'.$data['Location Key'];
-
-                $location=sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_location, $data['Location Code']);
+            } else {
+                $edit_location = $location;
             }
 
 
@@ -204,16 +210,17 @@ class prepare_table_fulfilment_assets extends prepare_table
 
 
             $this->table_data[] = array(
-                'id'           => (integer)$data['Fulfilment Asset Key'],
-                'label'        => $label,
-                'customer'     => sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_customer, $data['Customer Name']),
-                'reference'    => $asset_reference,
-                'formatted_id' => sprintf('<span class="link" onclick="change_view(\'%s\')" >%05d</span>  ', $_link_customer.'/delivery/'.$data['Fulfilment Asset Fulfilment Delivery Key'].'/asset/'.$data['Fulfilment Asset Key'], $data['Fulfilment Asset Key']),
-                'state'        => $state,
-                'type'         => $type,
-                'notes'        => $data['Fulfilment Asset Note'],
-                'location'     => $location,
-                'delete'       => '<i class="button fal fa-trash-alt" title="'._('Delete').'" data-asset_key="'.$data['Fulfilment Asset Key'].'" onclick="delete_fulfilment_asset_from_table(this)"></i>'
+                'id'            => (integer)$data['Fulfilment Asset Key'],
+                'label'         => $label,
+                'customer'      => sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_customer, $data['Customer Name']),
+                'reference'     => $asset_reference,
+                'formatted_id'  => sprintf('<span class="link" onclick="change_view(\'%s\')" >%05d</span>  ', $_link_customer.'/delivery/'.$data['Fulfilment Asset Fulfilment Delivery Key'].'/asset/'.$data['Fulfilment Asset Key'], $data['Fulfilment Asset Key']),
+                'state'         => $state,
+                'type'          => $type,
+                'notes'         => $data['Fulfilment Asset Note'],
+                'edit_location' => $edit_location,
+                'location'      => $location,
+                'delete'        => '<i class="button fal fa-trash-alt" title="'._('Delete').'" data-asset_key="'.$data['Fulfilment Asset Key'].'" onclick="delete_fulfilment_asset_from_table(this)"></i>'
 
             );
         }

@@ -2344,6 +2344,16 @@ function get_tab_defaults_data(): array {
             'f_field'       => 'id',
             'export_fields' => get_export_fields('fulfilment.delivery.items')
         ),
+        'fulfilment.customer.assets'        => array(
+            'view'          => 'overview',
+            'sort_key'      => 'id',
+            'sort_order'    => 1,
+            'rpp'           => 1000,
+            'rpp_options'   => $default_rrp_options,
+            'f_field'       => 'id',
+            'elements_type' => array_keys(get_elements_option('fulfilment_customer_assets'))[0],
+            'elements'      => get_elements_option('fulfilment_customer_assets')
+        ),
         'fulfilment.asset.history'          => array(
             'view'        => 'overview',
             'sort_key'    => 'date',

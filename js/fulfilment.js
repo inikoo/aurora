@@ -566,3 +566,104 @@ function post_fulfilment_delivery_state_change(data,element) {
 }
 
 
+
+function save_assets_operation(element) {
+
+    var data = $(element).data("data")
+    var table_metadata = $('#table').data("metadata")
+    var object_data = $('#object_showcase div.order').data("object")
+    var dialog_name = data.dialog_name
+    var field = data.field
+    var value = data.value
+    var object = object_data.object
+    var key = object_data.key
+
+
+    if (!$('#' + dialog_name + '_save_buttons').hasClass('button')) {
+        return;
+    }
+
+    $('#' + dialog_name + '_save_buttons').removeClass('button');
+    $('#' + dialog_name + '_save_buttons i').addClass('fa-spinner fa-spin')
+    $('#' + dialog_name + '_save_buttons .label').addClass('hide')
+
+
+    var metadata = {}
+
+    //console.log('#' + dialog_name + '_dialog')
+
+    $('#' + dialog_name + '_dialog  .option_input_field').each(function () {
+        var settings = $(this).data("settings")
+
+
+
+
+
+    });
+
+
+
+
+    const form_data = new FormData();
+
+    form_data.append("tipo", 'edit_field')
+    form_data.append("object", object)
+    form_data.append("key", key)
+    form_data.append("field", field)
+    form_data.append("value", value)
+    form_data.append("metadata", JSON.stringify(metadata))
+
+    const request = $.ajax({
+
+        url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+    });
+
+
+    request.done(function (data) {
+
+
+        $('#' + dialog_name + '_save_buttons').addClass('button');
+        $('#' + dialog_name + '_save_buttons i').removeClass('fa-spinner fa-spin')
+        $('#' + dialog_name + '_save_buttons .label').removeClass('hide')
+
+
+        if (data.state == 200) {
+
+            close_dialog(dialog_name)
+
+            var key;
+
+            for ( key in data.update_metadata.class_html) {
+                $('.' + key).html(data.update_metadata.class_html[key])
+            }
+            for ( key in data.update_metadata.hide) {
+                $('.' + data.update_metadata.hide[key]).addClass('hide')
+            }
+            for ( key in data.update_metadata.show) {
+                $('.' + data.update_metadata.show[key]).removeClass('hide')
+            }
+
+
+            change_tab('fulfilment.asset.details')
+
+        } else if (data.state == 400) {
+
+
+            swal($('#_labels').data('labels').error, data.msg, "error")
+        }
+
+    })
+
+
+    request.fail(function (jqXHR, textStatus) {
+        console.log(textStatus)
+
+        console.log(jqXHR.responseText)
+
+
+    });
+
+
+}
+

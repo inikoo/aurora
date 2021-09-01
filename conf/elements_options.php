@@ -2136,13 +2136,42 @@ function get_elements_option($option) {
 
             ),
         ),
+        'fulfilment_customer_assets' => array(
+            'state' => array(
+                'label' => _('State'),
+                'items' => array(
+                    'InProcess'  => array(
+                        'label'    => _('In process'),
+                        'selected' => true
+                    ),
+                    'Received' => array(
+                        'label'    => _('Received'),
+                        'selected' => true
+                    ),
+                    'BookedIn' => array(
+                        'label'    => _('Booked in'),
+                        'selected' => true
+                    ),
+                    'BookedOut' => array(
+                        'label'    => _('Booked out'),
+                        'selected' => true
+                    ),
+                    'Invoiced' => array(
+                        'label'    => _('Invoiced'),
+                        'selected' => true
+                    ),
+                    'Lost' => array(
+                        'label'    => _('Lost'),
+                        'selected' => true
+                    )
+                )
+
+
+            )
+        ),
     );
 
-    if (isset($elements_options[$option])) {
-        return $elements_options[$option];
-    } else {
-        return [];
-    }
+    return $elements_options[$option] ?? [];
 
 
 }

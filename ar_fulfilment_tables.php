@@ -60,7 +60,8 @@ switch ($tipo) {
         deliveries(get_table_parameters(), $db, $user, $account);
         break;
     case 'fulfilment.delivery.assets':
-        customer_delivery_assets(get_table_parameters(), $db, $user, $account);
+    case 'customer_assets':
+        fulfilment_assets(get_table_parameters(), $db, $user, $account);
         break;
     default:
         $response = array(
@@ -70,7 +71,7 @@ switch ($tipo) {
         echo json_encode($response);
 }
 
-function customer_delivery_assets($_data, $db, $user, $account) {
+function fulfilment_assets($_data, $db, $user, $account) {
     include_once 'prepare_table/fulfilment.assets.ptc.php';
     $table=new prepare_table_fulfilment_assets($db,$account,$user);
     echo $table->fetch($_data);

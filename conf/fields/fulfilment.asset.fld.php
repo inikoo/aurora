@@ -7,8 +7,8 @@
  */
 
 
-function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $user): array {
-
+function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $user): array
+{
     $edit       = $user->can_edit('fulfilment');
     $super_edit = $user->can_supervisor('fulfilment');
 
@@ -21,9 +21,13 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
         array(
             'label'      => _('Identification'),
             'show_title' => true,
-            'fields'     => array(
+            'class'      => ($fulfilment_asset->get('State Index') >= 60 ? 'hide' : ''),
+
+            'fields' => array(
                 array(
-                    'id'                => 'Fulfilment_Asset_Reference',
+                    'id'     => 'Fulfilment_Asset_Reference',
+                    'render' => $fulfilment_asset->get('State Index') < 60,
+
                     'edit'              => ($edit ? 'string' : ''),
                     'value'             => htmlspecialchars($fulfilment_asset->get('Fulfilment Asset Reference')),
                     'formatted_value'   => $fulfilment_asset->get('Reference'),
@@ -49,7 +53,9 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
             'show_title' => true,
             'fields'     => array(
                 array(
-                    'id'                       => 'Fulfilment_Asset_Location_Key',
+                    'id'     => 'Fulfilment_Asset_Location_Key',
+                    'render' => $fulfilment_asset->get('State Index') < 80,
+
                     'edit'                     => 'dropdown_select',
                     'scope'                    => 'locations',
                     'parent'                   => 'warehouse',
@@ -63,16 +69,49 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
 
 
                 ),
+                array(
 
+
+                    'id'     => 'Fulfilment_Asset_From',
+                    'edit'   => ($edit ? 'date' : ''),
+                    'render' => $fulfilment_asset->get('State Index') >= 40 and $fulfilment_asset->get('State Index') <= 80,
+
+                    'time'            => '09:00:00',
+                    'value'           => $fulfilment_asset->get('Fulfilment Asset From'),
+                    'formatted_value' => $fulfilment_asset->get('From'),
+                    'label'           => ucfirst($fulfilment_asset->get_field_label('Fulfilment Asset From')),
+                    'invalid_msg'     => get_invalid_message('date'),
+                    'required'        => true,
+
+
+                ),
+                array(
+
+
+                    'id'     => 'Fulfilment_Asset_To',
+                    'edit'   => ($edit ? 'date' : ''),
+                    'render' => $fulfilment_asset->get('State Index') == 80,
+
+                    'time'            => '17:00:00',
+                    'value'           => $fulfilment_asset->get('Fulfilment Asset To'),
+                    'formatted_value' => $fulfilment_asset->get('To'),
+                    'label'           => ucfirst($fulfilment_asset->get_field_label('Fulfilment Asset To')),
+                    'invalid_msg'     => get_invalid_message('date'),
+                    'required'        => true,
+
+
+                ),
 
             )
         ),
         array(
             'label'      => _('Properties'),
+            'class'      => ($fulfilment_asset->get('State Index') >= 60 ? 'hide' : ''),
             'show_title' => true,
             'fields'     => array(
                 array(
                     'id'              => 'Fulfilment_Asset_Type',
+                    'render'          => $fulfilment_asset->get('State Index') < 60,
                     'edit'            => ($edit ? 'option' : ''),
                     'value'           => htmlspecialchars($fulfilment_asset->get('Fulfilment Asset Type')),
                     'formatted_value' => $fulfilment_asset->get('Type'),
@@ -94,14 +133,15 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
         'label'      => _('Operations'),
         'show_title' => true,
         'class'      => 'operations ',
-   //     'class'      => 'operations '.($fulfilment_asset->get('Fulfilment Asset State') == 'InProcess' ? '' : 'hide'),
+        'class'      => ($fulfilment_asset->get('State Index') >= 60 ? 'hide' : ''),
 
-        'fields'     => array(
+
+        'fields' => array(
 
             array(
                 'id'     => 'unlink_asset_location',
                 'class'  => 'operation',
-                'render' => ($fulfilment_asset->get('Fulfilment Asset Location Key') and  $fulfilment_asset->get('State Index')<=40   ) ,
+                'render' => ($fulfilment_asset->get('Fulfilment Asset Location Key') and $fulfilment_asset->get('State Index') <= 40),
 
                 'value'     => '',
                 'label'     => '<span class="asset_location_container" data-asset_key="'.$fulfilment_asset->id.'" >
@@ -134,7 +174,6 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
 
 
     return $fulfilment_asset_fields;
-
 }
 
 
