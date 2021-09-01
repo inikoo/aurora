@@ -151,11 +151,8 @@ class prepare_table_fulfilment_deliveries extends prepare_table
                 case 'Received':
                     $state = sprintf('%s', _('Received'));
                     break;
-                case 'Checked':
-                    $state = sprintf('%s', _('Checked'));
-                    break;
-                case 'Placed':
-                    $state = _('Booked in');
+                case 'BookedIn':
+                    $state = sprintf('%s', _('Booked in'));
                     break;
                 case 'Cancelled':
                     $state = sprintf('%s', _('Cancelled'));

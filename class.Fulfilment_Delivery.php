@@ -155,15 +155,14 @@ class Fulfilment_Delivery extends DB_Table
                 switch ($this->data['Fulfilment Delivery State']) {
                     case 'InProcess':
                         return _('In process');
-
                     case 'Received':
                         return _('Received');
-                    case 'Checked':
-                        return _('Checked');
-                    case 'Placed':
+                    case 'BookedIn':
                         return _('Booked in');
-                    case 'InOrder':
-                        return _('Contract created');
+                    case 'Invoicing':
+                        return _('Invoicing');
+                    case 'Invoiced':
+                        return _('Invoiced');
                     case 'Cancelled':
                         return _('Cancelled');
                     default:
@@ -181,11 +180,11 @@ class Fulfilment_Delivery extends DB_Table
 
                     case 'Received':
                         return 40;
-                    case 'Checked':
-                        return 50;
-                    case 'Placed':
+                    case 'BookedIn':
                         return 60;
-                    case 'Contracted':
+                    case 'Invoicing':
+                        return 80;
+                    case 'Invoiced':
                         return 100;
                     case 'Cancelled':
                         return -10;
@@ -201,10 +200,10 @@ class Fulfilment_Delivery extends DB_Table
                         return $this->get('Creation Date');
 
                     case 'Received':
-                    case 'Checked':
+
                         return $this->get('Received Date');
-                    case 'Placed':
-                        return $this->get('Placed Date');
+                    case 'BookedIn':
+                        return $this->get('Booked In Date');
                     default:
                         return '';
                 }
@@ -226,67 +225,10 @@ class Fulfilment_Delivery extends DB_Table
                         }
 
                         return $progress;
-                    case 'Checked':
-                        $progress = '('._('Checked').')';
-
-                        if ($this->get('Fulfilment Delivery Number Placed Items') > 0) {
-                            $progress = '('._('Placing').' '.percentage($this->get('Fulfilment Delivery Number Placed Items'), $this->get('Fulfilment Delivery Number Dispatched Items'), 0).')';
-                        }
-
-                        return $progress;
                 }
 
                 break;
-            case 'Checked Percentage or Date':
-                if ($this->get('State Index') < 0) {
-                    if ($this->get('Fulfilment Delivery Checked Date') == '') {
-                        return '';
-                    }
 
-                    return strftime("%e %b %Y", strtotime($this->get('Fulfilment Delivery Checked Date')));
-                } elseif ($this->get('State Index') < 40) {
-                    return '';
-                } elseif ($this->get('State Index') < 50) {
-                    return percentage($this->get('Fulfilment Delivery Number Checked Items'), $this->get('Fulfilment Delivery Number Dispatched Items'));
-                } else {
-                    if ($this->data['Fulfilment Delivery Checked Date'] == '') {
-                        return '';
-                    }
-
-                    return strftime(
-                        "%e %b %Y",
-                        strtotime($this->data['Fulfilment Delivery Checked Date'].' +0:00')
-                    );
-                }
-
-            case 'Placed Percentage or Date':
-
-
-                if ($this->get('State Index') < 40) {
-                    return '';
-                } elseif ($this->get('State Index') < 50) {
-                    if ($this->get('Fulfilment Delivery Number Placed Items') > 0) {
-                        return percentage(
-                            $this->get('Fulfilment Delivery Number Placed Items'),
-                            $this->get(
-                                'Fulfilment Delivery Number Dispatched Items'
-                            )
-                        );
-                    } else {
-                        return '';
-                    }
-                } elseif ($this->get('State Index') < 100) {
-                    return percentage($this->get('Fulfilment Delivery Number Placed Items'), $this->get('Fulfilment Delivery Number Received and Checked Items'));
-                } else {
-                    if ($this->data['Fulfilment Delivery Checked Date'] == '') {
-                        return '';
-                    }
-
-                    return strftime(
-                        "%e %b %Y",
-                        strtotime($this->data['Fulfilment Delivery Placed Date'].' +0:00')
-                    );
-                }
 
             case 'Estimated or Received Date':
 
@@ -298,9 +240,9 @@ class Fulfilment_Delivery extends DB_Table
 
 
             case 'Creation Date':
-            case 'Checked Date':
+
             case 'Received Date':
-            case 'Placed Date':
+            case 'Booked In Date':
             case 'Cancelled Date':
             case 'Estimated Receiving Date':
                 if ($this->data['Fulfilment Delivery '.$key] == '') {
@@ -316,6 +258,8 @@ class Fulfilment_Delivery extends DB_Table
             case 'Number Ordered Items':
             case 'Number Items Without PO':
                 return number($this->data ['Fulfilment Delivery '.$key]);
+            case 'Next Invoice Date':
+                return strftime("%a %e %b %Y", strtotime('Next monday'));
         }
 
 
@@ -356,16 +300,38 @@ class Fulfilment_Delivery extends DB_Table
             case 'Fulfilment Delivery State':
                 $this->update_state($value);
                 break;
-            case 'Fulfilment Delivery Estimated Receiving Date':
             case 'Fulfilment Delivery Received Date':
 
-            $this->update_field($field, $value, $options);
-                $this->update_metadata=[
-                    'class_html'=>[
-                        'Fulfilment_Delivery_Estimated_or_Received_Date'=>$this->get('Estimated or Received Date')
+                $this->update_field($field, $value, $options);
+                $this->update_metadata = [
+                    'class_html' => [
+                        'Fulfilment_Delivery_Estimated_or_Received_Date' => $this->get('Estimated or Received Date')
                     ]
                 ];
                 break;
+
+
+            case 'Fulfilment Delivery Received Date':
+
+                $this->update_field($field, $value, $options);
+
+                $sql = "UPDATE `Fulfilment Asset Dimension`  SET `Fulfilment Asset From`=?  WHERE `Fulfilment Asset Fulfilment Delivery Key`=?  and `Fulfilment Asset State`='Received' ";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $value,
+                        $this->id
+                    )
+                );
+
+
+                $this->update_metadata = [
+                    'class_html' => [
+                        'Fulfilment_Delivery_Estimated_or_Received_Date' => $this->get('Estimated or Received Date')
+                    ]
+                ];
+                break;
+
+
             case 'History Note':
                 $this->add_note($value, '', '', $metadata['deletable']);
                 break;
@@ -385,14 +351,13 @@ class Fulfilment_Delivery extends DB_Table
         }
     }
 
+
     function update_state($value)
     {
         $date = gmdate('Y-m-d H:i:s');
 
-
-        $skip_update_totals = false;
-
-
+        $hide=[];
+        $show=[];
         switch ($value) {
             case 'InProcess':
 
@@ -404,11 +369,9 @@ class Fulfilment_Delivery extends DB_Table
                 );
 
 
-                $sql = 'UPDATE `Fulfilment Transaction Fact` SET `Fulfilment Transaction Last Updated Date`=? ,`Fulfilment Transaction State`=? WHERE `Fulfilment Transaction Delivery Key`=? ';
+                $sql = "UPDATE `Fulfilment Asset Dimension` SET  `Fulfilment Asset State`='InProcess' ,`Fulfilment Asset From`=NULL  WHERE `Fulfilment Asset Fulfilment Delivery Key`=? ";
                 $this->db->prepare($sql)->execute(
                     array(
-                        $date,
-                        'InProcess',
                         $this->id
                     )
                 );
@@ -440,26 +403,43 @@ class Fulfilment_Delivery extends DB_Table
             case 'Received':
 
 
+                if (!in_array($this->get('Fulfilment Delivery State'), ['InProcess', 'BookedIn'])) {
+                    $this->error = true;
+                    $this->msg   = 'Invalid operation';
+                    return;
+                }
+
+
                 $this->fast_update(
                     array(
                         'Fulfilment Delivery Received Date'     => $date,
                         'Fulfilment Delivery Last Updated Date' => $date,
                         'Fulfilment Delivery Date'              => gmdate('Y-m-d'),
-                        'Fulfilment Delivery Date TYpe'         => 'Received',
+                        'Fulfilment Delivery Date Type'         => 'Received',
                         'Fulfilment Delivery State'             => 'Received',
+                        'Fulfilment Delivery Booked In Date'    => '',
+
                     )
                 );
 
 
                 $operations = array(
                     'cancel_operations',
+                    'undo_received_operations',
+                    'booked_in_operations',
                 );
 
-                $sql = 'UPDATE `Fulfilment Transaction Fact` SET `Fulfilment Transaction Last Updated Date`=? ,`Fulfilment Transaction State`=? WHERE `Fulfilment Transaction Delivery Key`=? ';
+                $sql = "UPDATE `Fulfilment Asset Dimension` SET  `Fulfilment Asset State`='Received'  WHERE `Fulfilment Asset Fulfilment Delivery Key`=? ";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $this->id
+                    )
+                );
+
+                $sql = "UPDATE `Fulfilment Asset Dimension` SET `Fulfilment Asset From`=?  WHERE `Fulfilment Asset Fulfilment Delivery Key`=?  and `Fulfilment Asset From`=NULL ";
                 $this->db->prepare($sql)->execute(
                     array(
                         $date,
-                        'Received',
                         $this->id
                     )
                 );
@@ -480,7 +460,50 @@ class Fulfilment_Delivery extends DB_Table
                     $this->id
                 );
 
+                $hide[]='next_invoice';
+                break;
 
+            case 'BookedIn':
+
+
+                $this->fast_update(
+                    array(
+                        'Fulfilment Delivery Booked In Date'    => $date,
+                        'Fulfilment Delivery Last Updated Date' => $date,
+                        'Fulfilment Delivery Date'              => gmdate('Y-m-d'),
+                        'Fulfilment Delivery Date Type'         => 'BookedIn',
+                        'Fulfilment Delivery State'             => 'BookedIn',
+                    )
+                );
+
+
+                $operations = array(
+                    'undo_booked_in_operations',
+                );
+
+                $sql = "UPDATE `Fulfilment Asset Dimension` SET  `Fulfilment Asset State`='BookedIn'   WHERE `Fulfilment Asset Fulfilment Delivery Key`=? ";
+                $this->db->prepare($sql)->execute(
+                    array(
+                        $this->id
+                    )
+                );
+
+
+                $history_data = array(
+                    'History Abstract' => _('Fulfilment delivery booked in'),
+                    'History Details'  => '',
+                    'Action'           => 'edited'
+                );
+
+                $this->add_subject_history(
+                    $history_data,
+                    true,
+                    'No',
+                    'Changes',
+                    $this->get_object_name(),
+                    $this->id
+                );
+                $show[]='next_invoice';
                 break;
 
 
@@ -488,9 +511,7 @@ class Fulfilment_Delivery extends DB_Table
                 exit('unknown FD state '.$value);
         }
 
-        if (!$skip_update_totals) {
-            $this->update_totals();
-        }
+        $this->update_totals();
 
 
         $this->update_metadata = array(
@@ -498,16 +519,20 @@ class Fulfilment_Delivery extends DB_Table
                 'Fulfilment_Delivery_State'           => $this->get('State'),
                 'Fulfilment_Delivery_Dispatched_Date' => '&nbsp;'.$this->get('Dispatched Date'),
                 'Fulfilment_Delivery_Received_Date'   => '&nbsp;'.$this->get('Received Date'),
-                'Fulfilment_Delivery_Checked_Date'    => '&nbsp;'.$this->get('Checked Date'),
-                'Fulfilment_Delivery_Costing_Date'    => '&nbsp;'.$this->get('Costing Date'),
+                'Fulfilment_Delivery_Booked_In_Date'  => '&nbsp;'.$this->get('Booked In Date'),
+                'Fulfilment_Delivery_Invoicing_Date'  => '&nbsp;'.$this->get('Invoicing Date'),
+                'Fulfilment_Delivery_Invoiced_Date'   => '&nbsp;'.$this->get('Invoiced Date'),
 
-                'Fulfilment_Delivery_Number_Dispatched_Items' => $this->get('Number Dispatched Items'),
-                'Fulfilment_Delivery_Number_Received_Items'   => $this->get('Number Received Items'),
-                'Fulfilment_Delivery_Estimated_or_Received_Date'=>$this->get('Estimated or Received Date')
+                'Fulfilment_Delivery_Number_Dispatched_Items'    => $this->get('Number Dispatched Items'),
+                'Fulfilment_Delivery_Number_Received_Items'      => $this->get('Number Received Items'),
+                'Fulfilment_Delivery_Estimated_or_Received_Date' => $this->get('Estimated or Received Date')
 
             ),
             'operations'  => $operations,
-            'state_index' => $this->get('State Index')
+            'state_index' => $this->get('State Index'),
+            'hide'=>$hide,
+            'show'=>$show
+
         );
     }
 
@@ -546,7 +571,7 @@ class Fulfilment_Delivery extends DB_Table
                     $this->id
                 )
             );
-            $sql = "DELETE FROM `Fulfilment Transaction Fact` WHERE `Fulfilment Transaction Delivery Key`=?";
+            $sql = "DELETE FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Fulfilment Delivery Key`=?";
             $this->db->prepare($sql)->execute(
                 array(
                     $this->id

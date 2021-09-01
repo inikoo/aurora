@@ -5548,6 +5548,9 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                 $section = 'warehouse';
 
 
+
+
+
                 if (isset($view_path[0])) {
 
                     if (is_numeric($view_path[0])) {

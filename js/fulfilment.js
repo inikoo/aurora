@@ -513,9 +513,11 @@ function post_fulfilment_delivery_state_change(data,element) {
         $('.' + key).html(data.update_metadata.class_html[key])
     }
     for (var key in data.update_metadata.hide) {
+
         $('.' + data.update_metadata.hide[key]).addClass('hide')
     }
     for (var key in data.update_metadata.show) {
+
         $('.' + data.update_metadata.show[key]).removeClass('hide')
     }
     $('.order_operation').addClass('hide')
@@ -529,6 +531,9 @@ function post_fulfilment_delivery_state_change(data,element) {
     if (data['update_metadata']['state_index'] >= 40) {
         $('#received_node').addClass('complete')
     }
+    if (data['update_metadata']['state_index'] >= 60) {
+        $('#booked_in_node').addClass('complete')
+    }
 
 
     $('.info_in_process').addClass('hide')
@@ -536,7 +541,6 @@ function post_fulfilment_delivery_state_change(data,element) {
     $('#tab_fulfilment\\.delivery\\.items').removeClass('hide');
 
 
-    console.log(data['update_metadata']['state_index'])
 
     if (data['update_metadata']['state_index'] === 10) {
 
@@ -548,6 +552,10 @@ function post_fulfilment_delivery_state_change(data,element) {
 
         change_tab('fulfilment.delivery.details')
     } else if (data['update_metadata']['state_index'] === 40) {
+
+        change_tab('fulfilment.delivery.items')
+
+    }else if (data['update_metadata']['state_index'] === 60) {
 
         change_tab('fulfilment.delivery.items')
 

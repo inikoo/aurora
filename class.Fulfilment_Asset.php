@@ -9,7 +9,8 @@
 include_once('class.DB_Table.php');
 
 
-class Fulfilment_Asset extends DB_Table {
+class Fulfilment_Asset extends DB_Table
+{
 
     /**
      * @var \PDO
@@ -17,8 +18,8 @@ class Fulfilment_Asset extends DB_Table {
     public $db;
 
 
-    function __construct($arg1 = false, $arg2 = false) {
-
+    function __construct($arg1 = false, $arg2 = false)
+    {
         global $db;
         $this->db = $db;
 
@@ -40,8 +41,8 @@ class Fulfilment_Asset extends DB_Table {
     }
 
 
-    function create($data) {
-
+    function create($data)
+    {
         $this->editor = $data['editor'];
 
         $this->data = $this->base_data();
@@ -52,26 +53,28 @@ class Fulfilment_Asset extends DB_Table {
         }
 
         if ($this->data['Fulfilment Asset Type'] == '') {
-            $this->msg   = _('Field required');
-            $this->new   = false;
-            $this->error = true;
+            $this->msg        = _('Field required');
+            $this->new        = false;
+            $this->error      = true;
             $this->error_code = 'fulfilment_asset_type_missing';
 
             return;
         }
 
-        if (!in_array($this->data['Fulfilment Asset Type'] ,['Pallet','Box'])) {
-            $this->msg   = _('Invalid value');
-            $this->new   = false;
-            $this->error = true;
-            $this->error_code = 'invalid_fulfilment_asset_type';
-            $this->error_metadata   = $this->data['Fulfilment Asset Type'];
+        if (!in_array($this->data['Fulfilment Asset Type'], ['Pallet', 'Box'])) {
+            $this->msg            = _('Invalid value');
+            $this->new            = false;
+            $this->error          = true;
+            $this->error_code     = 'invalid_fulfilment_asset_type';
+            $this->error_metadata = $this->data['Fulfilment Asset Type'];
             return;
         }
 
 
         $sql = sprintf(
-            "INTO `Fulfilment Asset Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
+            "INTO `Fulfilment Asset Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($this->data)).'`',
+            join(',', array_fill(0, count($this->data), '?'))
         );
 
 
@@ -103,23 +106,26 @@ class Fulfilment_Asset extends DB_Table {
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                $history_data,
+                true,
+                'No',
+                'Changes',
+                $this->get_object_name(),
+                $this->id
             );
-
-
         } else {
             print_r($stmt->errorInfo());
             $this->error = true;
             $this->msg   = 'Error inserting fulfilment Asset record';
         }
-
     }
 
-    function get_data($key, $tag): bool {
-
+    function get_data($key, $tag): bool
+    {
         if ($key == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Key`=%d", $tag
+                "SELECT * FROM `Fulfilment Asset Dimension` WHERE `Fulfilment Asset Key`=%d",
+                $tag
             );
         } else {
             return false;
@@ -129,20 +135,18 @@ class Fulfilment_Asset extends DB_Table {
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id       = $this->data['Fulfilment Asset Key'];
             $this->metadata = json_decode($this->data['Fulfilment Asset Metadata'], true);
-
         }
 
         return true;
-
     }
 
-    function metadata($key) {
+    function metadata($key)
+    {
         return ($this->metadata[$key] ?? '');
     }
 
-    function get($key) {
-
-
+    function get($key)
+    {
         if (!$this->id) {
             return false;
         }
@@ -154,7 +158,6 @@ class Fulfilment_Asset extends DB_Table {
                     return '<i class="fal fa-fw fa-pallet-alt" title="'._('Pallet').'"></i>';
                 } else {
                     return '<i class="fal fa-fw  fa-box-alt" title="'._('Box').'"></i>';
-
                 }
 
 
@@ -183,12 +186,56 @@ class Fulfilment_Asset extends DB_Table {
                 }
             case 'Formatted Location':
                 if ($this->data['Fulfilment Asset Location Key'] != '') {
-                    return sprintf(
-                        '<span class="link" onclick="change_view(\'locations/%d/%d\')">%s</span>', $this->data['Fulfilment Asset Warehouse Key'], $this->data['Fulfilment Asset Location Key'], $this->get('Location Key')
-                    );
+                    $location = get_object('Location', $this->data['Fulfilment Asset Location Key']);
+
+                    return '<i class="fa fa-pallet"></i> '.$location->get('Code');
                 } else {
                     return '';
                 }
+            case ('State'):
+                switch ($this->data['Fulfilment Asset State']) {
+                    case 'InProcess':
+                        return _('In process');
+
+                    case 'Received':
+                        return _('Received');
+                    case 'BookedIn':
+                        return _('Booked in');
+                    case 'BookedOut':
+                        return _('Booked out');
+                    case 'Invoiced':
+                        return _('Booked out (invoiced)');
+
+                    case 'Lost':
+                        return _('Lost');
+                    default:
+                        break;
+                }
+
+                break;
+            case 'State Index':
+
+
+                switch ($this->data['Fulfilment Asset State']) {
+                    case 'InProcess':
+                        return 10;
+
+                    case 'Received':
+                        return 40;
+                    case 'BookedIn':
+                        return 60;
+                    case 'BookedOut':
+                        return 80;
+                    case 'Invoiced':
+                        return 100;
+                    case 'Lost':
+                        return -10;
+                    default:
+                        return 0;
+                }
+
+
+
             case 'Location State Formatted':
 
                 switch ($this->get('Fulfilment Asset State')) {
@@ -204,6 +251,13 @@ class Fulfilment_Asset extends DB_Table {
                         return '';
                 }
 
+            case 'From':
+            case 'To':
+
+                if ($this->data['Fulfilment Asset '.$key] == '') {
+                    return '';
+                }
+                return strftime("%a %e %b %Y", strtotime($this->data['Fulfilment Asset '.$key].' +0:00'));
 
             default:
 
@@ -218,13 +272,11 @@ class Fulfilment_Asset extends DB_Table {
                     return '';
                 }
         }
-
     }
 
 
-    function delete($metadata = ''): string {
-
-
+    function delete($metadata = ''): string
+    {
         $fulfilment_delivery         = get_object('fulfilment_delivery', $this->get('Fulfilment Asset Fulfilment Delivery Key'));
         $fulfilment_delivery->editor = $this->editor;
 
@@ -238,7 +290,6 @@ class Fulfilment_Asset extends DB_Table {
 
         if ($stmt->execute()) {
             $this->deleted = true;
-
         } else {
             $this->deleted_msg = 'Error area can not be deleted';
         }
@@ -261,7 +312,6 @@ class Fulfilment_Asset extends DB_Table {
                 ),
 
             );
-
         }
 
 
@@ -272,20 +322,22 @@ class Fulfilment_Asset extends DB_Table {
         );
 
         $fulfilment_delivery->add_subject_history(
-            $history_data, true, 'No', 'Changes', $fulfilment_delivery->get_object_name(), $fulfilment_delivery->id
+            $history_data,
+            true,
+            'No',
+            'Changes',
+            $fulfilment_delivery->get_object_name(),
+            $fulfilment_delivery->id
         );
 
         return '/fulfilment/'.$fulfilment_delivery->get('Fulfilment Delivery Warehouse Key').'/customers/'.($fulfilment_delivery->get('Fulfilment Delivery Type') == 'Part' ? 'dropshipping' : 'asset_keeping').'/'.$fulfilment_delivery->get(
                 'Fulfilment Delivery Customer Key'
             ).'/delivery/'.$fulfilment_delivery->id;
-
-
     }
 
-    function get_field_label($field) {
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Fulfilment Asset Reference':
                 $label = _('reference');
                 break;
@@ -300,11 +352,9 @@ class Fulfilment_Asset extends DB_Table {
 
 
                 $label = $field;
-
         }
 
         return $label;
-
     }
 
 
@@ -312,25 +362,27 @@ class Fulfilment_Asset extends DB_Table {
      * @throws \Exception
      */
     function
-    update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
+    update_field_switcher(
+        $field,
+        $value,
+        $options = '',
+        $metadata = ''
+    ) {
         if (!$this->deleted and $this->id) {
             switch ($field) {
                 case 'label box':
                 case 'label pallet':
-                    $this->fast_update_json_field('Fulfilment Asset Metadata', preg_replace('/ /','_',$field), $value);
+                    $this->fast_update_json_field('Fulfilment Asset Metadata', preg_replace('/ /', '_', $field), $value);
                     break;
                 case 'Fulfilment Asset Type':
                     $this->update_field($field, $value, $options);
                     $this->update_metadata['class_html'] = array(
                         'Type_Icon' => $this->get('Type Icon'),
                     );
-                    if($value=='Pallet'){
+                    if ($value == 'Pallet') {
                         $this->update_metadata['hide'] = array('pdf_label_container_box');
                         $this->update_metadata['show'] = array('pdf_label_container_pallet');
-
-                    }else{
+                    } else {
                         $this->update_metadata['hide'] = array('pdf_label_container_pallet');
                         $this->update_metadata['show'] = array('pdf_label_container_box');
                     }
@@ -340,7 +392,6 @@ class Fulfilment_Asset extends DB_Table {
                     $old_value = $this->data['Fulfilment Asset Location Key'];
                     $this->update_field($field, $value, $options);
                     if ($value != '') {
-
                         $this->other_fields_updated = array(
                             'unlink_asset_location' => array(
                                 'field'  => 'unlink_asset_location',
@@ -376,18 +427,17 @@ class Fulfilment_Asset extends DB_Table {
                             $this->update_field($field, $value, $options);
                         }
                     }
-
-
             }
         }
     }
 
-    function get_labels_data(): array {
+    function get_labels_data(): array
+    {
         $labels_data = [];
 
 
-        $label_box    = json_decode($this->metadata('label_box'),true);
-        $label_pallet = json_decode($this->metadata('label_pallet'),true);
+        $label_box    = json_decode($this->metadata('label_box'), true);
+        $label_pallet = json_decode($this->metadata('label_pallet'), true);
 
         if ($label_box == '' or $label_pallet == '') {
             $warehouse = get_object('Warehouse', $this->data['Fulfilment Asset Warehouse Key']);
@@ -404,16 +454,15 @@ class Fulfilment_Asset extends DB_Table {
 
 
             if ($label_pallet == '') {
-                $label_pallet= json_decode($warehouse->settings('label_fulfilment_asset_pallet'), true);
+                $label_pallet = json_decode($warehouse->settings('label_fulfilment_asset_pallet'), true);
                 if ($label_pallet == '') {
-                    $label_pallet= [
+                    $label_pallet = [
                         'size'   => 'A4',
                         'set_up' => 'single'
                     ];
                     $warehouse->fast_update_json_field('Warehouse Settings', 'label_fulfilment_asset_pallet', json_encode($label_pallet));
                 }
             }
-
         }
 
 
@@ -421,7 +470,6 @@ class Fulfilment_Asset extends DB_Table {
         $labels_data['pallet'] = $label_pallet;
 
         return $labels_data;
-
     }
 
 }

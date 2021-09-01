@@ -93,13 +93,15 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
     $operations                = array(
         'label'      => _('Operations'),
         'show_title' => true,
-        'class'      => 'operations '.($fulfilment_asset->get('Fulfilment Asset State') == 'InProcess' ? '' : 'hide'),
+        'class'      => 'operations ',
+   //     'class'      => 'operations '.($fulfilment_asset->get('Fulfilment Asset State') == 'InProcess' ? '' : 'hide'),
+
         'fields'     => array(
 
             array(
                 'id'     => 'unlink_asset_location',
                 'class'  => 'operation',
-                'render' => $fulfilment_asset->get('Fulfilment Asset Location Key'),
+                'render' => ($fulfilment_asset->get('Fulfilment Asset Location Key') and  $fulfilment_asset->get('State Index')<=40   ) ,
 
                 'value'     => '',
                 'label'     => '<span class="asset_location_container" data-asset_key="'.$fulfilment_asset->id.'" >
@@ -111,12 +113,12 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
             ),
 
             array(
-                'id'        => 'delete_part',
+                'id'        => 'delete_asset',
                 'class'     => 'operation',
                 'value'     => '',
                 'render'    => $fulfilment_asset->get('Fulfilment Asset State') == 'InProcess',
                 'label'     => '<i class="fa fa-fw fa-'.($super_edit ? 'lock-alt' : 'lock').'  button" 
-                 data-labels=\'{ "text":"'._('Please ask an authorised user to delete this part').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
+                 data-labels=\'{ "text":"'._('Please ask an authorised user to delete this asset').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
                 onClick="'.($super_edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'BS\')').'"  
                 style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$fulfilment_asset->get_object_name().'", "key":"'.$fulfilment_asset->id.'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete asset")
                     .' <i class="far fa-trash-alt new_button link"></i></span>',

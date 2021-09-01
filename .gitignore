@@ -130,3 +130,4 @@ cron/set_up_web_menu.php
 /cron/test_new_tax_engine.php
 /.env
 /public/js/bundle.js
+/cron/fix_fulfilment.php

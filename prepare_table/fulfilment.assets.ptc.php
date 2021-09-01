@@ -9,9 +9,11 @@
 include_once 'utils/prepare_table.php';
 
 
-class prepare_table_fulfilment_assets extends prepare_table {
+class prepare_table_fulfilment_assets extends prepare_table
+{
 
-    function __construct($db, $accounts, $user) {
+    function __construct($db, $accounts, $user)
+    {
         parent::__construct(...func_get_args());
         $this->record_label = [
             [
@@ -32,39 +34,33 @@ class prepare_table_fulfilment_assets extends prepare_table {
     }
 
 
-    function prepare_table() {
-
-
+    function prepare_table()
+    {
         $this->where = 'where true ';
         $this->table = '`Fulfilment Asset Dimension` A left join `Location Dimension` on (`Fulfilment Asset Location Key`=`Location Key`) 
           left join `Customer Dimension` on (`Fulfilment Asset Customer Key`=`Customer Key`)  left join `Store Dimension` on (`Store Key`=`Customer Store Key`) 
          ';
 
         if ($this->parameters['parent'] == 'fulfilment_delivery') {
-
             $this->where = sprintf(
-                'where   `Fulfilment Asset Fulfilment Delivery Key`=%d', $this->parameters['parent_key']
+                'where   `Fulfilment Asset Fulfilment Delivery Key`=%d',
+                $this->parameters['parent_key']
             );
-
-
         } else {
             if ($this->parameters['parent'] == 'fulfilment_order') {
-
                 $this->where = sprintf(
-                    'where   `Fulfilment Asset Fulfilment Order Key`=%d', $this->parameters['parent_key']
+                    'where   `Fulfilment Asset Fulfilment Order Key`=%d',
+                    $this->parameters['parent_key']
                 );
-
-
             } elseif ($this->parameters['parent'] == 'customer') {
                 $this->where = sprintf(
-                    'where   `Fulfilment Asset Customer Key`=%d  ', $this->parameters['parent_key']
+                    'where   `Fulfilment Asset Customer Key`=%d  ',
+                    $this->parameters['parent_key']
                 );
             }
         }
 
         if (isset($parameters['elements_type'])) {
-
-
             switch ($parameters['elements_type']) {
                 case('state'):
                     $_elements            = '';
@@ -91,12 +87,10 @@ class prepare_table_fulfilment_assets extends prepare_table {
 
 
         if (($this->parameters['f_field'] == 'reference') and $this->f_value != '') {
-
             $this->wheref = sprintf(
-                '  and  `Fulfilment Asset Reference`  like "%s%%" ', addslashes($this->f_value)
+                '  and  `Fulfilment Asset Reference`  like "%s%%" ',
+                addslashes($this->f_value)
             );
-
-
         }
 
 
@@ -115,19 +109,15 @@ class prepare_table_fulfilment_assets extends prepare_table {
         `Fulfilment Asset Reference`,`Fulfilment Asset Note`,`Fulfilment Asset Type`,`Fulfilment Asset Fulfilment Delivery Key`';
 
         $this->sql_totals = "select "."count(`Fulfilment Asset Key`) as num from $this->table $this->where ";
-
-
     }
 
-    function get_data() {
-
-
+    function get_data()
+    {
         $sql = "select $this->fields from $this->table $this->where $this->wheref order by $this->order $this->order_direction limit $this->start_from,$this->number_results";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         while ($data = $stmt->fetch()) {
-
             switch ($data['Fulfilment Asset Type']) {
                 case 'Pallet':
                     $type = sprintf('<span title="%s"><i class="fa fa-pallet-alt"></i></span>', _('Pallet'));
@@ -145,11 +135,17 @@ class prepare_table_fulfilment_assets extends prepare_table {
                 case 'InProcess':
                     $state = sprintf('%s', _('In Process'));
                     break;
-                case 'Stored':
-                    $state = sprintf('%s', _('Stored'));
+                case 'Received':
+                    $state = sprintf('%s', _('Received'));
                     break;
-                case 'Returned':
-                    $state = sprintf('%s', _('Returned'));
+                case 'BookedIn':
+                    $state = sprintf('%s', _('Booked in'));
+                    break;
+                case 'BookedOut':
+                    $state = sprintf('%s', _('Booked out'));
+                    break;
+                case 'Invoiced':
+                    $state = sprintf('%s', _('Booked out (invoiced)'));
                     break;
                 case 'Lost':
                     $state = sprintf('%s', _('Lost'));
@@ -172,8 +168,8 @@ class prepare_table_fulfilment_assets extends prepare_table {
                 $asset_reference = '<span class="super_discreet italic">'._('No set')."</span>";
             }
 
-
-            $edit_location = ' 
+            if ($data['Fulfilment Asset State'] == 'Received') {
+                $location = ' 
             
             
             <div class="asset_location_container" data-asset_key="'.$data['Fulfilment Asset Key'].'" >
@@ -194,11 +190,15 @@ class prepare_table_fulfilment_assets extends prepare_table {
                 </div>
                </div>
 			';
+            }else{
+               // $_link_location = 'fulfilment/'.$data['Fulfilment Asset Warehouse Key'].'/locations/'.$data['Location Key'];
+                 $_link_location = 'locations/'.$data['Fulfilment Asset Warehouse Key'].'/'.$data['Location Key'];
+
+                $location=sprintf('<span class="link" onclick="change_view(\'/%s\')" >%s</span>  ', $_link_location, $data['Location Code']);
+            }
 
 
-            $location = $edit_location;
-
-$label='<a href="/asset_label.pdf.php?object=fulfilment_asset&key='.$data['Fulfilment Asset Key'].'&type=pallet" target="_blank"><img class="button pdf_link  left_pdf_label_mark top_pdf_label_mark"
+            $label = '<a href="/asset_label.pdf.php?object=fulfilment_asset&key='.$data['Fulfilment Asset Key'].'&type=pallet" target="_blank"><img class="button pdf_link  left_pdf_label_mark top_pdf_label_mark"
                          style="width: 50px;height:16px;position: relative;top:2px"
                          src="/art/pdf.gif"></a>';
 
@@ -216,9 +216,6 @@ $label='<a href="/asset_label.pdf.php?object=fulfilment_asset&key='.$data['Fulfi
                 'delete'       => '<i class="button fal fa-trash-alt" title="'._('Delete').'" data-asset_key="'.$data['Fulfilment Asset Key'].'" onclick="delete_fulfilment_asset_from_table(this)"></i>'
 
             );
-
-
         }
-
     }
 }

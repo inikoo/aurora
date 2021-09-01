@@ -364,7 +364,7 @@ function get_fulfilment_module(): array {
                 )
             ),
 
-
+/*
             'locations' => array(
 
                 'type'      => 'navigation',
@@ -384,7 +384,7 @@ function get_fulfilment_module(): array {
                 )
 
             ),
-
+*/
 
             'location' => array(
 

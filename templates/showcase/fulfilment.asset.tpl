@@ -76,7 +76,12 @@
     <div class="block " style="align-items: stretch;flex: 1;">
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
 
-            <span class="Location_State_Formatted"> {$asset->get('Location State Formatted')} </span>
+            <span class="Fulfilment_Asset_State"> {$asset->get('State')} </span>
+
+        </div>
+        <div class="location " style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
+
+            <span class="Fulfilment_Asset_Location_Key"> {$asset->get('Formatted Location')} </span>
 
         </div>
         <div  style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
@@ -100,12 +105,27 @@
 
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
-        <div class="node  Invoice_Info {if $asset->get('State Index')!=110}hide{/if} ">
-                    <span class="node_label">
-                        <i class="fal fa-file-invoice-dollar fa-fw"></i>
-                        <span class="Formatted_Invoice_Public_ID margin_right_10">{$asset->get('Formatted Invoice Public ID')}</span>
-                        <span class="italic Formatted_Invoice_Date">{$asset->get('Formatted Invoice Date')}</span>
-                    </span>
+        <div class="state " style="display:flex;height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
+            <div style="padding-left:10px;padding-right:10px ;">
+                <i class="fa fa-sign-in" title="{t}Received{/t}"></i>
+            </div>
+            <div>
+                <span class="Received_Date"> {$asset->get('From')} </span>
+
+            </div>
+
+        </div>
+
+        <div class="state" style="display:flex;height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
+            <div style="padding-left:10px;padding-right:10px ;">
+                <i class="fa fa-sign-out" title="{t}Booked out{/t}"></i>
+            </div>
+            <div>
+                <span class="Booked_Out_Date"> {$asset->get('To')} </span>
+
+            </div>
+
+
         </div>
 
         <div style="clear:both">

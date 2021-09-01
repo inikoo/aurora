@@ -49,29 +49,44 @@
 
 
 
-        <li id="placed_node"
-            class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=100}complete{/if}">
+        <li id="booked_in_node"
+            class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=60}complete{/if}">
             <div class="label">
                 <span class="state">{t}Booked in{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Fulfilment_Delivery_Placed_Percentage_or_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span>
+                <span class="Fulfilment_Delivery_Booked_In_Date">&nbsp;{$delivery->get('Booked In Date')}</span>
             </div>
             <div class="dot">
             </div>
         </li>
 
-        <li id="placed_node"
-            class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=100}complete{/if}">
+        <li id="invoicing_node"
+            class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=80}complete{/if}">
             <div class="label">
-                <span class="state">{t}Contract created{/t}</span>
+                <span class="state">{t}Invoicing{/t}</span>
             </div>
             <div class="timestamp">
-                <span class="Fulfilment_Delivery_Placed_Percentage_or_Date">&nbsp;{$delivery->get('Placed Percentage or Date')}</span>
+                <span class="Fulfilment_Delivery_Invoiced_Date">&nbsp;{$delivery->get('Invoiced Date')}</span>
             </div>
             <div class="dot">
             </div>
         </li>
+
+
+        <li id="invoiced_node"
+            class=" {if $delivery->get('State Index')<0}hide{/if} li {if $delivery->get('State Index')>=80}complete{/if}">
+            <div class="label">
+                <span class="state">{t}Invoiced{/t}</span>
+            </div>
+            <div class="timestamp">
+                <span class="Fulfilment_Delivery_Invoiced_Date">&nbsp;{$delivery->get('Invoiced Date')}</span>
+            </div>
+            <div class="dot">
+            </div>
+        </li>
+
+
 
 
     </ul>
@@ -174,7 +189,7 @@
                     </div>
                 </div>
                 <div id="cancel_operations"
-                     class="order_operation {if $delivery->get('Fulfilment Delivery State')=='InProcess' or $delivery->get('Fulfilment Delivery State')=='Cancelled' or $delivery->get('Fulfilment Delivery Placed Items')=='Yes'   }hide{/if}">
+                     class="order_operation {if $delivery->get('Fulfilment Delivery State')=='InProcess' or $delivery->get('Fulfilment Delivery State')=='Cancelled' or $delivery->get('Fulfilment Delivery State')=='BookedIn'   }hide{/if}">
                     <div class="square_button left"
                          title="{t}Cancel{/t}">
                         <i class="fa fa-minus-circle error " aria-hidden="true"
@@ -225,6 +240,31 @@
                 </div>
 
 
+                <div id="undo_booked_in_operations"
+                     class="order_operation {if $delivery->get('Fulfilment Delivery State')!='BookedIn'   }hide{/if}">
+                    <div class="square_button left" title="{t}Set as received{/t}">
+						<span class="fa-stack" style="position:relative;top:-1px;left:-5px"
+                              onclick="toggle_order_operation_dialog('undo_booked_in')">
+						<i class="fa fa-clipboard-check discreet " aria-hidden="true"></i>
+						<i class="fa fa-ban fa-stack-1x very_discreet error"></i>
+						</span>
+                        <table id="undo_booked_in_dialog" class="order_operation_dialog hide">
+                            <tr class="top">
+                                <td colspan="2" class="label">{t}Set as received{/t}</td>
+                            </tr>
+                            <tr class="buttons changed">
+                                <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
+                                       onclick="close_dialog('undo_booked_in')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{ "value": "Received","dialog_name":"undo_booked_in", "field": "Fulfilment Delivery State"}'
+                                            id="undo_booked_in_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
 
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px"
@@ -255,34 +295,24 @@
                 </div>
 
 
-
-
-                <div id="costing_operations"
-                     class="order_operation {if $delivery->get('Fulfilment Delivery State')!='Placed'}hide{/if}">
-                    <div class="square_button right" title="{t}Start checking costs{/t}">
-
-                        <i class="far fa-box-usd fa-fw" aria-hidden="true" data-data='{ "value": "Costing","dialog_name":"costing", "field": "Fulfilment Delivery State"}'
-                           onclick="save_order_operation(this)"></i>
-
-
-                        <table id="costing_dialog" class="order_operation_dialog hide">
+                <div id="booked_in_operations"
+                     class=" order_operation {if $delivery->get('Fulfilment Delivery State')!='Received'  }hide{/if}">
+                    <div class="square_button right" title="{t}Mark delivery as booked in{/t}">
+                        <i class="fa fa-clipboard-check fa-fw" aria-hidden="true"
+                           onclick="toggle_order_operation_dialog('booked_in')"></i>
+                        <table id="booked_in_dialog" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label"
-                                    colspan="2">{t}Start checking costs{/t}</td>
+                                <td class="label" colspan="2">{t}Mark delivery as booked in{/t}</td>
                             </tr>
 
-
-
-
-                            <tr class="buttons">
+                            <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true"
-                                       onclick="close_dialog('costing')"></i></td>
-                                <td class="aright">
-								<span data-data='{ "value": "Costing","dialog_name":"costing", "field": "Fulfilment Delivery State"}'
-                                      id="costing_save_buttons" class="valid save button changed"
-                                      onclick="save_order_operation(this)">
-								<span class="label">{t}Save{/t}</span> <i class="fa fa-cloud fa-fw  "
-                                                                          aria-hidden="true"></i></span></td>
+                                       onclick="close_dialog('booked_in')"></i></td>
+                                <td class="aright"><span
+                                            data-data='{  "field": "Fulfilment Delivery State","value": "BookedIn","dialog_name":"booked_in"}'
+                                            id="booked_in_save_buttons" class="valid save button"
+                                            onclick="save_order_operation(this)"><span class="label">{t}Save{/t}</span> <i
+                                                class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span></td>
                             </tr>
                         </table>
                     </div>
@@ -309,22 +339,12 @@
                 <td style="text-align: center" colspan="2">
 
                     <span style="padding-right:20px"  title="{t}Number of items{/t}" ><i class="fa fa-bars fa-fw discreet"></i> <span class="Fulfilment_Delivery_Number_Items">{$delivery->get('Number Items')}</span></span>
-                    <span><i class="fa fa-box-check fa-fw discreet" aria-hidden="true"></i>  <span
-                                class="Fulfilment_Delivery_Number_Received_and_Checked_Items">{$delivery->get('Number Received and Checked Items')}</span></span>
-                    <span style="padding-left:20px"><i class="fa fa-inventory fa-fw discreet" aria-hidden="true"></i>  <span
-                                class="Fulfilment_Delivery_Number_Placed_Items">{$delivery->get('Number Placed Items')}</span></span>
+
                 </td>
             </tr>
 
 
 
-            <tr  class="Mismatched_Items {if $delivery->get('Fulfilment Delivery Number Received and Checked Items')==0}hide{/if} ">
-                <td style="text-align: center;padding-top: 20px"  title="{t}Items under delivered{/t}"><i class="far fa-box-open"></i>  <span class="Fulfilment_Delivery_Number_Under_Delivered_Items">{$delivery->get('Number Under Delivered Items')}</span></td>
-
-                <td  style="text-align: center;padding-top: 20px" title="{t}Items over delivered{/t}"><i class="fa fa-box-full"></i>  <span  class=" Fulfilment_Delivery_Number_Over_Delivered_Items">{$delivery->get('Number Over Delivered Items')}</span></td>
-
-
-            </tr>
 
         </table>
 
@@ -333,15 +353,16 @@
     </div>
     <div class="block " style="align-items: stretch;flex: 1 ">
 
+        <div class="state next_invoice  {if !($delivery->get('Fulfilment Delivery State')=='BookedIn' or $delivery->get('Fulfilment Delivery State')=='Invoicing')   }hide{/if}" style="height:30px;margin-bottom:10px;position:relative;top:5px;text-align:center;">
+            <div style="display:flex">
+            <div class="small" style="padding-left:10px;padding-right:10px ;">
+              {t}Next invoice{/t}
+            </div>
+            <div>
+                <span class="Received_Date"> {$delivery->get('Next Invoice Date')} </span>
 
-        <div class="node  Invoice_Info {if $delivery->get('State Index')!=110}hide{/if} " >
-                    <span class="node_label">
-                        <i class="fal fa-file-invoice-dollar fa-fw" ></i>
-                        <span class="Formatted_Invoice_Public_ID margin_right_10">{$delivery->get('Formatted Invoice Public ID')}</span>
-                        <span class="italic Formatted_Invoice_Date">{$delivery->get('Formatted Invoice Date')}</span>
-
-                    </span>
-
+            </div>
+            </div>
 
         </div>
 
