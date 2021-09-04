@@ -24,6 +24,7 @@ trait Aiku {
 
     function update_aiku($table_full_name, $field, $value = ''): int {
 
+        return 0;
 
         if (!defined('AIKU_TOKEN')) {
             return 0;
