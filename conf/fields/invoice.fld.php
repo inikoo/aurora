@@ -210,7 +210,7 @@ if ($invoice->get('Invoice Type') == 'Invoice') {
 
             array(
                 'id'        => 'delete_invoice',
-                'class'     => 'operation',
+                'class'     => 'operation '.($object->get('Invoice Order Type')=='FulfilmentRent'?'hide':''),
                 'value'     => '',
                 'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button"  
                 data-labels=\'{ "text":"'._('Please ask an authorised user to delete this invoice').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  

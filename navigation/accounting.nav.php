@@ -2339,6 +2339,11 @@ function get_invoice_navigation($data, $smarty, $user, $db, $account) {
 
     }
 
+    if($object->get('Invoice Order Type')=='FulfilmentRent'){
+        $title.=' <small style="color:#3C5186"><i class="fa fa-history padding_left_10"></i> '._('Fulfilment rent').'</small>';
+    }
+
+
 
     $_content = array(
         'sections_class' => '',

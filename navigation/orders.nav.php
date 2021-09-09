@@ -1267,6 +1267,10 @@ function get_order_navigation($data, $smarty, $user, $db, $account) {
     $title .= ' <span class="Order_Priority_Icon '.($object->get('Order Priority Level') == 'Normal' ? 'hide' : '').' "   ><i title="'._('Priority dispatching').'" class=" Priority_Level  far fa-shipping-fast"></i></span>';
 
 
+    if($object->get('Order Type')=='FulfilmentRent'){
+        $title.=' <small style="color:#3C5186"><i class="fa fa-history padding_left_10"></i> '._('Fulfilment rent').'</small>';
+    }
+
     $_content = array(
         'sections_class' => '',
         'sections'       => $sections,

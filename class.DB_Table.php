@@ -649,6 +649,8 @@ abstract class DB_Table extends stdClass
             $key_field = 'Product ID';
         } elseif ($table_full_name == 'Supplier Production Dimension') {
             $key_field = 'Supplier Production Supplier Key';
+        } elseif ($table_full_name == 'Customer Fulfilment Dimension') {
+            $key_field = 'Customer Fulfilment Customer Key';
         } elseif ($table_full_name == 'Page Store Dimension') {
             $key_field = 'Page Key';
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
@@ -671,6 +673,7 @@ abstract class DB_Table extends stdClass
             );
 
 
+           // print 'UPDATE '.$sql." $value $this->id  \n";
             $stmt = $this->db->prepare('UPDATE '.$sql);
 
 

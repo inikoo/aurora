@@ -304,7 +304,7 @@ class Order extends DB_Table
             case 'Tax Description':
 
 
-                $tax_category=new \Aurora\Models\Utils\TaxCategory($this->db);
+                $tax_category = new \Aurora\Models\Utils\TaxCategory($this->db);
                 $tax_category->loadWithKey($this->data['Order Tax Category Key']);
 
 
@@ -316,13 +316,12 @@ class Order extends DB_Table
                         $tax_description = sprintf(_('EU with %s'), $this->get('Tax Number Formatted'));
                         break;
                     default:
-                        $tax_description= '<small class="discreet">'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name');
-
+                        $tax_description = '<small class="discreet">'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name');
                 }
 
                 return $tax_description;
             case 'Tax Description With Warnings':
-                $tax_description=$this->get('Tax Description');
+                $tax_description = $this->get('Tax Description');
 
                 if ($this->metadata('original_tax_code') != '' and $this->metadata('original_tax_code') != $this->get('Order Tax Code')) {
                     $tax_description = '<span class="error italic"> <i class="fa fa-exclamation-circle error"></i> ('._('Edited').')</span> '.$tax_description;
@@ -913,8 +912,6 @@ class Order extends DB_Table
                 } else {
                     return 'No';
                 }
-
-
         }
         $_key = ucwords($key);
         if (array_key_exists($_key, $this->data)) {
@@ -1154,7 +1151,7 @@ class Order extends DB_Table
                     }
 
 
-                    $this->add_subject_history($history_data,   true, 'No','Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $operations = array(
                         'send_to_warehouse_operations',
@@ -1273,7 +1270,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Delivery note cancelled, order back to submitted state'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No', 'Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $operations = array(
                         'send_to_warehouse_operations',
@@ -1396,7 +1393,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order send to warehouse'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->table_name, $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->table_name, $this->id);
 
 
                     $operations = array('cancel_operations');
@@ -1436,7 +1433,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order packed and closed'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true, 'No',  'Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $this->update_totals();
 
@@ -1462,7 +1459,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order packing checked'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No', 'Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $operations = array(
                         'invoice_operations',
@@ -1501,7 +1498,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Undo packed and closed'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $operations = array(
                         'cancel_operations'
@@ -1531,7 +1528,7 @@ class Order extends DB_Table
                                 'History Abstract' => _('Invoice deleted, order state back to packed and closed'),
                                 'History Details'  => '',
                             );
-                            $this->add_subject_history($history_data,  true, 'No',  'Changes', $this->get_object_name(), $this->id);
+                            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                             $operations = array(
                                 'invoice_operations',
@@ -1561,7 +1558,7 @@ class Order extends DB_Table
                                 'History Abstract' => _('Invoice deleted'),
                                 'History Details'  => '',
                             );
-                            $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->get_object_name(), $this->id);
+                            $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                             $operations = array();
 
@@ -1602,16 +1599,14 @@ class Order extends DB_Table
 
                         return false;
                     }
-                    $this->update_field('Order State', $value, 'no_history');
 
 
                     $extra_data = [];
 
-                        $this->fast_update_json_field('Order Metadata', 'ups', false);
+                    $this->fast_update_json_field('Order Metadata', 'ups', false);
 
 
                     $invoice = $this->create_invoice($date, $extra_data);
-
 
 
                     $this->update_field('Order Invoiced Date', $date, 'no_history');
@@ -1626,9 +1621,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order invoiced'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->table_name, $this->id);
-
-
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->table_name, $this->id);
 
 
                     $sql = sprintf(
@@ -1649,7 +1642,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order completed'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $operations = array();
 
@@ -1672,16 +1665,38 @@ class Order extends DB_Table
                                            ));
 
 
+                    if ($this->data['Order Type'] == 'FulfilmentRent') {
+                        $sql = "update `Fulfilment Asset Dimension` left join `Fulfilment Rent Transaction Fact` on (`Fulfilment Rent Transaction Asset Key`=`Fulfilment Asset Key`) set `Fulfilment Asset Last Rent Order Date`=?   where `Fulfilment Rent Transaction Order Key`=?  ";
+                        $this->db->prepare($sql)->execute(
+                            [
+                                gmdate('Y-d-m'),
+                                $this->id
+                            ]
+                        );
+
+
+                        $sql = "update `Fulfilment Asset Dimension` left join `Fulfilment Rent Transaction Fact` on (`Fulfilment Rent Transaction Asset Key`=`Fulfilment Asset Key`) set `Fulfilment Asset State`='Invoiced'    where `Fulfilment Rent Transaction Order Key`=?  and `Fulfilment Asset State`='BookedOut'   ";
+                        $this->db->prepare($sql)->execute(
+                            [
+                                $this->id
+                            ]
+                        );
+
+                        $customer = get_object('Customer_Fulfilment', $this->data['Order Customer Key']);
+                        $customer->fast_update([
+                                                   'Customer Fulfilment Current Rent Order Key' => null
+                                               ]);
+                    }
+
+
                     new_housekeeping_fork(
                         'au_housekeeping',
                         array(
-                            'type'              => 'order_completed',
-                            'order_key'         => $this->id,
+                            'type'      => 'order_completed',
+                            'order_key' => $this->id,
                         ),
                         $account->get('Account Code')
                     );
-
-
 
 
                     break;
@@ -1735,7 +1750,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order invoiced'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->table_name, $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->table_name, $this->id);
 
 
                     $operations = array('cancel_operations');
@@ -1778,7 +1793,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order set as not dispatched'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $operations = array();
 
@@ -1815,7 +1830,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order dispatched'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->get_object_name(), $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                     $operations = array();
 
@@ -1896,7 +1911,7 @@ class Order extends DB_Table
                         'History Abstract' => _('Order invoiced again'),
                         'History Details'  => '',
                     );
-                    $this->add_subject_history($history_data,  true,  'No',  'Changes', $this->table_name, $this->id);
+                    $this->add_subject_history($history_data, true, 'No', 'Changes', $this->table_name, $this->id);
 
 
                     $operations = array('');
@@ -2133,7 +2148,8 @@ class Order extends DB_Table
             'Invoice Currency'              => $this->data['Order Currency'],
             'Recargo Equivalencia'          => $this->metadata('RE'),
             'Invoice External Invoicer Key' => $this->data['Order External Invoicer Key'],
-            'extra_data'                    => $extra_data
+            'extra_data'                    => $extra_data,
+            'Invoice Order Type'            => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order')
 
 
         );
@@ -2431,7 +2447,7 @@ class Order extends DB_Table
             $this->update_totals();
 
 
-            $this->update_shipping($dn_key );
+            $this->update_shipping($dn_key);
             $this->update_charges($dn_key, false);
             $this->update_discounts_no_items($dn_key);
 
@@ -2440,7 +2456,6 @@ class Order extends DB_Table
 
 
             $this->update_totals();
-
 
 
             $new_used_deals = $this->get_used_deals();
@@ -2546,7 +2561,6 @@ WHERE `Order Transaction Fact Key`=?";
             $this->update_totals();
 
 
-
             $new_used_deals = $this->get_used_deals();
 
 
@@ -2584,7 +2598,6 @@ WHERE `Order Transaction Fact Key`=?";
 
         }
     }
-
 
 
     function create_refund($date, $transactions, $tax_only = false): Invoice
@@ -2788,6 +2801,7 @@ WHERE `Order Transaction Fact Key`=?";
             'Invoice Currency'                     => $this->data['Order Currency'],
             'Recargo Equivalencia'                 => $this->metadata('RE'),
             'Invoice External Invoicer Key'        => $this->data['Order External Invoicer Key'],
+            'Invoice Order Type'                   => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order')
 
 
         );

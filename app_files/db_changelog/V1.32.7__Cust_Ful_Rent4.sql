@@ -1,0 +1,2 @@
+ALTER TABLE `Fulfilment Rent Transaction Fact` ADD COLUMN `Fulfilment Rent Transaction Invoice Key` int unsigned NULL COMMENT '' AFTER `Fulfilment Rent Transaction Order Key`;
+CREATE INDEX `inv_idx` ON `Fulfilment Rent Transaction Fact` (`Fulfilment Rent Transaction Invoice Key`) USING BTREE;

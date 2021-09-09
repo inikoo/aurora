@@ -426,6 +426,10 @@ trait OrderOperations
 
         $account = get_object('Account', '');
 
+
+
+
+
         if ($fork) {
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
@@ -501,6 +505,14 @@ trait OrderOperations
         }
 
         $this->fork_index_elastic_search();
+
+
+        if($this->data['Order Type']=='FulfilmentRent'){
+            $customer         = get_object('Customer_Fulfilment', $this->data['Order Customer Key']);
+            $customer->editor = $this->editor;
+
+            $customer->update_rent_order();
+        }
 
         return true;
     }

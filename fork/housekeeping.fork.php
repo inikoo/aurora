@@ -23,6 +23,15 @@ function fork_housekeeping($job)
     print $data['type']."\n";
     //return true;
     switch ($data['type']) {
+        case 'update_rent_order':
+
+            $customer         = get_object('Customer_Fulfilment', $data['customer_key']);
+            $customer->editor = $data['editor'];
+
+            $customer->update_rent_order();
+
+
+            break;
         case 'website_user_visit':
 
             include_once 'utils/network_functions.php';
@@ -1547,7 +1556,7 @@ function fork_housekeeping($job)
             break;
         case 'order_completed':
             /** @var Order $order */
-            $order         = get_object('Order', $data['order_key']);
+            $order = get_object('Order', $data['order_key']);
 
 
             $store = get_object('Store', $order->get('Store Key'));
@@ -1563,7 +1572,6 @@ function fork_housekeeping($job)
             $customer->editor = $editor;
 
             //todo send email invoice done
-
 
 
             $account->update_inventory_dispatched_data('ytd');

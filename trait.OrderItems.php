@@ -29,6 +29,8 @@ trait OrderItems
         $gross_discounts = 0;
 
 
+
+
         $order_type = $data['Order Type'] ?? $this->data['Order Type'];
 
 

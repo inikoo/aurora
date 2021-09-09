@@ -402,6 +402,8 @@ class Fulfilment_Delivery extends DB_Table
                 break;
             case 'Received':
 
+                $old_value=$this->get('Fulfilment Delivery State');
+
 
                 if (!in_array($this->get('Fulfilment Delivery State'), ['InProcess', 'BookedIn'])) {
                     $this->error = true;
@@ -443,6 +445,21 @@ class Fulfilment_Delivery extends DB_Table
                         $this->id
                     )
                 );
+
+                if($old_value!='InProcess') {
+                    require_once 'utils/new_fork.php';
+
+                    new_housekeeping_fork(
+                        'au_housekeeping',
+                        array(
+                            'type'         => 'update_rent_order',
+                            'customer_key' => $this->get('Fulfilment Delivery Customer Key'),
+                            'editor'       => $this->editor
+                        ),
+                        DNS_ACCOUNT_CODE,
+                        $this->db
+                    );
+                }
 
 
                 $history_data = array(
@@ -486,6 +503,22 @@ class Fulfilment_Delivery extends DB_Table
                     array(
                         $this->id
                     )
+                );
+
+
+
+
+                require_once 'utils/new_fork.php';
+
+                new_housekeeping_fork(
+                    'au_housekeeping',
+                    array(
+                        'type'       => 'update_rent_order',
+                        'customer_key'=>$this->get('Fulfilment Delivery Customer Key'),
+                        'editor'     => $this->editor
+                    ),
+                    DNS_ACCOUNT_CODE,
+                    $this->db
                 );
 
 
@@ -708,6 +741,13 @@ class Fulfilment_Delivery extends DB_Table
         $data['Fulfilment Asset Metadata']                = '{}';
         $data['editor']                                   = $this->editor;
 
+
+        if($this->get('State Index')>=40){
+            $data['Fulfilment Asset From']                = $this->get('Fulfilment Delivery Received Date');
+
+        }
+
+
         $location_code = '';
         if (isset($data['Fulfilment Asset Location Code'])) {
             $location_code = $data['Fulfilment Asset Location Code'];
@@ -740,6 +780,10 @@ class Fulfilment_Delivery extends DB_Table
         if ($fulfilment_asset->id) {
             $this->new_object_msg = $fulfilment_asset->msg;
             $this->new_object     = true;
+
+
+
+
 
             if ($location_code != '') {
                 $location = get_object('Location-code', $location_code);

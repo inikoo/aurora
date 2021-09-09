@@ -189,7 +189,8 @@ switch ($tipo) {
 }
 
 
-function orders_in_process_not_paid($_data, $db, $user, $account) {
+function orders_in_process_not_paid($_data, $db, $user, $account)
+{
     $rtext_label = 'order submitted not paid';
 
 
@@ -200,8 +201,6 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-
-
         $payment_state = get_order_formatted_payment_state($data);
         include_once 'class.Order.php';
 
@@ -211,14 +210,22 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
 
         $operations .= '<div class="buttons small '.$class.'">';
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
-        $operations .= sprintf(
-            "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>", $data['Order Key'], ($data['Order Number Items'] == 0 ? 'disabled' : ''),
-            $data['Order Key'], _('Send for picking')
-        );
-
+        if ($data['Order Number Ordered Products'] > 0) {
+            $operations .= sprintf(
+                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
+                $data['Order Key'],
+                ($data['Order Number Items'] == 0 ? 'disabled' : ''),
+                $data['Order Key'],
+                _('Send for picking')
+            );
+        }
         //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$data['Order Key'],_('Edit Order'));
 
         $operations .= '</div>';
@@ -228,7 +235,10 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
 
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'/orders/%s/dashboard/submitted_not_paid/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'/orders/%s/dashboard/submitted_not_paid/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
 
         if ($data['Order Priority Level'] != 'Normal') {
@@ -243,6 +253,10 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
             $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
+        if ($data['Order Type'] == 'FulfilmentRent') {
+            $public_id .= ' <i  style="color:#3C5186"   title="'._('Fulfilment rent').'"   class="fal fa-history "></i>';
+        }
+
 
         $notes = '';
         if ($data['Order Sticky Note'] != '') {
@@ -255,9 +269,16 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
             $notes .= ' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
         }
 
+        $checked = sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']);
+
+        if ($data['Order Number Ordered Products'] == 0) {
+            $checked = '';
+        }
+
+
         $adata[] = array(
             'id'        => (integer)$data['Order Key'],
-            'checked'   => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']),
+            'checked'   => $checked,
             'store_key' => (integer)$data['Order Store Key'],
             'public_id' => $public_id,
             'date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
@@ -273,7 +294,6 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -291,7 +311,8 @@ function orders_in_process_not_paid($_data, $db, $user, $account) {
 }
 
 
-function orders_in_process_paid($_data, $db, $user, $account) {
+function orders_in_process_paid($_data, $db, $user, $account)
+{
     $rtext_label = 'order submitted paid';
 
 
@@ -301,7 +322,6 @@ function orders_in_process_paid($_data, $db, $user, $account) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
-
         $payments = '';
         if ($data['payments'] != '') {
             foreach (preg_split('/,/', $data['payments']) as $payment_data) {
@@ -316,11 +336,8 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
                     $payments .= $payment_name.', ';
                 }
-
-
             }
             $payments = preg_replace('/, $/', '', $payments);
-
         }
 
 
@@ -332,14 +349,21 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
         $operations .= '<div class="buttons small '.$class.'">';
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
-
-        $operations .= sprintf(
-            "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>", $data['Order Key'], ($data['Order Number Items'] == 0 ? 'disabled' : ''),
-            $data['Order Key'], _('Send for picking')
-        );
-
+        if ($data['Order Number Ordered Products'] > 0) {
+            $operations .= sprintf(
+                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
+                $data['Order Key'],
+                ($data['Order Number Items'] == 0 ? 'disabled' : ''),
+                $data['Order Key'],
+                _('Send for picking')
+            );
+        }
         //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$data['Order Key'],_('Edit Order'));
 
         $operations .= '</div>';
@@ -348,7 +372,10 @@ function orders_in_process_paid($_data, $db, $user, $account) {
         $operations .= '</div>';
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'/orders/%s/dashboard/submitted/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'/orders/%s/dashboard/submitted/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
 
         if ($data['Order Priority Level'] != 'Normal') {
@@ -362,6 +389,9 @@ function orders_in_process_paid($_data, $db, $user, $account) {
             $public_id .= ' <i class="fal fa-scanner-keyboard" title="'._('Full tracking').'" ></i>';
         }
 
+        if ($data['Order Type'] == 'FulfilmentRent') {
+            $public_id .= ' <i  style="color:#3C5186"   title="'._('Fulfilment rent').'"   class="fal fa-history "></i>';
+        }
 
         $notes = '';
         if ($data['Order Sticky Note'] != '') {
@@ -374,9 +404,16 @@ function orders_in_process_paid($_data, $db, $user, $account) {
             $notes .= ' <i style="color:#ff7dbd" class="open_sticky_note order_customer_sticky_note fa fa-sticky-note"></i>';
         }
 
+
+        $checked = sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']);
+
+        if ($data['Order Number Ordered Products'] == 0) {
+            $checked = '';
+        }
+
         $adata[] = array(
             'id'                       => (integer)$data['Order Key'],
-            'checked'                  => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']),
+            'checked'                  => $checked,
             'store_key'                => (integer)$data['Order Store Key'],
             'public_id'                => $public_id,
             'date'                     => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
@@ -391,7 +428,6 @@ function orders_in_process_paid($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -408,7 +444,8 @@ function orders_in_process_paid($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function orders_in_warehouse($_data, $db, $user) {
+function orders_in_warehouse($_data, $db, $user)
+{
     $rtext_label = 'order warehouse';
 
 
@@ -419,8 +456,6 @@ function orders_in_warehouse($_data, $db, $user) {
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-
-
         $payment_state = get_order_formatted_payment_state($data);
 
         include_once 'class.Order.php';
@@ -433,12 +468,18 @@ function orders_in_warehouse($_data, $db, $user) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>",
+                $data['Order Store Key'],
+                $delivery_note_data
 
             );
         }
@@ -450,7 +491,10 @@ function orders_in_warehouse($_data, $db, $user) {
         $operations .= '</div>';
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
         if ($data['Order Priority Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-shipping-fast"></i>';
@@ -478,7 +522,6 @@ function orders_in_warehouse($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -496,7 +539,8 @@ function orders_in_warehouse($_data, $db, $user) {
 }
 
 
-function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
+function orders_in_warehouse_no_alerts($_data, $db, $user, $account)
+{
     $rtext_label = 'order warehouse';
 
 
@@ -507,8 +551,6 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
 
     //  print $sql;
     foreach ($db->query($sql) as $data) {
-
-
         $operations = '<div id="operations'.$data['Order Key'].'">';
         $class      = 'right';
 
@@ -517,12 +559,18 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error hide  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error hide  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal padding_right_10  button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal padding_right_10  button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>",
+                $data['Order Store Key'],
+                $delivery_note_data
 
             );
         }
@@ -542,16 +590,16 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
             $deliveries    = '';
 
             if ($data['delivery_notes'] != '') {
-
                 foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
-
-
                     $_delivery_note_data = preg_split('/\|/', $delivery_note_data);
 
                     $dn_keys[] = $_delivery_note_data[0];
 
                     $deliveries = sprintf(
-                        "<span class='padding_right_10 error link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck   \" ></i> %s</span>", $data['Order Store Key'], $_delivery_note_data[0], $_delivery_note_data[1]
+                        "<span class='padding_right_10 error link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck   \" ></i> %s</span>",
+                        $data['Order Store Key'],
+                        $_delivery_note_data[0],
+                        $_delivery_note_data[1]
 
                     );
                 }
@@ -568,16 +616,21 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
                     $dn_keys[]           = $_delivery_note_data[0];
 
                     $deliveries = sprintf(
-                        "<span class='padding_right_10 link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck fa-flip-horizontal   \" ></i> %s</span>", $data['Order Store Key'], $_delivery_note_data[0], $_delivery_note_data[1]
+                        "<span class='padding_right_10 link' onClick=\"change_view('delivery_notes/%d/%d')\"><i class=\"fa fa-truck fa-flip-horizontal   \" ></i> %s</span>",
+                        $data['Order Store Key'],
+                        $_delivery_note_data[0],
+                        $_delivery_note_data[1]
 
                     );
                 }
             }
-
         }
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/in_warehouse/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
         if ($data['Order Priority Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-shipping-fast"></i>';
@@ -606,7 +659,6 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -624,7 +676,8 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account) {
 }
 
 
-function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
+function orders_in_warehouse_with_alerts($_data, $db, $user, $account)
+{
     $rtext_label = 'order warehouse with alerts';
 
 
@@ -635,8 +688,6 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
 
     // print $sql;
     foreach ($db->query($sql) as $data) {
-
-
         $payment_state = get_order_formatted_payment_state($data);
 
         include_once 'class.Order.php';
@@ -649,12 +700,18 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>",
+                $data['Order Store Key'],
+                $delivery_note_data
 
             );
         }
@@ -666,7 +723,10 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
         $operations .= '</div>';
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'orders/%s/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
         if ($data['Order Priority Level'] != 'Normal') {
             $public_id .= ' <i class="fal fa-shipping-fast"></i>';
@@ -696,7 +756,6 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -714,9 +773,8 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account) {
 }
 
 
-function orders_packed($_data, $db, $user, $account) {
-
-
+function orders_packed($_data, $db, $user, $account)
+{
     $rtext_label = 'order packed';
 
 
@@ -727,7 +785,6 @@ function orders_packed($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
         $payment_state = get_order_formatted_payment_state($data);
         include_once 'class.Order.php';
 
@@ -739,12 +796,18 @@ function orders_packed($_data, $db, $user, $account) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>",
+                $data['Order Store Key'],
+                $delivery_note_data
 
             );
         }
@@ -754,7 +817,10 @@ function orders_packed($_data, $db, $user, $account) {
         $operations .= '</div>';
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
 
         if ($data['Order Priority Level'] != 'Normal') {
@@ -784,7 +850,6 @@ function orders_packed($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -802,9 +867,8 @@ function orders_packed($_data, $db, $user, $account) {
 }
 
 
-function orders_packed_done($_data, $db, $user, $account) {
-
-
+function orders_packed_done($_data, $db, $user, $account)
+{
     $rtext_label = 'order packed done';
 
 
@@ -815,7 +879,6 @@ function orders_packed_done($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
         $payment_state = get_order_formatted_payment_state($data);
         include_once 'class.Order.php';
 
@@ -827,12 +890,18 @@ function orders_packed_done($_data, $db, $user, $account) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>",
+                $data['Order Store Key'],
+                $delivery_note_data
 
             );
         }
@@ -842,7 +911,10 @@ function orders_packed_done($_data, $db, $user, $account) {
         $operations .= '</div>';
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed_done/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/packed_done/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
 
         if ($data['Order Priority Level'] != 'Normal') {
@@ -872,7 +944,6 @@ function orders_packed_done($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -890,7 +961,8 @@ function orders_packed_done($_data, $db, $user, $account) {
 }
 
 
-function orders_approved($_data, $db, $user, $account) {
+function orders_approved($_data, $db, $user, $account)
+{
     $rtext_label = 'order approved';
 
 
@@ -901,7 +973,6 @@ function orders_approved($_data, $db, $user, $account) {
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-
         $payment_state = get_order_formatted_payment_state($data);
 
         include_once 'class.Order.php';
@@ -914,12 +985,18 @@ function orders_approved($_data, $db, $user, $account) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>",
+                $data['Order Store Key'],
+                $delivery_note_data
 
             );
         }
@@ -931,7 +1008,10 @@ function orders_approved($_data, $db, $user, $account) {
         $operations .= '</div>';
 
         $public_id = sprintf(
-            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/approved/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            '<span class="link"  onclick="change_view(\'orders/%s/dashboard/approved/%d\')" >%s</span>',
+            ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+            $data['Order Key'],
+            $data['Order Public ID']
         );
 
         if ($data['Order Priority Level'] != 'Normal') {
@@ -960,7 +1040,6 @@ function orders_approved($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -978,7 +1057,8 @@ function orders_approved($_data, $db, $user, $account) {
 }
 
 
-function orders_dispatched_today($_data, $db, $user, $account) {
+function orders_dispatched_today($_data, $db, $user, $account)
+{
     $rtext_label = 'order dispatched today';
 
 
@@ -989,7 +1069,6 @@ function orders_dispatched_today($_data, $db, $user, $account) {
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-
         $payment_state = get_order_formatted_payment_state($data);
         include_once 'class.Order.php';
 
@@ -1001,12 +1080,18 @@ function orders_dispatched_today($_data, $db, $user, $account) {
 
 
         $operations .= sprintf(
-            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>", $data['Order Key'], $data['Order Public ID'], $data['Order Customer Name'], _('Cancel')
+            "<i class=\"fa fa-minus-circle error  padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $data['Order Key'],
+            $data['Order Public ID'],
+            $data['Order Customer Name'],
+            _('Cancel')
         );
 
         foreach (preg_split('/,/', $data['delivery_notes']) as $delivery_note_data) {
             $operations .= sprintf(
-                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>", $data['Order Store Key'], $delivery_note_data
+                "<i class=\"fa fa-truck fa-flip-horizontal   button\" onClick=\"change_view('delivery_notes/%d/%d')\"></i>",
+                $data['Order Store Key'],
+                $delivery_note_data
 
             );
         }
@@ -1023,7 +1108,10 @@ function orders_dispatched_today($_data, $db, $user, $account) {
             'checked'        => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']),
             'store_key'      => (integer)$data['Order Store Key'],
             'public_id'      => sprintf(
-                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/dispatched_today/%d\')" >%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+                '<span class="link"  onclick="change_view(\'orders/%s/dashboard/dispatched_today/%d\')" >%s</span>',
+                ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+                $data['Order Key'],
+                $data['Order Public ID']
             ),
             'date'           => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Date'].' +0:00')),
             'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
@@ -1035,7 +1123,6 @@ function orders_dispatched_today($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -1052,7 +1139,8 @@ function orders_dispatched_today($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function orders_in_website($_data, $db, $user, $account) {
+function orders_in_website($_data, $db, $user, $account)
+{
     $rtext_label = 'order in basket';
 
 
@@ -1063,14 +1151,15 @@ function orders_in_website($_data, $db, $user, $account) {
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-
-
         $adata[] = array(
             'id'           => (integer)$data['Order Key'],
             'checked'      => sprintf('<i class="far fa-square fa-fw button order_select_box" data-order_key="%d"></i>', $data['Order Key']),
             'public_id'    => sprintf(
                 '
-            <span class="link" onClick="change_view(\'orders/%s/dashboard/website/%d\')">%s</span>', ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'), $data['Order Key'], $data['Order Public ID']
+            <span class="link" onClick="change_view(\'orders/%s/dashboard/website/%d\')">%s</span>',
+                ($_data['parameters']['parent'] == 'store' ? $_data['parameters']['parent_key'] : 'all'),
+                $data['Order Key'],
+                $data['Order Public ID']
 
 
             ),
@@ -1082,7 +1171,6 @@ function orders_in_website($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -1100,7 +1188,8 @@ function orders_in_website($_data, $db, $user, $account) {
 }
 
 
-function orders_server($_data, $db, $user) {
+function orders_server($_data, $db, $user)
+{
     $rtext_label = 'order';
 
 
@@ -1120,7 +1209,6 @@ function orders_server($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
         switch ($data['Order State']) {
             case('InBasket'):
                 $state = _('In Basket');
@@ -1145,7 +1233,6 @@ function orders_server($_data, $db, $user) {
                 break;
             default:
                 $state = $data['Order State'];
-
         }
 
 
@@ -1164,7 +1251,6 @@ function orders_server($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -1181,8 +1267,8 @@ function orders_server($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function orders($_data, $db, $user) {
-
+function orders($_data, $db, $user)
+{
     $rtext_label = 'order';
 
 
@@ -1191,7 +1277,6 @@ function orders($_data, $db, $user) {
 
     if ($parameters['parent'] == 'charge') {
         $rtext_label = 'submitted orders with this charge';
-
     }
 
 
@@ -1204,7 +1289,6 @@ function orders($_data, $db, $user) {
     if ($parameters['parent'] == 'store') {
         $link_format = '/orders/%d/%d';
     } elseif ($parameters['parent'] == 'campaign') {
-
         $campaign = get_object('campaign', $parameters['parent_key']);
 
         $parameters['parent_key'] = $campaign->get('Deal Campaign Store Key');
@@ -1222,7 +1306,6 @@ function orders($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             switch ($data['Order State']) {
                 case('InBasket'):
                     $state = _('In Basket');
@@ -1247,11 +1330,9 @@ function orders($_data, $db, $user) {
                     break;
                 default:
                     $state = $data['Order State'];
-
             }
 
             if ($data['Order Customer Client Key'] > 0) {
-
                 if ($data['Customer Client Code'] != '') {
                     $client_code = $data['Customer Client Code'];
                 } else {
@@ -1304,9 +1385,8 @@ function orders($_data, $db, $user) {
 }
 
 
-function delivery_notes($_data, $db, $user) {
-
-
+function delivery_notes($_data, $db, $user)
+{
     $rtext_label = 'delivery_note';
     include_once 'prepare_table/init.php';
 
@@ -1316,13 +1396,9 @@ function delivery_notes($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         $notes = '';
 
         switch ($data['Delivery Note State']) {
-
-
             case 'Ready to be Picked':
                 $state = _('Waiting');
                 break;
@@ -1344,13 +1420,15 @@ function delivery_notes($_data, $db, $user) {
             case 'Approved':
                 $state = _('Approved');
                 $notes = sprintf(
-                    '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                    '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>',
+                    $data['Delivery Note Key']
                 );
                 break;
             case 'Dispatched':
                 $state = _('Dispatched');
                 $notes = sprintf(
-                    '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                    '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>',
+                    $data['Delivery Note Key']
                 );
                 break;
             case 'Cancelled':
@@ -1386,7 +1464,6 @@ function delivery_notes($_data, $db, $user) {
                 break;
             default:
                 $type = $data['Delivery Note Type'];
-
         }
 
         switch ($data['Delivery Note Parcel Type']) {
@@ -1398,7 +1475,6 @@ function delivery_notes($_data, $db, $user) {
                 break;
             default:
                 $parcel_type = ' <i class="fa fa-archive" aria-hidden="true"></i>';
-
         }
 
         if ($data['Delivery Note Number Parcels'] == '') {
@@ -1425,7 +1501,6 @@ function delivery_notes($_data, $db, $user) {
             'notes'   => $notes,
 
         );
-
     }
 
     $response = array(
@@ -1443,9 +1518,8 @@ function delivery_notes($_data, $db, $user) {
 }
 
 
-function pending_delivery_notes($_data, $db, $user) {
-
-
+function pending_delivery_notes($_data, $db, $user)
+{
     $rtext_label = 'delivery_note';
     include_once 'prepare_table/init.php';
 
@@ -1455,8 +1529,6 @@ function pending_delivery_notes($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         switch ($data['Delivery Note Type']) {
             case('Order'):
                 $type = _('Order');
@@ -1476,7 +1548,6 @@ function pending_delivery_notes($_data, $db, $user) {
                 break;
             default:
                 $type = $data['Delivery Note Type'];
-
         }
 
         switch ($data['Delivery Note Parcel Type']) {
@@ -1488,7 +1559,6 @@ function pending_delivery_notes($_data, $db, $user) {
                 break;
             default:
                 $parcel_type = 'b';
-
         }
 
         if ($data['Delivery Note Number Parcels'] == '') {
@@ -1515,7 +1585,6 @@ function pending_delivery_notes($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -1533,8 +1602,8 @@ function pending_delivery_notes($_data, $db, $user) {
 }
 
 
-function orders_group_by_store($_data, $db, $user) {
-
+function orders_group_by_store($_data, $db, $user)
+{
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
@@ -1550,9 +1619,7 @@ function orders_group_by_store($_data, $db, $user) {
 
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             $total_orders     += $data['orders'];
             $total_invoices   += $data['Store Invoices'];
             $total_refunds    += $data['Store Refunds'];
@@ -1577,9 +1644,7 @@ function orders_group_by_store($_data, $db, $user) {
                 'cancelled' => sprintf('<span class="link" onclick="change_view(\'orders/%d\')">%s</span>', $data['Store Key'], number($data['cancelled'])),
 
             );
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1618,8 +1683,8 @@ function orders_group_by_store($_data, $db, $user) {
 }
 
 
-function delivery_notes_group_by_store($_data, $db, $user) {
-
+function delivery_notes_group_by_store($_data, $db, $user)
+{
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
@@ -1633,10 +1698,7 @@ function delivery_notes_group_by_store($_data, $db, $user) {
     $total_returned     = 0;
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             $total_deliveries   += $data['deliveries'];
             $total_replacements += $data['replacements'];
             $total_in_warehouse += $data['in_warehouse'];
@@ -1656,9 +1718,7 @@ function delivery_notes_group_by_store($_data, $db, $user) {
                 'returned'     => number($data['returned']),
 
             );
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1693,8 +1753,8 @@ function delivery_notes_group_by_store($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function orders_index($_data, $db, $user) {
-
+function orders_index($_data, $db, $user)
+{
     $rtext_label = 'store';
     include_once 'prepare_table/init.php';
 
@@ -1707,9 +1767,7 @@ function orders_index($_data, $db, $user) {
 
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             $total_orders         += $data['orders'];
             $total_invoices       += $data['invoices'];
             $total_delivery_notes += $data['delivery_notes'];
@@ -1724,9 +1782,7 @@ function orders_index($_data, $db, $user) {
                 'invoices'       => number($data['invoices']),
                 'payments'       => number($data['payments']),
             );
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1741,7 +1797,6 @@ function orders_index($_data, $db, $user) {
         $sum_contacts     = '100.00%';
         $sum_new_contacts = '100.00%';
     } else {
-
     }
 
 
@@ -1772,8 +1827,8 @@ function orders_index($_data, $db, $user) {
 }
 
 
-function order_items($_data, $db, $user) {
-
+function order_items($_data, $db, $user)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -1786,6 +1841,11 @@ function order_items($_data, $db, $user) {
     $sql   = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     $adata = array();
     foreach ($db->query($sql) as $data) {
+        if ($data['Order Transaction Metadata'] == '') {
+            $data['Order Transaction Metadata'] = '{}';
+        }
+
+        $metadata = json_decode($data['Order Transaction Metadata'], true);
 
         $properties = json_decode($data['Product Properties'], true);
 
@@ -1802,9 +1862,7 @@ function order_items($_data, $db, $user) {
 
         if ($data['Product Availability State'] == 'OnDemand') {
             $stock = _('On demand');
-
         } else {
-
             if (is_numeric($data['Product Availability'])) {
                 $stock = number($data['Product Availability']);
             } else {
@@ -1818,7 +1876,6 @@ function order_items($_data, $db, $user) {
 
 
             $deal_info = '<div id="transaction_deal_info_'.$data['Order Transaction Fact Key'].'" class="deal_info">'.($deal_info_data[1] == 'Yes' ? '<i class="fas fa-thumbtack"></i> ' : '').$deal_info_data[0].'</div>';
-
         } else {
             $deal_info = '';
         }
@@ -1838,7 +1895,6 @@ function order_items($_data, $db, $user) {
 
 
         if ($data['Product UN Number']) {
-
             $description .= ' <span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%">'.$data['Product UN Number'].'</span>';
         }
 
@@ -1846,15 +1902,17 @@ function order_items($_data, $db, $user) {
             $description .= ' ('.money($price, $currency, $_locale).')';
         }
 
+        if ($data['Order Transaction Product Type'] == 'Product') {
+            $description .= ' <span style="color:#777" title="'._('Stock').'">['.$stock.']</span> ';
+        }
 
-        $description .= ' <span style="color:#777" title="'._('Stock').'">['.$stock.']</span> '.$deal_info;
+        $description .= '<span class="purple">'.$deal_info.'</span>';
 
         if ($properties['packing_carton'] > 0 and $properties['packing_carton'] != 1) {
             $outers_per_carton = round(1 / $properties['packing_carton'], 4);
 
 
             $description .= '<span class="small italic '.(floor($outers_per_carton) == $outers_per_carton ? '' : 'error').' ">'.number($outers_per_carton).'=<i class="padding_left_5 fa-fw fal fa-pallet" title="'._('Outers per carton').'"></i></span>';
-
         }
 
 
@@ -1865,7 +1923,7 @@ function order_items($_data, $db, $user) {
 
         }
 
-        if($data['Order Transaction Product Type']=='Product') {
+        if ($data['Order Transaction Product Type'] == 'Product') {
             if ($data['Order Quantity'] != $data['Delivery Note Quantity'] and in_array(
                     $customer_order->get('Order State'), array(
                                                            'PackedDone',
@@ -1878,14 +1936,11 @@ function order_items($_data, $db, $user) {
             } else {
                 $quantity = number($data['Order Quantity']);
                 $weight   = weight($data['Product Package Weight'] * $data['Order Quantity'], 'Kg', 3, false, true);
-
             }
-        }else{
-            $weight='';
+        } else {
+            $weight   = '';
             $quantity = number($data['Order Quantity']);
         }
-
-
 
 
         if (in_array(
@@ -1899,13 +1954,14 @@ function order_items($_data, $db, $user) {
                 '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
             <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
             <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
-            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
+            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+                $data['Order Transaction Fact Key'],
+                $data['Product ID'],
+                $data['Product Key'],
+                $data['Order Quantity'] + 0,
+                $data['Order Quantity'] + 0
             );
-
-
         } else {
-
-
             $quantity_edit = '';
         }
 
@@ -1923,16 +1979,20 @@ function order_items($_data, $db, $user) {
             $discounts_class = 'button';
             $discounts_input = sprintf(
                 '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Key'], percentage($data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount'])
+                $data['Order Transaction Fact Key'],
+                $data['Product ID'],
+                $data['Product Key'],
+                percentage($data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount'])
             );
         }
         $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($data['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                $data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount']
+                $data['Order Transaction Total Discount Amount'],
+                $data['Order Transaction Gross Amount']
             ).'</span> <span class="'.($data['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($data['Order Transaction Total Discount Amount'], $data['Order Currency Code']).'</span></span>';
 
 
-        $packing='';
-        if($data['Order Transaction Product Type']=='Product') {
+        $packing = '';
+        if ($data['Order Transaction Product Type'] == 'Product') {
             $packing = '<span id="transaction_packing_'.$data['Order Transaction Fact Key'].'" class="small _transaction_packing">';
             if ($data['Product Number of Parts'] <= 0) {
                 $packing .= '<span class="error">'._('No parts').'</span>';
@@ -1959,6 +2019,49 @@ function order_items($_data, $db, $user) {
             $packing .= '</span>';
         }
 
+
+        if (isset($metadata['lock'])) {
+            $quantity_edit = '<i class="fa fa-lock discreet padding_right_5"></i> '.$quantity;
+        }
+
+        if (isset($metadata['sub_items'])) {
+            $description .= '<span class="button" style="color:#3C5186"> <i class="fa fa-list-ol"></i> '.number($metadata['sub_items']['qty']).'</span>';
+
+            $sub_items = '<div class="as_table " style="color:#3C5186;width:100%;font-size: small;padding-top: 10px">';
+            switch ($metadata['sub_items']['type']) {
+                case 'rent_assets':
+                    $sql  = "select * from  `Fulfilment Rent Transaction Fact`  left join `Fulfilment Asset Dimension` on (`Fulfilment Asset Key`=`Fulfilment Rent Transaction Asset Key`)   where `Fulfilment Rent Transaction OTF Key`=? ";
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute(
+                        [
+                            $data['Order Transaction Fact Key']
+                        ]
+                    );
+                    while ($row = $stmt->fetch()) {
+                        $sub_items .= '<div class="as_row" >';
+                        $sub_items .= '<div class="as_cell">'.sprintf(
+                                '<span class="button" onclick="change_view(\'fulfilment/%d/customers/asset_keeping/%d/delivery/%d/asset/%d\')"  >%05d</span>',
+                                $row['Fulfilment Asset Warehouse Key'],
+                                $row['Fulfilment Asset Customer Key'],
+                                $row['Fulfilment Asset Fulfilment Delivery Key'],
+                                $row['Fulfilment Asset Key'],
+                                $row['Fulfilment Asset Key']
+                            ).'</div>';
+                        $sub_items .= '<div class="as_cell" style="padding-left: 10px;max-width: 200px">'.sprintf('<span>%s</span>', $row['Fulfilment Asset Reference']).'</div>';
+                        $sub_items .= '<div class="as_cell" style="padding-left: 25px">'.sprintf('<span>%s</span>', number($row['Fulfilment Rent Transaction Units'])).' '._('days').'</div>';
+                        $sub_items .= '<div class="as_cell" style="padding-left: 15px">'.
+                            sprintf('<span>%s</span>', money($row['Fulfilment Rent Transaction Unit Price'] * $row['Fulfilment Rent Transaction Units'], $data['Order Currency Code']))
+                            .'</div>';
+
+
+                        $sub_items .= '</div>';
+                    }
+            }
+            $sub_items   .= '</table>';
+            $description .= $sub_items;
+        }
+
+
         $adata[] = array(
 
             'id'            => (integer)$data['Order Transaction Fact Key'],
@@ -1977,20 +2080,18 @@ function order_items($_data, $db, $user) {
             'packing' => $packing
 
         );
-
     }
 
 
     $sql = sprintf(
         "select `Charge Key` ,`Charge Name`,`Charge Scope` ,`Charge Store Key`,`Charge Description` ,`Charge Metadata` , (select `Order No Product Transaction Fact Key` from `Order No Product Transaction Fact` where `Order Key`=%d and `Transaction Type`='Charges'  and `Transaction Type Key`=`Charge Key`  limit 1  ) as onptf_key   from `Charge Dimension` where `Charge Store Key`=%d and `Charge Trigger`  = 'Selected by Customer' ",
-        $customer_order->id, $customer_order->get('Order Store Key')
+        $customer_order->id,
+        $customer_order->get('Order Store Key')
     );
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-
             $onptf_key = $row['onptf_key'];
 
             $adata[] = array(
@@ -2009,7 +2110,6 @@ function order_items($_data, $db, $user) {
 
 
             );
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -2022,14 +2122,13 @@ function order_items($_data, $db, $user) {
         "select `Deal Name`,`Order Transaction Deal Key`,`Deal Component Allowance`,DCD.`Deal Component Key` ,`Order Transaction Deal Metadata` from `Order Transaction Deal Bridge` OTDB left join 
     `Deal Component Dimension` DCD on (DCD.`Deal Component Key`=OTDB.`Deal Component Key`) left join  `Deal Dimension` DD on (DCD.`Deal Component Deal Key`=DD.`Deal Key`) 
     
-    where `Order Key`=%d and `Deal Component Allowance Type`='Get Free Customer Choose'  ", $customer_order->id
+    where `Order Key`=%d and `Deal Component Allowance Type`='Get Free Customer Choose'  ",
+        $customer_order->id
     );
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-
             //  print_r($row);
             $allowances         = json_decode($row['Deal Component Allowance'], true);
             $selected_allowance = json_decode($row['Order Transaction Deal Metadata'], true);
@@ -2066,7 +2165,6 @@ function order_items($_data, $db, $user) {
 
 
             );
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -2089,23 +2187,21 @@ function order_items($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function refund_items_tax_only($_data, $db, $user) {
-
-
+function refund_items_tax_only($_data, $db, $user)
+{
     $rtext_label = 'item';
 
     include_once 'prepare_table/init.php';
 
 
     $sql = sprintf(
-        "SELECT  `Tax Category Code`,`Order No Product Transaction Metadata`,`Currency Code` ,`Transaction Description`,`Order No Product Transaction Fact Key` FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  ", $_data['parameters']['parent_key']
+        "SELECT  `Tax Category Code`,`Order No Product Transaction Metadata`,`Currency Code` ,`Transaction Description`,`Order No Product Transaction Fact Key` FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d  ",
+        $_data['parameters']['parent_key']
     );
 
 
     $adata = array();
     foreach ($db->query($sql) as $data) {
-
-
         $tax = 0;
 
         if ($data['Order No Product Transaction Metadata'] != '') {
@@ -2124,7 +2220,6 @@ function refund_items_tax_only($_data, $db, $user) {
             'description' => $description,
             'tax'         => $tax,
         );
-
     }
 
 
@@ -2132,8 +2227,6 @@ function refund_items_tax_only($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         $tax = 0;
 
         if ($data['Order Transaction Metadata'] != '') {
@@ -2159,7 +2252,6 @@ function refund_items_tax_only($_data, $db, $user) {
             'description' => $description,
             'tax'         => $tax,
         );
-
     }
 
     $response = array(
@@ -2177,8 +2269,8 @@ function refund_items_tax_only($_data, $db, $user) {
 }
 
 
-function invoice_items($_data, $db, $user) {
-
+function invoice_items($_data, $db, $user)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -2203,24 +2295,28 @@ function invoice_items($_data, $db, $user) {
 
     $adata = array();
     foreach ($db->query($sql) as $data) {
-
         $net = money(
-            ($factor * $data['Order Transaction Amount']), $data['Order Currency Code']
+            ($factor * $data['Order Transaction Amount']),
+            $data['Order Currency Code']
         );
 
 
         $tax    = money(
-            ($data['Order Transaction Amount'] * $data['Transaction Tax Rate']), $data['Order Currency Code']
+            ($data['Order Transaction Amount'] * $data['Transaction Tax Rate']),
+            $data['Order Currency Code']
         );
         $amount = money(
-            ($data['Order Transaction Amount'] + ($data['Order Transaction Amount'] * $data['Transaction Tax Rate'])), $data['Order Currency Code']
+            ($data['Order Transaction Amount'] + ($data['Order Transaction Amount'] * $data['Transaction Tax Rate'])),
+            $data['Order Currency Code']
         );
 
 
         $discount = ($data['Order Transaction Total Discount Amount'] == 0
             ? ''
             : percentage(
-                $data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount'], 0
+                $data['Order Transaction Total Discount Amount'],
+                $data['Order Transaction Gross Amount'],
+                0
             ));
 
 
@@ -2245,16 +2341,13 @@ function invoice_items($_data, $db, $user) {
 
 
         if ($type == 'Invoice') {
-            if($data['Order Transaction Product Type']=='Product') {
+            if ($data['Order Transaction Product Type'] == 'Product') {
                 $quantity = number($data['Delivery Note Quantity']);
-            }else{
+            } else {
                 $quantity = number($data['Order Quantity']);
-
             }
-
         } else {
             $quantity = '<span class="italic discreet"><span >~</span>'.number(-1 * $data['Order Transaction Amount'] / $data['Product History Price']).'</span>';
-
         }
 
 
@@ -2271,7 +2364,6 @@ function invoice_items($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -2289,8 +2381,8 @@ function invoice_items($_data, $db, $user) {
 }
 
 
-function deleted_invoice_items($_data, $db, $user) {
-
+function deleted_invoice_items($_data, $db, $user)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -2300,12 +2392,10 @@ function deleted_invoice_items($_data, $db, $user) {
     $adata   = array();
     $counter = 0;
     foreach ($invoice->items as $data) {
-
         $data['id'] = $counter++;
 
 
         $adata[] = $data;
-
     }
 
     $rtext = ngettext('item', 'items', $counter);
@@ -2325,9 +2415,8 @@ function deleted_invoice_items($_data, $db, $user) {
 }
 
 
-function delivery_note_fast_track_packing($_data, $db, $user) {
-
-
+function delivery_note_fast_track_packing($_data, $db, $user)
+{
     include_once('utils/order_handing_functions.php');
 
 
@@ -2352,8 +2441,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
     $currency_code = '';
 
     foreach ($db->query($sql) as $data) {
-
-
         $currency_code = $data['Order Currency Code'];
 
         $total_number_items++;
@@ -2364,7 +2451,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
         $available = $pending - $data['cant_pick'];
 
         if ($data['Location Key'] == 1) {
-
             $data['Quantity On Hand']           -= $data['Part Current On Hand Stock'];
             $data['Part Current On Hand Stock'] = 0;
             $available                          = 0;
@@ -2385,21 +2471,26 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
         if ($pending != $available) {
             $_quantity = '<span class="strikethrough  discreet">'.number($pending).'</span> <span class="error discreet item_quantity_fast_track_packing button  "  qty="'.$available.'" >'.number($available).'</error>';
-
         } else {
             $_quantity = sprintf('<span class="item_quantity_fast_track_packing button" qty="%s"   >%s</span>', $pending, number($pending));
-
         }
         $quantity = '<div class="quantity_components">'.$_quantity.'</div>';
 
         $location = '<div class="location_components" style="margin-top: 2px">'.get_delivery_note_fast_track_packing_item_location(
-                ($data['pl_ok'] == '' ? 'No' : 'Yes'), $pending, $data['Quantity On Hand'], $data['Date Picked'],
+                ($data['pl_ok'] == '' ? 'No' : 'Yes'),
+                $pending,
+                $data['Quantity On Hand'],
+                $data['Date Picked'],
 
-                                                       $data['Location Key'], $data['Location Code'],
+                $data['Location Key'],
+                $data['Location Code'],
 
-                                                       $data['Part Current On Hand Stock'], $data['Part Distinct Locations'],
+                $data['Part Current On Hand Stock'],
+                $data['Part Distinct Locations'],
 
-                                                       $data['Part SKU'], $data['Inventory Transaction Key'], $_data['parameters']['parent_key']
+                $data['Part SKU'],
+                $data['Inventory Transaction Key'],
+                $_data['parameters']['parent_key']
             ).'</div>';
 
 
@@ -2419,22 +2510,17 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
         $total_amount += $data['Order Transaction Amount'];
         if ($data['Quantity On Hand'] < $total_pending) {
-
-
             $effective_stock = ($data['Quantity On Hand'] < 0 ? 0 : $data['Quantity On Hand']);
             $formatted_diff  = $effective_stock - $total_pending;
 
             $no_picked_qty = $total_pending - $effective_stock;
             if ($total_pending > 0) {
                 $no_picked_amount += ($data['Order Transaction Amount'] * $no_picked_qty / $total_pending);
-
             }
 
 
             $status_icon = 'error fa-exclamation-circle';
             $no_picked_number_items++;
-
-
         } else {
             $formatted_diff = '';
             $no_picked_qty  = 0;
@@ -2443,13 +2529,25 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
 
         $picked_offline_status = sprintf(
-            '<span class="picked_offline_status_notes error" data-value_per_qty="%.4f"  data-no_picked_qty="%.2f" >%s</span> <i  class="picked_offline_status  fa %s " ></i>', ($total_pending == 0 ? 0 : $data['Order Transaction Amount'] / $total_pending), $no_picked_qty,
-            $formatted_diff, $status_icon
+            '<span class="picked_offline_status_notes error" data-value_per_qty="%.4f"  data-no_picked_qty="%.2f" >%s</span> <i  class="picked_offline_status  fa %s " ></i>',
+            ($total_pending == 0 ? 0 : $data['Order Transaction Amount'] / $total_pending),
+            $no_picked_qty,
+            $formatted_diff,
+            $status_icon
         );
 
 
         $picked_offline_input = '<div class="editable_set_picking_qty picked_quantity_components" data-pending="'.$pending.'">'.get_delivery_note_fast_track_packing_input(
-                ($data['pl_ok'] == '' ? 'No' : 'Yes'), $pending, 0, 0, $pending, $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Part Current On Hand Stock'], $data['Location Key']
+                ($data['pl_ok'] == '' ? 'No' : 'Yes'),
+                $pending,
+                0,
+                0,
+                $pending,
+                $data['Quantity On Hand'],
+                $data['Inventory Transaction Key'],
+                $data['Part SKU'],
+                $data['Part Current On Hand Stock'],
+                $data['Location Key']
 
             ).'</div>';
 
@@ -2459,7 +2557,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
         if ($data['Part Symbol'] != '') {
             if ($data['Part Symbol'] != '') {
-
                 switch ($data['Part Symbol']) {
                     case 'star':
                         $symbol = '&#9733;';
@@ -2485,7 +2582,6 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
                         break;
                     default:
                         $symbol = '';
-
                 }
                 $reference .= ' '.$symbol;
             }
@@ -2507,18 +2603,17 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 
 
         );
-
     }
 
 
     if ($total_number_items > 0) {
         $rtext .= '<span data-currency="'.$currency_code.'" data-total_items="'.$total_number_items.'"  data-total_items_amount="'.$total_amount.'"    class="not_picked_info small '.($no_picked_number_items == 0 ? 'hide' : '')
             .' padding_left_10 error"><i class="fa fa-exclamation-circle"></i> '._('not fully picked').': <span class="items_with_problems ">'.$no_picked_number_items.'</span> <span class="strong  percentage_items_with_problems">('.percentage(
-                $no_picked_number_items, $total_number_items
+                $no_picked_number_items,
+                $total_number_items
             ).')</span>
         <span class=padding_left_10> <span ><span class="items_with_problems_amount">'.money($no_picked_amount, $currency_code).'</span> <span class="strong percentage_items_with_problems_amount">('.percentage($no_picked_amount, $total_amount)
             .')</span></span></span></span>';
-
     }
 
 
@@ -2537,8 +2632,8 @@ function delivery_note_fast_track_packing($_data, $db, $user) {
 }
 
 
-function delivery_note_picking_aid($_data, $db, $user) {
-
+function delivery_note_picking_aid($_data, $db, $user)
+{
     //print_r($_data);
 
     // todo show when it work
@@ -2561,8 +2656,6 @@ function delivery_note_picking_aid($_data, $db, $user) {
     // print $sql;
     $adata = array();
     foreach ($db->query($sql) as $data) {
-
-
         $to_pack = $data['quantity'] - $data['Packed'];
         /*
 
@@ -2610,27 +2703,41 @@ function delivery_note_picking_aid($_data, $db, $user) {
         $quantity = '<div class="quantity_components">'.get_item_quantity($data['quantity'], $data['to_pick']).'</div>';
 
         $picked = '<div class="picked_quantity_components">'.get_item_picked(
-                $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'], $data['Part Reference'],
-                base64_encode($data['Part Package Description'].($data['Picking Note'] != '' ? ' <span>('.$data['Picking Note'].'</span>' : '')), $data['Part Main Image Key']
+                $data['pending'],
+                $data['Quantity On Hand'],
+                $data['Inventory Transaction Key'],
+                $data['Part SKU'],
+                $data['Picked'],
+                $data['Part Current On Hand Stock'],
+                $data['Part SKO Barcode'],
+                $data['Part Reference'],
+                base64_encode($data['Part Package Description'].($data['Picking Note'] != '' ? ' <span>('.$data['Picking Note'].'</span>' : '')),
+                $data['Part Main Image Key']
 
             ).'</div>';
 
 
         $packed   = '<div class="packed_quantity_components">'.get_item_packed($to_pack, $data['Inventory Transaction Key'], $data['Part SKU'], $data['Packed']).'</div>';
         $location = '<div class="location_components">'.get_item_location(
-                $data['pending'], $data['Quantity On Hand'], $data['Date Picked'],
+                $data['pending'],
+                $data['Quantity On Hand'],
+                $data['Date Picked'],
 
-                $data['Location Key'], $data['Location Code'],
+                $data['Location Key'],
+                $data['Location Code'],
 
-                $data['Part Current On Hand Stock'], $data['Part SKO Barcode'], $data['Part Distinct Locations'],
+                $data['Part Current On Hand Stock'],
+                $data['Part SKO Barcode'],
+                $data['Part Distinct Locations'],
 
-                $data['Part SKU'], $data['Inventory Transaction Key'], $_data['parameters']['parent_key']
+                $data['Part SKU'],
+                $data['Inventory Transaction Key'],
+                $_data['parameters']['parent_key']
             ).'</div>';
 
 
         if ($data['Picked'] == $data['quantity']) {
             $picked_info = '<i class="fa fa-fw fa-check success" aria-hidden="true"></i>';
-
         } else {
             $picked_info = '';
         }
@@ -2639,21 +2746,16 @@ function delivery_note_picking_aid($_data, $db, $user) {
         $state_picking = '';
         $state_packing = '';
         if ($data['Required'] > 0) {
-
             if ($data['Picked'] == $data['Required']) {
-
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success discreet fa-fw " title="%s"></i>', _('Picked'));
             } elseif ($data['Picked'] > 0) {
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa discreet fa-fw " title="%s"></i>', _('Picking'));
-
             } else {
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa discreet fa-fw " title="%s"></i>', _('To be picked'));
-
             }
 
 
             if ($data['Packed'] == $data['Required']) {
-
                 $state_packing = sprintf('<i class="fa-check-circle fa success fa-fw " title="%s"></i>', _('Packed'));
                 $state_picking = '';
             } elseif ($data['Packed'] > 0) {
@@ -2661,17 +2763,25 @@ function delivery_note_picking_aid($_data, $db, $user) {
                 $state_picking = '';
             } else {
                 $state_packing = '';
-
             }
-
-
         }
 
         $state = '<span class="padding_left_20">'.$state_picking.' '.$state_packing.'</span>';
 
         $picked_offline_input = '<div class="picked_quantity_components">'.get_picked_offline_input(
-                $data['quantity'], $data['pending'], $data['Quantity On Hand'], $data['Inventory Transaction Key'], $data['Part SKU'], $data['Location Key'], $data['Location Code'], $data['Picked'], $data['Part Current On Hand Stock'], $data['Part SKO Barcode'],
-                $data['Part Reference'], base64_encode($data['Part Package Description'].($data['Picking Note'] != '' ? ' <span>('.$data['Picking Note'].'</span>' : '')), $data['Part Main Image Key']
+                $data['quantity'],
+                $data['pending'],
+                $data['Quantity On Hand'],
+                $data['Inventory Transaction Key'],
+                $data['Part SKU'],
+                $data['Location Key'],
+                $data['Location Code'],
+                $data['Picked'],
+                $data['Part Current On Hand Stock'],
+                $data['Part SKO Barcode'],
+                $data['Part Reference'],
+                base64_encode($data['Part Package Description'].($data['Picking Note'] != '' ? ' <span>('.$data['Picking Note'].'</span>' : '')),
+                $data['Part Main Image Key']
             ).'</div>';
         $adata[]              = array(
             'id' => (integer)$data['Inventory Transaction Key'],
@@ -2698,7 +2808,6 @@ function delivery_note_picking_aid($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -2716,9 +2825,8 @@ function delivery_note_picking_aid($_data, $db, $user) {
 }
 
 
-function delivery_note_items($_data, $db, $user, $account) {
-
-
+function delivery_note_items($_data, $db, $user, $account)
+{
     include_once('class.DeliveryNote.php');
     include_once('utils/order_handing_functions.php');
 
@@ -2741,8 +2849,6 @@ function delivery_note_items($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         $description = $data['Part Package Description'];
 
         if ($data['Part UN Number']) {
@@ -2753,21 +2859,16 @@ function delivery_note_items($_data, $db, $user, $account) {
         $state_picking = '';
         $state_packing = '';
         if ($data['Required'] > 0) {
-
             if ($data['Picked'] == $data['Required']) {
-
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa success discreet fa-fw " title="%s"></i>', _('Picked'));
             } elseif ($data['Picked'] > 0) {
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-alt fa discreet fa-fw " title="%s"></i>', _('Picking'));
-
             } else {
                 $state_picking = sprintf('<i class="fa-dolly-flatbed-empty fa discreet fa-fw " title="%s"></i>', _('To be picked'));
-
             }
 
 
             if ($data['Packed'] == $data['Required']) {
-
                 $state_packing = sprintf('<i class="fa-check-circle fa success fa-fw " title="%s"></i>', _('Packed'));
                 $state_picking = '';
             } elseif ($data['Packed'] > 0) {
@@ -2775,10 +2876,7 @@ function delivery_note_items($_data, $db, $user, $account) {
                 $state_picking = '';
             } else {
                 $state_packing = '';
-
             }
-
-
         }
 
         $state = '<span class="padding_left_20">'.$state_picking.' '.$state_packing.'</span>';
@@ -2799,7 +2897,6 @@ function delivery_note_items($_data, $db, $user, $account) {
             'skos_bonus'        => (!$data['skos_bonus'] ? '<span class="super_discreet">0</span>' : number($data['skos_bonus'])),
 
         );
-
     }
 
     $response = array(
@@ -2817,9 +2914,8 @@ function delivery_note_items($_data, $db, $user, $account) {
 }
 
 
-function delivery_note_tariff_codes($_data, $db, $user, $account) {
-
-
+function delivery_note_tariff_codes($_data, $db, $user, $account)
+{
     include_once('class.DeliveryNote.php');
     include_once('utils/order_handing_functions.php');
 
@@ -2841,8 +2937,6 @@ function delivery_note_tariff_codes($_data, $db, $user, $account) {
     $i     = 1;
 
     foreach ($db->query($sql) as $data) {
-
-
         $dangerous_goods = '';
         $references      = '';
 
@@ -2850,21 +2944,16 @@ function delivery_note_tariff_codes($_data, $db, $user, $account) {
         if ($data['dangerous_goods'] != '') {
             foreach (preg_split('/\,/', $data['dangerous_goods']) as $dangerous_good_code) {
                 $dangerous_goods .= ' <small style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;padding:0px;font-size:90%;margin-right:5px">'.$dangerous_good_code.'</small>';
-
             }
-
         }
 
         if ($data['references'] != '') {
             foreach (preg_split('/\,/', $data['references']) as $_part_data) {
-
                 $part_data = preg_split('/\|/', $_part_data);
 
 
                 $references .= sprintf('<span class="link small" onclick="change_view(\'part/%d\')">%s</span>, ', $part_data[0], $part_data[1]);
-
             }
-
         }
         $references = preg_replace('/, $/', '', $references);
 
@@ -2882,7 +2971,6 @@ function delivery_note_tariff_codes($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -2900,9 +2988,8 @@ function delivery_note_tariff_codes($_data, $db, $user, $account) {
 }
 
 
-function delivery_note_units($_data, $db, $user, $account) {
-
-
+function delivery_note_units($_data, $db, $user, $account)
+{
     include_once('class.DeliveryNote.php');
     include_once('utils/order_handing_functions.php');
 
@@ -2924,8 +3011,6 @@ function delivery_note_units($_data, $db, $user, $account) {
     $i     = 1;
 
     foreach ($db->query($sql) as $data) {
-
-
         $description     = '<span>'.$data['Part Recommended Product Unit Name'].'</span>';
         $dangerous_goods = '';
         if ($data['Part UN Number']) {
@@ -2948,7 +3033,6 @@ function delivery_note_units($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -2966,8 +3050,8 @@ function delivery_note_units($_data, $db, $user, $account) {
 }
 
 
-function delivery_note_cancelled_items($_data, $db, $user) {
-
+function delivery_note_cancelled_items($_data, $db, $user)
+{
     //print_r($_data);
 
     include_once('class.DeliveryNote.php');
@@ -2987,8 +3071,6 @@ function delivery_note_cancelled_items($_data, $db, $user) {
     // print $sql;
     $adata = array();
     foreach ($db->query($sql) as $data) {
-
-
         $description = $data['Part Package Description'];
 
 
@@ -3005,12 +3087,12 @@ function delivery_note_cancelled_items($_data, $db, $user) {
             'overview_restock' => sprintf(
                 '%s returned to %s',
 
-                number(-1 * $data['Inventory Transaction Quantity']).' SKO', sprintf('<span class="button strong" onclick="change_view(\'/locations/%d/%d\')"  >%s</span>', $data['Warehouse Key'], $data['Location Key'], $data['Location Code'])
+                number(-1 * $data['Inventory Transaction Quantity']).' SKO',
+                sprintf('<span class="button strong" onclick="change_view(\'/locations/%d/%d\')"  >%s</span>', $data['Warehouse Key'], $data['Location Key'], $data['Location Code'])
             )
 
 
         );
-
     }
 
 
@@ -3029,8 +3111,8 @@ function delivery_note_cancelled_items($_data, $db, $user) {
 }
 
 
-function orders_in_website_mailshots($_data, $db, $user) {
-
+function orders_in_website_mailshots($_data, $db, $user)
+{
     $rtext_label = 'mailshot';
 
 
@@ -3045,8 +3127,6 @@ function orders_in_website_mailshots($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($parameters['parent'] == 'store') {
             $name = sprintf('<span class="link" onClick="change_view(\'orders/%d/dashboard/website/mailshots/%d\')">%s</span>', $data['Email Campaign Store Key'], $data['Email Campaign Key'], $data['Email Campaign Name']);
         } else {
@@ -3096,7 +3176,6 @@ function orders_in_website_mailshots($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -3114,8 +3193,8 @@ function orders_in_website_mailshots($_data, $db, $user) {
 }
 
 
-function refund_new_items($_data, $db, $user) {
-
+function refund_new_items($_data, $db, $user)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -3134,24 +3213,21 @@ function refund_new_items($_data, $db, $user) {
 
     if ($customer_order->get('State Index') == 90) {
         $prefil_out_off_stock = true;
-
     } else {
         $prefil_out_off_stock = false;
-
     }
 
 
     $sql = sprintf(
-        "SELECT `Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code`FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d ", $_data['parameters']['parent_key']
+        "SELECT `Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code`FROM `Order No Product Transaction Fact` WHERE `Order Key`=%d ",
+        $_data['parameters']['parent_key']
     );
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
             $amount = $row['Transaction Net Amount'];
 
             if ($amount > 0) {
-
                 $refund_net = sprintf('<input class="new_refund_item %s" style="width: 80px" transaction_type="onptf" transaction_id="%d"  max="%f"  />', ($amount <= 0 ? 'hide' : ''), $row['Order No Product Transaction Fact Key'], $amount);
 
                 $description = $row['Transaction Description'].'<div class="hide small discreet" id="feedback_description_onptf_'.$row['Order No Product Transaction Fact Key'].'"></div>';
@@ -3173,7 +3249,6 @@ function refund_new_items($_data, $db, $user) {
                 );
                 $items++;
             }
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -3185,10 +3260,7 @@ function refund_new_items($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['Order Transaction Amount'] > 0) {
-
             $units    = $data['Product Units Per Case'];
             $name     = $data['Product History Name'];
             $price    = $data['Product History Price'];
@@ -3206,22 +3278,25 @@ function refund_new_items($_data, $db, $user) {
 
 
             $quantity = sprintf(
-                    '<span class="new_refund_ordered_quantity button"  refunded_qty="0" unit_amount="%f"  max_qty="%f" max_amount="%f"   >', ($data['Order Quantity'] > 0 ? $data['Order Transaction Amount'] / $data['Order Quantity'] : 0),
-                    $data['Order Transaction Amount'], $data['Order Quantity']
+                    '<span class="new_refund_ordered_quantity button"  refunded_qty="0" unit_amount="%f"  max_qty="%f" max_amount="%f"   >',
+                    ($data['Order Quantity'] > 0 ? $data['Order Transaction Amount'] / $data['Order Quantity'] : 0),
+                    $data['Order Transaction Amount'],
+                    $data['Order Quantity']
                 ).number($data['Order Quantity']).'</span>';
 
 
             if ($prefil_out_off_stock) {
                 $prefilled_value = $data['Order Transaction Out of Stock Amount'];
-
             } else {
                 $prefilled_value = '';
-
             }
 
             $refund_net = sprintf(
-                '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f" value="%s" />', ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'],
-                $data['Order Transaction Amount'], $prefilled_value
+                '<input class="new_refund_item %s item" style="width: 80px"  transaction_type="otf" transaction_id="%d"  max="%f" value="%s" />',
+                ($data['Order Transaction Amount'] <= 0 ? 'hide' : ''),
+                $data['Order Transaction Fact Key'],
+                $data['Order Transaction Amount'],
+                $prefilled_value
             );
 
             $feedback = '<span data-empty_label="'._('Set feedback').'" data-type="otf" data-key="'.$data['Order Transaction Fact Key'].'"  id="set_otf_feedback_'.$data['Order Transaction Fact Key']
@@ -3245,11 +3320,11 @@ function refund_new_items($_data, $db, $user) {
 
             $items++;
         }
-
     }
 
     $rtext = sprintf(
-        ngettext('%s charged transaction', '%s charged transactions', $items), number($items)
+        ngettext('%s charged transaction', '%s charged transactions', $items),
+        number($items)
     );
 
     $response = array(
@@ -3267,8 +3342,8 @@ function refund_new_items($_data, $db, $user) {
 }
 
 
-function refund_new_items_tax($_data, $db, $user, $account) {
-
+function refund_new_items_tax($_data, $db, $user, $account)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -3291,28 +3366,22 @@ function refund_new_items_tax($_data, $db, $user, $account) {
     $sql = sprintf(
         "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` 
             FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category Key`=ONPTF.`Order No Product Transaction Tax Category Key` )  WHERE `Order Key`=%d ",
-         $_data['parameters']['parent_key']
+        $_data['parameters']['parent_key']
 
     );
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-
             $amount    = round($row['Transaction Net Amount'] * $row['Tax Category Rate'], 2);
             $total_tax += $amount;
             if ($amount > 0) {
-
-
                 if ($bigger_tax < $amount) {
                     $bigger_tax_item = $items;
                     $bigger_tax      = $amount;
                 }
                 $items++;
-
             }
-
         }
     }
 
@@ -3320,11 +3389,7 @@ function refund_new_items_tax($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['Order Transaction Amount'] > 0) {
-
-
             $tax       = round($data['Transaction Tax Rate'] * $data['Order Transaction Amount'], 2);
             $total_tax += $tax;
 
@@ -3335,7 +3400,6 @@ function refund_new_items_tax($_data, $db, $user, $account) {
             }
             $items++;
         }
-
     }
 
 
@@ -3351,14 +3415,12 @@ function refund_new_items_tax($_data, $db, $user, $account) {
     $sql = sprintf(
         "SELECT *,`Order No Product Transaction Fact Key`,`Transaction Description`,`Transaction Net Amount`,`Transaction Type` ,`Currency Code` ,`Tax Category Rate` 
             FROM `Order No Product Transaction Fact` ONPTF  LEFT JOIN kbase.`Tax Category Dimension` T ON (T.`Tax Category key`=ONPTF.`Order No Product Transaction Tax Category Key`)  WHERE `Order Key`=%d ",
-         $_data['parameters']['parent_key']
+        $_data['parameters']['parent_key']
     );
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-
             $amount = round($row['Transaction Net Amount'] * $row['Tax Category Rate'], 2);
 
 
@@ -3368,7 +3430,6 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 
 
             if ($amount > 0) {
-
                 $refund_tax = sprintf('<input class="new_refund_item_tax %s" style="width: 80px" transaction_type="onptf_tax" transaction_id="%d"  max="%f"  />', ($amount <= 0 ? 'hide' : ''), $row['Order No Product Transaction Fact Key'], $amount);
 
                 $total_tax += $amount;
@@ -3389,7 +3450,6 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 
                 $items++;
             }
-
         }
     }
 
@@ -3397,10 +3457,7 @@ function refund_new_items_tax($_data, $db, $user, $account) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['Order Transaction Amount'] > 0) {
-
             $units    = $data['Product Units Per Case'];
             $name     = $data['Product History Name'];
             $price    = $data['Product History Price'];
@@ -3426,12 +3483,18 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 
 
             $quantity = sprintf(
-                    '<span class="new_refund_tax_ordered_quantity button"  refunded_qty="0" unit_amount="%f"  max_qty="%f" max_amount="%f"   >', ($data['Order Quantity'] > 0 ? $tax / $data['Order Quantity'] : 0), $tax, $data['Order Quantity']
+                    '<span class="new_refund_tax_ordered_quantity button"  refunded_qty="0" unit_amount="%f"  max_qty="%f" max_amount="%f"   >',
+                    ($data['Order Quantity'] > 0 ? $tax / $data['Order Quantity'] : 0),
+                    $tax,
+                    $data['Order Quantity']
                 ).number($data['Order Quantity']).'</span>';
 
 
             $refund_tax = sprintf(
-                '<input class="new_refund_item_tax %s item" style="width: 80px"  transaction_type="otf_tax" transaction_id="%d"  max="%f"  />', ($tax <= 0 ? 'hide' : ''), $data['Order Transaction Fact Key'], $tax
+                '<input class="new_refund_item_tax %s item" style="width: 80px"  transaction_type="otf_tax" transaction_id="%d"  max="%f"  />',
+                ($tax <= 0 ? 'hide' : ''),
+                $data['Order Transaction Fact Key'],
+                $tax
             );
 
             $adata[] = array(
@@ -3449,15 +3512,13 @@ function refund_new_items_tax($_data, $db, $user, $account) {
             );
 
             $items++;
-
-
         }
-
     }
 
 
     $rtext = sprintf(
-        ngettext('%s charged transaction', '%s charged transactions', $items), number($items)
+        ngettext('%s charged transaction', '%s charged transactions', $items),
+        number($items)
     );
 
     $response = array(
@@ -3475,8 +3536,8 @@ function refund_new_items_tax($_data, $db, $user, $account) {
 }
 
 
-function replacement_new_items($_data, $db, $user) {
-
+function replacement_new_items($_data, $db, $user)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -3496,10 +3557,7 @@ function replacement_new_items($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['Inventory Transaction Quantity'] != 0) {
-
             $units    = $data['Product Units Per Case'];
             $name     = $data['Product History Name'];
             $price    = $data['Product History Price'];
@@ -3524,7 +3582,9 @@ function replacement_new_items($_data, $db, $user) {
 
 
             $refund_net = sprintf(
-                '<input class="new_replacement_item %s item" style="width: 80px"  transaction_type="itf" transaction_id="%d"  max="%f"  />', ($data['Inventory Transaction Quantity'] == 0 ? 'hide' : ''), $data['Inventory Transaction Key'],
+                '<input class="new_replacement_item %s item" style="width: 80px"  transaction_type="itf" transaction_id="%d"  max="%f"  />',
+                ($data['Inventory Transaction Quantity'] == 0 ? 'hide' : ''),
+                $data['Inventory Transaction Key'],
                 -1 * $data['Inventory Transaction Quantity']
             );
 
@@ -3552,11 +3612,11 @@ function replacement_new_items($_data, $db, $user) {
 
             $items++;
         }
-
     }
 
     $rtext = sprintf(
-        ngettext('%s send part', '%s send parts', $items), number($items)
+        ngettext('%s send part', '%s send parts', $items),
+        number($items)
     );
 
     $response = array(
@@ -3574,8 +3634,8 @@ function replacement_new_items($_data, $db, $user) {
 }
 
 
-function return_new_items($_data, $db, $user) {
-
+function return_new_items($_data, $db, $user)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -3595,10 +3655,7 @@ function return_new_items($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
     //print $sql;
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['Inventory Transaction Quantity'] != 0) {
-
             $units    = $data['Product Units Per Case'];
             $name     = $data['Product History Name'];
             $price    = $data['Product History Price'];
@@ -3623,7 +3680,9 @@ function return_new_items($_data, $db, $user) {
 
 
             $to_return = sprintf(
-                '<input class="new_return_item %s item" style="width: 80px"  transaction_type="itf" transaction_id="%d"  max="%f"  />', ($data['Inventory Transaction Quantity'] == 0 ? 'hide' : ''), $data['Inventory Transaction Key'],
+                '<input class="new_return_item %s item" style="width: 80px"  transaction_type="itf" transaction_id="%d"  max="%f"  />',
+                ($data['Inventory Transaction Quantity'] == 0 ? 'hide' : ''),
+                $data['Inventory Transaction Key'],
                 -1 * $data['Inventory Transaction Quantity']
             );
 
@@ -3645,11 +3704,11 @@ function return_new_items($_data, $db, $user) {
 
             $items++;
         }
-
     }
 
     $rtext = sprintf(
-        ngettext('%s send part', '%s send parts', $items), number($items)
+        ngettext('%s send part', '%s send parts', $items),
+        number($items)
     );
 
     $response = array(
@@ -3667,8 +3726,8 @@ function return_new_items($_data, $db, $user) {
 }
 
 
-function order_all_products($_data, $db, $user) {
-
+function order_all_products($_data, $db, $user)
+{
     global $_locale;// fix this locale stuff
 
     $rtext_label = 'item';
@@ -3686,24 +3745,24 @@ function order_all_products($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             if ($data['otf_data'] == '') {
                 $deal_info = '';
                 $quantity  = sprintf(
                     '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
             <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
             <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
-            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', 0, $data['Product ID'], $data['Product Current Key'], '', ''
+            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+                    0,
+                    $data['Product ID'],
+                    $data['Product Current Key'],
+                    '',
+                    ''
                 );
 
                 $discounts = '<span id="transaction_discounts_'.$data['Product ID'].'" class="_item_discounts"></span>';
 
                 $net = sprintf('<span  id="transaction_item_net_'.$data['Product ID'].'" class="_order_item_net"></span>');
-
-
             } else {
-
                 list(
                     $data['Order Transaction Fact Key'], $data['Order Quantity'], $data['Order Transaction Amount'], $data['Current Dispatching State'], $data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount']
                     ) = preg_split('/\|/', $data['otf_data']);
@@ -3713,7 +3772,12 @@ function order_all_products($_data, $db, $user) {
                     '<span    data-settings=\'{"field": "Order Quantity", "transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   >
             <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
             <input class="order_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
-            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>', $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Current Key'], $data['Order Quantity'] + 0, $data['Order Quantity'] + 0
+            <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button" aria-hidden="true"></i></span>',
+                    $data['Order Transaction Fact Key'],
+                    $data['Product ID'],
+                    $data['Product Current Key'],
+                    $data['Order Quantity'] + 0,
+                    $data['Order Quantity'] + 0
                 );
 
 
@@ -3722,11 +3786,15 @@ function order_all_products($_data, $db, $user) {
                 $discounts_class = 'button';
                 $discounts_input = sprintf(
                     '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                    $data['Order Transaction Fact Key'], $data['Product ID'], $data['Product Current Key'], percentage($data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount'])
+                    $data['Order Transaction Fact Key'],
+                    $data['Product ID'],
+                    $data['Product Current Key'],
+                    percentage($data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount'])
                 );
 
                 $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($data['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                        $data['Order Transaction Total Discount Amount'], $data['Order Transaction Gross Amount']
+                        $data['Order Transaction Total Discount Amount'],
+                        $data['Order Transaction Gross Amount']
                     ).'</span> <span class="'.($data['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($data['Order Transaction Total Discount Amount'], $data['Product Currency']).'</span></span>';
 
 
@@ -3765,8 +3833,6 @@ function order_all_products($_data, $db, $user) {
             if ($data['otf_data'] != '') {
                 if ($data['Current Dispatching State'] == 'Out of Stock in Basket') {
                     $description .= '<br> <span class="warning"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> '._('Product out of stock, removed from basket').'</span>';
-
-
                 }
             }
 
@@ -3807,8 +3873,8 @@ function order_all_products($_data, $db, $user) {
 }
 
 
-function order_sent_emails($_data, $db, $user) {
-
+function order_sent_emails($_data, $db, $user)
+{
     $rtext_label = 'email';
     include_once 'prepare_table/init.php';
 
@@ -3825,8 +3891,6 @@ function order_sent_emails($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             switch ($data['Email Tracking State']) {
                 case 'Ready':
                     $state = _('Ready to send');
@@ -3871,7 +3935,6 @@ function order_sent_emails($_data, $db, $user) {
                     break;
                 default:
                     $type = $data['Order Sent Email Type'];
-
             }
 
 
@@ -3887,8 +3950,6 @@ function order_sent_emails($_data, $db, $user) {
 
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -3911,8 +3972,8 @@ function order_sent_emails($_data, $db, $user) {
 }
 
 
-function orders_in_website_purges($_data, $db, $user) {
-
+function orders_in_website_purges($_data, $db, $user)
+{
     $rtext_label = 'purge';
     include_once 'prepare_table/init.php';
 
@@ -3923,7 +3984,6 @@ function orders_in_website_purges($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             switch ($data['Order Basket Purge State']) {
                 case 'In Process':
                     $state = _('In process');
@@ -3952,12 +4012,14 @@ function orders_in_website_purges($_data, $db, $user) {
 
                 default:
                     $type = $data['Order Basket Purge Type'];
-
             }
 
 
             $date = sprintf(
-                '<span class="link" onclick="change_view(\'orders/%d/dashboard/website/purges/%d\')"  >%s</span>', $data['Order Basket Purge Store Key'], $data['Order Basket Purge Key'], strftime("%a, %e %b %Y %R", strtotime($data['Order Basket Purge Date']." +0:00"))
+                '<span class="link" onclick="change_view(\'orders/%d/dashboard/website/purges/%d\')"  >%s</span>',
+                $data['Order Basket Purge Store Key'],
+                $data['Order Basket Purge Key'],
+                strftime("%a, %e %b %Y %R", strtotime($data['Order Basket Purge Date']." +0:00"))
             );
 
 
@@ -3984,8 +4046,6 @@ function orders_in_website_purges($_data, $db, $user) {
 
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -4007,8 +4067,8 @@ function orders_in_website_purges($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function purged_orders($_data, $db, $user) {
-
+function purged_orders($_data, $db, $user)
+{
     $rtext_label = 'order';
 
 
@@ -4021,9 +4081,7 @@ function purged_orders($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             switch ($data['Order Basket Purge Order Status']) {
-
                 case('In Process'):
                     $purge_status = _('In process');
                     break;
@@ -4038,7 +4096,6 @@ function purged_orders($_data, $db, $user) {
                     break;
                 default:
                     $purge_status = $data['Order Basket Purge Order Status'];
-
             }
 
 
@@ -4050,7 +4107,8 @@ function purged_orders($_data, $db, $user) {
 
                 'last_updated_date' => strftime("%a %e %b %Y", strtotime($data['Order Last Updated by Customer'].' +0:00')),
                 'purged_date'       => sprintf(
-                    '<span class="purged_date_%d">%s</span>', $data['Order Key'],
+                    '<span class="purged_date_%d">%s</span>',
+                    $data['Order Key'],
                     (($data['Order Basket Purge Purged Date'] == '' or ($data['Order Basket Purge Order Status'] == 'Exculpated')) ? '' : strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Basket Purge Purged Date'].' +0:00')))
                 ),
 
@@ -4079,9 +4137,8 @@ function purged_orders($_data, $db, $user) {
 }
 
 
-function invoices_group_by_customer($_data, $db, $user) {
-
-
+function invoices_group_by_customer($_data, $db, $user)
+{
     $rtext_label = 'customer';
 
 
@@ -4093,10 +4150,7 @@ function invoices_group_by_customer($_data, $db, $user) {
     $adata = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             switch ($data['Customer Type by Activity']) {
                 case 'ToApprove':
                     $activity = _('To be approved');
@@ -4119,16 +4173,13 @@ function invoices_group_by_customer($_data, $db, $user) {
             if ($parameters['parent'] == 'store') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
             } elseif ($parameters['parent'] == 'customer_poll_query_option' or $parameters['parent'] == 'customer_poll_query' or $parameters['parent'] == 'sales_representative') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
-
             } else {
                 $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
 
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
             }
 
 
@@ -4149,7 +4200,6 @@ function invoices_group_by_customer($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -4172,8 +4222,8 @@ function invoices_group_by_customer($_data, $db, $user) {
 }
 
 
-function order_deals($_data, $db, $user) {
-
+function order_deals($_data, $db, $user)
+{
     $rtext_label = 'offer';
     include_once 'prepare_table/init.php';
 
@@ -4184,46 +4234,45 @@ function order_deals($_data, $db, $user) {
     $sql = "select $fields from $table $where $wheref $group_by order by $order $order_direction  limit $start_from,$number_results";
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             if ($data['Deal Key']) {
                 $name = sprintf('<span class="link" onclick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
 
                 if ($data['Order Transaction Deal Pinned'] == 'Yes') {
                     $pin = sprintf('<i class="fa fa-thumbtack"></i>');
-
                 } else {
                     $pin = sprintf('<i class="fal fa-empty-set super_discreet"></i>');
-
                 }
 
 
                 switch ($data['Deal Status']) {
                     case 'Waiting':
                         $status = sprintf(
-                            '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                            '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>',
+                            _('Waiting')
                         );
                         break;
                     case 'Active':
                         $status = sprintf(
-                            '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                            '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>',
+                            _('Active')
                         );
                         break;
                     case 'Suspended':
                         $status = sprintf(
-                            '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                            '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>',
+                            _('Suspended')
                         );
                         break;
                     case 'Finish':
                         $status = sprintf(
-                            '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                            '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>',
+                            _('Finished')
                         );
                         break;
                     default:
                         $status = $data['Deal Status'];
                 }
-
             } else {
                 $name   = '<span class="italic">'._('Custom made').'</span>';
                 $pin    = sprintf('<i class="fa fa-thumbtack"></i>');
@@ -4254,8 +4303,6 @@ function order_deals($_data, $db, $user) {
 
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -4266,10 +4313,7 @@ function order_deals($_data, $db, $user) {
     $sql = sprintf("select `Deal Name` ,`Deal Status` ,`Deal Store Key`,B.`Deal Key`,`Deal Term Allowances Label` from `Order Deal Bridge`  B left join `Deal Dimension` D  on (D.`Deal Key`=B.`Deal Key`)  where `Order Key`=%d  ", $_data['parameters']['parent_key']);
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             if (!in_array($data['Deal Key'], $deal_keys)) {
-
                 if ($data['Deal Key']) {
                     $name = sprintf('<span class="link" onclick="change_view(\'deals/%d/%d\')">%s</span>', $data['Deal Store Key'], $data['Deal Key'], $data['Deal Name']);
 
@@ -4286,28 +4330,31 @@ function order_deals($_data, $db, $user) {
                     switch ($data['Deal Status']) {
                         case 'Waiting':
                             $status = sprintf(
-                                '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Waiting')
+                                '<i class="far fa-clock discreet fa-fw" aria-hidden="true" title="%s" ></i>',
+                                _('Waiting')
                             );
                             break;
                         case 'Active':
                             $status = sprintf(
-                                '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>', _('Active')
+                                '<i class="fa fa-play success fa-fw" aria-hidden="true" title="%s" ></i>',
+                                _('Active')
                             );
                             break;
                         case 'Suspended':
                             $status = sprintf(
-                                '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>', _('Suspended')
+                                '<i class="fa fa-pause error fa-fw" aria-hidden="true" title="%s" ></i>',
+                                _('Suspended')
                             );
                             break;
                         case 'Finish':
                             $status = sprintf(
-                                '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>', _('Finished')
+                                '<i class="fa fa-stop discreet fa-fw" aria-hidden="true" title="%s" ></i>',
+                                _('Finished')
                             );
                             break;
                         default:
                             $status = $data['Deal Status'];
                     }
-
                 } else {
                     $name   = '<span class="italic">'._('Custom made').'</span>';
                     $pin    = sprintf('<i class="fa fa-thumbtack"></i>');
@@ -4333,11 +4380,7 @@ function order_deals($_data, $db, $user) {
 
 
                 );
-
-
             }
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -4360,9 +4403,8 @@ function order_deals($_data, $db, $user) {
 }
 
 
-function consignments($_data, $db, $user) {
-
-
+function consignments($_data, $db, $user)
+{
     $rtext_label = 'consignments';
     include_once 'prepare_table/init.php';
 
@@ -4372,12 +4414,9 @@ function consignments($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         $notes = '';
 
         switch ($data['Consignment State']) {
-
             case 'StandBy':
                 $state = _('Standby');
                 break;
@@ -4412,7 +4451,6 @@ function consignments($_data, $db, $user) {
             'notes' => $notes,
 
         );
-
     }
 
     $response = array(
@@ -4430,9 +4468,8 @@ function consignments($_data, $db, $user) {
 }
 
 
-function consignment_parts($_data, $db, $user, $account) {
-
-
+function consignment_parts($_data, $db, $user, $account)
+{
     include_once('class.DeliveryNote.php');
     include_once('utils/order_handing_functions.php');
 
@@ -4453,8 +4490,6 @@ function consignment_parts($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         $description = $data['Part Recommended Product Unit Name'];
 
 
@@ -4476,7 +4511,6 @@ function consignment_parts($_data, $db, $user, $account) {
 
 
         );
-
     }
 
     $response = array(
@@ -4494,9 +4528,8 @@ function consignment_parts($_data, $db, $user, $account) {
 }
 
 
-function consignment_tariff_codes($_data, $db, $user, $account) {
-
-
+function consignment_tariff_codes($_data, $db, $user, $account)
+{
     // include_once('class.DeliveryNote.php');
     // include_once('utils/order_handing_functions.php');
 
@@ -4517,14 +4550,10 @@ function consignment_tariff_codes($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['parts'] == 1) {
             $description = $data['Part Recommended Product Unit Name'];
-
         } else {
             $description = $data['description'];
-
         }
 
 
@@ -4540,7 +4569,6 @@ function consignment_tariff_codes($_data, $db, $user, $account) {
             'parts'           => number($data['parts']),
 
         );
-
     }
 
     $response = array(

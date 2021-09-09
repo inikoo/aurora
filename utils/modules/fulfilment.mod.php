@@ -165,6 +165,11 @@ function get_fulfilment_module(): array {
                         'label' => _('Locations'),
                         'icon'  => 'pallet'
                     ),
+                    'customer.orders'      => array(
+                        'label' => _('Orders'),
+                        'icon'  => 'shopping-cart'
+                    ),
+
                     'customer.invoices'      => array(
                         'label' => _('Invoices'),
                         'icon'  => 'file-invoice'

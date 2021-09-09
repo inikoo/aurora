@@ -322,7 +322,7 @@
                         </table>
                     </div>
                 </div>
-                <div id="undo_submit_operations" class="order_operation {if $order->get('State Index')!=30}hide{/if}">
+                <div id="undo_submit_operations" class="order_operation {if $order->get('State Index')!=30  or $order->get('Order Type')=='FulfilmentRent'  }hide{/if}">
                     <div class="square_button left" title="{t}Send back to basket{/t}">
 
 
@@ -482,11 +482,11 @@
                 </div>
 
                 <div id="invoice_services_operations" class="order_operation {if {$order->get('State Index')|intval}>30 or  {$order->get('State Index')|intval}<10   or $order->get('Order Number Ordered Products')>0  or  $order->get('Order Number Services')==0  }hide{/if}">
-                    <div class="square_button right  " title="{t}Send to warehouse{/t}">
+                    <div class="square_button right  " title="{t}Create Invoice{/t}">
                         <i class="fas fa-file-invoice-dollar" aria-hidden="true" onclick="toggle_order_operation_dialog('invoice_services')"></i>
                         <table id="invoice_services_dialog" class="order_operation_dialog hide">
                             <tr class="top">
-                                <td class="label" colspan="2">{t}Send to warehouse{/t}</td>
+                                <td class="label" colspan="2">{t}Create invoice{/t}</td>
                             </tr>
                             <tr class="changed buttons">
                                 <td><i class="fa fa-sign-out fa-flip-horizontal button" aria-hidden="true" onclick="close_dialog('invoice_services')"></i></td>
