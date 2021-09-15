@@ -91,7 +91,7 @@ class prepare_table_fulfilment_assets extends prepare_table
 
         if (($this->parameters['f_field'] == 'id') and $this->f_value != '') {
             $this->wheref = sprintf(
-                '  and  ( `Fulfilment Asset Reference`  like "%s%%"  or `Fulfilment Asset Key` like "%s%%"   )',
+                '  and  ( `Fulfilment Asset Reference` REGEXP "\\\\b%s"  or `Fulfilment Asset Key` REGEXP "\\\\b%s"  )',
                 addslashes($this->f_value), addslashes($this->f_value)
             );
         }
@@ -117,6 +117,8 @@ class prepare_table_fulfilment_assets extends prepare_table
     function get_data()
     {
         $sql = "select $this->fields from $this->table $this->where $this->wheref order by $this->order $this->order_direction limit $this->start_from,$this->number_results";
+
+
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
