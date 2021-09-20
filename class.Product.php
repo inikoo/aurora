@@ -2995,7 +2995,10 @@ class Product extends Asset
                 $this->updated = $updated;
                 if ($updated) {
                     foreach ($this->get_parts('objects') as $part) {
-                        $part->update_commercial_value();
+                        if($part->id){
+                            $part->update_commercial_value();
+                        }
+
                     }
 
                     $this->update_updated_markers('Price');
