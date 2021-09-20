@@ -127,6 +127,9 @@ class prepare_table_fulfilment_assets extends prepare_table
                 case 'Pallet':
                     $type = sprintf('<span title="%s"><i class="fa fa-pallet-alt"></i></span>', _('Pallet'));
                     break;
+                case 'Oversize':
+                    $type = sprintf('<span title="%s"><i class="fas fa-pallet"></i></span>', _('Oversize'));
+                    break;
                 case 'Box':
                     $type = sprintf('<span title="%s"><i class="fa fa-box-alt"></i></span>', _('Box'));
                     break;

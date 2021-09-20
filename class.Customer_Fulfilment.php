@@ -214,9 +214,11 @@ class Customer_Fulfilment extends DB_Table
 
 
                 if ($asset->get('Fulfilment Asset Type') == 'Box') {
-                    $product_id = $account->properties('fulfilment_box_week_rent');
+                    $product_id = $account->properties('fulfilment_box_rent');
+                }elseif ($asset->get('Fulfilment Asset Type') == 'Oversize') {
+                    $product_id = $account->properties('fulfilment_oversize_rent');
                 } else {
-                    $product_id = $account->properties('fulfilment_pallet_week_rent');
+                    $product_id = $account->properties('fulfilment_pallet_rent');
                 }
 
 

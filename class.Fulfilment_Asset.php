@@ -61,7 +61,7 @@ class Fulfilment_Asset extends DB_Table
             return;
         }
 
-        if (!in_array($this->data['Fulfilment Asset Type'], ['Pallet', 'Box'])) {
+        if (!in_array($this->data['Fulfilment Asset Type'], ['Pallet', 'Box', 'Oversize'])) {
             $this->msg            = _('Invalid value');
             $this->new            = false;
             $this->error          = true;
@@ -156,6 +156,8 @@ class Fulfilment_Asset extends DB_Table
             case 'Type Icon':
                 if ($this->get('Fulfilment Asset Type') == 'Pallet') {
                     return '<i class="fal fa-fw fa-pallet-alt" title="'._('Pallet').'"></i>';
+                } elseif ($this->get('Fulfilment Asset Type') == 'Oversize') {
+                    return '<i class="fas fa-fw fa-pallet" title="'._('Oversize').'"></i>';
                 } else {
                     return '<i class="fal fa-fw  fa-box-alt" title="'._('Box').'"></i>';
                 }
@@ -181,6 +183,8 @@ class Fulfilment_Asset extends DB_Table
             case 'Type':
                 if ($this->data['Fulfilment Asset Type'] == 'Pallet') {
                     return _('Pallet');
+                } elseif ($this->data['Fulfilment Asset Type'] == 'Oversize') {
+                    return _('Oversize');
                 } else {
                     return _('Box');
                 }
@@ -376,48 +380,41 @@ class Fulfilment_Asset extends DB_Table
             switch ($field) {
                 case 'Fulfilment Asset From':
 
-                    if($this->data['Fulfilment Asset To']!=''){
-
-                        if(strtotime($this->data['Fulfilment Asset To']) <  strtotime($value)  ){
-                            $this->error=true;
-                            $this->msg=_('Received date must has to be before the book out date');
+                    if ($this->data['Fulfilment Asset To'] != '') {
+                        if (strtotime($this->data['Fulfilment Asset To']) < strtotime($value)) {
+                            $this->error = true;
+                            $this->msg   = _('Received date must has to be before the book out date');
                             return;
-
                         }
-
                     }
 
-                    if(strtotime($value) >  strtotime('tomorrow')  ){
-                        $this->error=true;
-                        $this->msg=_('Date can not be in the future');
+                    if (strtotime($value) > strtotime('tomorrow')) {
+                        $this->error = true;
+                        $this->msg   = _('Date can not be in the future');
                         return;
-
                     }
 
                     $this->update_field($field, $value, $options);
                     break;
                 case 'Fulfilment Asset To':
 
-                    if($this->data['Fulfilment Asset From']==''){
-                        $this->error=true;
-                        $this->msg='Booked in date is empty';
+                    if ($this->data['Fulfilment Asset From'] == '') {
+                        $this->error = true;
+                        $this->msg   = 'Booked in date is empty';
                         return;
                     }
 
-                    if(strtotime($value) <  strtotime($this->data['Fulfilment Asset From'])  ){
-                        $this->error=true;
-                        $this->msg=_('Booked out must has to be after received');
+                    if (strtotime($value) < strtotime($this->data['Fulfilment Asset From'])) {
+                        $this->error = true;
+                        $this->msg   = _('Booked out must has to be after received');
                         return;
-
                     }
 
 
-
-                    if(strtotime($value) >  strtotime('tomorrow')  ){
-                        $this->error=true;
-                        $this->msg=_('Date can not be in the future');
+                    if (strtotime($value) > strtotime('tomorrow')) {
+                        $this->error = true;
+                        $this->msg   = _('Date can not be in the future');
                         return;
-
                     }
 
                     $this->update_field($field, $value, $options);
@@ -425,41 +422,40 @@ class Fulfilment_Asset extends DB_Table
 
                 case 'Fulfilment Asset State':
                     $this->update_field($field, $value, $options);
-                    $show=[];
-                    $hide=[];
+                    $show = [];
+                    $hide = [];
                     if ($value == 'BookedOut') {
                         $this->fast_update(
                             ['Fulfilment Asset To' => gmdate('Y-m-d H:i:s')]
 
                         );
                         $this->update(
-                            ['Fulfilment Asset Location Key'=>''],'no_history'
+                            ['Fulfilment Asset Location Key' => ''],
+                            'no_history'
                         );
 
 
-                        $show[]='undo_booked_out_operation';
-                        $hide[]='booked_out_operation';
-
-
+                        $show[] = 'undo_booked_out_operation';
+                        $hide[] = 'booked_out_operation';
                     } elseif ($value == 'BookedIn') {
                         $this->fast_update(['Fulfilment Asset To' => '']);
 
 
-
-                        $hide[]='undo_booked_out_operation';
-                        $show[]='booked_out_operation';
+                        $hide[] = 'undo_booked_out_operation';
+                        $show[] = 'booked_out_operation';
                     }
 
-                    $this->update_metadata['hide'] =$hide;
-                    $this->update_metadata['show'] =$show;
+                    $this->update_metadata['hide']       = $hide;
+                    $this->update_metadata['show']       = $show;
                     $this->update_metadata['class_html'] = array(
-                        'Fulfilment_Asset_To' => $this->get('To'),
+                        'Fulfilment_Asset_To'    => $this->get('To'),
                         'Fulfilment_Asset_State' => $this->get('State'),
                     );
 
 
                     break;
                 case 'label box':
+                case 'label oversize':
                 case 'label pallet':
                     $this->fast_update_json_field('Fulfilment Asset Metadata', preg_replace('/ /', '_', $field), $value);
                     break;
@@ -468,7 +464,7 @@ class Fulfilment_Asset extends DB_Table
                     $this->update_metadata['class_html'] = array(
                         'Type_Icon' => $this->get('Type Icon'),
                     );
-                    if ($value == 'Pallet') {
+                    if ($value == 'Pallet' or $value == 'Oversize') {
                         $this->update_metadata['hide'] = array('pdf_label_container_box');
                         $this->update_metadata['show'] = array('pdf_label_container_pallet');
                     } else {

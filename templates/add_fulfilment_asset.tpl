@@ -1,5 +1,5 @@
 <div id="add_fulfilment_asset_form" class="hide" data-type="add_one" data-metadata='{$data.metadata}' data-ar_url="{$data.ar_url}"
-     style="z-index:1000;padding:5px 20px 20px 20px;background:#FFF ;width: 450px;border:1px solid #ccc;position: absolute;">
+     style="z-index:1000;padding:5px 20px 20px 20px;background:#FFF ;width: 550px;border:1px solid #ccc;position: absolute;">
     <span id="add_fulfilment_asset_invalid_msg" class="hide">{t}Invalid value{/t}</span>
 
 
@@ -13,6 +13,7 @@
             <td>{t}Type{/t}</td>
             <td id="add_fulfilment_asset_type" data-value="Pallet">
                 <span style="margin-right: 25px"><i data-value="Pallet" class="option far fa-dot-circle"></i>  {t}Pallet{/t} <em class="fal fa-pallet-alt"></em></span>
+                <span style="margin-right: 25px" class="very_discreet_on_hover button"><i data-value="Oversize" class="option far fa-circle"></i>  {t}Oversize{/t} <em class="fas fa-pallet"></em></span>
                 <span class="very_discreet_on_hover button"><i data-value="Box" class="option far fa-circle"></i>  {t}Box{/t} <em class="fal fa-box-alt"></em></span>
             </td>
         </tr>
