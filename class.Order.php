@@ -1669,7 +1669,7 @@ class Order extends DB_Table
                         $sql = "update `Fulfilment Asset Dimension` left join `Fulfilment Rent Transaction Fact` on (`Fulfilment Rent Transaction Asset Key`=`Fulfilment Asset Key`) set `Fulfilment Asset Last Rent Order Date`=?   where `Fulfilment Rent Transaction Order Key`=?  ";
                         $this->db->prepare($sql)->execute(
                             [
-                                gmdate('Y-d-m'),
+                                gmdate('Y-m-d'),
                                 $this->id
                             ]
                         );
