@@ -613,6 +613,12 @@ function get_export_fields($element, $account_currency_code = ''): array
             ),
 
             array(
+                'name'    => '`Invoice Address Country 2 Alpha Code`',
+                'label'   => _('Country'),
+                'checked' => 1
+            ),
+
+            array(
                 'name'    => '`Invoice Date`',
                 'label'   => _('Date'),
                 'checked' => 1
