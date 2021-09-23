@@ -153,6 +153,20 @@ if (isset($_REQUEST['with_origin']) and $_REQUEST['with_origin'] == 'true') {
 }
 $smarty->assign('with_origin', $with_origin);
 
+if (isset($_REQUEST['with_manufactured_by']) and $_REQUEST['with_manufactured_by'] == 'true') {
+    $with_manufactured_by = true;
+} else {
+    $with_manufactured_by = false;
+}
+$smarty->assign('with_manufactured_by', $with_manufactured_by);
+
+if (isset($_REQUEST['with_weight']) and $_REQUEST['with_weight'] == 'true') {
+    $with_weight = true;
+} else {
+    $with_weight = false;
+}
+$smarty->assign('with_weight', $with_weight);
+
 
 if (isset($_REQUEST['with_ingredients']) and $_REQUEST['with_ingredients'] == 'true') {
     $with_ingredients = true;
@@ -407,6 +421,7 @@ try {
     $mpdf->SetTitle($title);
     $mpdf->SetAuthor('Aurora Systems');
     $smarty->assign('account', $account);
+
 
 
     $html = $smarty->fetch('labels/label.tpl');

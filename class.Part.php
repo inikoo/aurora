@@ -857,6 +857,19 @@ class Part extends Asset
 
 
         switch ($key) {
+            case 'Manufactured by':
+                $supplier_part = get_object('Supplier_Part', $this->get('Part Main Supplier Part Key'));
+                $supplier = get_object('Supplier', $supplier_part->get('Supplier Part Supplier Key'));
+
+                if($supplier->get('Supplier Type')=='Agent'){
+                    foreach($supplier->get_agents('data') as $agent_data){
+                        return $agent_data['Agent Name'];
+                    }
+                }
+                return $supplier->get('Name');
+
+
+
             case 'Picking Band Key':
             case 'Packing Band Key':
 

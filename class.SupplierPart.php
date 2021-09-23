@@ -1287,7 +1287,7 @@ class SupplierPart extends DB_Table {
                 return $this->get('Supplier Name').(($this->get('Supplier Code') != '' and $this->get('Supplier Code') != $this->get(
                             'Supplier Name'
                         )) ? ' ('.$this->get('Supplier Code').')' : '');
-                break;
+
             case 'Average Delivery Days':
                 if ($this->data['Supplier Part Average Delivery Days'] == '') {
                     return '';
@@ -1299,7 +1299,7 @@ class SupplierPart extends DB_Table {
                            )
                 );
 
-                break;
+
             case 'Unit Barcode':
 
                 return $this->part->get('Barcode');

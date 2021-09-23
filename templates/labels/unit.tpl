@@ -54,16 +54,30 @@
                         <b>{$part->get('Reference')}</b></td>
                 </tr>
                 <tr>
-                    <td style="border-bottom: 1px solid #000">{$part->get('Recommended Product Unit Name')}</td>
+                    <td style="border-bottom: 1px solid #000">{$part->get('Recommended Product Unit Name')}
+                        {if  $with_weight and $part->get('Part Unit Weight')>0}
+                        <span style="font-size: {$signature_font_size}"> (&#8494; {$part->get('Unit Smart Weight')})
+                    </span>
+                        {/if}
+                    </td>
                 </tr>
                 <tr>
                     <td style="height: 1mm"></td>
                 </tr>
+                {if  $with_manufactured_by}
+                    <tr>
+                        <td style="font-size: {$signature_font_size}">
+
+                                {t}Manufactured by{/t} {$part->get('Manufactured by')}
+
+                        </td>
+                    </tr>
+                {/if}
                 {if $part->get('Origin Country')!='' and $with_origin}
                     <tr>
                         <td style="font-size: {$signature_font_size}">
                             {if $part->get('Part Origin Country Code')!=$account->get('Account Country Code') and $part->get('Part Production')=='No' }
-                                {t}Imported from{/t} {$part->get('Origin Country')} {t}by{/t} {$account->get('Name')}
+                                {t}Imported from{/t} {$part->get('Origin Country')}
                             {elseif $part->get('Part Production')=='Yes'}
                                 {t}Made in{/t} {$part->get('Origin Country')} {t}by{/t} {$account->get('Name')}
                             {else}

@@ -131,6 +131,16 @@
                     <i class="far {if $labels_data.unit.with_origin}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$labels_data.unit.with_origin}class="discreet"{/if}>{t}With made in{/t}</span>
                 </td>
             </tr>
+            <tr data-field='with_manufactured_by' class="button pdf_option" onclick="check_pdf_asset_label_field_value(this)">
+                <td colspan=2>
+                    <i class="far {if $labels_data.unit.with_manufactured_by}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$labels_data.unit.with_manufactured_by}class="discreet"{/if}>{t}With manufactured by{/t}</span>
+                </td>
+            </tr>
+            <tr data-field='with_weight' class="button pdf_option" onclick="check_pdf_asset_label_field_value(this)">
+                <td colspan=2>
+                    <i class="far {if $labels_data.unit.with_weight}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span {if !$labels_data.unit.with_weight}class="discreet"{/if}>{t}With weight{/t}</span>
+                </td>
+            </tr>
             <tr data-field='with_custom_text' class="button pdf_option " onclick="check_pdf_asset_label_field_value(this)">
                 <td colspan=2>
                     <i class="far {if $labels_data.unit.with_custom_text}fa-check-square{else}fa-square{/if} margin_right_10"></i> <span

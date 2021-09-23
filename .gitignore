@@ -132,3 +132,4 @@ cron/set_up_web_menu.php
 /public/js/bundle.js
 /cron/fix_fulfilment.php
 /cron/syncro_aroma_prices.php
+/cron/set_up_labels.php
