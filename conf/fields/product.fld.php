@@ -195,8 +195,8 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
                     'id'              => 'Service_Unit_Label',
                     'class'           => 'service_field '.(($new or $product->get('Product Type') == 'Product' )? 'hide' : ''),
                     'edit'            => ($edit ? 'string' : ''),
-                    'value'           => ($new ? _('') : $product->get('Product Unit Label')),
-                    'formatted_value' => ($new ? _('') : $product->get('Unit Label')),
+                    'value'           => ($new ? '' : $product->get('Product Unit Label')),
+                    'formatted_value' => ($new ? '' : $product->get('Unit Label')),
                     'label'           => ucfirst($product->get_field_label('Product Unit Label')),
                     'required'        => true,
                     'type'            => 'value skip'
