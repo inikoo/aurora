@@ -29,7 +29,7 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
     }
 
    // $customer->sync_aiku_basket();
-
+    $customer->update_activity();
     $smarty->assign('customer', $customer);
     $smarty->assign('store', $data['store']);
 
