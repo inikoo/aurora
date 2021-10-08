@@ -1113,7 +1113,9 @@ class Order extends DB_Table
                         );
                     }
                     $this->update_aiku($this->get_table_name(), 'refresh_basket');
-
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
+                    $customer->update_orders();
+                    $customer->update_activity();
 
                     break;
                 case 'InProcess':
@@ -1232,6 +1234,10 @@ class Order extends DB_Table
                     );
 
                     $this->update_aiku($this->get_table_name(), 'refresh_basket');
+
+                    $customer = get_object('Customer', $this->data['Order Customer Key']);
+                    $customer->update_orders();
+                    $customer->update_activity();
 
 
                     break;

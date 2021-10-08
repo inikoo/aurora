@@ -2774,6 +2774,7 @@ class Customer extends Subject
 
         $store = get_object('store', $this->data['Customer Store Key']);
 
+
         if ($orders == 0) {
             $type_by_activity   = 'Active';
             $is_customer_active = 'Yes';
@@ -2793,12 +2794,16 @@ class Customer extends Subject
             if ($orders > 20) {
                 $sigma_factor = 3.2906;//99.9% value assuming normal distribution
 
-                $losing_interval = $this->data['Customer Order Interval'] + $sigma_factor * $this->data['Customer Order Interval STD'];
-                $lost_interval   = $losing_interval * 4.0 / 3.0;
+                $losing_interval = (3 * $this->data['Customer Order Interval'] + $sigma_factor * $this->data['Customer Order Interval STD'])+30;
+                $lost_interval   = $losing_interval * 4.0 ;
+
+
+
             }
 
             $lost_interval   = ceil($lost_interval);
             $losing_interval = ceil($losing_interval);
+
 
 
             $type_by_activity   = 'Active';
@@ -2812,6 +2817,7 @@ class Customer extends Subject
             }
             $customer_lost_date = gmdate('Y-m-d H:i:s', strtotime($this->data['Customer Last Order Date']." +$lost_interval seconds"));
         }
+
 
         $this->fast_update(array(
                                'Customer Active'           => $is_customer_active,

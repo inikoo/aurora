@@ -1552,6 +1552,8 @@ function fork_housekeeping($job)
                 }
             }
 
+            $customer->update_orders();
+            $customer->update_activity();
 
             break;
         case 'order_completed':
