@@ -134,3 +134,4 @@ cron/set_up_web_menu.php
 /cron/syncro_aroma_prices.php
 /cron/set_up_labels.php
 /cron/shipping_zones.oneoff.sk.php
+/cron/fix_gold_reward.php
