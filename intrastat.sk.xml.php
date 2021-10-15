@@ -54,7 +54,7 @@ $sql = "select $fields from  $table   $where $wheref $group_by  order by `Delive
 $date = strtotime($from);
 
 $currency            = $account->get('Account Currency');
-$declarationTypeCode = 2;
+$declarationTypeCode = 1;
 $flowCode            = 'D';
 $functionCode        = 'O';
 
