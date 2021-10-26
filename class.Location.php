@@ -14,7 +14,8 @@
  Version 2.0
 */
 
-class Location extends DB_Table {
+class Location extends DB_Table
+{
 
 
     public $db;
@@ -24,9 +25,8 @@ class Location extends DB_Table {
     public ?WarehouseArea $warehouse_area = null;
 
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false) {
-
-
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false)
+    {
         if (!$_db) {
             global $db;
             $this->db = $db;
@@ -53,21 +53,17 @@ class Location extends DB_Table {
             return;
         }
         $this->get_data($arg1, $arg2, $arg3);
-
     }
 
-    function get_data($key, $tag, $tag2 = ''): bool {
-
-
+    function get_data($key, $tag, $tag2 = ''): bool
+    {
         if ($key == 'warehouse_code') {
-
             $sql = "SELECT * FROM `Location Dimension` where  `Location Warehouse Key`=? and  `Location Code`=? ";
 
             $arguments = array(
                 $tag,
                 $tag2
             );
-
         } else {
             $arguments = array($tag);
             if ($key == 'id') {
@@ -78,7 +74,6 @@ class Location extends DB_Table {
                 return true;
             } elseif ($key == 'code') {
                 $sql = "SELECT * FROM `Location Dimension` where  `Location Code`=? ";
-
             } else {
                 return false;
             }
@@ -98,9 +93,8 @@ class Location extends DB_Table {
         return true;
     }
 
-    function create($data) {
-
-
+    function create($data)
+    {
         $this->data = $this->base_data();
 
 
@@ -160,7 +154,9 @@ class Location extends DB_Table {
         //  print_r($this->data);
 
         $sql = sprintf(
-            " INTO `Location Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
+            " INTO `Location Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($this->data)).'`',
+            join(',', array_fill(0, count($this->data), '?'))
         );
 
         $stmt = $this->db->prepare('INSERT '.$sql);
@@ -179,7 +175,6 @@ class Location extends DB_Table {
             $this->get_data('id', $this->id);
 
             if ($this->data['Location Code'] != 'Unknown') {
-
                 $history_data = array(
                     'History Abstract' => sprintf(_('%s location created'), $this->data['Location Code']),
                     'History Details'  => '',
@@ -187,8 +182,6 @@ class Location extends DB_Table {
                 );
 
                 $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
-
-
             }
 
 
@@ -208,17 +201,14 @@ class Location extends DB_Table {
             $this->fork_index_elastic_search();
 
             return $this;
-
-
         }
 
         return false;
-
     }
 
 
-    function get_deleted_data($tag) {
-
+    function get_deleted_data($tag)
+    {
         $this->deleted = true;
 
 
@@ -236,11 +226,10 @@ class Location extends DB_Table {
     }
 
 
-    function find($raw_data, $options) {
-
+    function find($raw_data, $options)
+    {
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
-
                 if (array_key_exists($key, $this->editor)) {
                     $this->editor[$key] = $value;
                 }
@@ -267,14 +256,15 @@ class Location extends DB_Table {
 
         //look for areas with the same code in the same warehouse
         $sql = sprintf(
-            "SELECT `Location Key` FROM `Location Dimension` WHERE `Location Warehouse Key`=%d AND `Location Code`=%s", $data['Location Warehouse Key'], prepare_mysql($data['Location Code'])
+            "SELECT `Location Key` FROM `Location Dimension` WHERE `Location Warehouse Key`=%d AND `Location Code`=%s",
+            $data['Location Warehouse Key'],
+            prepare_mysql($data['Location Code'])
         );
 
         // print $sql;
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
                 $this->found     = true;
                 $this->found_key = $row['Location Key'];
 
@@ -283,23 +273,17 @@ class Location extends DB_Table {
                 $this->duplicated_field = 'Location Code';
 
                 return;
-
-
             }
         }
 
 
         if ($create) {
-
             $this->create($data);
-
-
         }
     }
 
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
+    function update_field_switcher($field, $value, $options = '', $metadata = '')
+    {
         $warehouse = get_object('Warehouse', $this->get('Location Warehouse Key'));
         if ($this->id == $warehouse->get('Warehouse Unknown Location Key')) {
             $this->deleted_msg = 'Error location unknown can not be edited';
@@ -380,8 +364,6 @@ class Location extends DB_Table {
                 include_once 'utils/parse_natural_language.php';
 
                 if ($value != '') {
-
-
                     $value = parse_weight($value)[0];
                     if (!is_numeric($value)) {
                         $this->msg     = _(
@@ -409,7 +391,6 @@ class Location extends DB_Table {
 
                         return;
                     }
-
                 }
 
                 $this->update_field('Location Max Weight', $value, $options);
@@ -419,7 +400,6 @@ class Location extends DB_Table {
             case('Location Max Volume'):
 
                 if ($value != '') {
-
                     $value = parse_cbm($value)[0];
                     if (!is_numeric($value)) {
                         $this->msg     = _(
@@ -447,7 +427,6 @@ class Location extends DB_Table {
 
                         return;
                     }
-
                 }
                 $this->update_field('Location Max Volume', $value, $options);
 
@@ -463,7 +442,8 @@ class Location extends DB_Table {
                 }
 
                 $sql = sprintf(
-                    "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s", prepare_mysql(ucfirst($value))
+                    "SELECT `Warehouse Flag Key` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Color`=%s",
+                    prepare_mysql(ucfirst($value))
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -483,7 +463,6 @@ class Location extends DB_Table {
 
 
                 if ($value == '') {
-
                     $old_key = $this->data['Location Warehouse Flag Key'];
                     $this->update_field('Location Warehouse Flag Key', $value, $options);
 
@@ -495,13 +474,13 @@ class Location extends DB_Table {
                 }
 
                 $sql = sprintf(
-                    "SELECT `Warehouse Flag Warehouse Key`,`Warehouse Flag Color` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Key`=%d", $value
+                    "SELECT `Warehouse Flag Warehouse Key`,`Warehouse Flag Color` FROM  `Warehouse Flag Dimension` WHERE `Warehouse Flag Key`=%d",
+                    $value
                 );
 
 
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-
                         if ($row['Warehouse Flag Warehouse Key'] != $this->data['Location Warehouse Key']) {
                             $this->error = true;
                             $this->msg   = 'flag key not in this warehouse';
@@ -519,7 +498,6 @@ class Location extends DB_Table {
                         }
 
                         $this->fork_index_elastic_search();
-
                     } else {
                         $this->error = true;
                         $this->msg   = 'flag key not found';
@@ -532,9 +510,7 @@ class Location extends DB_Table {
             default:
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
-
                     if ($value != $this->data[$field]) {
-
                         $this->update_field($field, $value, $options);
                     }
                 }
@@ -545,7 +521,6 @@ class Location extends DB_Table {
             $pipeline = get_object('Picking_Pipeline', $matches[1]);
             if ($value == '') {
                 $this->update_metadata['value'] = $pipeline->add_location($this->id);
-
 
 
                 $this->update_metadata['icon'] = 'fa-toggle-on';
@@ -559,24 +534,22 @@ class Location extends DB_Table {
                 foreach ($part->get_products() as $product_id) {
                     include_once 'utils/new_fork.php';
                     new_housekeeping_fork(
-                        'au_housekeeping', array(
-                        'type'       => 'product_availability',
-                        'product_id' => $product_id,
-                        'editor'     => $this->editor
-                    ), DNS_ACCOUNT_CODE, 'Low'
+                        'au_housekeeping',
+                        array(
+                            'type'       => 'product_availability',
+                            'product_id' => $product_id,
+                            'editor'     => $this->editor
+                        ),
+                        DNS_ACCOUNT_CODE,
+                        'Low'
                     );
-
                 }
             }
-
-
         }
-
     }
 
-    function get($key) {
-
-
+    function get($key)
+    {
         if (!$this->id) {
             return '';
         }
@@ -604,7 +577,8 @@ class Location extends DB_Table {
 
             case 'Location Flag Color':
                 $sql = sprintf(
-                    'SELECT `Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` WHERE `Warehouse Flag Key`=%d  ', $this->data['Location Warehouse Flag Key']
+                    'SELECT `Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` WHERE `Warehouse Flag Key`=%d  ',
+                    $this->data['Location Warehouse Flag Key']
                 );
 
 
@@ -620,7 +594,8 @@ class Location extends DB_Table {
             case 'Warehouse Flag Key':
 
                 $sql = sprintf(
-                    'SELECT `Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` WHERE `Warehouse Flag Key`=%d  ', $this->data['Location Warehouse Flag Key']
+                    'SELECT `Warehouse Flag Color`,`Warehouse Flag Label` FROM `Warehouse Flag Dimension` WHERE `Warehouse Flag Key`=%d  ',
+                    $this->data['Location Warehouse Flag Key']
                 );
 
 
@@ -636,7 +611,8 @@ class Location extends DB_Table {
             case 'Warehouse Area Key':
                 if (!$this->warehouse_area) {
                     $this->warehouse_area = get_object(
-                        'WarehouseArea', $this->data['Location Warehouse Area Key']
+                        'WarehouseArea',
+                        $this->data['Location Warehouse Area Key']
                     );
                 }
 
@@ -657,7 +633,8 @@ class Location extends DB_Table {
                 if (preg_match('/^warehouse area/i', $key)) {
                     if (!$this->warehouse_area) {
                         $this->warehouse_area = get_object(
-                            'WarehouseArea', $this->data['Location Warehouse Area Key']
+                            'WarehouseArea',
+                            $this->data['Location Warehouse Area Key']
                         );
                     }
 
@@ -675,17 +652,14 @@ class Location extends DB_Table {
 
 
                 return '';
-
         }
 
         return '';
-
     }
 
 
-    function update_area_key($warehouse_area_key) {
-
-
+    function update_area_key($warehouse_area_key)
+    {
         if ($this->get('Location Type') == 'Unknown') {
             $this->deleted_msg = 'Error location unknown can not be edited';
             $this->error       = true;
@@ -727,7 +701,6 @@ class Location extends DB_Table {
         );
 
         if ($warehouse_area_key > 0) {
-
             /**
              * @var $new_area \WarehouseArea
              */
@@ -751,7 +724,8 @@ class Location extends DB_Table {
             } else {
                 $history_data = array(
                     'History Abstract' => sprintf(
-                        _('Location associated to warehouse area %s'), '<span title="'.$new_area->get('Name').'" class="link" onclick="change_view(\'warehouse/'.$new_area->get('Warehouse Key').'/areas/'.$new_area->id.'\')" >'.$new_area->get('Code').'</span>'
+                        _('Location associated to warehouse area %s'),
+                        '<span title="'.$new_area->get('Name').'" class="link" onclick="change_view(\'warehouse/'.$new_area->get('Warehouse Key').'/areas/'.$new_area->id.'\')" >'.$new_area->get('Code').'</span>'
                     ),
                     'History Details'  => '',
                     'Action'           => 'edited'
@@ -760,7 +734,12 @@ class Location extends DB_Table {
 
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                $history_data,
+                true,
+                'No',
+                'Changes',
+                $this->get_object_name(),
+                $this->id
             );
 
             $history_data = array(
@@ -770,24 +749,23 @@ class Location extends DB_Table {
             );
 
             $new_area->add_subject_history(
-                $history_data, true, 'No', 'Changes', $new_area->get_object_name(), $new_area->id
+                $history_data,
+                true,
+                'No',
+                'Changes',
+                $new_area->get_object_name(),
+                $new_area->id
             );
-
-
         }
 
         if (isset($old_area) and $old_area->id) {
             $old_area->update_warehouse_area_locations();
-
         }
-
-
     }
 
 
-    function update_stock_value() {
-
-
+    function update_stock_value()
+    {
         $sql = "SELECT sum(`Stock Value`) AS value FROM `Part Location Dimension` WHERE `Location Key`=?";
 
         $stmt = $this->db->prepare($sql);
@@ -808,15 +786,13 @@ class Location extends DB_Table {
                 'Location Stock Value' => $stock_value
             )
         );
-
-
     }
 
-    function update_parts() {
-
-
+    function update_parts()
+    {
         $sql = sprintf(
-            "SELECT `Part SKU`,`Quantity On Hand` AS qty FROM `Part Location Dimension`  WHERE `Location Key`=%d  ", $this->id
+            "SELECT PL.`Part SKU`,`Quantity On Hand`  AS qty,`Part Package Weight` FROM `Part Location Dimension` PL left join `Part Dimension` P on PL.`Part SKU`=P.`Part SKU` WHERE PL.`Location Key`=%d  ",
+            $this->id
 
         );
 
@@ -824,18 +800,22 @@ class Location extends DB_Table {
         $has_stock  = 'No';
         $has_errors = 'No';
 
+        $current_weight = 0;
+
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
+
 
                 if (is_numeric($row['qty']) and $row['qty'] > 0) {
                     $has_stock = 'Yes';
 
+                    if (is_numeric($row['Part Package Weight'])) {
+                        $current_weight = $row['qty'] * $row['Part Package Weight'];
+                    }
                 }
                 if (is_numeric($row['qty']) and $row['qty'] < 0) {
                     $has_errors = 'Yes';
-
                 }
-
             }
         }
 
@@ -844,7 +824,8 @@ class Location extends DB_Table {
             array(
                 'Location Distinct Parts' => count($this->get_parts()),
                 'Location has Stock'      => $has_stock,
-                'Location has Errors'     => $has_errors
+                'Location has Errors'     => $has_errors,
+                'Location Current Weight' => $current_weight
             )
 
         );
@@ -856,23 +837,21 @@ class Location extends DB_Table {
         if ($warehouse_area->id) {
             $warehouse_area->update_warehouse_area_number_parts();
         }
-
     }
 
-    function get_parts($scope = 'keys'): array {
-
-
+    function get_parts($scope = 'keys'): array
+    {
         if ($scope == 'objects') {
             include_once 'class.Part.php';
         } elseif ($scope == 'part_location_object') {
             include_once 'class.PartLocation.php';
         } elseif ($scope == 'data') {
             include_once 'class.PartLocation.php';
-
         }
         $sql = sprintf(
             "SELECT PL.`Part SKU`,`Quantity On Hand`,`Minimum Quantity`,`Maximum Quantity`,`Moving Quantity`,`Can Pick` 
-            FROM `Part Location Dimension` PL LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=PL.`Part SKU`)  WHERE `Location Key`=%d", $this->id
+            FROM `Part Location Dimension` PL LEFT JOIN `Part Dimension` P ON (P.`Part SKU`=PL.`Part SKU`)  WHERE `Location Key`=%d",
+            $this->id
         );
 
 
@@ -881,7 +860,6 @@ class Location extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
                 if ($scope == 'keys') {
                     $part_locations[$row['Part SKU']] = $row['Part SKU'];
                 } elseif ($scope == 'objects') {
@@ -889,13 +867,11 @@ class Location extends DB_Table {
                 } elseif ($scope == 'part_location_object') {
                     $part_locations[$row['Part SKU']] = new  PartLocation($row['Part SKU'].'_'.$this->id);
                 } else {
-
                     $part_location = new  PartLocation($row['Part SKU'].'_'.$this->id);
 
                     $part_locations[$row['Part SKU']]          = $part_location->data;
                     $part_locations[$row['Part SKU']] ['Part'] = $part_location->part->data;
                 }
-
             }
         }
 
@@ -903,8 +879,8 @@ class Location extends DB_Table {
         return $part_locations;
     }
 
-    function delete($note = '') {
-
+    function delete($note = '')
+    {
         $warehouse      = get_object('Warehouse', $this->data['Location Warehouse Key']);
         $warehouse_area = get_object('WarehouseArea', $this->data['Location Warehouse Area Key']);
 
@@ -960,24 +936,28 @@ class Location extends DB_Table {
 
         $history_data = array(
             'History Abstract' => sprintf(
-                _("Location %s deleted"), $this->data['Location Code']
+                _("Location %s deleted"),
+                $this->data['Location Code']
             ),
             'History Details'  => '',
             'Action'           => 'deleted'
         );
 
         $this->add_subject_history(
-            $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+            $history_data,
+            true,
+            'No',
+            'Changes',
+            $this->get_object_name(),
+            $this->id
         );
 
         $this->fork_index_elastic_search('delete_elastic_index_object');
-
     }
 
-    function get_field_label($field) {
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Location Code':
                 $label = _('code');
                 break;
@@ -997,15 +977,13 @@ class Location extends DB_Table {
 
             default:
                 $label = $field;
-
         }
 
         return $label;
-
     }
 
-    function update_fulfilment_status() {
-
+    function update_fulfilment_status()
+    {
         $number_assets = 0;
         $sql           = "select count(*) as num from `Fulfilment Asset Dimension` where `Fulfilment Asset Location Key`=?";
         $stmt          = $this->db->prepare($sql);
@@ -1023,15 +1001,13 @@ class Location extends DB_Table {
                 'Location Fulfilment' => ($number_assets > 0 ? 'Yes' : 'No')
             ]
         );
-
-
     }
 
-    function update_pipeline_status() {
-
+    function update_pipeline_status()
+    {
         $number_pipelines = 0;
-        $sql           = "select count(*) as num from   `Location Picking Pipeline Bridge` where `Location Picking Pipeline Location Key`=?";
-        $stmt          = $this->db->prepare($sql);
+        $sql              = "select count(*) as num from   `Location Picking Pipeline Bridge` where `Location Picking Pipeline Location Key`=?";
+        $stmt             = $this->db->prepare($sql);
         $stmt->execute(
             array(
                 $this->id
@@ -1046,13 +1022,11 @@ class Location extends DB_Table {
                 'Location Pipeline' => ($number_pipelines > 0 ? 'Yes' : 'No')
             ]
         );
-
-
     }
 
-    function update_pipelines_data() {
-
-        $sql           = "select `Location Picking Pipeline Picking Pipeline Key` from   `Location Picking Pipeline Bridge` where `Location Picking Pipeline Location Key`=?";
+    function update_pipelines_data()
+    {
+        $sql  = "select `Location Picking Pipeline Picking Pipeline Key` from   `Location Picking Pipeline Bridge` where `Location Picking Pipeline Location Key`=?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             array(
@@ -1061,11 +1035,9 @@ class Location extends DB_Table {
         );
         while ($row = $stmt->fetch()) {
             /** @var $pipeline \Picking_Pipeline */
-            $pipeline=get_object('Picking_Pipeline',$row['Location Picking Pipeline Picking Pipeline Key']);
+            $pipeline = get_object('Picking_Pipeline', $row['Location Picking Pipeline Picking Pipeline Key']);
             $pipeline->update_pipeline_part_locations();
-          }
-
-
+        }
     }
 
 }

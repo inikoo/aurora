@@ -1321,6 +1321,10 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'name'    => '`Location Distinct Parts`',
                 'label'   => _('Parts'),
                 'checked' => 1
+            ),   array(
+                'name'    => '`Location Current Weight`',
+                'label'   => _('Current weight').' (Kg)',
+                'checked' => 1
             ),
             array(
                 'name'    => 'CONCAT ("!W",`Location Warehouse Key`,"L",LPAD(`Location Key`,8,0))',

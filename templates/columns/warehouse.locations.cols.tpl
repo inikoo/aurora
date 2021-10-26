@@ -60,6 +60,18 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 
 }, {
+name: "current_weight",
+label: "{t}Current weight{/t}",
+defaultOrder:1,
+editable: false,
+sortType: "toggle",
+{if $sort_key=='current_weight'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+}, {
 name: "max_volume",
 label: "{t}Max volume{/t}",
 editable: false,

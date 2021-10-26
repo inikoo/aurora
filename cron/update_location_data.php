@@ -21,6 +21,7 @@ if ($result = $db->query($sql)) {
         $location = get_object('Location', $row['Location Key']);
         $location->update_fulfilment_status();
         $location->update_pipeline_status();
+        $location->update_parts();
 
     }
 

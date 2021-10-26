@@ -59,10 +59,10 @@ switch ($tipo) {
         locations(get_table_parameters(), $db, $user, $account);
         break;
     case 'replenishments':
-        replenishments(get_table_parameters(), $db, $user,$account);
+        replenishments(get_table_parameters(), $db, $user, $account);
         break;
     case 'pipeline_replenishes':
-        pipeline_replenishes(get_table_parameters(), $db, $user,$account);
+        pipeline_replenishes(get_table_parameters(), $db, $user, $account);
         break;
 
     case 'part_locations':
@@ -120,18 +120,17 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-
 }
 
-function picking_pipelines($_data, $db, $user, $account) {
+function picking_pipelines($_data, $db, $user, $account)
+{
     include_once 'prepare_table/picking_pipelines.ptc.php';
-    $table=new prepare_table_picking_pipelines($db,$account,$user);
+    $table = new prepare_table_picking_pipelines($db, $account, $user);
     echo $table->fetch($_data);
 }
 
-function picking_bands($_data, $db, $user, $account) {
-
-
+function picking_bands($_data, $db, $user, $account)
+{
     $rtext_label = 'band';
 
     include_once 'prepare_table/init.php';
@@ -142,8 +141,6 @@ function picking_bands($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             $record_data[] = array(
                 'id'             => (integer)$data['Picking Band Key'],
                 'name'           => sprintf('<span class="link" onClick="change_view(\'warehouse/%d/bands/%d\')" >%s</span>', $data['Picking Band Warehouse Key'], $data['Picking Band Key'], $data['Picking Band Name']),
@@ -176,8 +173,8 @@ function picking_bands($_data, $db, $user, $account) {
 }
 
 
-function warehouses($_data, $db, $user) {
-
+function warehouses($_data, $db, $user)
+{
     $rtext_label = 'warehouse';
     include_once 'prepare_table/init.php';
 
@@ -188,14 +185,12 @@ function warehouses($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
         $adata[] = array(
             'access' => (in_array($data['Warehouse Key'], $user->warehouses) ? '' : '<i class="fa fa-lock error"></i>'),
             'id'     => (integer)$data['Warehouse Key'],
             'code'   => $data['Warehouse Code'],
             'name'   => $data['Warehouse Name'],
         );
-
     }
 
     $response = array(
@@ -213,8 +208,8 @@ function warehouses($_data, $db, $user) {
 }
 
 
-function areas($_data, $db, $user) {
-
+function areas($_data, $db, $user)
+{
     $rtext_label = 'warehouse area';
     include_once 'prepare_table/init.php';
 
@@ -225,7 +220,6 @@ function areas($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
         if ($data['Warehouse Area Place'] == 'External') {
             $type = ' <i  title="'._('External warehouse').'" style="color:tomato" class="small padding_left_10  fal  fa-garage-car   "></i>';
         } else {
@@ -235,13 +229,11 @@ function areas($_data, $db, $user) {
         $code = $data['Warehouse Area Code'];
         if ($code == '') {
             $code = '<span class="very_discreet italic">'._('No code').'</span>';
-
         }
 
         $name = $data['Warehouse Area Name'];
         if ($name == '') {
             $name = '<span class="very_discreet italic">'._('No name').'</span>';
-
         }
 
         $adata[] = array(
@@ -249,13 +241,15 @@ function areas($_data, $db, $user) {
             'id'        => (integer)$data['Warehouse Area Key'],
             'type'      => $type,
             'code'      => sprintf(
-                '<span class="link" onClick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Warehouse Area Warehouse Key'], $data['Warehouse Area Key'], $code
+                '<span class="link" onClick="change_view(\'warehouse/%d/areas/%d\')">%s</span>',
+                $data['Warehouse Area Warehouse Key'],
+                $data['Warehouse Area Key'],
+                $code
             ),
             'name'      => $name,
             'locations' => number($data['Warehouse Area Number Locations']),
             'parts'     => number($data['Warehouse Area Distinct Parts']),
         );
-
     }
 
     $response = array(
@@ -273,9 +267,8 @@ function areas($_data, $db, $user) {
 }
 
 
-function locations($_data, $db, $user, $account) {
-
-
+function locations($_data, $db, $user, $account)
+{
     $rtext_label = 'location';
     include_once 'prepare_table/init.php';
 
@@ -299,8 +292,6 @@ function locations($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['Location Max Weight'] == '' or $data['Location Max Weight'] <= 0) {
             $max_weight = '<span class="super_discreet italic">'._('Unknown').'</span>';
         } else {
@@ -324,23 +315,25 @@ function locations($_data, $db, $user, $account) {
 
 
         $adata[] = array(
-            'id'          => (integer)$data['Location Key'],
-            'code'        => $code,
-            'flag'        => ($data['Warehouse Flag Key'] ? sprintf(
-                '<i id="flag_location_%d" class="fa fa-flag %s button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" location_key="%d" title="%s"></i>', $data['Location Key'], strtolower($data['Warehouse Flag Color']), $data['Location Key'],
+            'id'             => (integer)$data['Location Key'],
+            'code'           => $code,
+            'flag'           => ($data['Warehouse Flag Key'] ? sprintf(
+                '<i id="flag_location_%d" class="fa fa-flag %s button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" location_key="%d" title="%s"></i>',
+                $data['Location Key'],
+                strtolower($data['Warehouse Flag Color']),
+                $data['Location Key'],
                 $data['Warehouse Flag Label']
             ) : '<i id="flag_location_'.$data['Location Key'].'"  class="far fa-flag super_discreet button" aria-hidden="true" onclick="show_edit_flag_dialog(this)" key="" ></i>'),
-            'flag_key'    => $data['Warehouse Flag Key'],
-            'area'        => $area,
-            'max_weight'  => $max_weight,
-            'max_volume'  => $max_vol,
-            'type'        => $type,
-            'parts'       => number($data['Location Distinct Parts']),
-            'stock_value' => money($data['Location Stock Value'], $account->get('Account Currency')),
-
+            'flag_key'       => $data['Warehouse Flag Key'],
+            'area'           => $area,
+            'max_weight'     => $max_weight,
+            'max_volume'     => $max_vol,
+            'type'           => $type,
+            'parts'          => number($data['Location Distinct Parts']),
+            'stock_value'    => money($data['Location Stock Value'], $account->get('Account Currency')),
+            'current_weight' => weight($data['Location Current Weight'],' Kg',0)
             // 'used_for'           => $used_for
         );
-
     }
 
     $response = array(
@@ -358,26 +351,26 @@ function locations($_data, $db, $user, $account) {
 }
 
 
-function replenishments($_data, $db, $user,$account) {
+function replenishments($_data, $db, $user, $account)
+{
     include_once 'prepare_table/warehouse.parts_to_replenish.ptc.php';
-    $table=new prepare_table_warehouse_parts_to_replenish($db,$account,$user);
+    $table = new prepare_table_warehouse_parts_to_replenish($db, $account, $user);
     echo $table->fetch($_data);
 }
 
-function pipeline_replenishes($_data, $db, $user,$account) {
+function pipeline_replenishes($_data, $db, $user, $account)
+{
     include_once 'prepare_table/picking_pipeline.parts_to_replenish.ptc.php';
-    $table=new prepare_table_picking_pipeline_parts_to_replenish($db,$account,$user);
+    $table = new prepare_table_picking_pipeline_parts_to_replenish($db, $account, $user);
     echo $table->fetch($_data);
 }
 
-function parts($_data, $db, $user, $account) {
-
-
+function parts($_data, $db, $user, $account)
+{
     if ($_data['parameters']['tab'] == 'warehouse.parts') {
         $rtext_label = 'part location';
     } else {
         $rtext_label = 'part';
-
     }
 
 
@@ -388,9 +381,10 @@ function parts($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
         $reference = sprintf(
-            '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
+            '<span class="link" onclick="change_view(\'part/%d\')">%s</span>',
+            $data['Part SKU'],
+            ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
 
@@ -413,13 +407,16 @@ function parts($_data, $db, $user, $account) {
             'stock_value' => '<span id="stock_value_'.$data['Part SKU'].'">'.money($data['Stock Value'], $account->get('Account Currency')).'</span>',
             'quantity'    => sprintf(
                 '<span id="quantity_'.$data['Part SKU']
-                .'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>', '', $data['Part SKU'],
-                $data['Location Key'], $data['Quantity On Hand'], number($data['Quantity On Hand'])
+                .'"><span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" onClick="open_location_part_stock_quantity_dialog(this)">%s</span></span>',
+                '',
+                $data['Part SKU'],
+                $data['Location Key'],
+                $data['Quantity On Hand'],
+                number($data['Quantity On Hand'])
             )
 
 
         );
-
     }
 
     $response = array(
@@ -437,9 +434,8 @@ function parts($_data, $db, $user, $account) {
 }
 
 
-function stock_transactions($_data, $db, $user) {
-
-
+function stock_transactions($_data, $db, $user)
+{
     $rtext_label = 'transaction';
 
     include_once 'prepare_table/init.php';
@@ -463,30 +459,48 @@ function stock_transactions($_data, $db, $user) {
                         $note = sprintf(
                             _('%s %s (%s) to be taken from %s'),
 
-                            number($data['Required']), '<span title="'._('Stock keeping outers').'">SKO</span>',
+                            number($data['Required']),
+                            '<span title="'._('Stock keeping outers').'">SKO</span>',
 
                             sprintf(
-                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-fw fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
-                            ), sprintf(
-                                '<span class="button" onClick="change_view(\'locations/%d/%d\')">%s</span>', $data['Location Warehouse Key'], $data['Location Key'], $data['Location Code']
+                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-fw fa-shopping-basket" aria-hidden="true"></i> %s</span>',
+                                $data['Delivery Note Key'],
+                                $data['Delivery Note ID']
+                            ),
+                            sprintf(
+                                '<span class="button" onClick="change_view(\'locations/%d/%d\')">%s</span>',
+                                $data['Location Warehouse Key'],
+                                $data['Location Key'],
+                                $data['Location Code']
                             )
 
 
                         );
                     } else {
                         $note = sprintf(
-                            _('%sx %s (%s) to be taken from %s'), number($data['Required']),
+                            _('%sx %s (%s) to be taken from %s'),
+                            number($data['Required']),
 
                             ($parameters['parent'] == 'part'
                                 ? sprintf(
-                                    '<i class="fa fa-box" aria-hidden="true"></i> %s', $data['Part Reference']
+                                    '<i class="fa fa-box" aria-hidden="true"></i> %s',
+                                    $data['Part Reference']
                                 )
                                 : sprintf(
-                                    '<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>', $data['Part SKU'], $data['Part Reference']
-                                )), sprintf(
-                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-shopping-basket" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
-                            ), sprintf(
-                                '<span class="button" onClick="change_view(\'locations/%d/%d\')">%s</span>', $data['Location Warehouse Key'], $data['Location Key'], $data['Location Code']
+                                    '<span class="button" onClick="change_view(\'part/%d\')"><i class="fa fa-square" aria-hidden="true"></i> %s</span>',
+                                    $data['Part SKU'],
+                                    $data['Part Reference']
+                                )),
+                            sprintf(
+                                '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-shopping-basket" aria-hidden="true"></i> %s</span>',
+                                $data['Delivery Note Key'],
+                                $data['Delivery Note ID']
+                            ),
+                            sprintf(
+                                '<span class="button" onClick="change_view(\'locations/%d/%d\')">%s</span>',
+                                $data['Location Warehouse Key'],
+                                $data['Location Key'],
+                                $data['Location Code']
                             )
 
                         );
@@ -497,17 +511,26 @@ function stock_transactions($_data, $db, $user) {
                 case 'Restock':
                     $type = '<i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>';
                     $note = sprintf(
-                        _('%s (%s) returned from %s'), number($data['Inventory Transaction Quantity']).'  <span title="'._('Stock keeping outers').'">SKO</span>',
+                        _('%s (%s) returned from %s'),
+                        number($data['Inventory Transaction Quantity']).'  <span title="'._('Stock keeping outers').'">SKO</span>',
 
                         sprintf(
-                            '<span class="button strong" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']
+                            '<span class="button strong" onClick="change_view(\'part/%d\')">%s</span>',
+                            $data['Part SKU'],
+                            $data['Part Reference']
                         )
 
 
-                        , sprintf(
-                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
-                        ), sprintf(
-                            '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
+                        ,
+                        sprintf(
+                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>',
+                            $data['Delivery Note Key'],
+                            $data['Delivery Note ID']
+                        ),
+                        sprintf(
+                            '<span class="button" onClick="change_view(\'location/%d\')">%s</span>',
+                            $data['Location Key'],
+                            $data['Location Code']
                         )
 
                     );
@@ -517,17 +540,26 @@ function stock_transactions($_data, $db, $user) {
                     $type = '<i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>';
 
                     $note = sprintf(
-                        _('%s (%s) picked for %s'), number(-1 * $data['Inventory Transaction Quantity']).'  <span title="'._('Stock keeping outers').'">SKO</span>',
+                        _('%s (%s) picked for %s'),
+                        number(-1 * $data['Inventory Transaction Quantity']).'  <span title="'._('Stock keeping outers').'">SKO</span>',
 
                         sprintf(
-                            '<span class="button strong" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']
+                            '<span class="button strong" onClick="change_view(\'part/%d\')">%s</span>',
+                            $data['Part SKU'],
+                            $data['Part Reference']
                         )
 
 
-                        , sprintf(
-                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>', $data['Delivery Note Key'], $data['Delivery Note ID']
-                        ), sprintf(
-                            '<span class="button" onClick="change_view(\'location/%d\')">%s</span>', $data['Location Key'], $data['Location Code']
+                        ,
+                        sprintf(
+                            '<span class="button" onClick="change_view(\'delivery_note/%d\')"><i class="fa fa-truck" aria-hidden="true"></i> %s</span>',
+                            $data['Delivery Note Key'],
+                            $data['Delivery Note ID']
+                        ),
+                        sprintf(
+                            '<span class="button" onClick="change_view(\'location/%d\')">%s</span>',
+                            $data['Location Key'],
+                            $data['Location Code']
                         )
 
                     );
@@ -574,10 +606,13 @@ function stock_transactions($_data, $db, $user) {
             $adata[] = array(
                 'id'   => (integer)$data['Inventory Transaction Key'],
                 'date' => strftime(
-                    "%a %e %b %Y %H:%M %Z", strtotime($data['Date'].' +0:00')
+                    "%a %e %b %Y %H:%M %Z",
+                    strtotime($data['Date'].' +0:00')
                 ),
                 'user' => sprintf(
-                    '<span title="%s">%s</span>', $data['User Alias'], $data['User Handle']
+                    '<span title="%s">%s</span>',
+                    $data['User Alias'],
+                    $data['User Handle']
                 ),
 
                 'change' => $stock,
@@ -585,8 +620,6 @@ function stock_transactions($_data, $db, $user) {
                 'type'   => $type,
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -609,9 +642,8 @@ function stock_transactions($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function part_locations_to_replenish_picking_location($_data, $db, $user) {
-
-
+function part_locations_to_replenish_picking_location($_data, $db, $user)
+{
     $rtext_label = 'picking locations needed to replenish for ordered parts';
 
 
@@ -622,7 +654,6 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
         //print_r($data);
         $storing_locations = '';
         if ($data['storing_locations_data'] != '') {
@@ -631,16 +662,19 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 
                 if ($storing_locations_data[1] == 1) {
                     $storing_locations .= ', '.sprintf(
-                            '<span   >%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>', $storing_locations_data[2], number($storing_locations_data[3])
+                            '<span   >%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>',
+                            $storing_locations_data[2],
+                            number($storing_locations_data[3])
                         );
                 } else {
                     $storing_locations .= ', '.sprintf(
-                            '<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>', $storing_locations_data[0], $storing_locations_data[1], $storing_locations_data[2],
+                            '<span  class="link"  onclick="change_view(\'locations/%d/%d\')">%s</span> <span class="discreet" title="'._('Stock').'">(%s)</span>',
+                            $storing_locations_data[0],
+                            $storing_locations_data[1],
+                            $storing_locations_data[2],
                             number($storing_locations_data[3])
                         );
                 }
-
-
             }
         }
 
@@ -657,14 +691,10 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
         $next_deliveries = '';
 
         foreach ($next_deliveries_array as $next_delivery) {
-
-
             $next_deliveries .= '<div class="as_row "><div class="as_cell padding_left_5" style="min-width: 120px" >'.$next_delivery['formatted_link'].'</div><div class="padding_left_10 as_cell strong" style="text-align: right;min-width: 60px" title="'._('SKOs ordered')
                 .'">+'.number(
                     $next_delivery['raw_units_qty'] / $data['Part Units Per Package']
                 ).'<span style="font-weight: normal" class="small discreet">skos</span></div></div>';
-
-
         }
 
 
@@ -672,7 +702,9 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
 
 
         $reference = sprintf(
-            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>',
+            $data['Part Package Description'],
+            $data['Part SKU'],
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
@@ -690,7 +722,6 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
             'next_deliveries'    => $next_deliveries
 
         );
-
     }
 
     $response = array(
@@ -707,9 +738,8 @@ function part_locations_to_replenish_picking_location($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function part_locations_with_errors($_data, $db, $user) {
-
-
+function part_locations_with_errors($_data, $db, $user)
+{
     $rtext_label = 'part location with errors';
 
 
@@ -722,9 +752,10 @@ function part_locations_with_errors($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
         $reference = sprintf(
-            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>',
+            $data['Part Package Description'],
+            $data['Part SKU'],
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
@@ -762,7 +793,6 @@ function part_locations_with_errors($_data, $db, $user) {
             '</span>'
 
         );
-
     }
 
     $response = array(
@@ -780,9 +810,8 @@ function part_locations_with_errors($_data, $db, $user) {
 }
 
 
-function stock_leakages($_data, $db, $user, $account) {
-
-
+function stock_leakages($_data, $db, $user, $account)
+{
     $skip_get_table_totals = true;
 
 
@@ -833,19 +862,31 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
     $sql_totals = sprintf(
-        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
+        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ',
+        $sql_totals_fields,
+        prepare_mysql($from),
+        prepare_mysql($to)
 
     );
 
     //print $sql;
 
     list($rtext, $total, $filtered) = get_table_totals(
-        $db, $sql_totals, '', $rtext_label, false
+        $db,
+        $sql_totals,
+        '',
+        $rtext_label,
+        false
     );
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s',
+        prepare_mysql($from),
+        prepare_mysql($to),
+        $_group_by,
+        "`Date` $order_direction ",
+        "$start_from,$number_results"
     );
 
 
@@ -854,10 +895,7 @@ function stock_leakages($_data, $db, $user, $account) {
     $from_date = '';
     $to_date   = '';
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
             if ($to_date == '') {
                 $to_date = $data['Date'];
             }
@@ -871,14 +909,12 @@ function stock_leakages($_data, $db, $user, $account) {
                 $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-
-
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
+                    "(%e %b) %Y %W ",
+                    strtotime($data['Date'].' +0:00')
                 );
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
@@ -899,9 +935,7 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
             );
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql";
@@ -910,7 +944,6 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
     switch ($_data['parameters']['parent']) {
-
         case 'warehouse':
             if ($_data['parameters']['frequency'] == 'annually') {
                 $from_date = gmdate("Y-01-01", strtotime($from_date.' +0:00'));
@@ -939,7 +972,12 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ",
+        $date_field,
+        prepare_mysql($from_date),
+        $date_field,
+        prepare_mysql($to_date),
+        " $group_by "
     );
 
     $last_year_data = array();
@@ -947,11 +985,7 @@ function stock_leakages($_data, $db, $user, $account) {
 
     //print $sql;
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
-
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
@@ -978,8 +1012,6 @@ function stock_leakages($_data, $db, $user, $account) {
 
 
             if (array_key_exists($_date, $record_data)) {
-
-
                 if (in_array(
                     $_data['parameters']['frequency'], array(
                                                          'annually',
@@ -990,54 +1022,64 @@ function stock_leakages($_data, $db, $user, $account) {
                                                      )
                 )) {
                     $up_amount = sprintf(
-                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>',
+                        $_data['parameters']['parent'],
+                        $_data['parameters']['parent_key'],
+                        $data['Timeseries Record Timeseries Key'],
 
-                        $data['Timeseries Record Key'], money($data['up_amount'], $currency)
+                        $data['Timeseries Record Key'],
+                        money($data['up_amount'], $currency)
                     );
 
                     $down_amount       = sprintf(
-                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>',
+                        $_data['parameters']['parent'],
+                        $_data['parameters']['parent_key'],
+                        $data['Timeseries Record Timeseries Key'],
 
-                        $data['Timeseries Record Key'], '<span class="error">'.money($data['down_amount'], $currency).'</span>'
+                        $data['Timeseries Record Key'],
+                        '<span class="error">'.money($data['down_amount'], $currency).'</span>'
                     );
                     $up_transactions   = sprintf(
-                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>',
+                        $_data['parameters']['parent'],
+                        $_data['parameters']['parent_key'],
+                        $data['Timeseries Record Timeseries Key'],
 
-                        $data['Timeseries Record Key'], number($data['up_transactions'])
+                        $data['Timeseries Record Key'],
+                        number($data['up_transactions'])
                     );
                     $down_transactions = sprintf(
-                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+                        '<span class="link" onclick="change_view(\'%s/%d/leakages/%d/%d\')">%s</span>',
+                        $_data['parameters']['parent'],
+                        $_data['parameters']['parent_key'],
+                        $data['Timeseries Record Timeseries Key'],
 
-                        $data['Timeseries Record Key'], '<span class="error">'.number($data['down_transactions']).'</span>'
+                        $data['Timeseries Record Key'],
+                        '<span class="error">'.number($data['down_transactions']).'</span>'
                     );
-
-
                 } else {
                     $up_amount         = money($data['up_amount'], $currency);
                     $down_amount       = '<span class="error">'.money($data['down_amount'], $currency).'</span>';
                     $up_transactions   = number($data['up_transactions']);
                     $down_transactions = '<span class="error">'.number($data['down_transactions']).'</span>';
-
                 }
 
                 $record_data[$_date]['up_amount']         = $up_amount;
                 $record_data[$_date]['down_amount']       = $down_amount;
                 $record_data[$_date]['up_transactions']   = $up_transactions;
                 $record_data[$_date]['down_transactions'] = $down_transactions;
-
-
             }
 
 
             if (isset($last_year_data[$_date_last_year])) {
                 $record_data[$_date]['delta_up_amount_1yb'] = '<span title="'.money($last_year_data[$_date_last_year]['_up_amount'], $currency).'">'.delta($data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']).' '.delta_icon(
-                        $data['up_amount'], $last_year_data[$_date_last_year]['_up_amount']
+                        $data['up_amount'],
+                        $last_year_data[$_date_last_year]['_up_amount']
                     ).'</span>';
             }
-
             //    print_r($record_data);
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql";
@@ -1060,9 +1102,8 @@ function stock_leakages($_data, $db, $user, $account) {
 }
 
 
-function leakages_transactions($_data, $db, $user, $account) {
-
-
+function leakages_transactions($_data, $db, $user, $account)
+{
     $rtext_label = 'transaction';
 
     include_once 'prepare_table/init.php';
@@ -1076,20 +1117,17 @@ function leakages_transactions($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             $note = $data['Note'];
 
             if ($data['Inventory Transaction Quantity'] > 0) {
                 $stock = '+'.number($data['Inventory Transaction Quantity']);
             } else {
                 $stock = number($data['Inventory Transaction Quantity']);
-
             }
             if ($data['Inventory Transaction Amount'] > 0) {
                 $amount = '+'.money($data['Inventory Transaction Amount'], $account->get('Currency Code'));
             } else {
                 $amount = money($data['Inventory Transaction Amount'], $account->get('Currency Code'));
-
             }
 
             // $type =
@@ -1099,7 +1137,6 @@ function leakages_transactions($_data, $db, $user, $account) {
                 $note      = preg_replace('/note_data/', '', $note);
             } else {
                 $reference = sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']);
-
             }
 
 
@@ -1121,8 +1158,6 @@ function leakages_transactions($_data, $db, $user, $account) {
                 //   'type'   => $type,
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1145,9 +1180,8 @@ function leakages_transactions($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function parts_with_unknown_location($_data, $db, $user, $account) {
-
-
+function parts_with_unknown_location($_data, $db, $user, $account)
+{
     $rtext_label = 'part';
 
 
@@ -1158,13 +1192,10 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
 
 
     foreach ($db->query($sql) as $data) {
-
         if ($data['Part Status'] == 'Not In Use') {
             $part_status = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
-
         } elseif ($data['Part Status'] == 'Discontinuing') {
             $part_status = '<i class="far fa-box fa-fw  very_discreet" aria-hidden="true"></i> ';
-
         } else {
             $part_status = '<i class="far fa-box fa-fw " aria-hidden="true"></i> ';
         }
@@ -1184,11 +1215,10 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
                     $last_audit = '<span title="'._('Never been audited').'">-</span> <i class="far fa-clock padding_right_10" aria-hidden="true"></i> ';
                 } else {
                     $last_audit = sprintf(
-                            '<span title="%s">%s</span>', sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($_locations_data[2].' +0:00')), $_locations_data[2]),
+                            '<span title="%s">%s</span>',
+                            sprintf(_('Last audit %s'), strftime("%a %e %b %Y %H:%M %Z", strtotime($_locations_data[2].' +0:00')), $_locations_data[2]),
                             ($_locations_data[4] > 999 ? '<span class="error">+999</span>' : number($_locations_data[4]))
                         ).' <i class="far fa-clock padding_right_10" aria-hidden="true"></i>';
-
-
                 }
 
 
@@ -1205,7 +1235,9 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
 
 
         $reference = sprintf(
-            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>',
+            $data['Part Package Description'],
+            $data['Part SKU'],
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
@@ -1224,13 +1256,16 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
             'sko_cost'    => money($data['Part Cost in Warehouse'], $account->get('Account Currency')),
             'stock_value' => money($data['Stock Value'], $account->get('Account Currency')),
             'quantity'    => sprintf(
-                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" >%s</span>', '', $data['Part SKU'], 1, $data['Quantity On Hand'],
+                '<span style="padding-left:3px;padding-right:7.5px" class="table_edit_cell  location_part_stock" title="%s" part_sku="%d" location_key="%d"  qty="%s" >%s</span>',
+                '',
+                $data['Part SKU'],
+                1,
+                $data['Quantity On Hand'],
                 '<strong class="'.($data['Quantity On Hand'] < 0 ? 'success' : 'error').'" >'.($data['Quantity On Hand'] < 0 ? '+' : '').number(-$data['Quantity On Hand']).'</strong>'
             )
 
 
         );
-
     }
 
     $response = array(
@@ -1248,7 +1283,8 @@ function parts_with_unknown_location($_data, $db, $user, $account) {
 }
 
 
-function returns($_data, $db, $user) {
+function returns($_data, $db, $user)
+{
     $rtext_label = 'delivery';
 
 
@@ -1259,9 +1295,7 @@ function returns($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             switch ($data['Supplier Delivery State']) {
-
                 case 'Received':
                     $state = sprintf('%s', _('Received'));
                     break;
@@ -1298,7 +1332,10 @@ function returns($_data, $db, $user) {
 
                 'store'     => sprintf('<span class="link" onclick="change_view(\'/store/%d\')" >%s</span>  ', $data['Order Store Key'], $data['Store Code']),
                 'public_id' => sprintf(
-                    '<span class="link" onclick="change_view(\'warehouse/%d/returns/%d\')" >%s</span>  ', $data['Supplier Delivery Warehouse Key'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                    '<span class="link" onclick="change_view(\'warehouse/%d/returns/%d\')" >%s</span>  ',
+                    $data['Supplier Delivery Warehouse Key'],
+                    $data['Supplier Delivery Key'],
+                    $data['Supplier Delivery Public ID']
                 ),
 
 
@@ -1307,8 +1344,6 @@ function returns($_data, $db, $user) {
 
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1330,9 +1365,8 @@ function returns($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function return_checking_items($_data, $db, $user, $account) {
-
-
+function return_checking_items($_data, $db, $user, $account)
+{
     $rtext_label = 'item';
     include_once 'utils/supplier_order_functions.php';
 
@@ -1349,7 +1383,6 @@ function return_checking_items($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             // $quantity = number($data['Supplier Delivery Units']);
 
 
@@ -1363,7 +1396,8 @@ function return_checking_items($_data, $db, $user, $account) {
             $subtotals = sprintf('<span  class="subtotals" >');
             if ($data['Supplier Delivery Units'] > 0) {
                 $subtotals .= money(
-                    $data['Supplier Delivery Net Amount'], $data['Currency Code']
+                    $data['Supplier Delivery Net Amount'],
+                    $data['Currency Code']
                 );
 
                 if ($data['Supplier Delivery Weight'] > 0) {
@@ -1397,7 +1431,6 @@ function return_checking_items($_data, $db, $user, $account) {
 				<div  class="code data w150"  >'.$location_data[1].'</div>
 				<div class="data w30 aright" >'.number($location_data[3]).'</div>
 				</div>';
-
                 }
                 $locations .= '<div style="clear:both"></div></div>';
             }
@@ -1409,19 +1442,13 @@ function return_checking_items($_data, $db, $user, $account) {
 
 
                 $description .= $locations;
-
             }
 
 
             if ($data['Supplier Delivery Checked Units'] == '') {
-
                 $sko_checked_quantity = '';
-
             } else {
-
                 $sko_checked_quantity = ($data['Supplier Delivery Checked Units'] / $data['Part Units Per Package']) + 0;
-
-
             }
 
 
@@ -1431,8 +1458,16 @@ function return_checking_items($_data, $db, $user, $account) {
                     <i onClick="save_item_qty_change(this)" class="fa minus  fa-minus fa-fw button" aria-hidden="true"></i>
                     <input   class="checked_qty width_50" style="text-align: center" value="%s" ovalue="%s"> 
                     <i onClick="save_item_qty_change(this)" class="fa plus  fa-plus fa-fw button %s" aria-hidden="true">
-                </span>', ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? '' : 'hide'), number($sko_checked_quantity), $data['Part Units Per Package'], $data['Purchase Order Transaction Fact Key'], $data['Part SKU'],
-                ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''), $sko_checked_quantity, $sko_checked_quantity, ''
+                </span>',
+                ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? '' : 'hide'),
+                number($sko_checked_quantity),
+                $data['Part Units Per Package'],
+                $data['Purchase Order Transaction Fact Key'],
+                $data['Part SKU'],
+                ($supplier_delivery->get('Supplier Delivery State') == 'Placed' ? 'hide' : ''),
+                $sko_checked_quantity,
+                $sko_checked_quantity,
+                ''
             );
 
 
@@ -1451,16 +1486,11 @@ function return_checking_items($_data, $db, $user, $account) {
             $placement = '<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
 
             if (isset($metadata['placement_data'])) {
-
                 foreach ($metadata['placement_data'] as $placement_data) {
-
-
                     $placement .= '<div style="clear:both;">
 				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
 				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
 				</div>';
-
-
                 }
             }
             $placement      .= '<div style="clear:both"></div></div>';
@@ -1480,10 +1510,18 @@ function return_checking_items($_data, $db, $user, $account) {
 
             $items_qty = sprintf(
                 '<span  id="part_sko_item_%d"  data-barcode_settings=\'{"reference":"%s","description":"%s" ,"image_src":"%s" ,"units":"%s" ,"formatted_units":"%s"   }\'  _checked="%s"   barcode="%s" data-metadata=\'{"qty":%d}\' onClick="copy_qty(this)" class="button part_sko_item"  >%s</span>',
-                $data['Part SKU'], $data['Part Reference'], base64_encode($data['Part Package Description']), $data['Part SKO Image Key'], $data['Supplier Delivery Units'], number($data['Supplier Delivery Units']), $data['Supplier Delivery Checked Units'],
+                $data['Part SKU'],
+                $data['Part Reference'],
+                base64_encode($data['Part Package Description']),
+                $data['Part SKO Image Key'],
+                $data['Supplier Delivery Units'],
+                number($data['Supplier Delivery Units']),
+                $data['Supplier Delivery Checked Units'],
 
 
-                $data['Part SKO Barcode'], $data['Supplier Delivery Units'] / $data['Part Units Per Package'], number($data['Supplier Delivery Units'] / $data['Part Units Per Package'])
+                $data['Part SKO Barcode'],
+                $data['Supplier Delivery Units'] / $data['Part Units Per Package'],
+                number($data['Supplier Delivery Units'] / $data['Part Units Per Package'])
 
             );
 
@@ -1493,11 +1531,13 @@ function return_checking_items($_data, $db, $user, $account) {
                 'id'       => (integer)$data['Purchase Order Transaction Fact Key'],
                 'part_sku' => (integer)$data['Part SKU'],
                 'checkbox' => sprintf(
-                    '<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>', $data['Purchase Order Transaction Fact Key']
+                    '<i key="%d" class="far fa-square fa-fw button" aria-hidden="true"></i>',
+                    $data['Purchase Order Transaction Fact Key']
                 ),
 
                 'operations' => sprintf(
-                    '<i key="%d" class="fal fa-fw fa-clipboard fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>', $data['Purchase Order Transaction Fact Key']
+                    '<i key="%d" class="fal fa-fw fa-clipboard fa-flip-horizontal button" aria-hidden="true" onClick="change_on_delivery(this)"></i>',
+                    $data['Purchase Order Transaction Fact Key']
                 ),
 
 
@@ -1515,8 +1555,6 @@ function return_checking_items($_data, $db, $user, $account) {
 
                 'placement' => $placement
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1539,9 +1577,8 @@ function return_checking_items($_data, $db, $user, $account) {
 }
 
 
-function return_items_done($_data, $db, $user) {
-
-
+function return_items_done($_data, $db, $user)
+{
     $rtext_label = 'part';
 
     $account = get_object('Account', 1);
@@ -1556,8 +1593,6 @@ function return_items_done($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             $items_amount = money($data['items_amount'], $data['Currency Code']);
 
             $extra_amount = money($data['extra_amount'], $data['Currency Code']);
@@ -1575,7 +1610,10 @@ function return_items_done($_data, $db, $user) {
 
 
             $reference = sprintf(
-                '<span class="link" onclick="change_view(\'/part/%d\')" title="%s" >%s</span>', $data['Part SKU'], _('Part reference'), $data['Part Reference']
+                '<span class="link" onclick="change_view(\'/part/%d\')" title="%s" >%s</span>',
+                $data['Part SKU'],
+                _('Part reference'),
+                $data['Part Reference']
             );
             $quantity  = ($data['Supplier Delivery Checked Units'] - $data['Supplier Delivery Placed Units']) / $data['Part Units Per Package'];
 
@@ -1590,16 +1628,11 @@ function return_items_done($_data, $db, $user) {
             $placement = '<div class="placement" ><div  class="placement_data mini_table right no_padding" style="padding-right:2px">';
 
             if (isset($metadata['placement_data'])) {
-
                 foreach ($metadata['placement_data'] as $placement_data) {
-
-
                     $placement .= '<div style="clear:both;">
 				<div class="data w150 aright link" onClick="change_view(\'locations/'.$placement_data['wk'].'/'.$placement_data['lk'].'\')" >'.$placement_data['l'].'</div>
 				<div  class=" data w75 aleft"  >'.$placement_data['qty'].' '._('SKO').' <i class="fa fa-sign-out" aria-hidden="true"></i></div>
 				</div>';
-
-
                 }
             }
             $placement      .= '<div style="clear:both"></div></div>';
@@ -1633,8 +1666,6 @@ function return_items_done($_data, $db, $user) {
                 'sko_cost'   => $sko_cost,
                 'placement'  => $placement
             );
-
-
         }
     }
 
@@ -1654,9 +1685,8 @@ function return_items_done($_data, $db, $user) {
 }
 
 
-function consignments($_data, $db, $user) {
-
-
+function consignments($_data, $db, $user)
+{
     $rtext_label = 'delivery_note';
     include_once 'prepare_table/init.php';
 
@@ -1666,12 +1696,9 @@ function consignments($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             $notes = '';
 
             switch ($data['Delivery Note State']) {
-
-
                 case 'Ready to be Picked':
                     $state = _('Waiting');
                     break;
@@ -1693,13 +1720,15 @@ function consignments($_data, $db, $user) {
                 case 'Approved':
                     $state = _('Approved');
                     $notes = sprintf(
-                        '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                        '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>',
+                        $data['Delivery Note Key']
                     );
                     break;
                 case 'Dispatched':
                     $state = _('Dispatched');
                     $notes = sprintf(
-                        '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>', $data['Delivery Note Key']
+                        '<a class="pdf_link " target=\'_blank\' href="/pdf/dn.pdf.php?id=%d"> <img style="width: 50px;height:16px;position: relative;top:2px" src="/art/pdf.gif"></a>',
+                        $data['Delivery Note Key']
                     );
                     break;
                 case 'Cancelled':
@@ -1744,7 +1773,6 @@ function consignments($_data, $db, $user) {
                     break;
                 default:
                     $type = $data['Delivery Note Type'];
-
             }
 
             switch ($data['Delivery Note Parcel Type']) {
@@ -1756,7 +1784,6 @@ function consignments($_data, $db, $user) {
                     break;
                 default:
                     $parcel_type = ' <i class="fa fa-archive" aria-hidden="true"></i>';
-
             }
 
             if ($data['Delivery Note Number Parcels'] == '') {
@@ -1808,9 +1835,8 @@ function consignments($_data, $db, $user) {
 }
 
 
-function feedback($_data, $db, $user, $account) {
-
-
+function feedback($_data, $db, $user, $account)
+{
     $rtext_label = 'issue';
     include_once 'prepare_table/init.php';
 
@@ -1821,8 +1847,6 @@ function feedback($_data, $db, $user, $account) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             $record_data[] = array(
                 'id'        => (integer)$data['Feedback Key'],
                 'reference' => sprintf('<span class="link" onClick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'], $data['Part Reference']),
@@ -1831,8 +1855,6 @@ function feedback($_data, $db, $user, $account) {
                 'author'    => $data['User Alias'],
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1856,7 +1878,8 @@ function feedback($_data, $db, $user, $account) {
 }
 
 
-function production_deliveries($_data, $db, $user) {
+function production_deliveries($_data, $db, $user)
+{
     $rtext_label = 'production delivery';
 
 
@@ -1867,7 +1890,6 @@ function production_deliveries($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             switch ($data['Supplier Delivery State']) {
                 case 'InProcess':
                 case 'Consolidated':
@@ -1904,7 +1926,11 @@ function production_deliveries($_data, $db, $user) {
 
 
                 'public_id' => sprintf(
-                    '<span class="link" onclick="change_view(\'/warehouse/%d/production_deliveries/%s/%d\')" >%s</span>  ', $data['Supplier Delivery Warehouse Key'], $_data['parameters']['section'], $data['Supplier Delivery Key'], $data['Supplier Delivery Public ID']
+                    '<span class="link" onclick="change_view(\'/warehouse/%d/production_deliveries/%s/%d\')" >%s</span>  ',
+                    $data['Supplier Delivery Warehouse Key'],
+                    $_data['parameters']['section'],
+                    $data['Supplier Delivery Key'],
+                    $data['Supplier Delivery Public ID']
                 ),
 
 
@@ -1913,8 +1939,6 @@ function production_deliveries($_data, $db, $user) {
 
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1937,9 +1961,8 @@ function production_deliveries($_data, $db, $user) {
 }
 
 
-function deleted_locations($_data, $db, $user, $account) {
-
-
+function deleted_locations($_data, $db, $user, $account)
+{
     $rtext_label = 'location';
     include_once 'prepare_table/init.php';
 
@@ -1950,16 +1973,12 @@ function deleted_locations($_data, $db, $user, $account) {
     $link = 'locations/'.$_data['parameters']['parent_key'].'/';
 
     foreach ($db->query($sql) as $data) {
-
-
         $code = sprintf('<span class="link" onclick="change_view(\'%s/%d\')">%s</span>', $link, $data['Location Deleted Key'], $data['Location Deleted Code']);
 
         if ($data['Warehouse Area Key']) {
             $area = sprintf('<span class="link" onclick="change_view(\'warehouse/%d/areas/%d\')">%s</span>', $data['Location Deleted Warehouse Key'], $data['Location Deleted Warehouse Area Key'], $data['Warehouse Area Code']);
-
         } elseif ($data['Location Deleted Warehouse Area Code'] != '') {
             $area = sprintf('<span class="discreet italic">%s</span>', $data['Location Deleted Warehouse Area Code']);
-
         } else {
             $area = '<span class="super_discreet italic">'._('Unknown').'</span>';
         }
@@ -1972,7 +1991,6 @@ function deleted_locations($_data, $db, $user, $account) {
             'date' => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Location Deleted Date'].' +0:00')),
 
         );
-
     }
 
     $response = array(
@@ -1990,9 +2008,8 @@ function deleted_locations($_data, $db, $user, $account) {
 }
 
 
-function external_warehouse_replenishes($_data, $db, $user) {
-
-
+function external_warehouse_replenishes($_data, $db, $user)
+{
     $rtext_label = 'part needed to replenish from external warehouses';
 
 
@@ -2003,7 +2020,6 @@ function external_warehouse_replenishes($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
         $locations = '';
         if ($data['location_data'] != '') {
             $locations_data = preg_split('/,/', $data['location_data']);
@@ -2021,7 +2037,6 @@ function external_warehouse_replenishes($_data, $db, $user) {
 
 				<div class="data w30 aright" >'.number($location_data[3]).'</div>
 				</div>';
-
             }
             $locations .= '<div style="clear:both"></div></div>';
         }
@@ -2052,7 +2067,9 @@ function external_warehouse_replenishes($_data, $db, $user) {
 */
 
         $reference = sprintf(
-            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>', $data['Part Package Description'], $data['Part SKU'],
+            '<span class="link" title="%s" onclick="change_view(\'part/%d\')">%s</span>',
+            $data['Part Package Description'],
+            $data['Part SKU'],
             ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
         );
 
@@ -2069,7 +2086,6 @@ function external_warehouse_replenishes($_data, $db, $user) {
             // 'next_deliveries'    => $next_deliveries
 
         );
-
     }
 
     $response = array(
