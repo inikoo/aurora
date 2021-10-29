@@ -691,7 +691,7 @@ if ($object->get('Supplier Type') != 'Archived') {
         'type'      => 'operation'
     );
 
-    if ($user->get('User Type') == 'Staff') {
+    if ($user->get('User Type') == 'Staff'  or $user->get('User Type') == 'Contractor'  ) {
         $fields[] = array(
 
             'id'        => 'delete_supplier',
