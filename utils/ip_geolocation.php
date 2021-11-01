@@ -48,6 +48,16 @@ function get_ip_geolocation($ip, $db) {
             // Decode JSON response:
             $api_result = json_decode($json, true);
 
+            if(!$api_result['success']){
+                return array(
+                    false,
+                    '',
+                    '',
+                    ''
+
+                );
+            }
+
             //print_r($api_result);
             $location = parse_geolocation_data($api_result);
             $sql      = sprintf(
