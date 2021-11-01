@@ -153,6 +153,10 @@ class SubjectList extends DB_Table {
     function update_number_items() {
 
         $number_of_items = 0;
+
+
+
+
         if ($this->data['List Type'] == 'Static') {
 
 
@@ -172,10 +176,6 @@ class SubjectList extends DB_Table {
                 if ($row = $result->fetch()) {
                     $number_of_items = $row['num'];
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
         } else {
@@ -277,8 +277,15 @@ class SubjectList extends DB_Table {
 
         $conditions = array();
 
+        if($this->data['List Metadata']=='' or $this->data['List Metadata']=='{}'){
+            return $conditions;
+        }
+
 
         $data = json_decode($this->data['List Metadata'], true);
+
+
+
 
 
         if ($data['Customer Status Active'] == 'No' or $data['Customer Status Loosing'] == 'No' or $data['Customer Status Lost'] == 'No') {

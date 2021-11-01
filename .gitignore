@@ -136,3 +136,6 @@ cron/set_up_web_menu.php
 /cron/shipping_zones.oneoff.sk.php
 /cron/fix_gold_reward.php
 /cron/undo_deleted_invoice.php
+/cron/customers_emails.csv
+/cron/create_customer_list_from_cvs_emails.php
+/cron/syncro_es_parts.php

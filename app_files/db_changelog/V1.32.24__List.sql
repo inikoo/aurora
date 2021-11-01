@@ -1,0 +1,1 @@
+ALTER TABLE `List Dimension` CHANGE `List Type` `List Type` enum('Dynamic','Static','Upload') NOT NULL DEFAULT 'Static' COMMENT '';
