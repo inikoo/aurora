@@ -1952,6 +1952,16 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'label'   => _('3rd image'),
                 'checked' => 0
             ),
+            array(
+                'name'    => '(select `Category Label` from `Category Dimension` where `Category Key`=`Product Family Category Key` ) as family',
+                'label'   => _('Family'),
+                'checked' => 0
+            ),
+            array(
+                'name'    => '(select `Category Label` from `Category Dimension` where `Category Key`=`Product Department Category Key` ) as department',
+                'label'   => _('Department'),
+                'checked' => 0
+            ),
 
         ),
         'portfolio_items'         => array(
