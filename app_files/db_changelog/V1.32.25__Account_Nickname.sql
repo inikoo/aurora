@@ -1,0 +1,1 @@
+ALTER TABLE `Account Dimension` ADD COLUMN `aiku_nickname` varchar(255) NULL COMMENT '';
