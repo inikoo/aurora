@@ -87,10 +87,6 @@ function get_ip_geolocation($ip, $db) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
 
