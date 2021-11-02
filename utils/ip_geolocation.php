@@ -10,9 +10,8 @@
  Version 3.0
 */
 
-function get_ip_geolocation($ip, $db) {
-
-
+function get_ip_geolocation($ip, $db)
+{
     if ($ip == '') {
         return array(
             false,
@@ -28,7 +27,6 @@ function get_ip_geolocation($ip, $db) {
         if ($row = $result->fetch()) {
             return $row;
         } else {
-
             include 'keyring/currency_exchange_api_keys.php';
 
             $api_keys = $ip_geolocation_api_keys['ipstack'];
@@ -48,7 +46,16 @@ function get_ip_geolocation($ip, $db) {
             // Decode JSON response:
             $api_result = json_decode($json, true);
 
-            if(!$api_result['success']){
+            if (!$api_result['success']) {
+                $sql = "insert into kbase.ip_geolocation_errors (date,data,ip,api_url) values (?,?,?,?)";
+                $db->prepare($sql)->execute(
+                    [
+                        gmdate('Y-m-d H:i:s'),$json,$ip,$access_key
+
+                    ]
+                );
+
+
                 return array(
                     false,
                     '',
@@ -63,9 +70,16 @@ function get_ip_geolocation($ip, $db) {
             $sql      = sprintf(
                 "insert into kbase.`IP Geolocation` (`Data`,IP,Latitude,Longitude,Location,`Country Code`,`Region Code`,`Region Name`,Town,`Postal Code`,`IP Geolocation Creation Date`) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                 prepare_mysql($json),
-                prepare_mysql($ip), prepare_mysql($api_result['latitude']),
-                prepare_mysql($api_result['longitude']), prepare_mysql($location, false), prepare_mysql($api_result['country_code']), prepare_mysql($api_result['region_code']), prepare_mysql($api_result['region_name']), prepare_mysql($api_result['city']),
-                prepare_mysql($api_result['zip']),prepare_mysql(gmdate('Y-m-d H:i:s'))
+                prepare_mysql($ip),
+                prepare_mysql($api_result['latitude']),
+                prepare_mysql($api_result['longitude']),
+                prepare_mysql($location, false),
+                prepare_mysql($api_result['country_code']),
+                prepare_mysql($api_result['region_code']),
+                prepare_mysql($api_result['region_name']),
+                prepare_mysql($api_result['city']),
+                prepare_mysql($api_result['zip']),
+                prepare_mysql(gmdate('Y-m-d H:i:s'))
 
             );
 
@@ -84,16 +98,12 @@ function get_ip_geolocation($ip, $db) {
                 'Town'         => $api_result['city'],
                 'Postal Code'  => $api_result['zip'],
             );
-
-
         }
     }
-
-
 }
 
-function parse_geolocation_data($api_result) {
-
+function parse_geolocation_data($api_result)
+{
     include_once 'class.Country.php';
 
 
@@ -117,7 +127,10 @@ function parse_geolocation_data($api_result) {
     if ($country->id) {
         $location = trim(
             sprintf(
-                '<img src="/art/flags/%s.png" title="%s"> %s', strtolower($country->get('Country 2 Alpha Code')), $country->get('Country Name'), $location
+                '<img src="/art/flags/%s.png" title="%s"> %s',
+                strtolower($country->get('Country 2 Alpha Code')),
+                $country->get('Country Name'),
+                $location
             )
         );
     } elseif ($api_result['country_code'] != '') {
@@ -126,7 +139,6 @@ function parse_geolocation_data($api_result) {
 
 
     return $location;
-
 }
 
 
