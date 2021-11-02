@@ -49,7 +49,7 @@ function get_ip_geolocation($ip, $db)
             // Decode JSON response:
             $api_result = json_decode($json, true);
 
-            if (!$api_result['success']) {
+            if (isset($api_result['error'])) {
                 $sql = "insert into kbase.ip_geolocation_errors (date,data,ip,api_url) values (?,?,?,?)";
                 $db->prepare($sql)->execute(
                     [
