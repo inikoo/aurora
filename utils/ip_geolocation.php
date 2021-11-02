@@ -14,11 +14,14 @@ function get_ip_geolocation($ip, $db)
 {
     if ($ip == '') {
         return array(
-            false,
-            '',
-            '',
-            ''
-
+            'IP'           => $ip,
+            'Latitude'     => '',
+            'Longitude'    => '',
+            'Location'     => '',
+            'Country Code' => '',
+            'Region Code`' => '',
+            'Town'         => '',
+            'Postal Code'  => '',
         );
     }
 
@@ -57,11 +60,14 @@ function get_ip_geolocation($ip, $db)
 
 
                 return array(
-                    false,
-                    '',
-                    '',
-                    ''
-
+                    'IP'           => $ip,
+                    'Latitude'     => '',
+                    'Longitude'    => '',
+                    'Location'     => '',
+                    'Country Code' => '',
+                    'Region Code`' => '',
+                    'Town'         => '',
+                    'Postal Code'  => '',
                 );
             }
 

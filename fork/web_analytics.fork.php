@@ -69,7 +69,7 @@ function fork_web_analytics($job): bool {
             );
 
 
-            if ($geolocation_data['Location'] == '') {
+            if (empty($geolocation_data['Location'])) {
 
                 if (!empty($data['server_data']['HTTP_CF_IPCOUNTRY'])) {
                     $webuser_data['location'] = '<img src="/art/flags/'.strtolower($data['server_data']['HTTP_CF_IPCOUNTRY']).'.png">';
