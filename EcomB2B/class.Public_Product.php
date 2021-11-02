@@ -409,7 +409,7 @@ class Public_Product {
 
 
                 return $price;
-                break;
+
 
             case 'Webpage RRP':
             case 'RRP':
@@ -418,6 +418,11 @@ class Public_Product {
                     return '';
                 }
 
+                if($this->data['Product Units Per Case']==0){
+                    return '';
+                }
+
+
                 $rrp = preg_replace('/PLN/', 'zł ', money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']));
                 if ($this->get('Product Units Per Case') != 1) {
                     $rrp .= '/'.$this->data['Product Unit Label'];
@@ -425,7 +430,7 @@ class Public_Product {
 
 
                 return $rrp;
-                break;
+
 
             case 'Out of Stock Label':
 
@@ -442,7 +447,7 @@ class Public_Product {
                 return $label;
 
 
-                break;
+
 
             case 'Out of Stock Class':
 
