@@ -207,9 +207,6 @@ if (!$payment_account_key) {
 <!-- add frames script -->
 <script src="https://cdn.checkout.com/js/framesv2.min.js"></script>
 
-<span class="caca">4485040371536584</span>
-
-100 x
 
 <form id="payment-form" method="POST" action="">
     <div class="one-liner">
