@@ -175,6 +175,7 @@
                         {/if}
                     {elseif $block.type=='checkout'}
                         {if $logged_in}{assign "with_checkout" 1}
+                            <span style="display:none" id="show_error"  data-show="{if isset($with_payment_error)}{$with_payment_error}{/if}"  ></span>
                             <div id="checkout">
                                 <div style="text-align: center">
                                     <i style="font-size: 60px;padding:100px" class="fa fa-spinner fa-spin"></i>

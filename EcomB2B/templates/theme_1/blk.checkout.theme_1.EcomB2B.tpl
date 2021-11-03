@@ -194,8 +194,9 @@
 
                         <div id="payment_account_item_{$block}" class="tabs-panel3" >
 
-
-                            {if $block=='BTree' }
+                            {if $block=='Checkout' }
+                                <iframe src="payment_account_checkout_iframe.php" title="Checkout" style="width: 100%;border:none;"></iframe>
+                            {elseif $block=='BTree' }
 
 
                                 <form id="BTree_saved_credit_cards_form" action="" class="sky-form {if $braintree_data.number_saved_credit_cards==0}hide{/if}" style="max-width: 500px;">
@@ -1751,4 +1752,12 @@
         'step': 2,
     });
     ga('auTracker.send', 'pageview');
+
+
+    if($('#show_error').data('show')=='yes' && '{$error_msg}'!=='' ){
+        swal({ title:"{t}Payment error{/t}!", text:'{$error_msg}', type:"error", html: true})
+    }
+
+
+
 </script>

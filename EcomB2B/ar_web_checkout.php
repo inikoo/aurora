@@ -9,11 +9,18 @@
  Version 3
 
 */
+
+use Checkout\CheckoutApi;
+use Checkout\Models\Payments\TokenSource;
+use Checkout\Models\Payments\Payment;
+
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
 require_once 'utils/aes.php';
 require_once 'utils/currency_functions.php';
 require_once 'utils/braintree_error_messages.php';
+include_once 'payment_account_checkout_common_functions.php';
+include_once 'common_web_paying_functions.php';
 
 
 $smarty               = new Smarty();
@@ -82,7 +89,6 @@ switch ($tipo) {
 
 
         if ($website->get('Website Type') == 'EcomDS') {
-
             $order         = get_object('Order', $data['order_key']);
             $order->editor = $editor;
 
@@ -94,8 +100,6 @@ switch ($tipo) {
                 echo json_encode($response);
                 exit;
             }
-
-
         }
 
 
@@ -112,7 +116,10 @@ switch ($tipo) {
 
 
         $exchange = currency_conversion(
-            $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+            $db,
+            $store->get('Store Currency Code'),
+            $account->get('Account Currency Code'),
+            '- 1440 minutes'
         );
 
 
@@ -122,7 +129,6 @@ switch ($tipo) {
 
         $credits = $customer->get('Customer Account Balance');
         if ($credits > 0) {
-
             if ($to_pay < $credits) {
                 $to_pay_credits = $to_pay;
 
@@ -130,15 +136,10 @@ switch ($tipo) {
 
 
                 $payment_account_key = $credit_payment_account->id;
-
-
             } else {
                 $to_pay_credits = $credits;
                 list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
-
             }
-
-
         }
 
         $website = get_object('Website', $_SESSION['website_key']);
@@ -184,7 +185,6 @@ switch ($tipo) {
         $website = get_object('Website', $_SESSION['website_key']);
 
         if ($website->get('Website Type') == 'EcomDS') {
-
             $order         = get_object('Order', $data['order_key']);
             $order->editor = $editor;
 
@@ -196,8 +196,6 @@ switch ($tipo) {
                 echo json_encode($response);
                 exit;
             }
-
-
         }
 
 
@@ -218,7 +216,49 @@ switch ($tipo) {
 
 
         break;
+    case 'place_order_pay_checkout':
+        $data    = prepare_values(
+            $_REQUEST, array(
+                         'payment_account_key' => array('type' => 'key'),
+                         'order_key'           => array('type' => 'key'),
+                         'token'               => array('type' => 'string'),
 
+                     )
+        );
+        $website = get_object('Website', $_SESSION['website_key']);
+
+
+        if ($website->get('Website Type') == 'EcomDS') {
+            $order         = get_object('Order', $data['order_key']);
+            $order->editor = $editor;
+
+            if ($order->get('Order Customer Key') != $customer->id) {
+                $response = array(
+                    'state' => 400,
+                    'resp'  => 'Error C_not_M'
+                );
+                echo json_encode($response);
+                exit;
+            }
+        }
+
+
+        if ($order->get('Order State') != 'InBasket') {
+            $response = array(
+                'state' => 400,
+                'resp'  => 'Error order not in basket'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $store   = get_object('Store', $order->get('Order Store Key'));
+        $account = get_object('Account', 1);
+        place_order_pay_checkout($store, $data, $order, $customer, $website, $editor, $smarty, $db, $account);
+
+
+        break;
     case 'place_order_pay_braintree':
         $data    = prepare_values(
             $_REQUEST, array(
@@ -232,7 +272,6 @@ switch ($tipo) {
 
 
         if ($website->get('Website Type') == 'EcomDS') {
-
             $order         = get_object('Order', $data['order_key']);
             $order->editor = $editor;
 
@@ -244,8 +283,6 @@ switch ($tipo) {
                 echo json_encode($response);
                 exit;
             }
-
-
         }
 
 
@@ -278,7 +315,6 @@ switch ($tipo) {
         $website = get_object('Website', $_SESSION['website_key']);
 
         if ($website->get('Website Type') == 'EcomDS') {
-
             $order         = get_object('Order', $data['order_key']);
             $order->editor = $editor;
 
@@ -290,8 +326,6 @@ switch ($tipo) {
                 echo json_encode($response);
                 exit;
             }
-
-
         }
 
 
@@ -329,9 +363,8 @@ switch ($tipo) {
 }
 
 
-function place_order_pay_braintree($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
-
-
+function place_order_pay_braintree($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account)
+{
     $order->fast_update(
         array(
             'Order Available Credit Amount' => $customer->get('Customer Account Balance')
@@ -354,17 +387,16 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
     $to_pay  = $order->get('Order To Pay Amount');
     $credits = floatval($customer->get('Customer Account Balance'));
     if ($credits > 0) {
-
-
         if ($to_pay < $credits) {
-
-
             list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay, $editor, $db, $account);
 
             place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
             $exchange = currency_conversion(
-                $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+                $db,
+                $store->get('Store Currency Code'),
+                $account->get('Account Currency Code'),
+                '- 1440 minutes'
             );
 
             $analytics_items = array();
@@ -389,10 +421,7 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
             echo json_encode($response);
             exit;
-
         }
-
-
     }
 
 
@@ -412,43 +441,14 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 
     $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
     echo json_encode($response);
-
 }
 
 
-function place_order($store, $order, $payment_account_key, $customer, $website, $editor, $smarty, $account, $db) {
 
 
-    $order->update(
-        array(
-            'Order State'                              => 'InProcess',
-            'Order Checkout Block Payment Account Key' => $payment_account_key
-        ), 'no_history'
-    );
 
-
-    include_once 'utils/new_fork.php';
-    new_housekeeping_fork(
-        'au_housekeeping', array(
-        'type'         => 'order_submitted_by_client',
-        'order_key'    => $order->id,
-        'customer_key' => $customer->id,
-
-        'editor'      => $editor,
-        'website_key' => $website->id,
-        'order_info'  => get_pay_info($order, $website, $smarty),
-        'pay_info'    => get_order_info($order),
-
-    ), $account->get('Account Code')
-    );
-
-
-}
-
-
-function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
-
-
+function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account)
+{
     $order->fast_update(
         array(
             'Order Available Credit Amount' => $customer->get('Customer Account Balance')
@@ -478,103 +478,10 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 
     $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
     echo json_encode($response);
-
 }
 
 
-/**
- * @param $order   \Public_Order
- * @param $amount
- * @param $editor
- * @param $db      \PDO
- * @param $account \Public_Account
- *
- * @return array
- */
-function pay_credit($order, $amount, $editor, $db, $account) {
 
-    include_once __DIR__.'/utils/currency_functions.php';
-
-    $store    = get_object('store', $order->get('Order Store Key'));
-    $customer = get_object('Customer', $order->get('Customer Key'));
-
-
-    $order->editor = $editor;
-
-    /**
-     * @var $payment_account \Public_Payment_Account
-     */
-    $payment_account = get_object('Payment_Account', $store->get('Store Customer Payment Account Key'));
-
-
-    $payment_account->editor = $editor;
-
-    $date     = gmdate('Y-m-d H:i:s');
-    $exchange = currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code'));
-
-    $payment_data = array(
-        'Payment Store Key'                   => $order->get('Store Key'),
-        'Payment Customer Key'                => $order->get('Customer Key'),
-        'Payment Transaction Amount'          => $amount,
-        'Payment Currency Code'               => $order->get('Currency Code'),
-        'Payment Sender'                      => $order->get('Order Invoice Address Recipient'),
-        'Payment Sender Country 2 Alpha Code' => $order->get('Order Invoice Address Country 2 Alpha Code'),
-        'Payment Sender Email'                => $order->get('Email'),
-        'Payment Sender Card Type'            => '',
-        'Payment Created Date'                => $date,
-
-        'Payment Completed Date'         => $date,
-        'Payment Last Updated Date'      => $date,
-        'Payment Transaction Status'     => 'Completed',
-        'Payment Transaction ID'         => '',
-        'Payment Method'                 => 'Account',
-        'Payment Location'               => 'Order',
-        'Payment Metadata'               => '',
-        'Payment Submit Type'            => 'AutoCredit',
-        'Payment Currency Exchange Rate' => $exchange,
-        'Payment Type'                   => 'Payment'
-
-
-    );
-
-
-    $payment = $payment_account->create_payment($payment_data);
-
-
-    $sql = sprintf(
-        'INSERT INTO `Credit Transaction Fact` 
-                    (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
-                    VALUES (%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$amount, prepare_mysql($order->get('Currency Code')), $exchange, $order->get('Order Customer Key'), $payment->id
-
-
-    );
-
-
-    $db->exec($sql);
-    $reference = $db->lastInsertId();
-    if (!$reference) {
-        throw new Exception('Error inserting CTF');
-    }
-
-    $payment->fast_update(array('Payment Transaction ID' => sprintf('%05d', $reference)));
-
-
-    $customer->update_account_balance();
-    $customer->update_credit_account_running_balances();
-
-    $order->add_payment($payment);
-    $order->update_totals();
-
-
-    return array(
-        $customer,
-        $order,
-        $payment_account,
-        $payment
-    );
-
-
-}
 
 /**
  * @param $data
@@ -584,18 +491,20 @@ function pay_credit($order, $amount, $editor, $db, $account) {
  *
  * @throws \SmartyException
  */
-function get_checkout_html($data, $website, $customer, $smarty) {
-
-
+function get_checkout_html($data, $website, $customer, $smarty)
+{
     require_once __DIR__.'/utils/aes.php';
 
     $theme = $website->get('Website Theme');
 
 
+
+
+
+
+
     if ($website->get('Website Type') == 'EcomDS') {
-
         if (empty($data['client_order_key']) or !is_numeric($data['client_order_key']) or $data['client_order_key'] <= 0) {
-
             $response = array(
                 'state' => 400,
                 'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided</div>'
@@ -628,8 +537,6 @@ function get_checkout_html($data, $website, $customer, $smarty) {
             echo json_encode($response);
             exit;
         }
-
-
     } else {
         $order = get_object('Order', $customer->get_order_in_process_key());
     }
@@ -643,7 +550,6 @@ function get_checkout_html($data, $website, $customer, $smarty) {
 
 
     if (!$order->id or ($order->get('Products') == 0)) {
-
         $response = array(
             'state' => 200,
             'html'  => $smarty->fetch('theme_1/checkout_no_order.'.$theme.'.EcomB2B.tpl'),
@@ -709,6 +615,18 @@ function get_checkout_html($data, $website, $customer, $smarty) {
     $smarty->assign('data', $block);
     $smarty->assign('labels', $website->get('Localised Labels'));
 
+
+
+    $error_msg='';
+    if(!empty($_SESSION['checkout_payment_error'])){
+        $error_msg=$_SESSION['checkout_payment_error'];
+    }
+
+
+    $smarty->assign('error_msg', $error_msg);
+    unset($_SESSION['checkout_payment_error']);
+
+
     if ($website->get('Website Type') == 'EcomDS') {
         $basket_url = '/client_basket.sys?client_id='.$order->get('Order Customer Client Key');
     } else {
@@ -724,13 +642,11 @@ function get_checkout_html($data, $website, $customer, $smarty) {
 
 
     echo json_encode($response);
-
 }
 
 
-function place_order_pay_braintree_using_saved_card($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account) {
-
-
+function place_order_pay_braintree_using_saved_card($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account)
+{
     $order->fast_update(
         array(
             'Order Available Credit Amount' => $customer->get('Customer Account Balance')
@@ -755,7 +671,6 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
 
     try {
-
         $token_data = json_decode(AESDecryptCtr($_data['data']['token'], md5('CCToken'.CKEY), 256), true);
         $token      = $token_data['t'];
 
@@ -764,7 +679,6 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
         if (!empty($_data['data']['nonce_for_card_verification'])) {
             $nonce = $_data['data']['nonce_for_card_verification'];
-
         }
 
 
@@ -775,8 +689,6 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
                   ]
         );
     } catch (Exception $e) {
-
-
         $msg = _('There was a problem with your saved card').'<br>'.sprintf(_('click in %s and provide the credit card details again'), '<b>'._('Pay with other card').'</b>');
 
         $response = array(
@@ -786,28 +698,24 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
         );
         echo json_encode($response);
         exit;
-
     }
 
 
     if ($verification_result->success) {
-
-
         $to_pay  = $order->get('Order To Pay Amount');
         $credits = floatval($customer->get('Customer Account Balance'));
         if ($credits > 0) {
-
-
             if ($to_pay < $credits) {
-
-
                 list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay, $editor, $db, $account);
 
                 place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
 
                 $exchange = currency_conversion(
-                    $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+                    $db,
+                    $store->get('Store Currency Code'),
+                    $account->get('Account Currency Code'),
+                    '- 1440 minutes'
                 );
 
 
@@ -832,10 +740,7 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
                 echo json_encode($response);
                 exit;
-
             }
-
-
         }
 
 
@@ -852,10 +757,7 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
         $response = process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty);
         echo json_encode($response);
-
     } else {
-
-
         print_r($verification_result);
 
         $response = array(
@@ -865,31 +767,23 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
         );
 
         echo json_encode($response);
-
-
     }
-
-
 }
 
 
-function get_sale_transaction_braintree_data($order, $gateway, $save_payment = false) {
-
-
+function get_sale_transaction_braintree_data($order, $gateway, $save_payment = false)
+{
     include_once 'external_libs/contact_name_parser.php';
 
 
     $braintree_customer = false;
     if ($save_payment) {
-
         try {
             $braintree_customer = $gateway->customer()->find($order->get('Order Customer Key'));
             //print_r($braintree_customer);
         } catch (Exception $e) {
             //echo 'Message: ' .$e->getMessage();
         }
-
-
     }
 
 
@@ -951,25 +845,19 @@ function get_sale_transaction_braintree_data($order, $gateway, $save_payment = f
         } else {
             $braintree_data['customer']['id'] = $order->get('Order Customer Key');
         }
-
     }
 
 
     return $braintree_data;
 }
 
-function process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty) {
-
-
+function process_braintree_order($braintree_data, $order, $gateway, $customer, $store, $website, $payment_account, $editor, $db, $account, $smarty)
+{
     try {
-
-
         $result = $gateway->transaction()->sale($braintree_data);
 
 
         if ($result->success) {
-
-
             switch ($result->transaction->paymentInstrumentType) {
                 case 'credit_card':
 
@@ -1027,14 +915,16 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             if ($credits > 0) {
                 $to_pay_credits = min($order->get('Order To Pay Amount'), $credits);
                 list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
-
             }
 
 
             place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
 
             $exchange = currency_conversion(
-                $db, $store->get('Store Currency Code'), $account->get('Account Currency Code'), '- 1440 minutes'
+                $db,
+                $store->get('Store Currency Code'),
+                $account->get('Account Currency Code'),
+                '- 1440 minutes'
             );
 
             $analytics_items = array();
@@ -1057,17 +947,11 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             );
 
             return $response;
-
-
         } else {
-
-
             $error_messages         = array();
             $error_private_messages = array();
 
             foreach ($result->errors->deepAll() as $error) {
-
-
                 $_msg = get_error_message($error->code, $error->message);
 
                 if (!(in_array(
@@ -1085,18 +969,12 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
                 $error_messages[$_msg]    = $_msg;
                 $error_private_messages[] = $error->message.' ('.$error->code.')';
-
             }
 
             if (count($error_messages) > 0) {
-
-
                 $private_message = join(', ', $error_private_messages);
             } else {
-
-
                 if ($result->transaction->status == 'processor_declined') {
-
                     $private_message = $result->transaction->processorResponseText.' ('.$result->transaction->processorResponseCode.')';
                 } elseif ($result->transaction->status == 'settlement_declined') {
                     $private_message = $result->processorSettlementResponseText->processorResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
@@ -1105,7 +983,6 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
                 } else {
                     $private_message = $result->message;
                 }
-
             }
 
 
@@ -1120,8 +997,6 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
 
             if (!empty($result->transaction)) {
-
-
                 switch ($result->transaction->paymentInstrumentType) {
                     case 'credit_card':
                         $payment_method = 'Credit Card';
@@ -1172,14 +1047,8 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
             );
 
             return $response;
-
-
         }
-
-
     } catch (Exception $e) {
-
-
         $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
 
         $response = array(
@@ -1190,17 +1059,13 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
         );
 
         return $response;
-
         //echo 'Message: ' .$e->getMessage();
     }
-
-
 }
 
 
-function delete_braintree_saved_card($_data, $editor) {
-
-
+function delete_braintree_saved_card($_data, $editor)
+{
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
 
@@ -1214,14 +1079,12 @@ function delete_braintree_saved_card($_data, $editor) {
     );
 
     try {
-
         $token_data = json_decode(AESDecryptCtr($_data['token'], md5('CCToken'.CKEY), 256), true);
         $token      = $token_data['t'];
 
         $result = $gateway->paymentMethod()->delete($token);
 
         if ($result->success) {
-
             $response = array(
 
                 'state' => 200,
@@ -1241,11 +1104,7 @@ function delete_braintree_saved_card($_data, $editor) {
             echo json_encode($response);
             exit;
         }
-
-
     } catch (Exception $e) {
-
-
         $msg = _('There was a problem deleting your card please try again later');
 
         $response = array(
@@ -1256,11 +1115,172 @@ function delete_braintree_saved_card($_data, $editor) {
         );
         echo json_encode($response);
         exit;
+    }
+}
+
+function place_order_pay_checkout($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account)
+{
+    $order->fast_update(
+        array(
+            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+        )
+    );
+
+    $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
+    $payment_account->editor = $editor;
+
+
+    $to_pay  = $order->get('Order To Pay Amount');
+    $credits = floatval($customer->get('Customer Account Balance'));
+    if ($credits > 0) {
+        if ($to_pay < $credits) {
+            list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay, $editor, $db, $account);
+
+            place_order($store, $order, $credit_payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
+
+            $exchange = currency_conversion(
+                $db,
+                $store->get('Store Currency Code'),
+                $account->get('Account Currency Code'),
+                '- 1440 minutes'
+            );
+
+            $analytics_items = array();
+            foreach ($items = $order->get_items() as $item) {
+                $analytics_items[] = $item['analytics_data'];
+            }
+
+            $response = array(
+                'state'          => 200,
+                'order_key'      => $order->id,
+                'analytics_data' => array(
+                    'id'          => $order->get('Public ID'),
+                    'affiliation' => $store->get('Name'),
+                    'revenue'     => $order->get('Order Total Amount'),
+                    'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
+                    'tax'         => $order->get('Order Total Tax Amount'),
+                    'shipping'    => $order->get('Order Shipping Net Amount'),
+                    'items'       => $analytics_items
+                )
+            );
+
+
+            echo json_encode($response);
+            exit;
+        }
+    }
+
+
+
+
+
+    $sql  =
+        "SELECT `password` FROM `Payment Account Store Bridge`    WHERE `Payment Account Store Payment Account Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
+    /** @var TYPE_NAME $db */
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        [
+            $payment_account->id
+        ]
+    );
+    $secretKey = '';
+    while ($row = $stmt->fetch()) {
+        $secretKey       = $row['password'];
+    }
+
+
+
+
+
+    // Initialize the Checkout API in Sandbox mode. Use new CheckoutApi($liveSecretKey, false); for production
+    if(ENVIRONMENT == 'DEVEL') {
+        $checkout = new CheckoutApi($secretKey);
+    }else{
+        $checkout = new CheckoutApi($secretKey,false);
+    }
+
+    // Create a payment method instance with card details
+    $method = new TokenSource($_data['token']);
+
+    // Prepare the payment parameters
+    $payment          = new Payment($method, $order->get('Order Currency'));
+    $payment->amount  = $order->get('Order Basket To Pay Amount') * 100;
+
+
+
+    $payment->threeDs = new Checkout\Models\Payments\ThreeDs(true);
+
+    $payment->reference = $order->get('Order Public ID');
+
+    if(ENVIRONMENT == 'DEVEL'){
+        $payment->success_url = 'http://ds.ir'."/au_process_checkout.php";
+        $payment->failure_url = 'http://ds.ir'."/au_process_checkout.php";
+
+    }else{
+        $payment->success_url='https://'.$website->get('Website URL')."/au_process_checkout.php";
+         $payment->failure_url='https://'.$website->get('Website URL')."/au_process_checkout.php";
 
     }
 
 
+
+    $payment->{'customer'} = [
+        'email' => $customer->get('Customer Main Plain Email'),
+        'name'  => $customer->get('Customer Name'),
+    ];
+
+    // Send the request and retrieve the response
+
+    try {
+        $response = $checkout->payments()->request($payment);
+        //print_r($response);
+
+    } catch (Exception $e) {
+        $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
+        $_SESSION['checkout_payment_error'] = strip_tags($msg);
+
+        $response = array(
+
+            'state' => 400,
+            'msg'   => $msg
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+
+
+    switch ($response->http_code) {
+        case 202:
+
+            // print_r($response);
+            // print_r($response->_links);
+            $response = array(
+
+
+                'state'    => 201,
+                'redirect' => $response->_links['redirect']['href']
+
+            );
+            echo json_encode($response);
+            exit;
+
+        case 201:
+
+            $res = process_payment_response($response, $order, $website, $payment_account, $customer,$editor,$smarty,$account,$store,$db);
+
+            if ($res['state'] == 400) {
+                $_SESSION['checkout_payment_error'] = strip_tags($res['msg']);
+            }elseif ($res['state'] == 200) {
+                setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
+
+            }
+
+            echo json_encode($res);
+            exit;
+    }
+
+
+
 }
-
-
 

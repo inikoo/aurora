@@ -107,7 +107,7 @@ class Public_Payment_Account {
 
 
         switch ($key) {
-
+/*
             case 'Payment Account ID':
                 return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_MERCHANT_ID : $this->data[$key]);
             case 'Payment Account Login':
@@ -128,7 +128,7 @@ class Public_Payment_Account {
                     return $this->data[$key];
                 }
 
-
+*/
             case 'Valid Delivery Countries':
 
                 $_tmp = array();

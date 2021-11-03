@@ -442,6 +442,14 @@ if ($webpage->get('Webpage Code') == 'register.sys' or $webpage->get('Webpage Co
 
 }
 
+$with_payment_error='no';
+if(!empty($_REQUEST['error'])  and $_REQUEST['error']=='payment'  ){
+$with_payment_error='yes';
+
+
+}
+$smarty->assign('with_payment_error',$with_payment_error);
+
 
 $smarty->assign('webpage', $webpage);
 $smarty->assign('content', sanitize($webpage->get('Content Data')));

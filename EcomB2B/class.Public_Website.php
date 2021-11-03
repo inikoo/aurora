@@ -318,18 +318,21 @@ class Public_Website {
             )
         );
         while ($row = $stmt->fetch()) {
+
             $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
 
 
             $ok = true;
             switch ($payment_account->get('Payment Account Block')) {
                 case 'BTree':
+                case 'Checkout':
                     $icon            = 'fa fa-credit-card';
                     $tab_label_index = '_credit_card_label';
                     $tab_label       = '';
                     $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
                     $analytics_label = 'Credit card';
                     break;
+                case 'Paypal':
                 case 'BTreePaypal':
                     $icon            = 'fab fa-paypal';
                     $tab_label       = 'Paypal';
@@ -337,13 +340,6 @@ class Public_Website {
                     $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
                     $analytics_label = 'Paypal';
 
-                    break;
-                case 'Paypal':
-                    $icon            = 'fab fa-paypal';
-                    $tab_label       = 'Paypal';
-                    $tab_label_index = '';
-                    $short_label     = '<i class="fab fa-paypal" aria-hidden="true"></i>';
-                    $analytics_label = 'Paypal';
                     break;
                 case 'Sofort':
                     $icon            = 'fa fa-hand-peace ';
