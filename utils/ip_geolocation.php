@@ -44,12 +44,15 @@ function get_ip_geolocation($ip, $db)
 
             // Store the data:
             $json = curl_exec($ch);
+
+
+
             curl_close($ch);
 
             // Decode JSON response:
             $api_result = json_decode($json, true);
 
-            if (isset($api_result['error'])) {
+            if (!$api_result or  isset($api_result['error'])) {
                 $sql = "insert into kbase.ip_geolocation_errors (date,data,ip,api_url) values (?,?,?,?)";
                 $db->prepare($sql)->execute(
                     [
