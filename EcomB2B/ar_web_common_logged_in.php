@@ -36,6 +36,9 @@ $logged_in = get_logged_in();
 if (!$logged_in) {
 
     if (empty($redirect_to_login)) {
+
+        print_r($_SESSION);
+
         $response = array(
             'state' => 400,
             'resp'  => 'log out'
