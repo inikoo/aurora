@@ -1213,12 +1213,12 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
     $payment->reference = $order->get('Order Public ID');
 
     if(ENVIRONMENT == 'DEVEL'){
-        $payment->success_url = 'http://ds.ir'."/au_process_checkout.php";
-        $payment->failure_url = 'http://ds.ir'."/au_process_checkout.php";
+        $payment->success_url = 'http://ds.ir'."/ar_web_process_checkout.php";
+        $payment->failure_url = 'http://ds.ir'."/ar_web_process_checkout.php";
 
     }else{
-        $payment->success_url='https://'.$website->get('Website URL')."/au_process_checkout.php";
-         $payment->failure_url='https://'.$website->get('Website URL')."/au_process_checkout.php";
+        $payment->success_url='https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
+         $payment->failure_url='https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
 
     }
 
