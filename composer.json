@@ -36,7 +36,8 @@
     "spatie/array-to-xml": "^2.16",
     "ext-dom": "*",
     "ext-fileinfo": "*",
-    "ext-zip": "*"
+    "ext-zip": "*",
+    "checkout/checkout-sdk-php": "^1.0"
   },
   "autoload": {
     "psr-4": {

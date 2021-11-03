@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b9a1b416a4b06f5dc5d77186db376e4e",
+    "content-hash": "4ef1d8737335fa1f76acb5600ce6efd3",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -204,6 +204,65 @@
                 "source": "https://github.com/braintree/braintree_php/tree/4.5.0"
             },
             "time": "2019-10-28T16:05:37+00:00"
+        },
+        {
+            "name": "checkout/checkout-sdk-php",
+            "version": "1.0.17",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/checkout/checkout-sdk-php.git",
+                "reference": "710d5701bb3d79cbae8cc47c11970a91bf59f499"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/checkout/checkout-sdk-php/zipball/710d5701bb3d79cbae8cc47c11970a91bf59f499",
+                "reference": "710d5701bb3d79cbae8cc47c11970a91bf59f499",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Checkout\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Checkout.com",
+                    "email": "platforms@checkout.com",
+                    "homepage": "https://github.com/checkout/checkout-sdk-php/graphs/contributors"
+                }
+            ],
+            "description": "Checkout.com SDK for PHP",
+            "homepage": "https://github.com/checkout/checkout-sdk-php",
+            "keywords": [
+                "CKO",
+                "GW3",
+                "Reboot",
+                "api",
+                "checkout",
+                "checkout.com",
+                "checkoutcom",
+                "gateway",
+                "library",
+                "payment",
+                "php",
+                "sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/checkout/checkout-sdk-php/issues",
+                "source": "https://github.com/checkout/checkout-sdk-php/tree/1.0.17"
+            },
+            "time": "2021-10-26T12:51:36+00:00"
         },
         {
             "name": "cloudflare/sdk",
@@ -5056,7 +5115,8 @@
         "ext-imagick": "*",
         "ext-curl": "*",
         "ext-dom": "*",
-        "ext-fileinfo": "*"
+        "ext-fileinfo": "*",
+        "ext-zip": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
