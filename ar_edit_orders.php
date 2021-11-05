@@ -9,6 +9,8 @@
 
 */
 
+use Checkout\CheckoutApi;
+
 require 'vendor/autoload.php';
 
 require_once 'utils/ar_common.php';
@@ -387,8 +389,8 @@ switch ($tipo) {
 }
 
 
-function approve_orders($db, $data, $editor) {
-
+function approve_orders($db, $data, $editor)
+{
     $number_updated = 0;
     foreach ($data['order_keys'] as $order_key) {
         $order         = get_object('Order', $order_key);
@@ -411,24 +413,18 @@ function approve_orders($db, $data, $editor) {
                 )
             );
             while ($row = $stmt->fetch()) {
-
                 $order->update(array('Replacement State' => 'Replacement Approved'), '', '{"Delivery Note Key":"'.$row['Delivery Note Key'].'"}');
 
                 if ($order->updated) {
                     $number_updated++;
                 }
             }
-
-
         }
-
-
     }
 
 
     if ($number_updated > 0) {
         $html = '<i class="fa fa-check success padding_left_5"></i>';
-
     } else {
         $html = '';
     }
@@ -441,15 +437,12 @@ function approve_orders($db, $data, $editor) {
         'msg'   => $html
     );
     echo json_encode($response);
-
-
 }
 
-function set_orders_as_dispatched($db, $data, $editor) {
-
+function set_orders_as_dispatched($db, $data, $editor)
+{
     $number_updated = 0;
     foreach ($data['order_keys'] as $order_key) {
-
         $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State`='Approved'  ";
         $stmt = $db->prepare($sql);
         $stmt->execute(
@@ -466,14 +459,11 @@ function set_orders_as_dispatched($db, $data, $editor) {
                 $number_updated++;
             }
         }
-
-
     }
 
 
     if ($number_updated > 0) {
         $html = '<i class="fa fa-check success  padding_left_5"></i>';
-
     } else {
         $html = '';
     }
@@ -486,12 +476,10 @@ function set_orders_as_dispatched($db, $data, $editor) {
         'msg'   => $html
     );
     echo json_encode($response);
-
-
 }
 
-function send_orders_to_warehouse($data, $editor, $smarty) {
-
+function send_orders_to_warehouse($data, $editor, $smarty)
+{
     $updated = [];
     foreach ($data['order_keys'] as $order_key) {
         $order         = get_object('Order', $order_key);
@@ -501,14 +489,12 @@ function send_orders_to_warehouse($data, $editor, $smarty) {
         if ($delivery_key = $order->update_state('InWarehouse')) {
             $updated[] = $delivery_key;
         }
-
     }
 
     $number_updated = count($updated);
 
     if ($number_updated > 0) {
         $html = '<i class="fa fa-check success  padding_left_5"></i>';
-
     } else {
         $html = '';
     }
@@ -524,7 +510,6 @@ function send_orders_to_warehouse($data, $editor, $smarty) {
         $html .= '</span>';
         $html .= $smarty->fetch('control_order_operation_progress_bar.tpl');
         $html .= '</div>';
-
     }
 
     $response = array(
@@ -532,16 +517,14 @@ function send_orders_to_warehouse($data, $editor, $smarty) {
         'msg'   => $html
     );
     echo json_encode($response);
-
-
 }
 
 /**
  * @param $data
  * @param $db \PDO
  */
-function cancel_purchase_order_submitted_item($data, $db) {
-
+function cancel_purchase_order_submitted_item($data, $db)
+{
     $sql  =
         "select `Purchase Order Transaction Operator Key`,`Purchase Order Submitted SKOs Per Carton`,`Purchase Order Submitted Units Per SKO`,`Purchase Order Transaction Fact Key`,`Purchase Order Key`,`Purchase Order Transaction State`,`Purchase Order Submitted Units` ,`Supplier Delivery Units` ,`Supplier Delivery Transaction State` ,`Purchase Order Submitted Cancelled Units`, `Purchase Order Transaction Part SKU` ,`Supplier Part Key` from `Purchase Order Transaction Fact` where `Purchase Order Transaction Fact Key`=?";
     $stmt = $db->prepare($sql);
@@ -569,8 +552,6 @@ function cancel_purchase_order_submitted_item($data, $db) {
          */
         $purchase_order = get_object('Purchase_Order', $row['Purchase Order Key']);
         if ($purchase_order->id) {
-
-
             $old_state = $purchase_order->get('Purchase Order State');
 
             $unit_qty = ($row['Supplier Delivery Units'] == '' ? 0 : $row['Supplier Delivery Units']);
@@ -592,7 +573,6 @@ function cancel_purchase_order_submitted_item($data, $db) {
                 } else {
                     $cbm = null;
                 }
-
             }
 
 
@@ -604,8 +584,6 @@ function cancel_purchase_order_submitted_item($data, $db) {
                 } else {
                     $weight = null;
                 }
-
-
             }
 
             $sql = "update `Purchase Order Transaction Fact` set `Purchase Order Submitted Cancelled Units`=?,`Purchase Order Last Updated Date`=?,`Purchase Order Net Amount`=? ,
@@ -651,9 +629,7 @@ function cancel_purchase_order_submitted_item($data, $db) {
                     $ordered_units   = ' '.number($unit_qty);
                     $ordered_skos    = ' '.number($unit_qty / $units_per_sko, 3);
                     $ordered_cartons = ' '.number($unit_qty / $units_per_carton, 3);
-
                 }
-
             } else {
                 $ordered_units   = number($unit_qty);
                 $ordered_skos    = number($unit_qty / $units_per_sko, 3);
@@ -680,17 +656,24 @@ function cancel_purchase_order_submitted_item($data, $db) {
                     'Action'           => 'edited'
                 );
                 $purchase_order->add_subject_history(
-                    $history_data, true, 'No', 'Changes', $purchase_order->get_object_name(), $purchase_order->id
+                    $history_data,
+                    true,
+                    'No',
+                    'Changes',
+                    $purchase_order->get_object_name(),
+                    $purchase_order->id
                 );
-
             }
 
             require_once 'utils/new_fork.php';
             new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'          => 'update_operative_stats',
-                'operative_key' => $row['Purchase Order Transaction Operator Key'],
-            ), DNS_ACCOUNT_CODE, $db
+                'au_housekeeping',
+                array(
+                    'type'          => 'update_operative_stats',
+                    'operative_key' => $row['Purchase Order Transaction Operator Key'],
+                ),
+                DNS_ACCOUNT_CODE,
+                $db
             );
 
             $response = array(
@@ -722,8 +705,6 @@ function cancel_purchase_order_submitted_item($data, $db) {
             );
             echo json_encode($response);
             exit;
-
-
         } else {
             $response = array(
                 'state' => 400,
@@ -732,7 +713,6 @@ function cancel_purchase_order_submitted_item($data, $db) {
             echo json_encode($response);
             exit;
         }
-
     } else {
         $response = array(
             'state' => 400,
@@ -741,13 +721,11 @@ function cancel_purchase_order_submitted_item($data, $db) {
         echo json_encode($response);
         exit;
     }
-
-
 }
 
 
-function clone_order($data, $editor) {
-
+function clone_order($data, $editor)
+{
     /**
      * @var $order        Order
      * @var $target_order Order
@@ -759,29 +737,22 @@ function clone_order($data, $editor) {
 
     if ($target_order_key) {
         $target_order = get_object('Order', $target_order_key);
-
     }
 
     if (!(isset($target_order) and $target_order->id)) {
         $target_order = $customer->create_order('{}');
-
     }
     $target_order->editor = $editor;
     $target_items_data    = array();
     foreach ($target_order->get_items() as $_item) {
-
         $target_items_data[$_item['product_id']] = $_item['qty'];
-
     }
 
 
     $items = $order->get_items();
 
     foreach ($items as $item) {
-
         if ($item['webpage_state'] == 'Online') {
-
-
             if (array_key_exists($item['product_id'], $target_items_data) and $target_items_data[$item['product_id']] <= $item['qty']) {
                 $skip = true;
             } else {
@@ -790,8 +761,6 @@ function clone_order($data, $editor) {
 
 
             if ($item['qty'] > 0 and !$skip) {
-
-
                 $quantity = $item['qty'];
 
 
@@ -814,13 +783,8 @@ function clone_order($data, $editor) {
 
 
                 $target_order->update_item($data);
-
-
             }
-
         }
-
-
     }
 
 
@@ -831,15 +795,14 @@ function clone_order($data, $editor) {
     );
     echo json_encode($response);
     exit;
-
 }
 
 /**
  * @param $data
  * @param $db \PDO
  */
-function update_po_item_note($data, $db) {
-
+function update_po_item_note($data, $db)
+{
     $note = trim(strip_tags($data['note']));
 
     $sql = "update  `Purchase Order Transaction Fact` set `Note to Supplier`=? where `Purchase Order Transaction Fact Key`=?";
@@ -856,7 +819,6 @@ function update_po_item_note($data, $db) {
     );
     echo json_encode($response);
     exit;
-
 }
 
 /**
@@ -864,15 +826,13 @@ function update_po_item_note($data, $db) {
  * @param $editor
  * @param $data
  */
-function edit_item_in_order(PDO $db, $editor, $data) {
-
-
+function edit_item_in_order(PDO $db, $editor, $data)
+{
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
 
     if ($data['parent'] == 'order') {
-
         /**
          * @var $parent \Order
          */
@@ -886,7 +846,6 @@ function edit_item_in_order(PDO $db, $editor, $data) {
         )) {
             $dispatching_state = 'Ready to Pick';
         } else {
-
             $dispatching_state = 'In Process';
         }
 
@@ -895,8 +854,6 @@ function edit_item_in_order(PDO $db, $editor, $data) {
         $data['Current Dispatching State'] = $dispatching_state;
         $data['Current Payment State']     = $payment_state;
         $data['Metadata']                  = '';
-
-
     }
 
 
@@ -912,14 +869,13 @@ FROM `Order Transaction Fact` OTF left join
     `Order Transaction Deal Bridge` B on (OTF.`Order Transaction Fact Key`=B.`Order Transaction Fact Key`) left join  
     `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
 
-WHERE OTF.`Order Key`=%s ', $parent->id
+WHERE OTF.`Order Key`=%s ',
+            $parent->id
         );
 
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
-
-
                 if (in_array(
                     $parent->get('Order State'), array(
                                                    'Cancelled',
@@ -933,11 +889,15 @@ WHERE OTF.`Order Key`=%s ', $parent->id
                     $discounts_class = 'button';
                     $discounts_input = sprintf(
                         '<span class="hide order_item_percentage_discount_form" data-settings=\'{ "field": "Percentage" ,"transaction_key":"%d","item_key":%d, "item_historic_key":%d ,"on":1 }\'   ><input class="order_item_percentage_discount_input" style="width: 70px" value="%s"> <i class="fa save fa-cloud" aria-hidden="true"></i></span>',
-                        $row['Order Transaction Fact Key'], $row['Product ID'], $row['Product Key'], percentage($row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'])
+                        $row['Order Transaction Fact Key'],
+                        $row['Product ID'],
+                        $row['Product Key'],
+                        percentage($row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'])
                     );
                 }
                 $discounts = $discounts_input.'<span class="order_item_percentage_discount   '.$discounts_class.' '.($row['Order Transaction Total Discount Amount'] == 0 ? 'super_discreet' : '').'"><span style="padding-right:5px">'.percentage(
-                        $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount']
+                        $row['Order Transaction Total Discount Amount'],
+                        $row['Order Transaction Gross Amount']
                     ).'</span> <span class="'.($row['Order Transaction Total Discount Amount'] == 0 ? 'hide' : '').'">'.money($row['Order Transaction Total Discount Amount'], $row['Order Currency Code']).'</span></span>';
 
 
@@ -959,7 +919,6 @@ WHERE OTF.`Order Key`=%s ', $parent->id
                 } elseif ($row['Product Number of Parts'] > 1) {
                     $packing .= '<span class="dicreet italic">'._('Multi part').'</span>';
                 } else {
-
                     if ($row['Product Units Per Case'] != 1 and $row['Product Units Per Case'] != $properties['packing_sko']) {
                         $packing .= '<i class="fa-fw fal fa-stop-circle" title="'._('Units').'"></i>';
 
@@ -976,7 +935,6 @@ WHERE OTF.`Order Key`=%s ', $parent->id
                     if ($properties['packing_batch'] > 0) {
                         $packing .= '<i class="padding_left_5 fa-fw fal fa-fill-drip" title="'._('Batch').'"></i> '.number($row['Order Quantity'] * $properties['packing_batch']);
                     }
-
                 }
 
 
@@ -995,18 +953,13 @@ WHERE OTF.`Order Key`=%s ', $parent->id
                         'item_net'  => money($row['Order Transaction Amount'], $row['Order Currency Code'])
                     );
                 }
-
-
             }
         }
 
         $update_metadata                 = $parent->get_update_metadata();
         $update_metadata['deleted_otfs'] = $parent->deleted_otfs;
         $update_metadata['new_otfs']     = $parent->new_otfs;
-
-
     } else {
-
         $update_metadata = $parent->get_update_metadata();
     }
 
@@ -1017,7 +970,6 @@ WHERE OTF.`Order Key`=%s ', $parent->id
             'msg'   => $parent->msg
         );
     } else {
-
         $response = array(
             'state'            => 200,
             'transaction_data' => $transaction_data,
@@ -1026,12 +978,11 @@ WHERE OTF.`Order Key`=%s ', $parent->id
         );
     }
     echo json_encode($response);
-
 }
 
 
-function set_shipping_value($data, $editor) {
-
+function set_shipping_value($data, $editor)
+{
     /** @var Order $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
@@ -1074,13 +1025,10 @@ function set_shipping_value($data, $editor) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
-
 }
 
-function set_shipping_as_auto($data, $editor) {
-
-
+function set_shipping_as_auto($data, $editor)
+{
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
@@ -1122,13 +1070,11 @@ function set_shipping_as_auto($data, $editor) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
-
 }
 
 
-function set_hanging_charges_value($data, $editor) {
-
+function set_hanging_charges_value($data, $editor)
+{
     /** @var Order $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
@@ -1171,13 +1117,11 @@ function set_hanging_charges_value($data, $editor) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
-
 }
 
-function set_hanging_charges_as_auto($data, $editor) {
-
-    /** @var Order  $order */
+function set_hanging_charges_as_auto($data, $editor)
+{
+    /** @var Order $order */
     $order         = get_object('order', $data['order_key']);
     $order->editor = $editor;
 
@@ -1218,14 +1162,11 @@ function set_hanging_charges_as_auto($data, $editor) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
-
 }
 
 
-function set_order_handler($type, $data, $editor, $smarty, $db) {
-
-
+function set_order_handler($type, $data, $editor, $smarty, $db)
+{
     $dn         = get_object('delivery_note', $data['delivery_note_key']);
     $dn->editor = $editor;
 
@@ -1252,12 +1193,10 @@ function set_order_handler($type, $data, $editor, $smarty, $db) {
 
 
     echo json_encode($response);
-
 }
 
-function set_state($data, $editor, $smarty, $db) {
-
-
+function set_state($data, $editor, $smarty, $db)
+{
     $object         = get_object($data['object'], $data['key']);
     $object->editor = $editor;
 
@@ -1272,34 +1211,26 @@ function set_state($data, $editor, $smarty, $db) {
     );
 
     echo json_encode($response);
-
 }
 
-function new_payment($data, $editor, $db, $account, $user) {
-
+function new_payment($data, $editor, $db, $account, $user)
+{
     include_once 'utils/currency_functions.php';
 
 
     $payback_refund = false;
 
     if ($data['parent'] == 'invoice' or $data['parent'] == 'refund') {
-
         $invoice = get_object($data['parent'], $data['parent_key']);
 
         if ($invoice->get('Invoice Type') == 'Refund') {
-
             $payback_refund = true;
             $data['amount'] = -1 * $data['amount'];
-
-
         }
 
         $order = get_object('Order', $invoice->get('Invoice Order Key'));
-
-
     } else {
         $order = get_object('Order', $data['parent_key']);
-
     }
 
 
@@ -1341,8 +1272,6 @@ function new_payment($data, $editor, $db, $account, $user) {
 
 
     if ($payment_account->get('Payment Account Block') == 'Accounts' and !$payback_refund) {
-
-
         if ($customer->get('Customer Account Balance') < $data['amount']) {
             $response = array(
                 'state' => 400,
@@ -1351,14 +1280,12 @@ function new_payment($data, $editor, $db, $account, $user) {
             echo json_encode($response);
             exit;
         }
-
     }
 
 
     $payment = $payment_account->create_payment($payment_data);
 
     if ($payment_account->get('Payment Account Block') == 'Accounts') {
-
         $sql = "INSERT INTO `Credit Transaction Fact` 
                     (`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
                     VALUES (?,?,?,?,?,?)";
@@ -1384,8 +1311,6 @@ function new_payment($data, $editor, $db, $account, $user) {
 
         $customer->update_account_balance();
         $customer->update_credit_account_running_balances();
-
-
     }
 
 
@@ -1393,7 +1318,6 @@ function new_payment($data, $editor, $db, $account, $user) {
     $order->update_totals();
 
     if (!$payback_refund) {
-
         $invoice = get_object('invoice', $order->get('Order Invoice Key'));
     }
 
@@ -1408,17 +1332,17 @@ function new_payment($data, $editor, $db, $account, $user) {
     $payments_xhtml = '';
 
     foreach ($order->get_payments('objects', 'Completed') as $payment) {
-
-
         if ($payment->payment_account->get('Payment Account Block') == 'Accounts') {
             $_code = _('Credit');
         } else {
             $_code = $payment->get('Payment Account Code');
-
         }
 
         $payments_xhtml .= sprintf(
-            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id, $_code, $payment->get('Transaction Amount')
+            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>',
+            '/order/'.$order->id.'/payment/'.$payment->id,
+            $_code,
+            $payment->get('Transaction Amount')
 
         );
     }
@@ -1459,21 +1383,17 @@ function new_payment($data, $editor, $db, $account, $user) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
-
 }
 
 
-function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
-
+function edit_item_discount($account, $db, $user, $editor, $data, $smarty)
+{
     /** @var Order $parent */
     $parent         = get_object('Order', $data['parent_key']);
     $parent->editor = $editor;
 
 
     if ($data['field'] == 'Percentage') {
-
-
         $percentage       = $data['value'];
         $transaction_data = $parent->update_transaction_discount_percentage($data['transaction_key'], $percentage);
     } else {
@@ -1487,7 +1407,6 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
             'msg'   => $parent->msg
         );
     } else {
-
         $response = array(
             'state'            => 200,
             'transaction_data' => $transaction_data,
@@ -1495,12 +1414,11 @@ function edit_item_discount($account, $db, $user, $editor, $data, $smarty) {
         );
     }
     echo json_encode($response);
-
 }
 
 
-function refund_payment($data, $editor, $smarty, $db, $account, $user) {
-
+function refund_payment($data, $editor, $smarty, $db, $account, $user)
+{
     include_once 'utils/currency_functions.php';
 
 
@@ -1526,9 +1444,81 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                 case 'Online':
 
                     switch ($payment_account->get('Payment Account Block')) {
+                        case 'Checkout':
+
+                            $sql =
+                                "SELECT `password` FROM `Payment Account Store Bridge`    WHERE `Payment Account Store Payment Account Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
+                            /** @var TYPE_NAME $db */
+                            $stmt = $db->prepare($sql);
+                            $stmt->execute(
+                                [
+                                    $payment_account->id
+                                ]
+                            );
+                            $secretKey = '';
+                            while ($row = $stmt->fetch()) {
+                                $secretKey = $row['password'];
+                            }
+
+
+                            if (ENVIRONMENT == 'DEVEL') {
+                                $checkout = new CheckoutApi($secretKey);
+                            } else {
+                                $checkout = new CheckoutApi($secretKey, false);
+                            }
+
+
+                            // Partial capture: $payment->amount = 999;
+                            $_payment         = new Checkout\Models\Payments\Refund($payment->data['Payment Transaction ID']);
+                            $_payment->amount = $data['amount'] * 100;
+
+                            try {
+                                $_refund = $checkout->payments()->refund($_payment);
+                            } catch (Exception $e) {
+
+                                $response = array(
+                                    'state' => 400,
+                                    'msg'   => $e->getMessage()
+                                );
+                                echo json_encode($response);
+                                exit;
+
+                            }
+
+
+
+                            if ($_refund->http_code == 202) {
+                                $reference = $_refund->action_id;
+                                $metadata  = json_encode($_refund);
+                            } else {
+                                $msg = 'Error refund could not been processed';
+                                switch ($_refund->http_code) {
+                                    case 422:
+                                        $msg = 'Error: '.$_refund->error_type;
+                                        break;
+                                    case 403:
+                                        $msg = 'Refund not allowed';
+                                        break;
+                                    case 404:
+                                        $msg = 'Payment not found';
+                                        break;
+                                }
+
+
+                                $response = array(
+                                    'state' => 400,
+                                    'msg'   => $msg
+                                );
+                                echo json_encode($response);
+                                exit;
+                            }
+
+
+                            break;
                         case 'BTree':
                         case 'BTreePaypal':
 
+                            $metadata = '';
 
                             $gateway = new Braintree_Gateway(
                                 [
@@ -1550,18 +1540,12 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
                                     $result = $gateway->transaction()->refund($payment->data['Payment Transaction ID'], $data['amount']);
                                     if ($result->success) {
-
                                         $reference = $result->transaction->id;
-
-
                                     } else {
-
                                         if (isset($result->transaction->processorSettlementResponseText)) {
                                             $msg = $result->transaction->processorSettlementResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
-
                                         } else {
                                             $msg = $result->message;
-
                                         }
 
 
@@ -1571,8 +1555,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                                         );
                                         echo json_encode($response);
                                         exit;
-
-
                                     }
 
                                     break;
@@ -1592,18 +1574,12 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
                                     $result = $gateway->transaction()->void($payment->data['Payment Transaction ID']);
                                     if ($result->success) {
-
                                         $reference = $result->transaction->id;
-
-
                                     } else {
-
                                         if (isset($result->transaction->processorSettlementResponseText)) {
                                             $msg = $result->transaction->processorSettlementResponseText.' ('.$result->transaction->processorSettlementResponseCode.')';
-
                                         } else {
                                             $msg = $result->message;
-
                                         }
 
 
@@ -1613,8 +1589,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                                         );
                                         echo json_encode($response);
                                         exit;
-
-
                                     }
 
 
@@ -1627,8 +1601,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
                                     echo json_encode($response);
                                     exit;
-
-
                             }
 
 
@@ -1656,7 +1628,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                     );
                     echo json_encode($response);
                     exit;
-
             }
             $store = get_object('Store', $order->get('Store Key'));
 
@@ -1680,7 +1651,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
                 'Payment Transaction ID'                 => $reference,
                 'Payment Method'                         => $payment->get('Payment Method'),
                 'Payment Location'                       => 'Order',
-                'Payment Metadata'                       => '',
+                'Payment Metadata'                       => $metadata,
                 'Payment Submit Type'                    => ($data['submit_type'] == 'Online' ? 'EPS' : 'Manual'),
                 'Payment Currency Exchange Rate'         => currency_conversion($db, $order->get('Currency Code'), $account->get('Currency Code')),
                 'Payment Related Payment Key'            => $payment->id,
@@ -1693,7 +1664,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
             if ($data['parent'] == 'Invoice') {
                 $payment_data['Payment Invoice Key'] = $data['parent_key'];
                 $payment_data['Payment Type']        = 'Refund';
-
             } else {
                 $payment_data['Payment Type'] = 'Return';
             }
@@ -1750,7 +1720,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
             if ($data['parent'] == 'Invoice') {
                 $payment_data['Payment Invoice Key'] = $data['parent_key'];
                 $payment_data['Payment Type']        = 'Refund';
-
             } else {
                 $payment_data['Payment Type'] = 'Return';
             }
@@ -1806,7 +1775,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
         $invoice = get_object('invoice', $data['payback_refund']);
     } else {
         $invoice = get_object('invoice', $order->get('Invoice Order Key'));
-
     }
 
     if ($invoice->id) {
@@ -1821,7 +1789,9 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
 
     foreach ($order->get_payments('objects', 'Completed') as $payment) {
         $payments_xhtml .= sprintf(
-            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>', '/order/'.$order->id.'/payment/'.$payment->id, $payment->get('Payment Account Code'),
+            '<div class="payment node"><span class="node_label link" onClick="change_view(\'%s\')" >%s</span><span class="node_amount" >%s</span></div>',
+            '/order/'.$order->id.'/payment/'.$payment->id,
+            $payment->get('Payment Account Code'),
             $payment->get('Transaction Amount')
 
         );
@@ -1863,14 +1833,11 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user) {
         'metadata' => $metadata
     );
     echo json_encode($response);
-
-
 }
 
 
-function create_refund($data, $editor) {
-
-
+function create_refund($data, $editor)
+{
     $object         = get_object('order', $data['key']);
     $object->editor = $editor;
 
@@ -1895,13 +1862,11 @@ function create_refund($data, $editor) {
 
 
     echo json_encode($response);
-
 }
 
 
-function create_refund_tax_only($data, $editor) {
-
-
+function create_refund_tax_only($data, $editor)
+{
     $object         = get_object('order', $data['key']);
     $object->editor = $editor;
 
@@ -1926,12 +1891,11 @@ function create_refund_tax_only($data, $editor) {
 
 
     echo json_encode($response);
-
 }
 
 
-function create_replacement($data, $editor) {
-
+function create_replacement($data, $editor)
+{
     /**
      * @var  $order Order
      */
@@ -1958,13 +1922,11 @@ function create_replacement($data, $editor) {
 
 
     echo json_encode($response);
-
 }
 
 
-function create_return($data, $editor) {
-
-
+function create_return($data, $editor)
+{
     $object         = get_object('order', $data['key']);
     $object->editor = $editor;
 
@@ -1988,13 +1950,11 @@ function create_return($data, $editor) {
 
 
     echo json_encode($response);
-
 }
 
 
-function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db) {
-
-
+function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db)
+{
     $sql = sprintf(
         'select SPD.`Supplier Part Historic Key`,`Supplier Delivery Units`,`Supplier Delivery Key`,`Purchase Order Submitted Unit Extra Cost Percentage`,`Purchase Order Submitted Unit Cost`,`Supplier Part Unit Extra Cost Percentage`,`Purchase Order Transaction State`,`Purchase Order Key`,`Purchase Order Transaction Fact Key`,`Supplier Part Unit Cost`,`Purchase Order Submitted Units`,`Supplier Part Currency Code` from `Purchase Order Transaction Fact` POTF left join `Supplier Part Dimension` SPD  on (POTF.`Supplier Part Key`=SPD.`Supplier Part Key`) where `Purchase Order Transaction Fact Key`=%d ',
         $data['transaction_key']
@@ -2002,8 +1962,6 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-
             // $supplier_part = get_object('Supplier_Part', $row['Supplier Part Key']);
 
 
@@ -2019,7 +1977,6 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
             $supplier_part_historic_key = $row['Supplier Part Historic Key'];
 
             switch ($row['Purchase Order Transaction State']) {
-
                 case 'Cancelled':
                     $response = array(
                         'state' => 400,
@@ -2032,7 +1989,6 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                 default:
 
                     if ($data['type'] == 'cost') {
-
                         //todo $supplier_part_historic_key is not necessary tru can be other this can be a mess, $supplier_part_historic_keys should come from the UI
 
                         $unit_cost = $row['Supplier Part Unit Cost'];
@@ -2047,10 +2003,7 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                                 $row['Purchase Order Transaction Fact Key']
                             )
                         );
-
-
                     } elseif ($data['type'] == 'extra_cost') {
-
                         $extra_unit_cost = $row['Supplier Part Unit Extra Cost Percentage'];
                         $sql             = "update `Purchase Order Transaction Fact` set `Purchase Order Submitted Unit Extra Cost Percentage`=?  where `Purchase Order Transaction Fact Key`=?";
 
@@ -2060,15 +2013,12 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                                 $row['Purchase Order Transaction Fact Key']
                             )
                         );
-
-
                     }
 
                     if ($row['Supplier Delivery Key']) {
                         $delivery = get_object('Supplier Delivery', $row['Supplier Delivery Key']);
 
                         if ($data['type'] == 'cost') {
-
                             $sql = "update `Purchase Order Transaction Fact` set `Supplier Delivery Net Amount`=? where `Purchase Order Transaction Fact Key`=?";
 
                             $db->prepare($sql)->execute(
@@ -2077,16 +2027,13 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                                     $row['Purchase Order Transaction Fact Key']
                                 )
                             );
-
                         }
 
                         $delivery->update_totals();
-
                     }
 
 
                     break;
-
             }
 
             $purchase_order->update_totals();
@@ -2096,10 +2043,7 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
 
             if ($row['Supplier Part Currency Code'] != $account->get('Account Currency')) {
-
-
                 $amount .= ' <span >('.money($net_amount * $purchase_order->get('Purchase Order Currency Exchange'), $account->get('Account Currency')).')</span>';
-
             }
 
             if ($unit_cost != $row['Supplier Part Unit Cost']) {
@@ -2140,11 +2084,7 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
                 $update_metadata['class_html']['Supplier_Delivery_AC_Subtotal_Amount']    = $delivery->get('AC Subtotal Amount');
                 $update_metadata['class_html']['Supplier_Delivery_AC_Extra_Costs_Amount'] = $delivery->get('AC Extra Costs Amount');
                 $update_metadata['class_html']['Supplier_Delivery_AC_Total_Amount']       = $delivery->get('AC Total Amount');
-
-
             }
-
-
             // exit;
         }
     } else {
@@ -2161,14 +2101,11 @@ function set_po_transaction_amount_to_current_cost($data, $editor, $account, $db
 
     echo json_encode($response);
     exit;
-
-
 }
 
 
-function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, $db, $account, $user) {
-
-
+function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, $db, $account, $user)
+{
     include_once 'utils/order_handing_functions.php';
 
     $total_required       = 0;
@@ -2182,14 +2119,14 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
     $sql      = sprintf(
         'SELECT PL.`Location Key` as pl_ok  ,ITF.`Location Key`, sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys 
         FROM `Inventory Transaction Fact` ITF    LEFT JOIN  `Part Location Dimension` PL ON  (ITF.`Location Key`=PL.`Location Key` and ITF.`Part SKU`=PL.`Part SKU`)
-        WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ', $data['metadata']['delivery_note_key'], $data['metadata']['part_sku']
+        WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
+        $data['metadata']['delivery_note_key'],
+        $data['metadata']['part_sku']
     );
 
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-
             $itf_data[$row['Location Key']] = array(
                 'required' => $row['required'],
                 'picked'   => 0,
@@ -2210,21 +2147,34 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
 
     $part = get_object('part', $data['metadata']['part_sku']);
     foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
-
-
         $locations .= '<div style="height: 32px">'.get_delivery_note_fast_track_packing_item_location(
 
-                'Yes', $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), 1, $part_location->part->id,
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
+                'Yes',
+                $total_required - $total_picked,
+                $part_location->get('Quantity On Hand'),
+                $date,
+                $part_location->location->id,
+                $part_location->location->get('Code'),
+                $part_location->part->get('Part Current On Hand Stock'),
+                1,
+                $part_location->part->id,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $data['metadata']['delivery_note_key']
             ).'</div>';
 
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_delivery_note_fast_track_packing_input(
-                'Yes', $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
-                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
+                'Yes',
+                $total_required,
+                $total_picked,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
+                $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->id, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $part_location->part->id,
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->location->id
             ).'</div>';
-
     }
 
 
@@ -2236,12 +2186,11 @@ function get_input_delivery_note_packing_all_locations($data, $editor, $smarty, 
 
     echo json_encode($response);
     exit;
-
 }
 
 
-function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $account, $user) {
-
+function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $account, $user)
+{
     include_once 'utils/order_handing_functions.php';
 
     $total_required       = 0;
@@ -2254,13 +2203,12 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
     $itf_data = array();
     $sql      = sprintf(
         'SELECT `Location Key`,sum(`Picked`) as picked,  sum(`Required`+`Given`) AS required ,group_concat(`Inventory Transaction Key`) as itf_keys FROM `Inventory Transaction Fact` ITF   WHERE   `Delivery Note Key`=%d  and  ITF.`Part SKU`=%d  group by `Location Key` ',
-        $data['metadata']['delivery_note_key'], $data['metadata']['part_sku']
+        $data['metadata']['delivery_note_key'],
+        $data['metadata']['part_sku']
     );
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
-
             $itf_data[$row['Location Key']] = array(
                 'required' => $row['required'],
                 'picked'   => $row['picked'],
@@ -2281,25 +2229,37 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
 
     $part = get_object('part', $data['metadata']['part_sku']);
     foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
-
-
         //     $pending, $quantity_on_location, $date_picked,
         // $location_key, $location_code,
         // $part_stock, $part_barcode,$part_distinct_locations, $part_sku,
         // $itf_key,$delivery_note_key ) {
 
         $locations .= '<div style="height: 32px">'.get_item_location(
-                $total_required - $total_picked, $part_location->get('Quantity On Hand'), $date, $part_location->location->id, $part_location->location->get('Code'), $part_location->part->get('Part Current On Hand Stock'), $part_location->part->get('Part SKO Barcode'),
-                1, $part_location->part->id, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $data['metadata']['delivery_note_key']
+                $total_required - $total_picked,
+                $part_location->get('Quantity On Hand'),
+                $date,
+                $part_location->location->id,
+                $part_location->location->get('Code'),
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->part->get('Part SKO Barcode'),
+                1,
+                $part_location->part->id,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $data['metadata']['delivery_note_key']
             ).'</div>';
         //function get_picked_offline_input($total_required,$total_picked,$picked_in_location, $quantity_on_location, $itf_key, $part_sku,  $part_stock) {
         $picked_offline_input .= '<div style="margin-bottom: 4px">'.get_picked_offline_input(
-                $total_required, $total_picked, (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
-                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0), $part_location->get('Quantity On Hand'),
+                $total_required,
+                $total_picked,
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['picked'] : 0),
+                ($part_location->get('Can Pick') == 'Yes' ? (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['pending'] : 0) : 0),
+                $part_location->get('Quantity On Hand'),
 
-                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''), $part_location->part->id, $part_location->part->get('Part Current On Hand Stock'), $part_location->location->id
+                (isset($itf_data[$part_location->location->id]) ? $itf_data[$part_location->location->id]['itf_keys'] : ''),
+                $part_location->part->id,
+                $part_location->part->get('Part Current On Hand Stock'),
+                $part_location->location->id
             ).'</div>';
-
     }
 
 
@@ -2311,12 +2271,11 @@ function get_picked_offline_input_all_locations($data, $editor, $smarty, $db, $a
 
     echo json_encode($response);
     exit;
-
 }
 
 
-function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
-
+function toggle_charge($data, $editor, $smarty, $db, $account, $user)
+{
     $order = get_object($data['parent'], $data['parent_key']);
     if (!$order->id) {
         $response = array(
@@ -2351,14 +2310,9 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
 
 
     if ($data['operation'] == 'add_charge') {
-
         $transaction_data = $order->add_charge($charge);
-
-
     } else {
         $transaction_data = $order->remove_charge($charge);
-
-
     }
 
 
@@ -2395,17 +2349,13 @@ function toggle_charge($data, $editor, $smarty, $db, $account, $user) {
         'charge_scope'     => $charge->get('Charge Scope')
     );
     echo json_encode($response);
-
-
 }
 
-function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user) {
-
-
+function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, $account, $user)
+{
     $sql = sprintf('select * from `Order Transaction Deal Bridge` where `Order Transaction Deal Key`=%d ', $data['order_transaction_deal_bridge_key']);
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-
             if ($row['Product ID'] == $data['product_id']) {
                 $response = array(
                     'state' => 400,
@@ -2423,7 +2373,6 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
 
 
             if (!array_key_exists($data['product_id'], $allowance_data['options'])) {
-
                 $response = array(
                     'state' => 400,
                     'msg'   => 'product not in offer'
@@ -2447,7 +2396,10 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
 
 
             $deal_info = sprintf(
-                "%s: %s, %s", ($deal->get('Deal Name Label') == '' ? _('Offer') : $deal->get('Deal Name Label')), (!empty($deal->get('Deal Term Label')) ? $deal->get('Deal Term Label') : ''), $deal_component->get('Deal Component Allowance Label')
+                "%s: %s, %s",
+                ($deal->get('Deal Name Label') == '' ? _('Offer') : $deal->get('Deal Name Label')),
+                (!empty($deal->get('Deal Term Label')) ? $deal->get('Deal Term Label') : ''),
+                $deal_component->get('Deal Component Allowance Label')
 
             );
 
@@ -2456,8 +2408,13 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
 
 
             $sql = sprintf(
-                'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ', $product->id, $product->get('Product Current Key'),
-                $product->get('Product Family Category Key'), prepare_mysql('{"selected": "'.$product->id.'"}'), prepare_mysql($deal_info), $data['order_transaction_deal_bridge_key']
+                'update `Order Transaction Deal Bridge` set `Product ID`=%d,`Product Key`=%d,`Category Key`=%d,`Order Transaction Deal Metadata`=%s,`Deal Info`=%s where `Order Transaction Deal Key`=%d  ',
+                $product->id,
+                $product->get('Product Current Key'),
+                $product->get('Product Family Category Key'),
+                prepare_mysql('{"selected": "'.$product->id.'"}'),
+                prepare_mysql($deal_info),
+                $data['order_transaction_deal_bridge_key']
             );
 
             $db->exec($sql);
@@ -2468,9 +2425,7 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
 
             if ($product->get('Product Availability State') == 'OnDemand') {
                 $stock = _('On demand');
-
             } else {
-
                 if (is_numeric($product->get('Product Availability'))) {
                     $stock = number($product->get('Product Availability'));
                 } else {
@@ -2554,22 +2509,18 @@ function toggle_deal_component_choose_by_customer($data, $editor, $smarty, $db, 
                 'transaction_deal_data' => $transaction_deal_data
             );
             echo json_encode($response);
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
         exit;
     }
-
-
 }
 
 
-function update_delivery_note_picking_locations($data, $editor) {
-
-    /** @var  $delivery_note \DeliveryNote*/
+function update_delivery_note_picking_locations($data, $editor)
+{
+    /** @var  $delivery_note \DeliveryNote */
     $delivery_note         = get_object('delivery_note', $data['delivery_note_key']);
     $delivery_note->editor = $editor;
     $delivery_note->update_delivery_note_picking_locations();
@@ -2588,5 +2539,4 @@ function update_delivery_note_picking_locations($data, $editor) {
 
 
     echo json_encode($response);
-
 }
