@@ -11,7 +11,8 @@
 */
 
 
-class Public_Website {
+class Public_Website
+{
 
     public $editor = array(
         'Author Name'  => false,
@@ -21,8 +22,8 @@ class Public_Website {
         'Date'         => false
     );
 
-    function __construct($a1, $a2 = false, $a3 = false) {
-
+    function __construct($a1, $a2 = false, $a3 = false)
+    {
         global $db;
         $this->db = $db;
 
@@ -34,24 +35,24 @@ class Public_Website {
             $this->get_data('id', $a1);
         } elseif ($a1 == 'find') {
             $this->find($a2, $a3);
-
         } else {
             $this->get_data($a1, $a2);
         }
     }
 
 
-    function get_data($tag, $key) {
-
-
+    function get_data($tag, $key)
+    {
         if ($tag == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Website Dimension` WHERE `Website Key`=%d", $key
+                "SELECT * FROM `Website Dimension` WHERE `Website Key`=%d",
+                $key
             );
         } else {
             if ($tag == 'code') {
                 $sql = sprintf(
-                    "SELECT  * FROM `Website Dimension` WHERE `Website Code`=%s ", prepare_mysql($key)
+                    "SELECT  * FROM `Website Dimension` WHERE `Website Code`=%s ",
+                    prepare_mysql($key)
                 );
             } else {
                 return;
@@ -67,7 +68,6 @@ class Public_Website {
             if (empty($this->data['Website Settings'])) {
                 $this->settings = array();
             } else {
-
                 //  echo setlocale(LC_NUMERIC, 0);
 
 
@@ -91,14 +91,11 @@ class Public_Website {
             } else {
                 $this->mobile_style = json_decode($this->data['Website Mobile Style'], true);
             }
-
         }
-
-
     }
 
-    function get_webpage($code) {
-
+    function get_webpage($code)
+    {
         if ($code == '') {
             $code = 'home.sys';
         }
@@ -107,14 +104,14 @@ class Public_Website {
         $webpage = new Public_Webpage('website_code', $this->id, $code);
 
         return $webpage;
-
-
     }
 
-    function get_system_webpage_key($code) {
-
+    function get_system_webpage_key($code)
+    {
         $sql = sprintf(
-            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d  ', prepare_mysql($code), $this->id
+            'SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Code`=%s AND `Webpage Website Key`=%d  ',
+            prepare_mysql($code),
+            $this->id
         );
 
 
@@ -129,12 +126,10 @@ class Public_Website {
             print "$sql\n";
             exit;
         }
-
     }
 
-    function get_categories($type = 'families', $output = 'data') {
-
-
+    function get_categories($type = 'families', $output = 'data')
+    {
         global $store;
 
         $categories = array();
@@ -169,19 +164,16 @@ class Public_Website {
                 return $categories;
                 break;
         }
-
     }
 
-    function get($key = '') {
-
-
+    function get($key = '')
+    {
         if (!$this->id) {
             return '';
         }
 
 
         switch ($key) {
-
             case 'Footer Data':
             case 'Footer Published Data':
 
@@ -190,8 +182,6 @@ class Public_Website {
 
                 if ($result = $this->db->query($sql)) {
                     if ($row = $result->fetch()) {
-
-
                         return json_decode($row['data'], true);
                     } else {
                         return false;
@@ -288,26 +278,23 @@ class Public_Website {
                 );
                 if ($row = $stmt->fetch()) {
                     return $row['Store Currency Code'];
-                }else{
+                } else {
                     return '';
                 }
-
-
         }
-
-
     }
 
-    function settings($key) {
+    function settings($key)
+    {
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
-    function get_payment_accounts($delivery_2alpha_country = '', $options = '') {
-
+    function get_payment_accounts($delivery_2alpha_country = '', $options = '')
+    {
         $payments_accounts = array();
 
         $sql =
-            "SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ORDER BY `Payment Account Store Show Cart Order`";
+            "SELECT `Payment Account Store Payment Account Key`,`hide` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ORDER BY `Payment Account Store Show Cart Order`";
 
 
         $stmt = $this->db->prepare($sql);
@@ -318,7 +305,6 @@ class Public_Website {
             )
         );
         while ($row = $stmt->fetch()) {
-
             $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
 
 
@@ -373,38 +359,35 @@ class Public_Website {
                     break;
                 default:
                     $ok = false;
-
             }
 
             if ($options == 'top_up') {
                 if (!($payment_account->get('Payment Account Block') == 'BTree' or $payment_account->get('Payment Account Block') == 'BTreePaypal')) {
                     $ok = false;
                 }
-
             }
 
 
             if ($ok) {
-
                 $payments_accounts[] = array(
                     'object'          => $payment_account,
                     'icon'            => $icon,
                     'tab_label_index' => $tab_label_index,
                     'tab_label'       => $tab_label,
                     'short_label'     => $short_label,
-                    'analytics_label' => $analytics_label
+                    'analytics_label' => $analytics_label,
+                    'hide'            => $row['hide']
                 );
             }
         }
 
 
         return $payments_accounts;
-
     }
 
 
-    function create_user($data) {
-
+    function create_user($data)
+    {
         include_once 'class.Public_Website_User.php';
 
         $this->new = false;
@@ -417,17 +400,11 @@ class Public_Website {
         $user = new Public_Website_User('new', $data);
 
         if ($user->id) {
-
             if ($user->new) {
-
-
                 return $user;
-
-
             } else {
                 $this->error = true;
                 $this->msg   = $user->msg;
-
             }
 
             return $user;
@@ -438,8 +415,8 @@ class Public_Website {
     }
 
 
-    function get_poll_queries($webpage, $customer_key = 0) {
-
+    function get_poll_queries($webpage, $customer_key = 0)
+    {
         $poll_queries = array();
 
         switch ($webpage->get('Webpage Code')) {
@@ -453,26 +430,26 @@ class Public_Website {
                 break;
             default:
                 return array();
-
         }
 
 
         $sql = sprintf(
             'SELECT `Customer Poll Query Key`,`Customer Poll Query Label`,`Customer Poll Query Type`,`Customer Poll Query Options`,`Customer Poll Query Registration Required` FROM `Customer Poll Query Dimension` WHERE `Customer Poll Query Store Key`=%d  %s ORDER BY `Customer Poll Query Position`',
-            $this->data['Website Store Key'], $where
+            $this->data['Website Store Key'],
+            $where
 
         );
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
                 if ($row['Customer Poll Query Type'] == 'Options') {
-
                     if ($row['Customer Poll Query Options'] < 2) {
                         continue;
                     }
                     $options = array();
                     $sql     = sprintf(
-                        'SELECT `Customer Poll Query Option Key`,`Customer Poll Query Option Label` FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Query Key`=%d ORDER BY `Customer Poll Query Option Label` ', $row['Customer Poll Query Key']
+                        'SELECT `Customer Poll Query Option Key`,`Customer Poll Query Option Label` FROM `Customer Poll Query Option Dimension` WHERE `Customer Poll Query Option Query Key`=%d ORDER BY `Customer Poll Query Option Label` ',
+                        $row['Customer Poll Query Key']
                     );
                     if ($result2 = $this->db->query($sql)) {
                         foreach ($result2 as $row2) {
@@ -503,7 +480,6 @@ class Public_Website {
                         }
                     }
                     $row['Reply'] = $reply;
-
                 } else {
                     $reply = '';
                     if ($customer_key) {
@@ -519,7 +495,6 @@ class Public_Website {
                         }
                     }
                     $row['Reply'] = $reply;
-
                 }
 
 
@@ -532,7 +507,6 @@ class Public_Website {
         }
 
         return $poll_queries;
-
     }
 
 }
