@@ -150,6 +150,9 @@
                 <ul class="tabs3">
 
                     {foreach from=$payment_accounts item=payment_account key=key}
+
+
+                        {if $payment_account.hide!='yes'}
                         <li>
                             <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self" data-analytics_label="{$payment_account.analytics_label}" class="payment_option_chooser" >
 
@@ -158,7 +161,7 @@
                                 <span>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</span>
                             </a>
                         </li>
-
+                        {/if}
                     {/foreach}
 
                 </ul>
