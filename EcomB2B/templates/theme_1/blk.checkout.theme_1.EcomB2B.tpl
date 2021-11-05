@@ -158,7 +158,7 @@
 
 
                                 <i class="{$payment_account.icon}" aria-hidden="true"></i>
-                                <span>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</span>
+                                <span>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}  {$payment_account.hide} </span>
                             </a>
                         </li>
                         {/if}
