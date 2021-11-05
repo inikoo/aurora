@@ -1475,18 +1475,18 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
                            // print_r($_payment->amount );
                            // exit;
 
-                          //  try {
+                            try {
                                 $_refund = $checkout->payments()->refund($_payment);
-                         //   } catch (Exception $e) {
+                            } catch (Exception $e) {
 
-                        //        $response = array(
-                         //           'state' => 400,
-                        //            'msg'   => $e->getMessage()
-                        //        );
-                        //        echo json_encode($response);
-                        //        exit;
+                                $response = array(
+                                    'state' => 400,
+                                   'msg'   => $e->getMessage()
+                                );
+                              echo json_encode($response);
+                                exit;
 
-                         //   }
+                            }
 
 
                             if ($_refund->http_code == 202) {
