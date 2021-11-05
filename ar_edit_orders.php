@@ -1470,7 +1470,10 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
 
                             // Partial capture: $payment->amount = 999;
                             $_payment         = new Checkout\Models\Payments\Refund($payment->data['Payment Transaction ID']);
-                            $_payment->amount = $data['amount'] * 100;
+                            $_payment->amount = (integer) round($data['amount'],2) * 100;
+
+                           // print_r($_payment->amount );
+                           // exit;
 
                           //  try {
                                 $_refund = $checkout->payments()->refund($_payment);
@@ -1484,7 +1487,6 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
                         //        exit;
 
                          //   }
-
 
 
                             if ($_refund->http_code == 202) {
