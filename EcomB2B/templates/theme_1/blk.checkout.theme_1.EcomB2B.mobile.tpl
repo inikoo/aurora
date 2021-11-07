@@ -76,13 +76,14 @@
                 {foreach from=$payment_accounts item=payment_account key=key name=foo}
 
 
+                    {if $payment_account.hide!='yes'}
 
 
                     <a   data-analytics_label="{$payment_account.analytics_label}" class="but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .2"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
                         <i class="{$payment_account.icon}" aria-hidden="true"></i>
                         <em>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</em>
                     </a>
-
+                    {/if}
 
                 {/foreach}
 
