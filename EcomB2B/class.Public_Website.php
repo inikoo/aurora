@@ -362,7 +362,7 @@ class Public_Website
             }
 
             if ($options == 'top_up') {
-                if (!($payment_account->get('Payment Account Block') == 'BTree' or $payment_account->get('Payment Account Block') == 'BTreePaypal')) {
+                if (!($payment_account->get('Payment Account Block') == 'BTree' or $payment_account->get('Payment Account Block') == 'BTreePaypal' or $payment_account->get('Payment Account Block') == 'Checkout')) {
                     $ok = false;
                 }
             }
