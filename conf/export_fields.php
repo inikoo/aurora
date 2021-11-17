@@ -119,6 +119,11 @@ function get_export_fields($element, $account_currency_code = ''): array
                 )
             ),
             array(
+                'name'    => '`Customer First Contacted Date`',
+                'label'   => _('Creation date'),
+                'checked' => 0
+            ),
+            array(
                 'name'    => '`Customer Last Order Date`',
                 'label'   => _('Last order date'),
                 'checked' => 0
