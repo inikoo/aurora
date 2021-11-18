@@ -97,7 +97,11 @@ $stmt->execute(
     array()
 );
 
+
 while ($row = $stmt->fetch()) {
+    $country = new Country('code', $row['Product Origin Country Code']);
+
+
     $totalNumberLines++;
     $items[] = [
         'itemNumber'          => $totalNumberLines,
@@ -106,14 +110,16 @@ while ($row = $stmt->fetch()) {
             'SUCode'  => ''
         ],
         'MSConsDestCode'      => $row['Delivery Note Address Country 2 Alpha Code'],
-        'countryOfOriginCode' => $row['Product Origin Country Code'],
-        'netMass'             => $row['weight'],
+        'countryOfOriginCode' => $country->get('Country 2 Alpha Code'),
+        'netMass'             => ceil($row['weight']),
         'NatureOfTransaction' => [
             'natureOfTransactionACode' => 1,
+            'natureOfTransactionBCode' => 1,
+
         ],
-        'modeOfTransportCode'=>3,
-        'DeliveryTerms'=>[
-            'TODCode'=>'EXW'
+        'modeOfTransportCode' => 3,
+        'DeliveryTerms'       => [
+            'TODCode' => 'EXW'
         ],
         'invoicedAmount'      => floor($row['value']),
         'partnerId'           => ''
