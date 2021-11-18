@@ -442,7 +442,7 @@ class SupplierDelivery extends DB_Table {
                         break;
                 }
 
-                break;
+
             case 'Progress':
 
                 switch ($this->data['Supplier Delivery State']) {
