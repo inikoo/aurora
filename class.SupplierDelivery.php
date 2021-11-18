@@ -391,39 +391,38 @@ class SupplierDelivery extends DB_Table {
                 switch ($this->data['Supplier Delivery State']) {
                     case 'InProcess':
                         return 10;
-                        break;
 
                     case 'Consolidated':
                         return 20;
-                        break;
+
 
 
                     case 'Dispatched':
                         return 30;
-                        break;
+
                     case 'Received':
                         return 40;
-                        break;
+
                     case 'Checked':
                         return 50;
-                        break;
+
                     case 'Placed':
                         return 100;
-                        break;
+
                     case 'Costing':
                         return 105;
-                        break;
+
                     case 'InvoiceChecked':
                         return 110;
-                        break;
+
                     case 'Cancelled':
                         return -10;
-                        break;
+
                     default:
                         return 0;
-                        break;
+
                 }
-                break;
+
 
             case 'Progress Date':
 
