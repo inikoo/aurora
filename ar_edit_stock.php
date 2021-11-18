@@ -348,11 +348,15 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     $sql = sprintf(
         'select ANY_VALUE(`Supplier Part Part SKU`) as `Supplier Part Part SKU`,
         ANY_VALUE(`Purchase Order Transaction Fact Key`) as `Purchase Order Transaction Fact Key`,
-        ANY_VALUE(`Metadata`) as `Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ', $delivery->id
+        ANY_VALUE(`Metadata`) as `Metadata` from `Purchase Order Transaction Fact`  POTF left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) where `Supplier Delivery Key`=%d group by `Supplier Part Part SKU` ',
+        $delivery->id
     );
     if ($result = $db->query($sql)) {
         $all_parts_min_date = '';
         foreach ($result as $row) {
+
+
+
 
             $amount_paid = (($data['items_data'][$row['Supplier Part Part SKU']][0] + $data['items_data'][$row['Supplier Part Part SKU']][1]) / $data['exchange']) + $data['items_data'][$row['Supplier Part Part SKU']][2];
             $sql         = sprintf(
@@ -397,10 +401,6 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 
                             }
-                        } else {
-                            print_r($error_info = $db->errorInfo());
-                            print "$sql\n";
-                            exit;
                         }
 
 
@@ -421,7 +421,9 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                             );
                             $db->exec($sql);
 
-                            $sql = sprintf('insert into `ITF POTF Costing Done Bridge`  values (%d,%d)  ', $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']);
+                            $sql = sprintf('insert into `ITF POTF Costing Done Bridge`   (`ITF POTF Costing Done ITF Key`,`ITF POTF Costing Done POTF Key`) values (%d,%d)  ', $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']);
+
+
                             $db->exec($sql);
 
 
@@ -436,10 +438,6 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
 
 
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        print "$sql\n";
-        exit;
     }
 
     $delivery->fast_update(

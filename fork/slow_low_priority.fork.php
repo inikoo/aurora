@@ -199,7 +199,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
                         foreach ($result as $row) {
 
 
-                            print_r($row);
+                          //  print_r($row);
 
 
                             $part->update_field_switcher('Part Cost in Warehouse', $row['value_per_sko'], 'no_history');
