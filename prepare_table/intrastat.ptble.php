@@ -157,7 +157,7 @@ $fields = "
 sum(`Delivery Note Quantity`*`Product Units Per Case`) as items,
 count(distinct OTF.`Product ID`) as products,
 count(distinct OTF.`Order Key`) as orders,
-
+`Product Origin Country Code`,
 sum(`Invoice Currency Exchange Rate`*`Order Transaction Amount`) as value,
 	sum(`Delivery Note Quantity`*`Product Package Weight`) as weight ,
 	LEFT(`Product Tariff Code`,8) as tariff_code, min(`Delivery Note Date`) as min_date , `Delivery Note Date` , `Delivery Note Address Country 2 Alpha Code`,

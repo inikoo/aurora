@@ -8,6 +8,7 @@ Copyright (c) 2021, Inikoo
 
 Version 2.0
 */
+
 /** @var Account $account */
 
 /** @var User $user */
@@ -32,7 +33,6 @@ if (isset($_SESSION['table_state'][$tab])) {
     $f_value         = $_SESSION['table_state'][$tab]['f_value'];
     $parameters      = $_SESSION['table_state'][$tab];
 } else {
-
     $default = $user->get_tab_defaults($tab);
 
     $number_results  = $default['rpp'];
@@ -41,8 +41,6 @@ if (isset($_SESSION['table_state'][$tab])) {
     $order_direction = ($default['sort_order'] == 1 ? 'desc' : '');
     $f_value         = '';
     $parameters      = $default;
-
-
 }
 
 
@@ -59,7 +57,7 @@ $flowCode            = 'D';
 $functionCode        = 'O';
 
 
-$report_ID= 'AA'.date('ym', $date);
+$report_ID = 'AA'.date('ym', $date);
 
 $data = [
     'envelopeId'        => $report_ID,
@@ -90,7 +88,6 @@ $data = [
 ];
 
 
-
 $totalNumberLines         = 0;
 $totalNumberDetailedLines = '';
 
@@ -103,13 +100,23 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
     $totalNumberLines++;
     $items[] = [
-        'itemNumber'     => $totalNumberLines,
-        'CN8'            => [
+        'itemNumber'          => $totalNumberLines,
+        'CN8'                 => [
             'CN8Code' => $row['tariff_code'],
+            'SUCode'  => ''
         ],
-        'MSConsDestCode' => $row['Delivery Note Address Country 2 Alpha Code'],
-        'invoicedAmount' => floor($row['value']),
-        'partnerId'      => ''
+        'MSConsDestCode'      => $row['Delivery Note Address Country 2 Alpha Code'],
+        'countryOfOriginCode' => $row['Product Origin Country Code'],
+        'netMass'             => $row['weight'],
+        'NatureOfTransaction' => [
+            'natureOfTransactionACode' => 1,
+        ],
+        'modeOfTransportCode'=>3,
+        'DeliveryTerms'=>[
+            'TODCode'=>'EXW'
+        ],
+        'invoicedAmount'      => floor($row['value']),
+        'partnerId'           => ''
     ];
 }
 
@@ -183,14 +190,17 @@ $array = [
 ];
 
 $result = ArrayToXml::convert(
-    $array, [
-    'rootElementName' => 'INSTAT',
-    '_attributes'     => [
-        'xmlns:xsi'                     => 'http://www.w3.org/2001/XMLSchema-instance',
-        'xsi:noNamespaceSchemaLocation' => 'instat62.xsd',
+    $array,
+    [
+        'rootElementName' => 'INSTAT',
+        '_attributes'     => [
+            'xmlns:xsi'                     => 'http://www.w3.org/2001/XMLSchema-instance',
+            'xsi:noNamespaceSchemaLocation' => 'instat62.xsd',
 
-    ]
-], true, 'UTF-8'
+        ]
+    ],
+    true,
+    'UTF-8'
 );
 
 
