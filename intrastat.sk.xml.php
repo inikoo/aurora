@@ -99,6 +99,17 @@ $stmt->execute(
 
 
 while ($row = $stmt->fetch()) {
+    if ($row['value'] <= 0 or !$row['value']  ) {
+        continue;
+    }
+
+    if ($row['value'] > 1) {
+        $invoiced_amount = floor($row['value']);
+    } else {
+        $invoiced_amount = ceil($row['value']);
+    }
+
+
     $country = new Country('code', $row['Product Origin Country Code']);
 
 
