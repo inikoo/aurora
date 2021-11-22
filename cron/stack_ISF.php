@@ -44,7 +44,7 @@ $intervals = array(
     '1 Week',
 );
 
-$sql = "SELECT count(*) AS num FROM `Stack Dimension`  where `Stack Operation`='update_isf'";
+$sql = "SELECT count(*) AS num FROM `Stack BiKey Dimension`  where `Stack BiKey Operation`='update_part_location_isf' ";
 
 $stmt = $db->prepare($sql);
 $stmt->execute();
@@ -59,10 +59,10 @@ $lap_time0 = date('U');
 $lap_time1 = date('U');
 
 $contador = 0;
-
+//update_part_location_isf
 
 $sql = sprintf(
-    "SELECT `Stack BiKey Object Key One`,`Stack BiKey Object Key Two` FROM `Stack BiKey Dimension`  where `Stack BiKey Operation`='update_ISF' ORDER BY RAND()"
+    "SELECT `Stack BiKey Object Key One`,`Stack BiKey Object Key Two` FROM `Stack BiKey Dimension`  where `Stack BiKey Operation`='update_part_location_isf' ORDER BY RAND()"
 );
 
 if ($result = $db->query($sql)) {

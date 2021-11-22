@@ -139,3 +139,4 @@ cron/set_up_web_menu.php
 /cron/customers_emails.csv
 /cron/create_customer_list_from_cvs_emails.php
 /cron/syncro_es_parts.php
+/cron/fix_costing.php
