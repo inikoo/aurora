@@ -1091,8 +1091,8 @@ function fork_housekeeping($job)
             $store = get_object('Store', $order->get('Store Key'));
 
 
-            $store->update_orders();
-            $account->update_orders();
+           // $store->update_orders();
+           // $account->update_orders();
 
 
             break;
@@ -1117,10 +1117,10 @@ function fork_housekeeping($job)
                 $customer_client->update_customer_client_orders();
             }
 
-            $store->update_customers_data();
-            $store->update_orders();
+          //  $store->update_customers_data();
+          //  $store->update_orders();
 
-            $account->update_orders();
+          //  $account->update_orders();
 
 
             break;
