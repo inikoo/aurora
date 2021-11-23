@@ -221,7 +221,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
 
 
                 $part->update_stock_run();
-               // $part->update_part_inventory_snapshot_fact($from_date);
+                $part->update_part_inventory_snapshot_fact($from_date);
 
 
             }
@@ -230,7 +230,7 @@ where  `Inventory Transaction Amount`>0 and `Inventory Transaction Quantity`>0  
             if ($result2 = $db->query($sql)) {
                 foreach ($result2 as $row2) {
                     $warehouse = get_object('Warehouse', $row2['Warehouse Key']);
-                  //  $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
+                    $warehouse->update_inventory_snapshot($data['all_parts_min_date'], gmdate('Y-m-d'));
                 }
             }
 
