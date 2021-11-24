@@ -1470,22 +1470,20 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
 
                             // Partial capture: $payment->amount = 999;
                             $_payment         = new Checkout\Models\Payments\Refund($payment->data['Payment Transaction ID']);
-                            $_payment->amount = (integer) round($data['amount'],2) * 100;
+                            $_payment->amount = (integer)(round($data['amount'], 2) * 100);
 
-                           // print_r($_payment->amount );
-                           // exit;
+                            // print_r($_payment->amount );
+                            // exit;
 
                             try {
                                 $_refund = $checkout->payments()->refund($_payment);
                             } catch (Exception $e) {
-
                                 $response = array(
                                     'state' => 400,
-                                   'msg'   => $e->getMessage()
+                                    'msg'   => $e->getMessage()
                                 );
-                              echo json_encode($response);
+                                echo json_encode($response);
                                 exit;
-
                             }
 
 
