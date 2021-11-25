@@ -1,0 +1,1 @@
+ALTER TABLE `Order Dimension` CHANGE `aiku_note` `aiku_note` enum('ignore-basket','ignore-zombie-client') NULL COMMENT '';

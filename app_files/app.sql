@@ -829,8 +829,12 @@ CREATE TABLE `Account Dimension` (
   `Account Add Stock Value Type` enum('Last Price','Blockchain') NOT NULL DEFAULT 'Blockchain',
   `Account Default Warehouse` smallint unsigned NOT NULL DEFAULT '1',
   `Account Label Signature` varchar(255) DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_token` varchar(255) DEFAULT NULL,
+  `aiku_nickname` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Account Key`),
-  KEY `Account Currency` (`Account Currency`)
+  KEY `Account Currency` (`Account Currency`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1437,7 +1441,10 @@ CREATE TABLE `Agent Dimension` (
   `Agent Metadata` json DEFAULT NULL,
   `Agent Main Image Key` mediumint unsigned DEFAULT NULL,
   `Agent Number Images` smallint unsigned DEFAULT '0',
-  PRIMARY KEY (`Agent Key`)
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_token` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Agent Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1634,8 +1641,10 @@ CREATE TABLE `Attachment Dimension` (
   `Attachment File Checksum` varchar(32) NOT NULL,
   `Attachment File Size` mediumint unsigned NOT NULL,
   `Attachment Thumbnail Image Key` mediumint unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Attachment Key`),
-  UNIQUE KEY `Attachment Checksum` (`Attachment File Checksum`)
+  UNIQUE KEY `Attachment Checksum` (`Attachment File Checksum`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1676,12 +1685,14 @@ CREATE TABLE `Back in Stock Reminder Fact` (
   `Back in Stock Reminder Store Key` mediumint unsigned NOT NULL,
   `Back in Stock Reminder Creation Date` datetime NOT NULL,
   `Back in Stock Reminder Ready Date` datetime DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Back in Stock Reminder Key`),
   UNIQUE KEY `Back in Stock Reminder Custome_2` (`Back in Stock Reminder Customer Key`,`Back in Stock Reminder Product ID`),
   KEY `Back in Stock Reminder State` (`Back in Stock Reminder State`),
   KEY `Back in Stock Reminder Dimension Product ID` (`Back in Stock Reminder Product ID`),
   KEY `Back in Stock Reminder Customer Key` (`Back in Stock Reminder Customer Key`) USING BTREE,
-  KEY `Back in Stock Reminder Store Key` (`Back in Stock Reminder Store Key`)
+  KEY `Back in Stock Reminder Store Key` (`Back in Stock Reminder Store Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1882,6 +1893,7 @@ CREATE TABLE `Category Dimension` (
   `Category Number History Records` mediumint unsigned NOT NULL DEFAULT '0',
   `Category Properties` json DEFAULT NULL,
   `Category Shopify Key` mediumint unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Category Key`),
   UNIQUE KEY `Category Code` (`Category Code`,`Category Root Key`),
   KEY `Category Default` (`Category Default`),
@@ -1895,7 +1907,8 @@ CREATE TABLE `Category Dimension` (
   KEY `Category Locked` (`Category Locked`),
   KEY `Category Name` (`Category Code`(20)),
   KEY `Category Scope` (`Category Scope`),
-  KEY `Category Shopify Key` (`Category Shopify Key`)
+  KEY `Category Shopify Key` (`Category Shopify Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1975,12 +1988,14 @@ CREATE TABLE `Charge Dimension` (
   `Charge Total Acc Customers` mediumint unsigned NOT NULL DEFAULT '0',
   `Charge Total Acc Amount` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Charge Number History Records` smallint unsigned NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Charge Key`),
   KEY `x` (`Charge Trigger`,`Charge Trigger Key`),
   KEY `z` (`Charge Type`),
   KEY `Charge Active` (`Charge Active`),
   KEY `Store Key` (`Store Key`),
-  KEY `Charge Store Key` (`Charge Store Key`)
+  KEY `Charge Store Key` (`Charge Store Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2287,6 +2302,7 @@ CREATE TABLE `Customer Client Dimension` (
   `Customer Client Number History Records` smallint unsigned NOT NULL DEFAULT '0',
   `Customer Client Metadata` json DEFAULT NULL,
   `Customer Client Shopify Key` int unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Client Key`) USING BTREE,
   UNIQUE KEY `Customer Client Customer Key_2` (`Customer Client Customer Key`,`Customer Client Code`),
   KEY `Customer Client Store Key` (`Customer Client Store Key`),
@@ -2302,7 +2318,8 @@ CREATE TABLE `Customer Client Dimension` (
   KEY `Customer Client Customer Key` (`Customer Client Customer Key`),
   KEY `Customer Client Code` (`Customer Client Code`),
   KEY `Customer Client Status` (`Customer Client Status`),
-  KEY `Customer Client Shopify Key` (`Customer Client Shopify Key`)
+  KEY `Customer Client Shopify Key` (`Customer Client Shopify Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2428,7 +2445,9 @@ CREATE TABLE `Customer Deleted Dimension` (
   `Customer Card` text NOT NULL,
   `Customer Deleted Date` datetime NOT NULL,
   `Customer Deleted Note` text NOT NULL,
-  PRIMARY KEY (`Customer Key`)
+  `aiku_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`Customer Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2576,6 +2595,7 @@ CREATE TABLE `Customer Dimension` (
   `Customer Shopify Key` int unsigned DEFAULT NULL,
   `Customer Number Products` mediumint unsigned NOT NULL DEFAULT '0',
   `Customer Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Key`) USING BTREE,
   KEY `Customer Store Key` (`Customer Store Key`),
   KEY `Customer Name` (`Customer Name`),
@@ -2591,7 +2611,8 @@ CREATE TABLE `Customer Dimension` (
   KEY `Customer With Orders` (`Customer With Orders`),
   KEY `Customer Shopify Key` (`Customer Shopify Key`),
   KEY `Customer Fulfilment` (`Customer Fulfilment`),
-  KEY `Customer Store Key_2` (`Customer Store Key`,`Customer Orders`)
+  KEY `Customer Store Key_2` (`Customer Store Key`,`Customer Orders`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2608,9 +2629,11 @@ CREATE TABLE `Customer Favourite Product Fact` (
   `Customer Favourite Product Customer Key` mediumint NOT NULL,
   `Customer Favourite Product Product ID` mediumint NOT NULL,
   `Customer Favourite Product Creation Date` datetime DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Favourite Product Key`),
   UNIQUE KEY `Customer Favourite Product Store Key` (`Customer Favourite Product Store Key`,`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`),
-  KEY `Customer Favourite Product Customer Key` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`)
+  KEY `Customer Favourite Product Customer Key` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3016,6 +3039,7 @@ CREATE TABLE `Customer Portfolio Fact` (
   `Customer Portfolio Amount` decimal(16,2) NOT NULL DEFAULT '0.00',
   `Customer Portfolio Shopify Key` int unsigned DEFAULT NULL,
   `Customer Portfolio Shopify State` enum('Linked','Unlinked','NA') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'NA',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Portfolio Key`),
   UNIQUE KEY `Customer Portfolio Customer Key` (`Customer Portfolio Customer Key`,`Customer Portfolio Product ID`) USING BTREE,
   UNIQUE KEY `Customer Portfolio Customer Ke_2` (`Customer Portfolio Customer Key`,`Customer Portfolio Reference`),
@@ -3024,7 +3048,8 @@ CREATE TABLE `Customer Portfolio Fact` (
   KEY `Customer Portfolio Customers State` (`Customer Portfolio Customers State`),
   KEY `Customer Portfolio Reference` (`Customer Portfolio Reference`),
   KEY `Customer Portfolio Product ID` (`Customer Portfolio Product ID`),
-  KEY `Customer Portfolio Shopify Key` (`Customer Portfolio Shopify Key`)
+  KEY `Customer Portfolio Shopify Key` (`Customer Portfolio Shopify Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3040,9 +3065,11 @@ CREATE TABLE `Customer Portfolio Timeline` (
   `Customer Portfolio Timeline Customer Portfolio Key` int unsigned NOT NULL,
   `Customer Portfolio Timeline Action` enum('Add','Remove') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Customer Portfolio Timeline Date` datetime NOT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Customer Portfolio Timeline Key`),
   KEY `Customer Portfolio Timeline Customer Portfolio Key` (`Customer Portfolio Timeline Customer Portfolio Key`),
-  KEY `Customer Portfolio Timeline Action` (`Customer Portfolio Timeline Action`)
+  KEY `Customer Portfolio Timeline Action` (`Customer Portfolio Timeline Action`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3544,6 +3571,7 @@ CREATE TABLE `Delivery Note Dimension` (
   `Delivery Note Picking Bands Date` datetime DEFAULT NULL,
   `Delivery Note Picking Band Amount` decimal(12,2) DEFAULT NULL,
   `Delivery Note Packing Band Amount` decimal(12,2) DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Delivery Note Key`),
   KEY `Metadata` (`Delivery Note Metadata`(12)),
   KEY `Delivery Note Type` (`Delivery Note Type`),
@@ -3565,7 +3593,8 @@ CREATE TABLE `Delivery Note Dimension` (
   KEY `Delivery Note UUID` (`Delivery Note UUID`),
   KEY `Delivery Note Kind` (`Delivery Note Kind`),
   KEY `Delivery Note External Invoicer Key` (`Delivery Note External Invoicer Key`),
-  KEY `Delivery Note Consignment Key` (`Delivery Note Consignment Key`)
+  KEY `Delivery Note Consignment Key` (`Delivery Note Consignment Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3906,6 +3935,7 @@ CREATE TABLE `Email Tracking Dimension` (
   `Email Tracking Spam` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Email Tracking Unsubscribed` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Email Tracking Thread` smallint unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Email Tracking Key`),
   KEY `Email Tracking SES Id` (`Email Tracking SES Id`),
   KEY `Email Tracking Email Template Type Key` (`Email Tracking Email Template Type Key`),
@@ -3914,7 +3944,8 @@ CREATE TABLE `Email Tracking Dimension` (
   KEY `Email Tracking State` (`Email Tracking State`),
   KEY `Email Tracking Unsubscribed` (`Email Tracking Unsubscribed`,`Email Tracking Email Template Type Key`),
   KEY `Email Tracking Spam` (`Email Tracking Spam`,`Email Tracking Email Template Type Key`),
-  KEY `Email Tracking State_2` (`Email Tracking State`,`Email Tracking Email Template Type Key`)
+  KEY `Email Tracking State_2` (`Email Tracking State`,`Email Tracking Email Template Type Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3949,9 +3980,11 @@ CREATE TABLE `Email Tracking Event Dimension` (
   `Email Tracking Event Date` datetime DEFAULT NULL,
   `Email Tracking Event Data` mediumtext CHARACTER SET utf8 COLLATE utf8_unicode_ci,
   `Email Tracking Event Message ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Email Tracking Event Key`),
   KEY `Email Tracking Event Tracking Key` (`Email Tracking Event Tracking Key`),
-  KEY `Email Tracking Event Message ID` (`Email Tracking Event Message ID`)
+  KEY `Email Tracking Event Message ID` (`Email Tracking Event Message ID`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4122,7 +4155,7 @@ DROP TABLE IF EXISTS `Fulfilment Asset Dimension`;
 CREATE TABLE `Fulfilment Asset Dimension` (
   `Fulfilment Asset Key` int unsigned NOT NULL AUTO_INCREMENT,
   `Fulfilment Asset State` enum('InProcess','Received','BookedIn','BookedOut','Invoiced','Lost') NOT NULL DEFAULT 'InProcess',
-  `Fulfilment Asset Type` enum('Pallet','Box') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pallet',
+  `Fulfilment Asset Type` enum('Pallet','Box','Oversize') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Pallet',
   `Fulfilment Asset Warehouse Key` mediumint unsigned NOT NULL,
   `Fulfilment Asset Customer Key` mediumint unsigned NOT NULL,
   `Fulfilment Asset Fulfilment Delivery Key` mediumint unsigned NOT NULL,
@@ -4135,12 +4168,14 @@ CREATE TABLE `Fulfilment Asset Dimension` (
   `Fulfilment Asset Last Rent Order Date` date DEFAULT NULL,
   `Fulfilment Asset Metadata` json DEFAULT NULL,
   `Fulfilment Asset Number History Records` mediumint unsigned NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Fulfilment Asset Key`),
   KEY `Fulfilment Asset Customer Key` (`Fulfilment Asset Customer Key`),
   KEY `Fulfilment Asset Reference` (`Fulfilment Asset Reference`),
   KEY `Fulfilment Asset Status` (`Fulfilment Asset State`),
   KEY `Fulfilment Asset Fulfilment Delivery Key` (`Fulfilment Asset Fulfilment Delivery Key`),
-  KEY `Fulfilment Asset Fulfilment Order Key` (`Fulfilment Asset Order Key`)
+  KEY `Fulfilment Asset Fulfilment Order Key` (`Fulfilment Asset Order Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4209,11 +4244,13 @@ CREATE TABLE `Fulfilment Delivery Dimension` (
   `Fulfilment Delivery Metadata` json DEFAULT NULL,
   `Fulfilment Delivery Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
   `Fulfilment Delivery Number History Records` smallint NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Fulfilment Delivery Key`),
   KEY `Fulfilment Delivery Date` (`Fulfilment Delivery Date`),
   KEY `Fulfilment Delivery Type` (`Fulfilment Delivery Type`),
   KEY `Fulfilment Delivery State` (`Fulfilment Delivery State`),
-  KEY `Fulfilment Delivery Store Key` (`Fulfilment Delivery Store Key`) USING BTREE
+  KEY `Fulfilment Delivery Store Key` (`Fulfilment Delivery Store Key`) USING BTREE,
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4235,6 +4272,36 @@ CREATE TABLE `Fulfilment Delivery History Bridge` (
   KEY `History Key` (`History Key`),
   KEY `Deletable` (`Deletable`),
   KEY `Type` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Fulfilment Rent Transaction Fact`
+--
+
+DROP TABLE IF EXISTS `Fulfilment Rent Transaction Fact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Fulfilment Rent Transaction Fact` (
+  `Fulfilment Rent Transaction Key` int unsigned NOT NULL AUTO_INCREMENT,
+  `Fulfilment Rent Transaction Asset Key` mediumint unsigned NOT NULL,
+  `Fulfilment Rent Transaction Order Key` mediumint unsigned NOT NULL,
+  `Fulfilment Rent Transaction Invoice Key` int unsigned DEFAULT NULL,
+  `Fulfilment Rent Transaction OTF Key` int unsigned DEFAULT NULL,
+  `Fulfilment Rent Transaction Product ID` mediumint unsigned NOT NULL,
+  `Fulfilment Rent Transaction From` date NOT NULL,
+  `Fulfilment Rent Transaction To` date NOT NULL,
+  `Fulfilment Rent Transaction Units` decimal(14,6) NOT NULL,
+  `Fulfilment Rent Transaction Unit Price` decimal(12,4) NOT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`Fulfilment Rent Transaction Key`),
+  UNIQUE KEY `Fulfilment Rent Transaction As_2` (`Fulfilment Rent Transaction Asset Key`,`Fulfilment Rent Transaction Order Key`),
+  KEY `Fulfilment Rent Transaction Asset Key` (`Fulfilment Rent Transaction Asset Key`),
+  KEY `Fulfilment Rent Transaction Order Key` (`Fulfilment Rent Transaction Order Key`),
+  KEY `Fulfilment Rent Transaction OTF Key` (`Fulfilment Rent Transaction OTF Key`),
+  KEY `Fulfilment Rent Transaction Product ID` (`Fulfilment Rent Transaction Product ID`),
+  KEY `inv_idx` (`Fulfilment Rent Transaction Invoice Key`) USING BTREE,
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4267,12 +4334,14 @@ CREATE TABLE `Fulfilment Transaction Fact` (
   `Fulfilment Transaction Tax Category Key` smallint unsigned DEFAULT NULL,
   `Fulfilment Transaction Tax Code` varchar(16) DEFAULT NULL,
   `Fulfilment Transaction Metadata` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Fulfilment Transaction Key`),
   KEY `Fulfilment Transaction Customer Key` (`Fulfilment Transaction Customer Key`),
   KEY `Fulfilment Transaction Store Key` (`Fulfilment Transaction Store Key`),
   KEY `Fulfilment Transaction Delivery Key` (`Fulfilment Transaction Delivery Key`),
   KEY `Fulfilment Transaction Order Key` (`Fulfilment Transaction Order Key`),
-  KEY `Fulfilment Transaction Tax Category Key` (`Fulfilment Transaction Tax Category Key`)
+  KEY `Fulfilment Transaction Tax Category Key` (`Fulfilment Transaction Tax Category Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4436,10 +4505,12 @@ CREATE TABLE `Image Dimension` (
   `Image Public` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Image Creation Date` datetime DEFAULT NULL,
   `Image Path` varchar(255) DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Image Key`),
   KEY `Image Checksum` (`Image File Checksum`),
   KEY `Image Public` (`Image Public`),
-  KEY `Image MIME Type` (`Image MIME Type`)
+  KEY `Image MIME Type` (`Image MIME Type`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4644,6 +4715,7 @@ CREATE TABLE `Inventory Transaction Fact` (
   `Running Stock` float DEFAULT NULL,
   `Running Stock Value` float DEFAULT '0',
   `Running Cost per SKO` float DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Inventory Transaction Key`,`Date`),
   KEY `Date` (`Date`),
   KEY `Part SKU` (`Part SKU`),
@@ -4664,7 +4736,8 @@ CREATE TABLE `Inventory Transaction Fact` (
   KEY `Inventory Transaction Fact Delivery 2 Alpha Code` (`Inventory Transaction Fact Delivery 2 Alpha Code`),
   KEY `Part SKU_2` (`Part SKU`,`Location Key`),
   KEY `Date Picked` (`Date Picked`),
-  KEY `Date Packed` (`Date Packed`)
+  KEY `Date Packed` (`Date Packed`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 /*!50100 PARTITION BY RANGE (year(`Date`))
 (PARTITION p16 VALUES LESS THAN (2017) ENGINE = InnoDB,
@@ -5232,6 +5305,7 @@ CREATE TABLE `Invoice Dimension` (
   `Invoice Sales Representative Key` mediumint unsigned DEFAULT NULL,
   `Invoice Number History Records` smallint unsigned DEFAULT '0',
   `Invoice Order Type` enum('Order','FulfilmentRent') DEFAULT 'Order',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Invoice Key`,`Invoice Store Key`,`Invoice Date`) USING BTREE,
   KEY `Invoice Title` (`Invoice Type`),
   KEY `Invoice Date` (`Invoice Date`),
@@ -5247,7 +5321,8 @@ CREATE TABLE `Invoice Dimension` (
   KEY `Invoice Customer Client Key` (`Invoice Customer Client Key`),
   KEY `Invoice Kind` (`Invoice Kind`),
   KEY `Invoice External Invoicer Key` (`Invoice External Invoicer Key`),
-  KEY `Invoice Tax Category Key` (`Invoice Tax Category Key`)
+  KEY `Invoice Tax Category Key` (`Invoice Tax Category Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5396,7 +5471,7 @@ CREATE TABLE `List Dimension` (
   `List Use Type` enum('UserCreated','ImportedRecords','User Defined','CSV Import') NOT NULL DEFAULT 'UserCreated',
   `List Parent Key` smallint unsigned NOT NULL,
   `List Name` varchar(255) NOT NULL,
-  `List Type` enum('Dynamic','Static') NOT NULL DEFAULT 'Static',
+  `List Type` enum('Dynamic','Static','Upload') NOT NULL DEFAULT 'Static',
   `List Metadata` mediumtext,
   `List Creation Date` datetime NOT NULL,
   `List Number Items` mediumint NOT NULL DEFAULT '0',
@@ -5475,6 +5550,7 @@ CREATE TABLE `Location Dimension` (
   `Location Deep` float DEFAULT NULL,
   `Location Height` float DEFAULT NULL,
   `Location Width` float DEFAULT NULL,
+  `Location Current Weight` float NOT NULL DEFAULT '0',
   `Location Max Weight` float DEFAULT NULL COMMENT 'In Kg',
   `Location Max Volume` float DEFAULT NULL COMMENT 'CBM',
   `Location Max Slots` smallint DEFAULT NULL,
@@ -5487,6 +5563,7 @@ CREATE TABLE `Location Dimension` (
   `Location Sticky Note` text,
   `Location Fulfilment` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Location Pipeline` enum('Yes','No') NOT NULL DEFAULT 'No',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Location Key`),
   KEY `Location Warehouse Key` (`Location Warehouse Key`),
   KEY `Location Code` (`Location Code`),
@@ -5496,7 +5573,8 @@ CREATE TABLE `Location Dimension` (
   KEY `Location Type` (`Location Type`),
   KEY `Location Place` (`Location Place`),
   KEY `Location Fulfilment` (`Location Fulfilment`),
-  KEY `Location Pipeline` (`Location Pipeline`)
+  KEY `Location Pipeline` (`Location Pipeline`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6056,6 +6134,8 @@ CREATE TABLE `Order Dimension` (
   `Order Delivery Data` json DEFAULT NULL,
   `Order Attention` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Order Number Attachments` smallint unsigned NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_basket_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Order Key`,`Order Store Key`,`Order Date`) USING BTREE,
   KEY `Order Original Data Source` (`Order Original Data Source`),
   KEY `Order Public ID` (`Order Public ID`),
@@ -6099,7 +6179,9 @@ CREATE TABLE `Order Dimension` (
   KEY `Order Kind` (`Order Kind`),
   KEY `Order External Invoicer Key` (`Order External Invoicer Key`),
   KEY `Order Shipping Level` (`Order Shipping Level`),
-  KEY `Order Tax Category Key` (`Order Tax Category Key`)
+  KEY `Order Tax Category Key` (`Order Tax Category Key`),
+  KEY `aiku_id` (`aiku_id`),
+  KEY `aiku_basket_id` (`aiku_basket_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6271,6 +6353,8 @@ CREATE TABLE `Order No Product Transaction Fact` (
   `Order No Product Transaction Version` tinyint unsigned NOT NULL DEFAULT '1',
   `Order No Product Transaction Metadata` json DEFAULT NULL,
   `Order No Product Transaction Pinned` enum('Yes','No') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'No',
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_basket_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Order No Product Transaction Fact Key`),
   KEY `Order Date` (`Order Date`),
   KEY `Invoice Date` (`Invoice Date`),
@@ -6282,7 +6366,9 @@ CREATE TABLE `Order No Product Transaction Fact` (
   KEY `Transaction Type Key` (`Transaction Type Key`),
   KEY `Refund Key` (`Refund Key`),
   KEY `Affected Order Key` (`Affected Order Key`),
-  KEY `Order No Product Transaction Tax Category Key` (`Order No Product Transaction Tax Category Key`)
+  KEY `Order No Product Transaction Tax Category Key` (`Order No Product Transaction Tax Category Key`),
+  KEY `aiku_id` (`aiku_id`),
+  KEY `aiku_basket_id` (`aiku_basket_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6481,6 +6567,8 @@ CREATE TABLE `Order Transaction Fact` (
   `Order Currency Code` varchar(3) NOT NULL DEFAULT 'GBP',
   `Invoice Currency Exchange Rate` float NOT NULL DEFAULT '1' COMMENT 'Exchange rate with respect to the default currency',
   `Order Transaction Metadata` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_basket_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Order Transaction Fact Key`,`Store Key`,`Invoice Date`),
   KEY `product` (`Product Key`),
   KEY `cust` (`Customer Key`),
@@ -6502,7 +6590,9 @@ CREATE TABLE `Order Transaction Fact` (
   KEY `Order Transaction Fact Kind` (`Order Transaction Fact Kind`),
   KEY `Order Transaction External Invoicer Key` (`Order Transaction External Invoicer Key`),
   KEY `Order Transaction Tax Category Key` (`Order Transaction Tax Category Key`),
-  KEY `Order Transaction Product Type` (`Order Transaction Product Type`)
+  KEY `Order Transaction Product Type` (`Order Transaction Product Type`),
+  KEY `aiku_id` (`aiku_id`),
+  KEY `aiku_basket_id` (`aiku_basket_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3
 /*!50100 PARTITION BY RANGE (year(`Invoice Date`))
 SUBPARTITION BY KEY (`Store Key`)
@@ -6876,6 +6966,7 @@ CREATE TABLE `Page Store Dimension` (
   `Webpage Redirection Code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Webpage Navigation Data` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `Webpage Properties` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Page Key`),
   UNIQUE KEY `Webpage Code_2` (`Webpage Code`,`Webpage Website Key`),
   KEY `Webpage Website Key` (`Webpage Website Key`),
@@ -6883,7 +6974,8 @@ CREATE TABLE `Page Store Dimension` (
   KEY `Webpage State` (`Webpage State`),
   KEY `Webpage Version` (`Webpage Version`),
   KEY `Webpage Type Key` (`Webpage Type Key`),
-  KEY `Webpage Scope` (`Webpage Scope`,`Webpage Scope Key`)
+  KEY `Webpage Scope` (`Webpage Scope`,`Webpage Scope Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -7986,6 +8078,8 @@ CREATE TABLE `Part Dimension` (
   `Part Picking Band Name` varchar(16) DEFAULT NULL,
   `Part Packing Band Name` varchar(26) DEFAULT NULL,
   `Part Customer Key` mediumint unsigned DEFAULT NULL COMMENT 'Only applicable to fulfilment',
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_unit_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Part SKU`),
   KEY `Part TYpe` (`Part Status`),
   KEY `Part Valid From` (`Part Valid From`),
@@ -8008,7 +8102,9 @@ CREATE TABLE `Part Dimension` (
   KEY `Part Raw Material Key` (`Part Raw Material Key`),
   KEY `Part Picking Band Key` (`Part Picking Band Key`),
   KEY `Part Packing Band Key` (`Part Packing Band Key`),
-  KEY `Part Dimension_Part_Customer_Key_idx` (`Part Customer Key`) USING BTREE
+  KEY `Part Dimension_Part_Customer_Key_idx` (`Part Customer Key`) USING BTREE,
+  KEY `aiku_id` (`aiku_id`),
+  KEY `aiku_unit_id` (`aiku_unit_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -8057,10 +8153,12 @@ CREATE TABLE `Part Location Dimension` (
   `Negative Discrepancy Value` decimal(12,2) NOT NULL DEFAULT '0.00',
   `Part Location Note` text,
   `Part Location Metadata` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Part SKU`,`Location Key`),
   KEY `Part SKU` (`Part SKU`),
   KEY `Location Key` (`Location Key`),
-  KEY `Part Location Warehouse Key` (`Part Location Warehouse Key`)
+  KEY `Part Location Warehouse Key` (`Part Location Warehouse Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -8617,6 +8715,9 @@ CREATE TABLE `Payment Account Store Bridge` (
   `Payment Account Store Status` enum('Active','Inactive') NOT NULL DEFAULT 'Inactive',
   `Payment Account Store Show In Cart` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Payment Account Store Show Cart Order` smallint NOT NULL DEFAULT '0',
+  `login` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `hide` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Payment Account Store Key`),
   KEY `Website Key` (`Payment Account Store Website Key`,`Payment Account Store Show In Cart`),
   KEY `Show Cart Order` (`Payment Account Store Show Cart Order`),
@@ -8682,6 +8783,7 @@ CREATE TABLE `Payment Dimension` (
   `Payment Submit Type` enum('Manual','EPS','AutoCredit','OrphanRefund') NOT NULL DEFAULT 'EPS',
   `Payment User Key` mediumint unsigned DEFAULT NULL,
   `Payment Metadata` text,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Payment Key`),
   KEY `Payment Customer Key` (`Payment Customer Key`),
   KEY `Payment Type` (`Payment Type`),
@@ -8689,7 +8791,8 @@ CREATE TABLE `Payment Dimension` (
   KEY `Payment Invoice Key` (`Payment Invoice Key`),
   KEY `Payment Method` (`Payment Method`),
   KEY `Payment Order Key` (`Payment Order Key`),
-  KEY `Payment Transaction Status` (`Payment Transaction Status`)
+  KEY `Payment Transaction Status` (`Payment Transaction Status`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -10991,6 +11094,7 @@ CREATE TABLE `Product Dimension` (
   `Product Shopify Key` int unsigned DEFAULT NULL,
   `Product Tax Category Key` smallint DEFAULT NULL,
   `Product Tax Category Data` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Product ID`,`Product Store Key`),
   KEY `Product Alphanumeric Code` (`Product Code File As`(16)),
   KEY `date` (`Product Valid From`),
@@ -11015,7 +11119,8 @@ CREATE TABLE `Product Dimension` (
   KEY `Product Status Availability State` (`Product Status Availability State`),
   KEY `Product Customer Key` (`Product Customer Key`),
   KEY `Product Customer Category Key` (`Product Customer Category Key`),
-  KEY `Product Shopify Key` (`Product Shopify Key`)
+  KEY `Product Shopify Key` (`Product Shopify Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11267,10 +11372,12 @@ CREATE TABLE `Product History Dimension` (
   `Product History Editing Family Special Characteristic` varchar(255) DEFAULT NULL,
   `Product History Editing Units Per Case` float DEFAULT NULL,
   `Product History Editing Unit Type` enum('Piece','Grams','Liters','Meters','Other') DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Product Key`),
   KEY `Product ID` (`Product ID`),
   KEY `Product History Valid From` (`Product History Valid From`),
-  KEY `Product History Valid To` (`Product History Valid To`)
+  KEY `Product History Valid To` (`Product History Valid To`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11658,12 +11765,14 @@ CREATE TABLE `Prospect Dimension` (
   `Prospect Invoiced` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Prospect Sales Representative Key` mediumint unsigned DEFAULT NULL,
   `Prospect Customer Assigned by User Key` mediumint unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Prospect Key`),
   UNIQUE KEY `Prospect Store Key` (`Prospect Store Key`,`Prospect Main Plain Email`),
   KEY `Prospect Store Key_2` (`Prospect Store Key`),
   KEY `Prospect User Key` (`Prospect User Key`),
   KEY `Prospect Sales Representative Key` (`Prospect Sales Representative Key`),
-  KEY `Prospect Invoiced` (`Prospect Invoiced`)
+  KEY `Prospect Invoiced` (`Prospect Invoiced`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11771,7 +11880,9 @@ CREATE TABLE `Purchase Order Deleted Dimension` (
   `Purchase Order Deleted Public ID` varchar(255) NOT NULL,
   `Purchase Order Deleted Date` datetime NOT NULL,
   `Purchase Order Deleted Metadata` blob,
-  PRIMARY KEY (`Purchase Order Deleted Key`)
+  `aiku_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`Purchase Order Deleted Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11881,13 +11992,15 @@ CREATE TABLE `Purchase Order Dimension` (
   `Purchase Order Metadata` json DEFAULT NULL,
   `Purchase Order Operator Key` smallint unsigned DEFAULT NULL,
   `Purchase Order Number History Records` smallint NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Purchase Order Key`),
   KEY `Purchase Order Parent` (`Purchase Order Parent`),
   KEY `Purchase Order Agent Key` (`Purchase Order Agent Key`),
   KEY `Purchase Order Parent Country Code` (`Purchase Order Parent Country Code`),
   KEY `Purchase Order Date` (`Purchase Order Date`),
   KEY `Purchase Order Type` (`Purchase Order Type`),
-  KEY `Purchase Order Source` (`Purchase Order Source`)
+  KEY `Purchase Order Source` (`Purchase Order Source`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -11979,6 +12092,7 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   `Note Delivery Problem` text,
   `Purchase Order Transaction Return ITF Key` int unsigned DEFAULT NULL,
   `Purchase Order Transaction Operator Key` smallint unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Purchase Order Transaction Fact Key`),
   KEY `Purchase Order Key` (`Purchase Order Key`),
   KEY `User Key` (`User Key`),
@@ -11986,7 +12100,8 @@ CREATE TABLE `Purchase Order Transaction Fact` (
   KEY `Agent Supplier Purchase Order Key` (`Agent Supplier Purchase Order Key`),
   KEY `Purchase Order Transaction Operator Key` (`Purchase Order Transaction Operator Key`),
   KEY `Purchase Order Transaction Type` (`Purchase Order Transaction Type`),
-  KEY `Purchase Order Transaction Category Tax Key` (`Purchase Order Transaction Tax Category Key`)
+  KEY `Purchase Order Transaction Category Tax Key` (`Purchase Order Transaction Tax Category Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12184,10 +12299,12 @@ CREATE TABLE `Shipping Zone Dimension` (
   `Shipping Zone Amount` decimal(16,2) DEFAULT '0.00',
   `Shipping Zone First Used` datetime DEFAULT NULL,
   `Shipping Zone Last Used` datetime DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Shipping Zone Key`),
   KEY `Shipping Zone Code` (`Shipping Zone Code`),
   KEY `Shipping Zone Shipping Zone Schema Key` (`Shipping Zone Shipping Zone Schema Key`),
-  KEY `Shipping Zone Type` (`Shipping Zone Type`)
+  KEY `Shipping Zone Type` (`Shipping Zone Type`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12252,8 +12369,10 @@ CREATE TABLE `Shipping Zone Schema Dimension` (
   `Shipping Zone Schema Number Customers` smallint unsigned NOT NULL DEFAULT '0',
   `Shipping Zone Schema Number Orders` smallint unsigned NOT NULL DEFAULT '0',
   `Shipping Zone Schema Amount` decimal(18,2) DEFAULT '0.00',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Shipping Zone Schema Key`),
-  KEY `Shipping Zone Schema Store State` (`Shipping Zone Schema Store State`)
+  KEY `Shipping Zone Schema Store State` (`Shipping Zone Schema Store State`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12386,11 +12505,13 @@ CREATE TABLE `Staff Deleted Dimension` (
   `Staff Deleted Name` varchar(255) NOT NULL,
   `Staff Deleted Date` datetime NOT NULL,
   `Staff Deleted Metadata` blob NOT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Staff Deleted Key`),
   KEY `Staff Deleted Name` (`Staff Deleted Name`),
   KEY `Staff Deleted Alias` (`Staff Deleted Alias`),
   KEY `Staff Deleted ID` (`Staff Deleted ID`),
-  KEY `Staff Deleted Type` (`Staff Deleted Type`)
+  KEY `Staff Deleted Type` (`Staff Deleted Type`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -12436,6 +12557,7 @@ CREATE TABLE `Staff Dimension` (
   `Staff Attendance Start` datetime DEFAULT NULL,
   `Staff Attendance End` datetime DEFAULT NULL,
   `Staff Properties` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Staff Key`),
   UNIQUE KEY `Staff Alias` (`Staff Alias`),
   KEY `Staff ID` (`Staff ID`),
@@ -12446,7 +12568,8 @@ CREATE TABLE `Staff Dimension` (
   KEY `Staff Most Recent` (`Staff Most Recent`),
   KEY `Staff Valid from` (`Staff Valid From`),
   KEY `Staff Valid To` (`Staff Valid To`),
-  KEY `Staff Attendance Status` (`Staff Attendance Status`)
+  KEY `Staff Attendance Status` (`Staff Attendance Status`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -13574,6 +13697,7 @@ CREATE TABLE `Store Dimension` (
   `Store Shopify API Key` varchar(255) DEFAULT NULL,
   `Store Label Signature` varchar(255) DEFAULT NULL,
   `Store Shopify Key` int unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Store Key`),
   UNIQUE KEY `Store Name` (`Store Name`),
   KEY `code` (`Store Code`),
@@ -13582,7 +13706,8 @@ CREATE TABLE `Store Dimension` (
   KEY `Store Customer Payment Account Key` (`Store Customer Payment Account Key`),
   KEY `Store Kind` (`Store Kind`),
   KEY `Store External Invoicer Key` (`Store External Invoicer Key`),
-  KEY `Store Shopify Key` (`Store Shopify Key`)
+  KEY `Store Shopify Key` (`Store Shopify Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14496,7 +14621,9 @@ CREATE TABLE `Supplier Deleted Dimension` (
   `Supplier Deleted Name` varchar(255) DEFAULT NULL,
   `Supplier Deleted Date` datetime DEFAULT NULL,
   `Supplier Deleted Metadata` blob,
-  PRIMARY KEY (`Supplier Deleted Key`)
+  `aiku_id` int unsigned DEFAULT NULL,
+  PRIMARY KEY (`Supplier Deleted Key`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14726,6 +14853,8 @@ CREATE TABLE `Supplier Dimension` (
   `Supplier Production` enum('Yes','No') NOT NULL DEFAULT 'No',
   `Supplier Metadata` json DEFAULT NULL,
   `Supplier Main Image Key` mediumint unsigned DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`Supplier Key`),
   UNIQUE KEY `Supplier Code` (`Supplier Code`),
   KEY `Supplier Most Recent` (`Supplier Active`),
@@ -14733,7 +14862,8 @@ CREATE TABLE `Supplier Dimension` (
   KEY `Supplier Main Telephone` (`Supplier Main Plain Telephone`(20)),
   KEY `Supplier Is Agent` (`Supplier Has Agent`),
   KEY `Supplier Type` (`Supplier Type`),
-  KEY `Supplier Production` (`Supplier Production`)
+  KEY `Supplier Production` (`Supplier Production`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14846,11 +14976,13 @@ CREATE TABLE `Supplier Part Dimension` (
   `Supplier Part Sticky Note` text,
   `Supplier Part Properties` json DEFAULT NULL,
   `Supplier Part Number History Records` smallint unsigned DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Supplier Part Key`),
   KEY `Supplier Part Supplier Part Historic Key` (`Supplier Part Historic Key`),
   KEY `Supplier Part Supplier Key` (`Supplier Part Supplier Key`),
   KEY `Supplier Part Description` (`Supplier Part Description`),
-  KEY `Supplier Part Production` (`Supplier Part Production`)
+  KEY `Supplier Part Production` (`Supplier Part Production`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -14870,9 +15002,11 @@ CREATE TABLE `Supplier Part Historic Dimension` (
   `Supplier Part Historic Packages Per Carton` smallint unsigned NOT NULL,
   `Supplier Part Historic Carton CBM` float(16,4) DEFAULT NULL,
   `Supplier Part Historic Currency Code` varchar(3) NOT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Supplier Part Historic Key`),
   KEY `Supplier Part Historic Supplier Part Key` (`Supplier Part Historic Supplier Part Key`),
-  KEY `Supplier Part Historic Unit Cost` (`Supplier Part Historic Unit Cost`)
+  KEY `Supplier Part Historic Unit Cost` (`Supplier Part Historic Unit Cost`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15125,9 +15259,11 @@ CREATE TABLE `Timesheet Dimension` (
   `Timesheet Warehouse Clocked Time` mediumint unsigned NOT NULL DEFAULT '0',
   `Timesheet Production Clocked Time` mediumint unsigned NOT NULL DEFAULT '0',
   `Timesheet Office Clocked Time` mediumint unsigned NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Timesheet Key`),
   UNIQUE KEY `Timesheet Date` (`Timesheet Date`,`Timesheet Staff Key`),
-  KEY `Timesheet Date_2` (`Timesheet Date`)
+  KEY `Timesheet Date_2` (`Timesheet Date`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15151,11 +15287,13 @@ CREATE TABLE `Timesheet Record Dimension` (
   `Timesheet Authoriser Key` mediumint unsigned DEFAULT NULL,
   `Timesheet Remover Key` mediumint unsigned DEFAULT NULL,
   `Timesheet Record Note` text,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Timesheet Record Key`),
   UNIQUE KEY `Staff Key` (`Timesheet Record Staff Key`,`Timesheet Record Date`,`Timesheet Record Type`) USING BTREE,
   KEY `Timesheet Key` (`Timesheet Record Timesheet Key`),
   KEY `Timesheet Record Ignored Due Missing End` (`Timesheet Record Ignored Due Missing End`),
-  KEY `Timesheet Record Timesheet Key` (`Timesheet Record Timesheet Key`,`Timesheet Record Type`,`Timesheet Record Ignored`,`Timesheet Record Date`)
+  KEY `Timesheet Record Timesheet Key` (`Timesheet Record Timesheet Key`,`Timesheet Record Type`,`Timesheet Record Ignored`,`Timesheet Record Date`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15287,10 +15425,12 @@ CREATE TABLE `User Deleted Dimension` (
   `User Deleted Type` enum('Customer','Staff','Supplier','Administrator','Warehouse','Contractor','Agent') NOT NULL,
   `User Deleted Date` datetime NOT NULL,
   `User Deleted Metadata` blob NOT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`User Deleted Key`),
   KEY `User Deleted Handle` (`User Deleted Handle`),
   KEY `User Deleted Alias` (`User Deleted Alias`),
-  KEY `User Deleted Type` (`User Deleted Type`)
+  KEY `User Deleted Type` (`User Deleted Type`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15331,6 +15471,8 @@ CREATE TABLE `User Dimension` (
   `User Password Recovery Mobile` varchar(64) DEFAULT NULL,
   `User Settings` json DEFAULT NULL,
   `User Properties` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
+  `aiku_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`User Key`),
   UNIQUE KEY `User Handle` (`User Handle`,`User Type`),
   KEY `h` (`User Handle`),
@@ -15339,7 +15481,8 @@ CREATE TABLE `User Dimension` (
   KEY `User Staff Type` (`User Staff Type`),
   KEY `User Parent Key` (`User Parent Key`),
   KEY `User Login Count` (`User Login Count`),
-  KEY `User Has Login` (`User Has Login`)
+  KEY `User Has Login` (`User Has Login`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15613,10 +15756,12 @@ CREATE TABLE `Warehouse Area Dimension` (
   `Warehouse Area Number Shelfs` smallint unsigned NOT NULL DEFAULT '0',
   `Warehouse Area Number Locations` smallint unsigned NOT NULL DEFAULT '0',
   `Warehouse Area Distinct Parts` mediumint unsigned NOT NULL DEFAULT '0',
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Warehouse Area Key`),
   UNIQUE KEY `Warehouse Area Code_2` (`Warehouse Area Code`,`Warehouse Area Warehouse Key`),
   KEY `Warehouse Area Code` (`Warehouse Area Code`),
-  KEY `Warehouse Area Place` (`Warehouse Area Place`)
+  KEY `Warehouse Area Place` (`Warehouse Area Place`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -15717,9 +15862,11 @@ CREATE TABLE `Warehouse Dimension` (
   `Warehouse Max Percentage Part Location Unknown Locations` float NOT NULL DEFAULT '0.15',
   `Warehouse Properties` json DEFAULT NULL,
   `Warehouse Settings` json DEFAULT NULL,
+  `aiku_id` int unsigned DEFAULT NULL,
   PRIMARY KEY (`Warehouse Key`),
   UNIQUE KEY `Warehouse Code` (`Warehouse Code`),
-  UNIQUE KEY `Warehouse Name` (`Warehouse Name`)
+  UNIQUE KEY `Warehouse Name` (`Warehouse Name`),
+  KEY `aiku_id` (`aiku_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -16890,4 +17037,4 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-09-09 11:29:03
+-- Dump completed on 2021-11-22 23:11:03
