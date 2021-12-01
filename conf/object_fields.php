@@ -336,7 +336,12 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
             if (is_array($options) and $options['type'] == 'profile') {
                 include 'fields/profile.fld.php';
             } else {
-               exit('Error 33');
+                include 'fields/user.system.fld.php';
+                $object_fields = get_user_fields($object, $db, array(
+                    'new'    => true,
+                    'type'   => 'user',
+                    'parent' => 'Staff'
+                ));
             }
 
             return $object_fields;
