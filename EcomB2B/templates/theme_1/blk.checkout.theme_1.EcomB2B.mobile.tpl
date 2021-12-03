@@ -115,7 +115,7 @@
                 <div id="payment_account_item_{$payment_account.object->get('Block')}" class="payment_method_block {if !$smarty.foreach.foo.first}hide{/if}" >
 
                     {if $block=='Checkout' }
-                        <iframe src="ar_web_payment_account_checkout_iframe.php" title="Checkout" style="width: 100%;min-height:300px;border:none;"></iframe>
+                        <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;min-height:300px;border:none;"></iframe>
 
                     {elseif $block=='BTree' }
 

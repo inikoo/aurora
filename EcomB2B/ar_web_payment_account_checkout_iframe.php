@@ -7,7 +7,7 @@ $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
 if ($website->get('Website Type') == 'EcomDS') {
-    if (empty($data['client_order_key']) or !is_numeric($data['client_order_key']) or $data['client_order_key'] <= 0) {
+    if (empty($_REQUEST['order_key']) or !is_numeric($_REQUEST['order_key']) or $_REQUEST['order_key'] <= 0) {
         $response = array(
             'state' => 400,
             'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided</div>'
@@ -19,7 +19,7 @@ if ($website->get('Website Type') == 'EcomDS') {
     }
 
 
-    $order = get_object('Order', $data['client_order_key']);
+    $order = get_object('Order', $_REQUEST['order_key']);
 
     if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
         $response = array(

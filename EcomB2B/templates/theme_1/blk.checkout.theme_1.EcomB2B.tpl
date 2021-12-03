@@ -198,7 +198,7 @@
                         <div id="payment_account_item_{$block}" class="tabs-panel3" >
 
                             {if $block=='Checkout' }
-                                <iframe src="ar_web_payment_account_checkout_iframe.php" title="Checkout" style="width: 100%;border:none;"></iframe>
+                                <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;border:none;"></iframe>
                             {elseif $block=='BTree' }
 
 
