@@ -1175,12 +1175,14 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
 
 
     $sql  =
-        "SELECT `password` FROM `Payment Account Store Bridge`    WHERE `Payment Account Store Payment Account Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
+        "SELECT `password` FROM `Payment Account Store Bridge`    WHERE 
+`Payment Account Store Payment Account Key`=?  and `Payment Account Store Store Key`=?  AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
     /** @var TYPE_NAME $db */
     $stmt = $db->prepare($sql);
     $stmt->execute(
         [
-            $payment_account->id
+            $payment_account->id,
+            $store->id
         ]
     );
     $secretKey = '';
