@@ -444,9 +444,6 @@ function place_order_pay_braintree($store, $_data, $order, $customer, $website, 
 }
 
 
-
-
-
 function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $website, $editor, $smarty, $db, $account)
 {
     $order->fast_update(
@@ -481,8 +478,6 @@ function place_order_pay_braintree_paypal($store, $_data, $order, $customer, $we
 }
 
 
-
-
 /**
  * @param $data
  * @param $website  \Public_Website
@@ -498,16 +493,11 @@ function get_checkout_html($data, $website, $customer, $smarty)
     $theme = $website->get('Website Theme');
 
 
-
-
-
-
-
     if ($website->get('Website Type') == 'EcomDS') {
         if (empty($data['client_order_key']) or !is_numeric($data['client_order_key']) or $data['client_order_key'] <= 0) {
             $response = array(
                 'state' => 400,
-                'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided</div>'
+                'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided (b)</div>'
 
 
             );
@@ -616,10 +606,9 @@ function get_checkout_html($data, $website, $customer, $smarty)
     $smarty->assign('labels', $website->get('Localised Labels'));
 
 
-
-    $error_msg='';
-    if(!empty($_SESSION['checkout_payment_error'])){
-        $error_msg=$_SESSION['checkout_payment_error'];
+    $error_msg = '';
+    if (!empty($_SESSION['checkout_payment_error'])) {
+        $error_msg = $_SESSION['checkout_payment_error'];
     }
 
 
@@ -1171,10 +1160,7 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
     }
 
 
-
-
-
-    $sql  =
+    $sql =
         "SELECT `password` FROM `Payment Account Store Bridge`    WHERE 
 `Payment Account Store Payment Account Key`=?  and `Payment Account Store Store Key`=?  AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
     /** @var TYPE_NAME $db */
@@ -1187,26 +1173,23 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
     );
     $secretKey = '';
     while ($row = $stmt->fetch()) {
-        $secretKey       = $row['password'];
+        $secretKey = $row['password'];
     }
 
 
-
-
-
     // Initialize the Checkout API in Sandbox mode. Use new CheckoutApi($liveSecretKey, false); for production
-    if(ENVIRONMENT == 'DEVEL') {
+    if (ENVIRONMENT == 'DEVEL') {
         $checkout = new CheckoutApi($secretKey);
-    }else{
-        $checkout = new CheckoutApi($secretKey,false);
+    } else {
+        $checkout = new CheckoutApi($secretKey, false);
     }
 
     // Create a payment method instance with card details
     $method = new TokenSource($_data['token']);
 
     // Prepare the payment parameters
-    $payment          = new Payment($method, $order->get('Order Currency'));
-    $payment->amount  = $order->get('Order Basket To Pay Amount') * 100;
+    $payment         = new Payment($method, $order->get('Order Currency'));
+    $payment->amount = $order->get('Order Basket To Pay Amount') * 100;
 
 
 
@@ -1214,19 +1197,22 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
 
     $payment->reference = $order->get('Order Public ID');
 
-    if(ENVIRONMENT == 'DEVEL'){
+    if (ENVIRONMENT == 'DEVEL') {
         $payment->success_url = 'http://ds.ir'."/ar_web_process_checkout.php";
         $payment->failure_url = 'http://ds.ir'."/ar_web_process_checkout.php";
+    } else {
+        $payment->success_url = 'https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
+        $payment->failure_url = 'https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
+    }
 
-    }else{
-        $payment->success_url='https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
-         $payment->failure_url='https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
+    if ($website->get('Website Type') == 'EcomDS') {
+        $payment->success_url.='?client_order_key='.$order->id;
+        $payment->failure_url.='?client_order_key='.$order->id;
 
     }
 
 
-
-    $payment->{'customer'} = [
+        $payment->{'customer'} = [
         'email' => $customer->get('Customer Main Plain Email'),
         'name'  => $customer->get('Customer Name'),
     ];
@@ -1235,11 +1221,9 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
 
     try {
         $response = $checkout->payments()->request($payment);
-        //print_r($response);
-
     } catch (Exception $e) {
-        $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
-        $_SESSION['checkout_payment_error'] = strip_tags($msg);
+        $msg                                = _('There was a problem processing your credit card; please double check your payment information and try again');
+        $_SESSION['checkout_payment_error'] = strip_tags($msg).' '.$e->getMessage();
 
         $response = array(
 
@@ -1269,20 +1253,16 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
 
         case 201:
 
-            $res = process_payment_response($response, $order, $website, $payment_account, $customer,$editor,$smarty,$account,$store,$db);
+            $res = process_payment_response($response, $order, $website, $payment_account, $customer, $editor, $smarty, $account, $store, $db);
 
             if ($res['state'] == 400) {
                 $_SESSION['checkout_payment_error'] = strip_tags($res['msg']);
-            }elseif ($res['state'] == 200) {
+            } elseif ($res['state'] == 200) {
                 setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
-
             }
 
             echo json_encode($res);
             exit;
     }
-
-
-
 }
 
