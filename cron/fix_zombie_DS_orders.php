@@ -44,7 +44,9 @@ switch (DNS_ACCOUNT_CODE) {
 
 
 
+
 $sql = "select `Order Date`,`Order Public ID`,`Order Key` from `Order Dimension` O left join `Customer Client Dimension` C on (`Customer Client Key`=`Order Customer Client Key`) where `Order Store Key`=? and `Customer Client Key` is null and `Order State`='InBasket' ";
+
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
@@ -52,6 +54,7 @@ $stmt->execute(
     ]
 );
 while ($row = $stmt->fetch()) {
+
 
     $order=get_object('Order',$row['Order Key']);
     $order->editor;
@@ -63,7 +66,7 @@ while ($row = $stmt->fetch()) {
 }
 
 
-$sql = "select `Order Date`,`Order Public ID`,`Order Key` from `Order Dimension` O left join `Customer Client Dimension` C on (`Customer Client Key`=`Order Customer Client Key`) where `Order Store Key`=? and `Customer Client Key` is null and `Order State`='Cancelled' and aiku_note is null ";
+$sql = "select `Order Date`,`Order Public ID`,`Order Key`,`Order State` from `Order Dimension` O left join `Customer Client Dimension` C on (`Customer Client Key`=`Order Customer Client Key`) where `Order Store Key`=? and `Customer Client Key` is null and `Order State`='Cancelled' and aiku_note is null ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
@@ -73,7 +76,7 @@ $stmt->execute(
 while ($row = $stmt->fetch()) {
 
     $order=get_object('Order',$row['Order Key']);;
-    print $order->get('Order Public ID')." ** \n";
+    print $order->get('Order Public ID')." **  ".$row['Order State']." \n";
 
     $order->fast_update(['aiku_note' => 'ignore-zombie-client']);
 
@@ -95,3 +98,4 @@ while ($row = $stmt->fetch()) {
     $order->fast_update(['aiku_note' => 'ignore-basket']);
 
 }
+

@@ -12,7 +12,7 @@
 
 
 class Public_Top_Up extends DBW_Table {
-    use Address;
+
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
 
@@ -115,6 +115,9 @@ class Public_Top_Up extends DBW_Table {
 
 
         switch ($key) {
+
+            case 'Top Up Store Key':
+                return $this->data['Top Up Store key'];
 
             case('Date'):
                 if ($this->data['Top Up '.$key] == '') {

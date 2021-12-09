@@ -93,7 +93,7 @@
     {assign "braintree_data" ""}
     {foreach from=$payment_accounts item=payment_account key=key}
         {assign "block" $payment_account.object->get("Block")  }
-        {if $block=='BTree' or  $block=='BTreePaypal'}
+        {if $block=='BTree' or  $block=='BTreePaypal' or  $block=='Checkout'}
             {if $braintree_data==''}
                 {assign "braintree_data" $payment_account.object->get('Block Data',$customer->id)  }
             {/if}
@@ -116,7 +116,12 @@
 
         <div id="payment_account_item_{$payment_account.object->get('Block')}" class="payment_method_block {if !$smarty.foreach.foo.first}hide{/if}" style="margin:auto;width: 440px">
 
-            {if $block=='BTree' }
+
+            {if $block=='Checkout' }
+            <iframe id="checkout_iframe" src="ar_web_top_up_account_checkout_iframe.php?top_up=20" title="Checkout" style="width: 100%;border:none;"></iframe>
+
+
+            {elseif $block=='BTree' }
 
 
                 <form id="BTree_saved_credit_cards_form" action="" class="sky-form {if $braintree_data.number_saved_credit_cards==0}hide{/if}" style="max-width: 500px;">
@@ -936,11 +941,14 @@
             $('.formatted_value').html($(this).data('formatted_value'))
 
             $('.top_up').data('top_up_value',$(this).data('value'))
+            $('#checkout_iframe').attr('src',"ar_web_top_up_account_checkout_iframe.php?top_up="+$(this).data('value'))
 
         });
 
 
-
+        if($('#show_error').data('show')=='yes' && '{$error_msg}'!=='' ){
+            swal({ title:"{t}Payment error{/t}!", text:'{$error_msg}', type:"error", html: true})
+        }
 
 
     });

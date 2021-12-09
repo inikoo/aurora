@@ -153,7 +153,7 @@
                 {foreach from=$content.blocks item=$block key=key}
 
 
-                    
+
 
                     {if $block.show}
 
@@ -218,6 +218,8 @@
                         {elseif $block.type=='top_up'}
                             {if $logged_in}{assign "with_top_up" 1}
 
+
+                                <span style="display:none" id="show_error"  data-show="{if isset($with_payment_error)}{$with_payment_error}{/if}"  ></span>
 
                                 <div id="top_up">
                                     <div style="text-align: center">

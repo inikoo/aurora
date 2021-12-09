@@ -1,8 +1,16 @@
 <?php
+/*
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Thu, 09 Dec 2021 21:03:04 Malaysia Time, Kuala Lumpur, Malaysia
+ *  Copyright (c) 2021, Inikoo
+ *  Version 3.0
+ */
 
 use Checkout\CheckoutApi;
 
+include_once 'class.DBW_Table.php';
 
+include_once 'class.Public_Top_Up.php';
 include_once 'payment_account_checkout_common_functions.php';
 
 if (!empty($_REQUEST['cko-session-id'])) {
@@ -26,35 +34,17 @@ $smarty->addPluginsDir('./smarty_plugins');
 $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
-if ($website->get('Website Type') == 'EcomDS') {
-    if (empty($_REQUEST['client_order_key']) or !is_numeric($_REQUEST['client_order_key']) or $_REQUEST['client_order_key'] <= 0) {
-        echo '<div style="margin:100px auto;text-align: center">Client order key not provided (a)</div>';
-        exit;
-    }
 
 
-    $order = get_object('Order', $_REQUEST['client_order_key']);
-
-    if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
-        echo '<div style="margin:100px auto;text-align: center">Incorrect order id</div>';
-        exit;
-    }
-
-    if ($order->get('Order State') != 'InBasket') {
-        echo '<div style="margin:100px auto;text-align: center">Order not in basket</div>';
-        exit;
-    }
-} else {
-    $order = get_object('Order', $customer->get_order_in_process_key());
-}
-
-if (!$order->id) {
-    echo '<div style="margin:100px auto;text-align: center">Order not found</div>';
+if (empty($_REQUEST['top_up_key']) ) {
+    echo '<div style="margin:100px auto;text-align: center">Top up key not provided (a)</div>';
     exit;
 }
+$top_up = new Public_Top_Up('id', $_REQUEST['top_up_key']);
 
 
-$to_pay = $order->get('Order To Pay Amount');
+
+$to_pay = $top_up->get('Top Up Amount');
 
 
 $sql =
@@ -85,13 +75,15 @@ $payment_account->editor = $editor;
 
 
 $sql  =
-    "SELECT `password` FROM `Payment Account Store Bridge`    WHERE `Payment Account Store Payment Account Key`=?   and `Payment Account Store Store Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
+    "SELECT `password` FROM `Payment Account Store Bridge`   
+WHERE `Payment Account Store Payment Account Key`=?   
+  and `Payment Account Store Store Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
 /** @var TYPE_NAME $db */
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
         $payment_account->id,
-        $order->get('Order Store Key')
+        $top_up->get('Top Up Store Key')
     ]
 );
 $secretKey = '';
@@ -100,8 +92,7 @@ while ($row = $stmt->fetch()) {
 }
 
 
-
-$store = get_object('Store', $order->get('Order Store Key'));
+$store = get_object('Store', $top_up->get('Top Up Store Key'));
 if (ENVIRONMENT == 'DEVEL') {
     $checkout = new CheckoutApi($secretKey);
 } else {
@@ -110,33 +101,30 @@ if (ENVIRONMENT == 'DEVEL') {
 
 
 $response = $checkout->payments()->details($payment_id);
-$res      = process_payment_response($response, $order, $website, $payment_account, $customer, $editor, $smarty, $account, $store, $db);
+$res      = process_payment_top_up_response($response, $top_up, $website, $payment_account, $customer, $editor, $account, $store, $db);
 
 
 //exit;
 if ($res['state'] == 400) {
-    $_SESSION['checkout_payment_error'] = strip_tags($res['msg']);
+    $_SESSION['top_up_payment_error'] = strip_tags($res['msg']);
 
-    $redirect="Location: checkout.sys?error=payment&t=1xx";
-    if ($website->get('Website Type') == 'EcomDS') {
-        $redirect.='&order_key='.$order->id;
-    }
+    $redirect="Location: top_up.sys?error=payment&t=1xx";
+
 
 
     header($redirect);
 
 } elseif ($res['state'] == 200) {
-    setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
-    header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
+
+
+
+
+    header('Location: balance.sys');
 } else {
-    $_SESSION['checkout_payment_error'] = _('Unknown error please contact customer services');
+    $_SESSION['top_up_payment_error'] = _('Unknown error please contact customer services');
 
+    $redirect="Location: top_up.sys?error=payment&t=2";
 
-
-    $redirect="Location: checkout.sys?error=payment&t=2";
-    if ($website->get('Website Type') == 'EcomDS') {
-        $redirect+'&order_key='.$order->id;
-    }
     header($redirect);
 
 

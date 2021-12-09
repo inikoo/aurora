@@ -74,7 +74,7 @@
 
                     {foreach from=$payment_accounts item=payment_account key=key}
 
-                        {if $payment_account.object->get('Block')=='BTree' or  $payment_account.object->get('Block')=='BTreePaypal'  }
+                        {if $payment_account.object->get('Block')=='BTree' or  $payment_account.object->get('Block')=='BTreePaypal' or  $payment_account.object->get('Block')=='Checkout'  }
                         <li>
                             <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self" data-analytics_label="{$payment_account.analytics_label}" class="payment_option_chooser" >
 
@@ -112,15 +112,18 @@
                     {/foreach}
 
                     {foreach from=$payment_accounts item=payment_account key=key}
-                        {if $payment_account.object->get('Block')=='BTree' or  $payment_account.object->get('Block')=='BTreePaypal'  }
+                        {if $payment_account.object->get('Block')=='BTree' or  $payment_account.object->get('Block')=='BTreePaypal'  or  $payment_account.object->get('Block')=='Checkout'  }
                         {assign "block" $payment_account.object->get("Block")  }
 
 
 
                         <div id="payment_account_item_{$block}" class="tabs-panel3" >
 
+                            {if $block=='Checkout' }
+                            <iframe id="checkout_iframe" src="ar_web_top_up_account_checkout_iframe.php?top_up=20" title="Checkout" style="width: 100%;border:none;"></iframe>
 
-                            {if $block=='BTree' }
+
+                            {elseif $block=='BTree' }
 
 
                                 <form id="BTree_saved_credit_cards_form" action="" class="sky-form {if $braintree_data.number_saved_credit_cards==0}hide{/if}" style="max-width: 500px;">
@@ -897,10 +900,18 @@
 
             $('.top_up').data('top_up_value',$(this).data('value'))
 
+            $('#checkout_iframe').attr('src',"ar_web_top_up_account_checkout_iframe.php?top_up="+$(this).data('value'))
+
+
+
+
         });
 
 
 
+        if($('#show_error').data('show')=='yes' && '{$error_msg}'!=='' ){
+            swal({ title:"{t}Payment error{/t}!", text:'{$error_msg}', type:"error", html: true})
+        }
 
 
     });

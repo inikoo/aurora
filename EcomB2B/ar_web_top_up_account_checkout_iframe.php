@@ -6,48 +6,24 @@ include_once 'ar_web_common_logged_in.php';
 $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
-if ($website->get('Website Type') == 'EcomDS') {
-    if (empty($_REQUEST['order_key']) or !is_numeric($_REQUEST['order_key']) or $_REQUEST['order_key'] <= 0) {
-        $response = array(
-            'state' => 400,
-            'html'  => '<div style="margin:100px auto;text-align: center">Client order key not provided (c)</div>'
 
 
-        );
-        echo json_encode($response);
-        exit;
-    }
+if (empty($_REQUEST['top_up']) or !is_numeric($_REQUEST['top_up']) or $_REQUEST['top_up'] <= 0) {
+    $response = array(
+        'state' => 400,
+        'html'  => '<div style="margin:100px auto;text-align: center">Wrong top up amount</div>'
 
 
-    $order = get_object('Order', $_REQUEST['order_key']);
-
-    if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
-        $response = array(
-            'state' => 200,
-            'html'  => '<div style="margin:100px auto;text-align: center">Incorrect order id</div>'
-
-        );
-        echo json_encode($response);
-        exit;
-    }
-
-    if ($order->get('Order State') != 'InBasket') {
-        $response = array(
-            'state' => 200,
-            'html'  => '<div style="margin:100px auto;text-align: center">Order not in basket</div>'
-
-        );
-        echo json_encode($response);
-        exit;
-    }
-} else {
-    $order = get_object('Order', $customer->get_order_in_process_key());
+    );
+    echo json_encode($response);
+    exit;
 }
 
-$to_pay = $order->get('Order To Pay Amount');
+
+$to_pay = $_REQUEST['top_up'];
 
 
-$sql  =
+$sql =
     "SELECT `Payment Account Store Payment Account Key`,`login` FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
 WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`='Checkout' ";
 /** @var TYPE_NAME $db */
@@ -59,7 +35,7 @@ $stmt->execute(
 );
 $payment_account_key_key = false;
 while ($row = $stmt->fetch()) {
-    $public_key          = $row['login'];
+    $public_key = $row['login'];
     $payment_account_key = $row['Payment Account Store Payment Account Key'];
 }
 
@@ -160,8 +136,6 @@ if (!$payment_account_key) {
         }
 
 
-
-
         @media only screen and (min-width: 600px) {
 
 
@@ -180,6 +154,7 @@ if (!$payment_account_key) {
             }
 
         }
+
         @media screen and (max-width: 450px) {
 
 
@@ -190,9 +165,9 @@ if (!$payment_account_key) {
         }
 
 
-    .hide{
-        display: none;
-    }
+        .hide {
+            display: none;
+        }
 
     </style>
 
@@ -216,28 +191,29 @@ if (!$payment_account_key) {
         <!-- add submit button -->
         <button id="pay-button" disabled>
             PAY <?php
-            echo $order->get('Order To Pay Amount') ?>
+            echo $to_pay ?>
         </button>
     </div>
     <p class="processing hide" style="color: darkgray">
         <svg width="51px" height="16px" viewBox="0 0 51 50">
 
             <rect y="0" width="13" height="50" fill="#1fa2ff">
-                <animate attributeName="height" values="50;10;50" begin="0s" dur="1s" repeatCount="indefinite" />
-                <animate attributeName="y" values="0;20;0" begin="0s" dur="1s" repeatCount="indefinite" />
+                <animate attributeName="height" values="50;10;50" begin="0s" dur="1s" repeatCount="indefinite"/>
+                <animate attributeName="y" values="0;20;0" begin="0s" dur="1s" repeatCount="indefinite"/>
             </rect>
 
             <rect x="19" y="0" width="13" height="50" fill="#12d8fa">
-                <animate attributeName="height" values="50;10;50" begin="0.2s" dur="1s" repeatCount="indefinite" />
-                <animate attributeName="y" values="0;20;0" begin="0.2s" dur="1s" repeatCount="indefinite" />
+                <animate attributeName="height" values="50;10;50" begin="0.2s" dur="1s" repeatCount="indefinite"/>
+                <animate attributeName="y" values="0;20;0" begin="0.2s" dur="1s" repeatCount="indefinite"/>
             </rect>
 
             <rect x="38" y="0" width="13" height="50" fill="#06ffcb">
-                <animate attributeName="height" values="50;10;50" begin="0.4s" dur="1s" repeatCount="indefinite" />
-                <animate attributeName="y" values="0;20;0" begin="0.4s" dur="1s" repeatCount="indefinite" />
+                <animate attributeName="height" values="50;10;50" begin="0.4s" dur="1s" repeatCount="indefinite"/>
+                <animate attributeName="y" values="0;20;0" begin="0.4s" dur="1s" repeatCount="indefinite"/>
             </rect>
 
-        </svg> Processing
+        </svg>
+        Processing
     </p>
     <p class="success-payment-message">
 
@@ -246,65 +222,61 @@ if (!$payment_account_key) {
 </form>
 
 
-
 <script>
     var payButton = document.getElementById("pay-button");
     var form = document.getElementById("payment-form");
 
     Frames.init({
-        publicKey: "<?php echo $public_key?>"});
+        publicKey: "<?php echo $public_key?>"
+    });
 
 
     Frames.addEventHandler(
         Frames.Events.CARD_VALIDATION_CHANGED,
         function (event) {
-           // console.log("CARD_VALIDATION_CHANGED: %o", event);
+            // console.log("CARD_VALIDATION_CHANGED: %o", event);
 
             payButton.disabled = !Frames.isCardValid();
         }
     );
 
 
-
-
     Frames.addEventHandler(
         Frames.Events.CARD_TOKENIZED,
         function (event) {
 
+            console.log('xxxx');
 
             const ajaxData = new FormData();
 
-            ajaxData.append("tipo", 'place_order_pay_checkout')
+            ajaxData.append("tipo", 'top_up_pay_checkout')
             ajaxData.append("payment_account_key",<?php echo $payment_account_key?> )
             ajaxData.append("token", event.token)
 
-            ajaxData.append("order_key",<?php echo $order->id?> )
+            ajaxData.append("amount", <?php echo $to_pay ?>)
 
 
             $.ajax({
-                url: "/ar_web_checkout.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                url: "/ar_web_top_up.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
                 complete: function () {
                 }, success: function (data) {
 
 
+
                     if (data.state == '200') {
 
-                        var d = new Date();
-                        var timestamp=d.getTime()
-                        d.setTime(timestamp + 300000);
-                        var expires = "expires="+ d.toUTCString();
-                        document.cookie = "au_pu_"+ data.order_key+"=" + data.order_key + ";" + expires + ";path=/";
-                        window.top.location.replace("thanks.sys?order_key="+data.order_key+'&t='+timestamp);
 
-                    }else if(data.state == '201'){
+                        window.top.location.replace("balance.sys");
+
+                    } else if (data.state == '201') {
                         window.top.location.href = data.redirect;
 
                     } else if (data.state == '400') {
-                        window.top.location.href = 'checkout.sys?error=payment&t=3';
+                        window.top.location.href = 'top_up.sys?error=payment&t=4';
 
 
-                       // var el = document.querySelector(".success-payment-message");
-                       // el.innerHTML = data.msg
+                        // var el = document.querySelector(".success-payment-message");
+                        // el.innerHTML = data.msg
 
                     }
 
@@ -317,12 +289,13 @@ if (!$payment_account_key) {
             });
 
 
-
         }
     );
 
     form.addEventListener("submit", function (event) {
         payButton.disabled = true // disables pay button once submitted
+
+        console.log('ccc');
 
         $('.processing').removeClass('hide')
         event.preventDefault();
@@ -333,3 +306,6 @@ if (!$payment_account_key) {
 </body>
 
 </html>
+
+
+
