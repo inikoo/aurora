@@ -3515,6 +3515,45 @@ class Store extends DB_Table
                     $product->update(array('Product Family Category Key' => $family_key), 'no_history');
                 }
 
+                //get data from parts
+                $parts=$product->get_parts('objects');
+                if(count($parts)==1){
+
+                    foreach($parts as $part){
+                        $product->fast_update(array(
+                                                  'Product Tariff Code'                  => $part->get('Part Tariff Code'),
+                                                  'Product HTSUS Code'                   => $part->get('Part HTSUS Code'),
+                                                  'Product Duty Rate'                    => $part->get('Part Duty Rate'),
+                                                  'Product Origin Country Code'          => $part->get('Part Origin Country Code'),
+                                                  'Product UN Number'                    => $part->get('Part UN Number'),
+                                                  'Product UN Class'                     => $part->get('Part UN Class'),
+                                                  'Product Packing Group'                => $part->get('Part Packing Group'),
+                                                  'Product Proper Shipping Name'         => $part->get('Part Proper Shipping Name'),
+                                                  'Product Hazard Identification Number' => $part->get('Part Hazard Identification Number'),
+                                                  'Product Unit Weight'                  => $part->get('Part Unit Weight'),
+                                                  'Product Unit Dimensions'              => $part->get('Part Unit Dimensions'),
+                                                  'Product Materials'                    => $part->data['Part Materials'],
+                                                  'Product Barcode Number'               => $part->data['Part Barcode Number'],
+                                                  'Product Barcode Key'                  => $part->data['Part Barcode Key'],
+                                                  'Product CPNP Number'                  => $part->data['Part CPNP Number'],
+                                                  'Product UFI'                          => $part->data['Part UFI'],
+
+                                              ));
+
+                        $product->update_updated_markers('Data');
+
+                        $sql = "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`='Part' AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`='Marketing' ORDER BY `Image Subject Order` ";
+
+                        $stmt_img = $this->db->prepare($sql);
+                        $stmt_img->execute(array($part->id));
+                        while ($row_img = $stmt_img->fetch()) {
+                            $product->link_image($row_img['Image Subject Image Key'], 'Marketing');
+                        }
+                    }
+
+                }
+
+
                 foreach ($this->get_websites('objects') as $website) {
                     $website->create_product_webpage($product->id);
                 }
