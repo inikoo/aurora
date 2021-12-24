@@ -1,0 +1,1 @@
+ALTER TABLE `Attachment Dimension` CHANGE `aiku_id` `aiku_master_id` int unsigned NULL COMMENT '';
