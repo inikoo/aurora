@@ -141,3 +141,4 @@ cron/set_up_web_menu.php
 /cron/syncro_es_parts.php
 /cron/fix_costing.php
 /cron/set_items_different_tax_uk.php
+/cron/shipping_zones.oneoff.es.php
