@@ -14,9 +14,8 @@ include_once 'class.Staff.php';
 include_once 'class.Timesheet_Record.php';
 include_once 'class.Timesheet.php';
 
-function post_timesheet($db, $editor, $api_key_key) {
-
-
+function post_timesheet($db, $editor, $api_key_key)
+{
     if (isset($_REQUEST['Staff_Key'])) {
         $staff = new Staff($_REQUEST['Staff_Key']);
     } elseif (isset($_REQUEST['Staff Key'])) {
@@ -31,7 +30,10 @@ function post_timesheet($db, $editor, $api_key_key) {
         $staff = new Staff('alias', $_REQUEST['Staff Alias']);
     } else {
         $response = log_api_key_access_failure(
-            $db, $api_key_key, 'Fail_Operation', "Invalid staff id field"
+            $db,
+            $api_key_key,
+            'Fail_Operation',
+            "Invalid staff id field"
         );
         echo json_encode($response);
         exit;
@@ -39,55 +41,66 @@ function post_timesheet($db, $editor, $api_key_key) {
 
     if (!$staff->id) {
         $response = log_api_key_access_failure(
-            $db, $api_key_key, 'Fail_Operation', "Staff not found"
+            $db,
+            $api_key_key,
+            'Fail_Operation',
+            "Staff not found"
         );
         echo json_encode($response);
         exit;
-
     }
-    $source = 'API';
+    $source        = 'API';
     $staff->editor = $editor;
 
     if (isset($_REQUEST['Source'])) {
         if (in_array($_REQUEST['Source'], array('ClockingMachine'))) {
             $source = $_REQUEST['Source'];
         }
-
     }
+
+    $clocking_machine_id = 1;
+    if (defined('CLOCKING_MACHINE_KEY')) {
+        $clocking_machine_id = CLOCKING_MACHINE_KEY;
+    }
+
+
     $data = array(
-        'Timesheet Record Date'   => $_REQUEST['Date'],
-        'Timesheet Record Source' => $source,
-        'Timesheet Record Type'   => 'ClockingRecord',
-        'editor'                  => $editor
+        'Timesheet Record Date'       => $_REQUEST['Date'],
+        'Timesheet Record Source'     => $source,
+        'Timesheet Record Source Key' => $clocking_machine_id,
+        'Timesheet Record Type'       => 'ClockingRecord',
+        'editor'                      => $editor
     );
 
     $staff->create_timesheet_record($data);
     if ($staff->create_timesheet_record_error) {
-
         if ($staff->create_timesheet_record_duplicated) {
             $response = log_api_key_access_failure(
-                $db, $api_key_key, 'Fail_Operation', "Record already exists"
+                $db,
+                $api_key_key,
+                'Fail_Operation',
+                "Record already exists"
             );
-
         } else {
             $response = log_api_key_access_failure(
-                $db, $api_key_key, 'Fail_Operation', "Error creating record"
+                $db,
+                $api_key_key,
+                'Fail_Operation',
+                "Error creating record"
             );
-
         }
 
         echo json_encode($response);
         exit;
     } else {
         $response = log_api_key_access_success(
-            $db, $api_key_key, 'Record created'
+            $db,
+            $api_key_key,
+            'Record created'
         );
         echo json_encode($response);
         exit;
-
     }
-
-
 }
 
 

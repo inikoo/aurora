@@ -1,0 +1,1 @@
+ALTER TABLE `Timesheet Record Dimension` ADD COLUMN `Timesheet Record Source Key` int unsigned NULL COMMENT '' AFTER `Timesheet Record Source`;
