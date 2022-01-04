@@ -37,7 +37,7 @@ $account = new Account();
 
 
 
-$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension`   ");
+$sql = sprintf("SELECT `Invoice Key` FROM `Invoice Dimension`  where `Invoice Date`>'2021-10-01 00:00:00'    ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $invoice = get_object('Invoice', $row['Invoice Key']);
