@@ -188,6 +188,8 @@ class Timesheet_Record extends DB_Table {
                         'Timesheet Remover Key', $this->editor['Author Key'], 'no_history'
                     );
 
+                    $this->fast_update(['Timesheet Remove Date'=>gmdate('Y-m-d H:i:s')]);
+
                 }
 
                 include_once 'class.Timesheet.php';

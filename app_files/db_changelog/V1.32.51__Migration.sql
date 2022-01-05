@@ -1,0 +1,1 @@
+ALTER TABLE `Timesheet Record Dimension` ADD COLUMN `Timesheet Remove Date` datetime NULL DEFAULT NULL COMMENT '';
