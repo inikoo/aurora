@@ -1055,6 +1055,13 @@ class Customer extends Subject
         $order_data['Order External Invoicer Key'] = $store->get('Store External Invoicer Key');
 
 
+        $order_data['Order Source Key']                = 2;
+
+
+
+
+
+
         $order = new Order('new', $order_data);
 
 

@@ -20,7 +20,6 @@ class Store extends DB_Table
 {
 
 
-
     public Smarty $smarty;
 
 
@@ -152,8 +151,7 @@ class Store extends DB_Table
 
     function create($data)
     {
-
-        $account         = new Account($this->db);
+        $account = new Account($this->db);
         $account->load_properties();
         $account->editor = $this->editor;
 
@@ -191,14 +189,12 @@ class Store extends DB_Table
             $this->id = $this->db->lastInsertId();
 
 
-
-
             $this->msg = _("Store added");
             $this->get_data('id', $this->id);
             $this->new = true;
 
-            $this->fast_update_json_field('Store Settings','tax_authority',$account->settings('tax_authority'));
-            $this->fast_update_json_field('Store Settings','tax_country_code',$account->settings('tax_country_code'));
+            $this->fast_update_json_field('Store Settings', 'tax_authority', $account->settings('tax_authority'));
+            $this->fast_update_json_field('Store Settings', 'tax_country_code', $account->settings('tax_country_code'));
 
             if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
                 $sql = sprintf(
@@ -262,8 +258,6 @@ class Store extends DB_Table
             $this->fast_update(array(
                                    'Store Customer Payment Account Key' => $payment_account_credits->id
                                ));
-
-
 
 
             $customer_root_category = $account->create_category([
@@ -3195,9 +3189,6 @@ class Store extends DB_Table
         $data['editor'] = $this->editor;
 
 
-
-
-
         if (!isset($data['Product Code']) or $data['Product Code'] == '') {
             $this->error      = true;
             $this->msg        = _("Code missing");
@@ -3516,10 +3507,9 @@ class Store extends DB_Table
                 }
 
                 //get data from parts
-                $parts=$product->get_parts('objects');
-                if(count($parts)==1){
-
-                    foreach($parts as $part){
+                $parts = $product->get_parts('objects');
+                if (count($parts) == 1) {
+                    foreach ($parts as $part) {
                         $product->fast_update(array(
                                                   'Product Tariff Code'                  => $part->get('Part Tariff Code'),
                                                   'Product HTSUS Code'                   => $part->get('Part HTSUS Code'),
@@ -3550,7 +3540,6 @@ class Store extends DB_Table
                             $product->link_image($row_img['Image Subject Image Key'], 'Marketing');
                         }
                     }
-
                 }
 
 
@@ -4418,7 +4407,25 @@ class Store extends DB_Table
         $this->fast_update_json_field('Store Properties', 'dispatch_time_histogram_'.strtolower(preg_replace('/\s/', '_', $interval_data[0])), json_encode($waiting_time_histogram));
     }
 
-    function get_aiku_params($field, $value = ''): array
+    function get_order_sources()
+    {
+        $sources = [];
+        $sql     = "select * from `Order Source Dimension` where  `Order Source Type` !='website' and  `Order Source Store Key` is null or `Order Source Store Key`=? ";
+        $stmt    = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id
+            ]
+        );
+        while ($row = $stmt->fetch()) {
+            $sources[$row['Order Source Key']]=$row;
+        }
+
+        return $sources;
+
+    }
+
+    function get_aiku_params($field, $value = '')
     {
         $url = AIKU_URL.'stores/'.$this->id;
 

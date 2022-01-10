@@ -399,6 +399,10 @@ class Customer_Client extends Subject {
 
         $order_data['Recargo Equivalencia'] = $customer->get('Customer Recargo Equivalencia');
 
+
+        $order_data['Order Source Key']                = 2;
+
+
         include_once 'class.Order.php';
         $order = new Order('new', $order_data);
 

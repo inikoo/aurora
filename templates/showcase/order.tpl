@@ -544,6 +544,31 @@
 
         <table class="info_block acenter">
 
+            <tr style="border-bottom: 1px solid #ccc">
+
+                <td>
+
+                    {if  $order->get('State Index')>0 and  $order->get('State Index') <40  and  $order->get('Order Source Key')!=1  }
+                    <select class="order_source_options small" style="width: 200px">
+
+                        {if $order->get('Order Source Key')==''}
+                        <option disabled selected value> {t}Choose sell channel{/t} </option>
+                        {/if}
+                        {foreach from=$store->get_order_sources() item=source}
+                            <option value="{$source['Order Source Key']}"   {if $order->get('Order Source Key')==$source['Order Source Key']} selected="selected"  {/if}  >{$source['Order Source Name']}</option>
+
+                        {/foreach}
+
+                    </select>
+                      {else}
+                        <span class="Order_Source_Key">{$order->get('Order Source')}</span>
+
+                     {/if}
+
+
+                </td>
+            </tr>
+
             <tr>
 
                 <td>
@@ -1103,4 +1128,61 @@
     function show_label_error_box(){
         alert('caca')
     }
+
+
+
+    $('.order_source_options').niceSelect();
+
+    $( ".order_source_options" ).on('change',
+        function() {
+
+            var value=$( ".order_source_options option:selected" ).val();
+
+
+
+            var request = '/ar_edit.php?tipo=edit_field&object=Order&key={$order->id}&field=Order_Source_Key&value=' + value ;
+            console.log(request)
+
+            var form_data = new FormData();
+
+            form_data.append("tipo", 'edit_field')
+            form_data.append("field", 'Order_Source_Key')
+            form_data.append("object", 'Order')
+            form_data.append("key", {$order->id})
+            form_data.append("value", value)
+            var request = $.ajax({
+
+                url: "/ar_edit.php", data: form_data, processData: false, contentType: false, type: 'POST', dataType: 'json'
+
+            })
+
+
+            request.done(function (data) {
+                if (data.state == 200) {
+
+                    for (var key in data.update_metadata.class_html) {
+                        $('.' + key).html(data.update_metadata.class_html[key])
+                    }
+
+
+
+                } else if (data.state == 400) {
+                    sweetAlert(data.msg);
+                }
+
+            })
+
+
+            request.fail(function (jqXHR, textStatus) {
+                console.log(textStatus)
+
+                console.log(jqXHR.responseText)
+
+
+            });
+
+
+        });
+
+
 </script>

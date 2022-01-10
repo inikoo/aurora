@@ -540,6 +540,9 @@ class Public_Customer_Client extends DBW_Table {
 
         $order_data['Order Registration Number'] = $customer->data['Customer Registration Number'];
 
+        $order_data['Order Source Key']   = 1;
+
+
         $order_data['Order Tax Number']                    = $customer->data['Customer Tax Number'];
         $order_data['Order Tax Number Valid']              = $customer->data['Customer Tax Number Valid'];
         $order_data['Order Tax Number Validation Date']    = $customer->data['Customer Tax Number Validation Date'];

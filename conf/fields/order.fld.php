@@ -39,6 +39,18 @@ if ($object->get('State Index') >= 30) {
 
 }
 
+$order_source_options=[];
+
+$sql     = "select * from `Order Source Dimension` where   `Order Source Store Key` is null or `Order Source Store Key`=? ";
+$stmt    = $db->prepare($sql);
+$stmt->execute(
+    [
+        $store->id
+    ]
+);
+while ($row = $stmt->fetch()) {
+    $order_source_options[$row['Order Source Key']]=$row['Order Source Name'];
+}
 
 $other_delivery_addresses_fields = array();
 
@@ -109,6 +121,28 @@ $object_fields = array(
                 'value'           => $object->get('Order Customer Purchase Order ID'),
                 'formatted_value' => $object->get('Customer Purchase Order ID'),
                 'label'           => ucfirst($object->get_field_label('Order Customer Purchase Order ID')),
+                'invalid_msg'     => get_invalid_message('string'),
+                'required'        => false,
+            ),
+
+        )
+    ),
+
+    array(
+        'label'      => _('Sell channel'),
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'right_code'      => 'IS',
+                'id'              => 'Order_Source_Key',
+                'edit'            => ($edit ? 'option' : ''),
+                'value'           => $object->get('Order Source Key'),
+                'options'         => $order_source_options,
+
+                'formatted_value' => $object->get('Order Source'),
+                'label'           => ucfirst($object->get_field_label('Order Source Key')),
                 'invalid_msg'     => get_invalid_message('string'),
                 'required'        => false,
             ),

@@ -1082,6 +1082,9 @@ class Public_Customer extends DBW_Table {
         $order_data['Order Customer Contact Name'] = $this->data['Customer Main Contact Name'];
         $order_data['Order Customer Level Type']   = $this->data['Customer Level Type'];
 
+        $order_data['Order Source Key']   = 1;
+
+
         $order_data['Order Registration Number'] = $this->data['Customer Registration Number'];
 
         $order_data['Order Tax Number']                    = $this->data['Customer Tax Number'];

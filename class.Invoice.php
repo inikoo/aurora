@@ -636,6 +636,47 @@ class Invoice extends DB_Table
 
 
         switch ($key) {
+
+            case 'Source Key':
+
+                $souce='<span class="very_discreet">'._('Unknown sell channel').'</span>';
+
+                $sql="select `Order Source Name`,`Order Source Type` from `Order Source Dimension` where `Order Source Key`=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $this->data['Invoice Source Key']
+                    ]
+                );
+                while ($row = $stmt->fetch()) {
+
+                    switch ($row['Order Source Type']){
+                        case 'phone':
+                            $souce=_('Order by phone');
+                            break;
+                        case 'website':
+                            $souce=_('Ordered online');
+                            break;
+                        case 'other':
+                            $souce='<span class="discret">'._('Other sell channel').'</span>';
+                            break;
+                        case 'email':
+                            $souce=_('Ordered by email');
+                            break;
+                        case 'marketplace':
+                            $souce=_('Marketplace').": ".$row['Order Source Name'];
+                            break;
+                        default:
+                            $souce=$row['Order Source Name'];
+
+                    }
+
+
+                }
+
+
+                return $souce;
+
             case 'Tax Number Formatted':
 
 

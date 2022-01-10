@@ -33,7 +33,7 @@ include_once 'trait.Address.php';
 class Order extends DB_Table
 {
 
-    use Address, AttachmentSubject, OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax, OrderGet, OrderAiku;
+    use Address, AttachmentSubject, OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax, OrderGet;
     use ObjectTaxNumberTrait;
 
 
@@ -243,6 +243,16 @@ class Order extends DB_Table
                     $delivery_motes->fork_index_elastic_search();
                 }
                 break;
+
+            case 'Order Source Key':
+                $this->update_field($field, $value, $options);
+                foreach ($this->get_invoices('objects') as $invoice) {
+                    $invoice->editor=$this->editor;
+                    $invoice->update(
+                        ['Invoice Source Key'=>$value]
+                    );
+                }
+                break;
             default:
                 $base_data = $this->base_data();
 
@@ -255,6 +265,9 @@ class Order extends DB_Table
 
     function get($key = '')
     {
+
+
+
         if (!$this->id) {
             return '';
         }
@@ -288,6 +301,48 @@ class Order extends DB_Table
 
 
         switch ($key) {
+            case 'Order Source':
+            case 'Source Key':
+
+                $souce='<span class="very_discreet">'._('Unknown sell channel').'</span>';
+
+                $sql="select `Order Source Name`,`Order Source Type` from `Order Source Dimension` where `Order Source Key`=?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $this->data['Order Source Key']
+                    ]
+                );
+                while ($row = $stmt->fetch()) {
+
+                    switch ($row['Order Source Type']){
+                        case 'phone':
+                            $souce=_('Order by phone');
+                            break;
+                        case 'website':
+                            $souce=_('Ordered online');
+                            break;
+                        case 'other':
+                            $souce='<span class="discret">'._('Other sell channel').'</span>';
+                            break;
+                        case 'email':
+                            $souce=_('Ordered by email');
+                            break;
+                        case 'marketplace':
+                            $souce=_('Marketplace').": ".$row['Order Source Name'];
+                            break;
+                        default:
+                            $souce=$row['Order Source Name'];
+
+                    }
+
+
+               }
+
+
+                return $souce;
+
+
             case 'Last Updated by Customer':
                 $_tmp = gmdate("U") - gmdate("U", strtotime($this->data['Order Last Updated by Customer'].' +0:00'));
                 if ($_tmp < 3600) {
@@ -2155,7 +2210,8 @@ class Order extends DB_Table
             'Recargo Equivalencia'          => $this->metadata('RE'),
             'Invoice External Invoicer Key' => $this->data['Order External Invoicer Key'],
             'extra_data'                    => $extra_data,
-            'Invoice Order Type'            => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order')
+            'Invoice Order Type'            => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order'),
+            'Invoice Source Key'            => $this->data['Order Source Key'],
 
 
         );
@@ -2807,7 +2863,8 @@ WHERE `Order Transaction Fact Key`=?";
             'Invoice Currency'                     => $this->data['Order Currency'],
             'Recargo Equivalencia'                 => $this->metadata('RE'),
             'Invoice External Invoicer Key'        => $this->data['Order External Invoicer Key'],
-            'Invoice Order Type'                   => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order')
+            'Invoice Order Type'                   => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order'),
+            'Invoice Source Key'            => $this->data['Order Source Key']
 
 
         );
@@ -3290,6 +3347,9 @@ WHERE `Order Transaction Fact Key`=?";
 
             case 'Order Registration Number':
                 return _("registration number");
+
+            case 'Order Source Key':
+                return _("Sell channel");
 
             default:
                 return $field;
