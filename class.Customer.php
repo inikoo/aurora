@@ -1061,6 +1061,34 @@ class Customer extends Subject
 
 
 
+        $sql="select `Order Source Key`,`Order Source Option Key` from `Order Source Dimension`  where `Order Source Option Key`>0 and   `Order Source Type`='marketplace' and  `Order Source Store Key`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->get('Customer Store Key')
+            ]
+        );
+        while ($row = $stmt->fetch()) {
+
+
+            $sql="select `Customer Poll Key` from `Customer Poll Fact` where `Customer Poll Customer Key`=? and `Customer Poll Query Option Key`=? ";
+            $stmt2 = $this->db->prepare($sql);
+            $stmt2->execute(
+                [
+                    $this->id,
+                    $row['Order Source Option Key']
+                ]
+            );
+            while ($row2 = $stmt2->fetch()) {
+                $order_data['Order Source Key']=$row['Order Source Key'];
+            }
+        }
+
+
+
+
+
+
 
         $order = new Order('new', $order_data);
 
