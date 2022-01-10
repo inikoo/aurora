@@ -142,3 +142,4 @@ cron/set_up_web_menu.php
 /cron/fix_costing.php
 /cron/set_items_different_tax_uk.php
 /cron/shipping_zones.oneoff.es.php
+/cron/mk_10.csv
