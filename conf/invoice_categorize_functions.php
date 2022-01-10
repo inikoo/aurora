@@ -127,6 +127,18 @@ function get_categorize_invoices_functions() {
         }
     };
 
+    $categorize_invoices_functions['in_source']        = function ($data, $aux) {
+
+        $aux = json_decode($aux, true);
+
+        if (in_array($data["Invoice Source Key"], $aux)) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+
     $categorize_invoices_functions['poll_options'] = function ($data, $aux, $db) {
 
 
