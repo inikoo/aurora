@@ -92,6 +92,8 @@ function update_client_order_item($_data, $website, $customer_key, $editor, $db)
         $order = get_object('Order', $order_key);
     }
 
+    $order->fast_update(array('Order Source Key' => 1));
+
 
     $response = process_update_order_item($db, $order, $_data['product_id'], $_data['qty'], $website, $_data['webpage_key'], $_data['page_section_type']);
     echo json_encode($response);

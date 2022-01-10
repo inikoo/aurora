@@ -385,7 +385,8 @@ function get_basket_html($data, $customer)
 
 
     $order->fast_update(array(
-                            'Order Available Credit Amount' => $customer->get('Customer Account Balance')
+                            'Order Available Credit Amount' => $customer->get('Customer Account Balance'),
+                            'Order Source Key'=>1
                         ));
 
 
