@@ -1600,7 +1600,24 @@ function fork_housekeeping($job)
             $customer->editor = $editor;
 
 
-            if ($order->get('Order For Collection') == 'No') {
+            $marketplace=false;
+
+
+            $sql="select `Order Source Type` from `Order Source Dimension` where `Order Source Key`=? ";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                [
+                    $order->get('Order Source Key')
+                ]
+            );
+            while ($row = $stmt->fetch()) {
+                if($row['Order Source Type']=='marketplace'){
+                    $marketplace=true;
+                }
+            }
+
+
+            if ($order->get('Order For Collection') == 'No'  and !$marketplace) {
                 $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
                 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
