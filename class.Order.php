@@ -251,6 +251,7 @@ class Order extends DB_Table
                     $invoice->update(
                         ['Invoice Source Key'=>$value]
                     );
+                    $invoice->categorize();
                 }
                 break;
             default:
