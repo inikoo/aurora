@@ -1,0 +1,2 @@
+ALTER TABLE `Invoice Category Dimension` ADD COLUMN `Invoice Category Hide Dashboard` enum('Yes','No') NULL DEFAULT 'No' COMMENT '';
+ALTER TABLE `Store Dimension` ADD COLUMN `Store Hide Dashboard` enum('Yes','No') NULL DEFAULT 'No' COMMENT '';
