@@ -69,13 +69,17 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
     }
 
     $sql = sprintf(
-        "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`) LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`) where `Store Status` in ('Normal','ClosingDown')", $fields
+        "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`) LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`) where `Store Status` in ('Normal','ClosingDown') and `Store Hide Dashboard`='No'  ", $fields
     );
+
+
 
 
     if ($result = $db->query($sql)) {
 
         foreach ($result as $row) {
+
+
 
             if ($type != 'invoice_categories') {
                 $sum_invoices       += $row['invoices'];
@@ -309,7 +313,7 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
 
     $sql =
-        "select  C.`Category Code`,C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`='Head'  and `Invoice Category Status` in ('Normal','ClosingDown')  order by C.`Category Store Key` ,`Category Function Order`";
+        "select  C.`Category Code`,C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`='Head'  and `Invoice Category Status` in ('Normal','ClosingDown')  and `Invoice Category Hide Dashboard`!='Yes' order by C.`Category Store Key` ,`Category Function Order`";
 
     if ($result = $db->query($sql)) {
 

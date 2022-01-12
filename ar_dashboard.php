@@ -318,7 +318,8 @@ function sales_overview($_data, $db, $user, $account) {
 
         }
         $sql =
-            "select concat('cat',C.`Category Key`) record_key, `Category Code`, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal','ClosingDown')   order by C.`Category Store Key` ,`Category Function Order`";
+            "select concat('cat',C.`Category Key`) record_key, `Category Code`, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) 
+where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal','ClosingDown')  and `Invoice Category Hide Dashboard`!='Yes'  order by C.`Category Store Key` ,`Category Function Order`";
 
 
     } else {
@@ -343,7 +344,7 @@ function sales_overview($_data, $db, $user, $account) {
         }
 
         $sql = sprintf(
-            "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`)LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`)  where `Store Status` in ('Normal','ClosingDown')", $fields
+            "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`)LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`)  where `Store Status` in ('Normal','ClosingDown') and `Store Hide Dashboard`='No' ", $fields
         );
 
     }
