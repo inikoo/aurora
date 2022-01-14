@@ -15,6 +15,19 @@
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
-    {$data.html}
+    {if isset($data.provider) and isset($data.template_id) and   $data.provider=='trust_pilot'}
+
+        <!-- TrustBox script -->
+        <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
+        <!-- End TrustBox script -->
+
+        <!-- TrustBox widget - Carousel -->
+        <div class="trustpilot-widget" data-locale="es-ES" data-template-id="{$data.template_id}" data-businessunit-id="{$data.business_unit_id}" data-style-height="140px" data-style-width="100%" data-theme="light" data-stars="4,5" data-review-languages="es">
+            <a href="{$data.url}" target="_blank" rel="noopener">Trustpilot reviews</a>
+        </div>
+        <!-- End TrustBox widget -->
+    {else}
+        {$data.html}
+    {/if}
 </div>
 

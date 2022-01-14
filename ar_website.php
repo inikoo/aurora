@@ -84,7 +84,8 @@ switch ($tipo) {
 }
 
 
-function see_also($data, $db, $user, $smarty) {
+function see_also($data, $db, $user, $smarty)
+{
     include_once('utils/image_functions.php');
 
     $webpage = get_object('Webpage', $data['webpage_key']);
@@ -94,14 +95,10 @@ function see_also($data, $db, $user, $smarty) {
 
 
     foreach ($webpage->get_related_webpages_key($data['number_items']) as $webpage_key) {
-
-
         $see_also_page = get_object('Webpage', $webpage_key);
 
 
         if ($see_also_page->get('Webpage Scope') == 'Category Products' or $see_also_page->get('Webpage Scope') == 'Category Categories') {
-
-
             $category = get_object('Category', $see_also_page->get('Webpage Scope Key'));
 
             $image_src = $category->get('Image');
@@ -111,8 +108,6 @@ function see_also($data, $db, $user, $smarty) {
                 $image_key            = $matches[1];
                 $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
                 $image_website        = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
-
-
             } else {
                 $image_mobile_website = $image_src;
                 $image_website        = $image_src;
@@ -132,10 +127,7 @@ function see_also($data, $db, $user, $smarty) {
                 'link'                 => $see_also_page->get('Webpage URL')
 
             );
-
-
         } elseif ($see_also_page->get('Webpage Scope') == 'Product') {
-
             $product = get_object('Public_Product', $see_also_page->get('Webpage Scope Key'));
 
             $image_src = $product->get('Image');
@@ -147,7 +139,6 @@ function see_also($data, $db, $user, $smarty) {
 
                 $image_mobile_website = 'wi.php?id='.$image_key.'&s=320x200';
                 $image_website        = 'wi.php?id='.$image_key.'&s='.get_image_size($image_key, 432, 330, 'fit_highest');
-
             } else {
                 $image_mobile_website = $image_src;
                 $image_website        = $image_src;
@@ -168,7 +159,6 @@ function see_also($data, $db, $user, $smarty) {
                 'link'              => $see_also_page->get('Webpage URL')
 
             );
-
         }
 
 
@@ -177,8 +167,6 @@ function see_also($data, $db, $user, $smarty) {
 
         $smarty->assign('item_data', $see_also);
         $html .= $smarty->fetch('splinters/see_also_item.splinter.tpl');
-
-
     }
 
     $response = array(
@@ -187,13 +175,11 @@ function see_also($data, $db, $user, $smarty) {
         'update_date' => gmdate('Y-m-d H:i:s')
     );
     echo json_encode($response);
-
-
 }
 
 
-function webpage_block($data, $db, $user, $smarty) {
-
+function webpage_block($data, $db, $user, $smarty)
+{
     include_once('conf/webpage_blocks.php');
 
     $blocks = get_webpage_blocks();
@@ -205,23 +191,18 @@ function webpage_block($data, $db, $user, $smarty) {
 
     if ($data['code'] == 'text') {
         $smarty->assign('template', 't1');
-
         // $block['text_blocks'][0]['text'] = preg_replace('/block_block_key_t1_editor/', 'block_'.$block_id.'_t1_editor', $block['text_blocks'][0]['text']);
     } elseif ($data['code'] == 'map') {
         $smarty->assign('store', get_object('store', $data['store_key']));
-
     } elseif ($data['code'] == 'reviews') {
         $store = get_object('store', $data['store_key']);
 
-        $reviews_data = $store->get('Reviews Settings');
+        $reviews_data  = $store->get('Reviews Settings');
+        $review_widget = '';
 
-
-        if (!$reviews_data) {
-            $review_widget = '';
-        } else {
+        if ($reviews_data) {
             if ($reviews_data['provider'] == 'reviews.io') {
-
-                $review_widget = "
+                $review_widget     = "
                  <div id=\"carousel-inline-widget-810\" style=\"width:100%;margin:0 auto;\"></div>
             <script>
                 richSnippetReviewsWidgets('carousel-inline-widget-810', {
@@ -237,25 +218,30 @@ function webpage_block($data, $db, $user, $smarty) {
             </script>
                 
                 ";
+                $block['provider'] = 'reviews.io';
+            } elseif ($reviews_data['provider'] == 'trust_pilot') {
+                $review_widget     = '';
+
+
+                $block['provider'] = 'trust_pilot';
+                $block['template_id'] = $reviews_data['data']['template_id'];
+                $block['business_unit_id'] = $reviews_data['data']['business_unit_id'];
+                $block['url'] = $reviews_data['data']['url'];
+
 
             }
-
-
         }
 
+
         $block['html'] = $review_widget;
-
-
     }
 
 
     if (!empty($data['webpage_key'])) {
-
         $webpage = get_object('Webpage', $data['webpage_key']);
         $website = get_object('Website', $webpage->get('Webpage Website Key'));
         $smarty->assign('webpage', $webpage);
         $smarty->assign('website', $website);
-
     }
 
     $smarty->assign('key', $block_id);
@@ -274,7 +260,6 @@ function webpage_block($data, $db, $user, $smarty) {
         'block_key' => $block_id
     );
     echo json_encode($response);
-
 }
 
 
