@@ -247,9 +247,9 @@ class Order extends DB_Table
             case 'Order Source Key':
                 $this->update_field($field, $value, $options);
                 foreach ($this->get_invoices('objects') as $invoice) {
-                    $invoice->editor=$this->editor;
+                    $invoice->editor = $this->editor;
                     $invoice->update(
-                        ['Invoice Source Key'=>$value]
+                        ['Invoice Source Key' => $value]
                     );
                     $invoice->categorize();
                 }
@@ -266,9 +266,6 @@ class Order extends DB_Table
 
     function get($key = '')
     {
-
-
-
         if (!$this->id) {
             return '';
         }
@@ -305,9 +302,9 @@ class Order extends DB_Table
             case 'Order Source':
             case 'Source Key':
 
-                $souce='<span class="very_discreet">'._('Unknown sell channel').'</span>';
+                $souce = '<span class="very_discreet">'._('Unknown sell channel').'</span>';
 
-                $sql="select `Order Source Name`,`Order Source Type` from `Order Source Dimension` where `Order Source Key`=?";
+                $sql  = "select `Order Source Name`,`Order Source Type` from `Order Source Dimension` where `Order Source Key`=?";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(
                     [
@@ -315,30 +312,26 @@ class Order extends DB_Table
                     ]
                 );
                 while ($row = $stmt->fetch()) {
-
-                    switch ($row['Order Source Type']){
+                    switch ($row['Order Source Type']) {
                         case 'phone':
-                            $souce=_('Order by phone');
+                            $souce = _('Order by phone');
                             break;
                         case 'website':
-                            $souce=_('Ordered online');
+                            $souce = _('Ordered online');
                             break;
                         case 'other':
-                            $souce='<span class="discret">'._('Other sell channel').'</span>';
+                            $souce = '<span class="discret">'._('Other sell channel').'</span>';
                             break;
                         case 'email':
-                            $souce=_('Ordered by email');
+                            $souce = _('Ordered by email');
                             break;
                         case 'marketplace':
-                            $souce=_('Marketplace').": ".$row['Order Source Name'];
+                            $souce = _('Marketplace').": ".$row['Order Source Name'];
                             break;
                         default:
-                            $souce=$row['Order Source Name'];
-
+                            $souce = $row['Order Source Name'];
                     }
-
-
-               }
+                }
 
 
                 return $souce;
@@ -2141,6 +2134,10 @@ class Order extends DB_Table
             }
         }
 
+
+        $customer = get_object('Customer', $this->data['Order Customer Key']);
+        $eori     = $customer->get('EORI');
+
         $data_invoice = array(
             'editor'                   => $this->editor,
             'Invoice Date'             => $date,
@@ -2213,6 +2210,8 @@ class Order extends DB_Table
             'extra_data'                    => $extra_data,
             'Invoice Order Type'            => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order'),
             'Invoice Source Key'            => $this->data['Order Source Key'],
+
+            'Invoice EORI' => $eori
 
 
         );
@@ -2803,8 +2802,12 @@ WHERE `Order Transaction Fact Key`=?";
         $file_as = get_file_as($invoice_public_id);
 
 
+        $customer = get_object('Customer', $this->data['Order Customer Key']);
+        $eori     = $customer->get('EORI');
+
         $refund_data = array(
             'editor'                   => $this->editor,
+            'Invoice EORI'             => $eori,
             'Invoice Date'             => $date,
             'Invoice Type'             => 'Refund',
             'Invoice Public ID'        => $invoice_public_id,
@@ -2865,7 +2868,7 @@ WHERE `Order Transaction Fact Key`=?";
             'Recargo Equivalencia'                 => $this->metadata('RE'),
             'Invoice External Invoicer Key'        => $this->data['Order External Invoicer Key'],
             'Invoice Order Type'                   => ($this->data['Order Type'] == 'FulfilmentRent' ? 'FulfilmentRent' : 'Order'),
-            'Invoice Source Key'            => $this->data['Order Source Key']
+            'Invoice Source Key'                   => $this->data['Order Source Key']
 
 
         );

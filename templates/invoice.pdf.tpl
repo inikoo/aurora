@@ -198,7 +198,9 @@
             <div style="{if $invoice->get('Invoice Registration Number')==''}display:none{/if}">
                 {t}Registration Number{/t}: <b>{$invoice->get('Invoice Registration Number')}</b>
             </div>
-
+            <div style="{if $invoice->get('Invoice EORI')==''}display:none{/if}">
+                EORI: <b>{$invoice->get('Invoice EORI')}</b>
+            </div>
 
         </td>
         <td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;text-align: right">
