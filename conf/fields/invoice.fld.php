@@ -153,6 +153,17 @@ $object_fields = array(
                 'label'           => _('Recargo de equivalencia').' <i class="fa fa-registered recargo_equivalencia"></i>',
                 'type'            => ''
             ),
+            array(
+                'id'              => 'Invoice_EORI',
+                'edit'            => ($can_supervisor_accounting ? 'string' : ''),
+                'right_code'      => 'IS',
+                'value'           => $object->get('Invoice EORI'),
+                'formatted_value' => $object->get('EORI'),
+                'label'           => ucfirst($object->get_field_label('EORI')),
+                'required'        => false,
+                'type'            => 'value'
+
+            ),
 
         ),
 

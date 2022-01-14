@@ -637,6 +637,9 @@ class Invoice extends DB_Table
 
         switch ($key) {
 
+            case 'EORI':
+            return $this->data['Invoice EORI'];
+
             case 'Source Key':
 
                 $souce='<span class="very_discreet">'._('Unknown sell channel').'</span>';

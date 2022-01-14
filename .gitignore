@@ -143,3 +143,10 @@ cron/set_up_web_menu.php
 /cron/set_items_different_tax_uk.php
 /cron/shipping_zones.oneoff.es.php
 /cron/mk_10.csv
+/cron/market.csv
+/cron/mk_6.csv
+/cron/mk_9.csv
+/cron/mk_12.csv
+/cron/mk_11.csv
+/cron/update_market_places.php
+/cron/update_invoices_eori.php
