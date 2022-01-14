@@ -1303,6 +1303,7 @@ class Page extends DB_Table {
             case 'Website Registration Type':
 
 
+                /*
                 $old_content_data = $this->get('Content Data');
                 if (empty($old_content_data['backup'])) {
                     $backup = array(
@@ -1314,6 +1315,7 @@ class Page extends DB_Table {
                     $backup = $old_content_data['backup'];
                 }
                 unset($old_content_data['backup']);
+*/
 
                 /** @var  $website \Website */
                 $website = get_object('website', $this->get('Webpage Website Key'));
@@ -1329,14 +1331,14 @@ class Page extends DB_Table {
                     //print_r($backup);
                     //print_r($old_type);
 
-                    $backup[$old_type] = $old_content_data;
+                   // $backup[$old_type] = $old_content_data;
 
-                    if (isset($backup[$value])) {
-                        $this->update(array('Page Store Content Data' => json_encode($backup[$value])), 'no_history');
-                    } else {
+                    //if (isset($backup[$value])) {
+                    //    $this->update(array('Page Store Content Data' => json_encode($backup[$value])), 'no_history');
+                    //} else {
                         $this->reset_object();
-                    }
-                    $this->update_content_data('backup', $backup);
+                   // }
+                   // $this->update_content_data('backup', $backup);
 
 
                 }
