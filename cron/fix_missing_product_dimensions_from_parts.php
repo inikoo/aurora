@@ -32,19 +32,19 @@ $editor = array(
 $print_est = true;
 
 
-$sql = 'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC ';
+$sql = 'SELECT `Part SKU` FROM `Part Dimension`  ORDER BY `Part SKU`  DESC   ';
 
-if ($result = $db->query($sql)) {
-    foreach ($result as $row) {
-        /** @var $part \Part */
-        $part = get_object('Part',$row['Part SKU']);
-        $part->editor=$editor;
-        print $part->id.' '.$part->get('Reference')."\n";
-        $part->updated_linked_products();
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    [
 
-
-    }
-
+    ]
+);
+while ($row = $stmt->fetch()) {
+    /** @var $part \Part */
+    $part         = get_object('Part', $row['Part SKU']);
+    $part->editor = $editor;
+    print $part->id.' '.$part->get('Reference')."\n";
+    $part->updated_linked_products();
 }
-
 
