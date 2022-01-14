@@ -1,0 +1,1 @@
+ALTER TABLE `Invoice Dimension` ADD `Invoice EORI` VARCHAR(64) NULL DEFAULT NULL;
