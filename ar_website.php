@@ -227,11 +227,12 @@ function webpage_block($data, $db, $user, $smarty)
                 $block['template_id'] = $reviews_data['data']['template_id'];
                 $block['business_unit_id'] = $reviews_data['data']['business_unit_id'];
                 $block['url'] = $reviews_data['data']['url'];
+                $block['locale'] = $reviews_data['data']['locale'];
+                $block['lang'] = $reviews_data['data']['lang'];
 
 
             }
         }
-
 
         $block['html'] = $review_widget;
     }

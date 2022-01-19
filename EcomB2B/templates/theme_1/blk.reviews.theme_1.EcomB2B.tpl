@@ -22,7 +22,7 @@
         <!-- End TrustBox script -->
 
         <!-- TrustBox widget - Carousel -->
-        <div class="trustpilot-widget" data-locale="es-ES" data-template-id="{$data.template_id}" data-businessunit-id="{$data.business_unit_id}" data-style-height="140px" data-style-width="100%" data-theme="light" data-stars="4,5" data-review-languages="es">
+        <div class="trustpilot-widget" data-locale="{$data.locale}" data-template-id="{$data.template_id}" data-businessunit-id="{$data.business_unit_id}" data-style-height="140px" data-style-width="100%" data-theme="light" data-stars="4,5" data-review-languages="{$data.lang}">
             <a href="{$data.url}" target="_blank" rel="noopener">Trustpilot reviews</a>
         </div>
         <!-- End TrustBox widget -->
