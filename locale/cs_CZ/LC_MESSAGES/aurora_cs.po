@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
 "Project-Id-Version: au\n"
-"Language: cs\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Poedit 3.0\n"
 
 #: EcomB2B/ar_find.php:152 app_files/po_sources_from_smarty/au.php:1652
 #: app_files/po_sources_from_smarty/au.php:9059
@@ -4726,11 +4726,11 @@ msgstr "DPH"
 
 #: EcomB2B/utils/placed_order_functions.php:131
 msgid "Amount paid"
-msgstr "Částka vyplacená"
+msgstr "Vyplacená Částka"
 
 #: EcomB2B/utils/placed_order_functions.php:142 ar_edit_email_template.php:1419
 msgid "To Pay Amount"
-msgstr "Na zaplatenie"
+msgstr "Částka k Úhradě"
 
 #: EcomB2B/utils/table_functions.php:111 ar_find.php:1383
 #: showcase/product.show.php:388 utils/table_functions.php:111
@@ -4760,7 +4760,7 @@ msgstr[2] "%s obchodov"
 #: EcomB2B/utils/table_functions.php:123 utils/table_functions.php:123
 msgid "%s department"
 msgid_plural "%s departments"
-msgstr[0] "%s oddelenie"
+msgstr[0] "%s oddělení"
 msgstr[1] "%s oddelenia"
 msgstr[2] "%s oddelení"
 
@@ -4783,7 +4783,7 @@ msgstr[2] "%s produktov"
 #: utils/table_functions.php:135
 msgid "%s category"
 msgid_plural "%s categories"
-msgstr[0] "%s kategória"
+msgstr[0] "%s kategorie"
 msgstr[1] "%s kategórie"
 msgstr[2] "%s kategórií"
 
@@ -4798,14 +4798,14 @@ msgstr[2] "%s položiek"
 #: EcomB2B/utils/table_functions.php:147 utils/table_functions.php:147
 msgid "%s invoice"
 msgid_plural "%s invoices"
-msgstr[0] "%s faktúra"
+msgstr[0] "%s faktura"
 msgstr[1] "%s faktúry"
 msgstr[2] "%s faktúr"
 
 #: EcomB2B/utils/table_functions.php:151 utils/table_functions.php:151
 msgid "%s delivery note"
 msgid_plural "%s delivery notes"
-msgstr[0] "%s dodací List"
+msgstr[0] "%s dodací list"
 msgstr[1] "%s dodacie listy"
 msgstr[2] "%s dodacích listov"
 
@@ -4813,14 +4813,14 @@ msgstr[2] "%s dodacích listov"
 #: ar_reports_tables.php:1556 utils/table_functions.php:155
 msgid "%s part"
 msgid_plural "%s parts"
-msgstr[0] "%s časť"
+msgstr[0] "%s část"
 msgstr[1] "%s časti"
 msgstr[2] "%s častí"
 
 #: EcomB2B/utils/table_functions.php:160 utils/table_functions.php:160
 msgid "%s discontinued part"
 msgid_plural "%s discontinued parts"
-msgstr[0] "%s vyradená časť"
+msgstr[0] "%s vyřazená část"
 msgstr[1] "%s vyradené časti"
 msgstr[2] "%s vyradených častí"
 
@@ -4855,35 +4855,35 @@ msgstr[2] "%s skladov"
 #: EcomB2B/utils/table_functions.php:183 utils/table_functions.php:183
 msgid "%s supplier"
 msgid_plural "%s suppliers"
-msgstr[0] "%s dodávateľ"
+msgstr[0] "%s dodavatel"
 msgstr[1] "%s dodávatelia"
 msgstr[2] "%s dodávateľov"
 
 #: EcomB2B/utils/table_functions.php:187 utils/table_functions.php:187
 msgid "%s employee"
 msgid_plural "%s employees"
-msgstr[0] "%s zamestnanec"
+msgstr[0] "%s zaměstnanec"
 msgstr[1] "%s zamestnanci"
 msgstr[2] "%s zamestnancov"
 
 #: EcomB2B/utils/table_functions.php:191 utils/table_functions.php:191
 msgid "%s ex employee"
 msgid_plural "%s ex employees"
-msgstr[0] "%s ex zamestnanec"
+msgstr[0] "%s ex zaměstnanec"
 msgstr[1] "%s ex zamestnanci"
 msgstr[2] "%s ex zamestnancov"
 
 #: EcomB2B/utils/table_functions.php:195 utils/table_functions.php:195
 msgid "%s contractor"
 msgid_plural "%s contractors"
-msgstr[0] "%s dodávateľ"
+msgstr[0] "%s dodavatel"
 msgstr[1] "%s dodávatelia"
 msgstr[2] "%s dodávateľov"
 
 #: EcomB2B/utils/table_functions.php:199 utils/table_functions.php:199
 msgid "%s user"
 msgid_plural "%s users"
-msgstr[0] "%s užívateľ"
+msgstr[0] "%s uživatel"
 msgstr[1] "%s užívatelia"
 msgstr[2] "%s užívateľov"
 
@@ -4904,21 +4904,21 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:211 utils/table_functions.php:211
 msgid "%s list"
 msgid_plural "%s lists"
-msgstr[0] "%s zoznam"
+msgstr[0] "%s seznam"
 msgstr[1] "%s zoznamy"
 msgstr[2] "%s zoznamov"
 
 #: EcomB2B/utils/table_functions.php:216 utils/table_functions.php:216
 msgid "%s customer who favored"
 msgid_plural "%s customers who favored"
-msgstr[0] "%s zákazník ktorý uprednostnil"
+msgstr[0] "%s zákazník který upřednostnil"
 msgstr[1] "%s zákazníci ktorí uprednostnili"
 msgstr[2] "%s zákazníkov ktorí uprednostnili"
 
 #: EcomB2B/utils/table_functions.php:222 utils/table_functions.php:222
 msgid "%s product favored"
 msgid_plural "%s products favored"
-msgstr[0] "%s uprednostnený produkt"
+msgstr[0] "%s upřednostnený produkt"
 msgstr[1] "%s uprednostnené produkty"
 msgstr[2] "%s uprednostnených produktov"
 
@@ -4932,7 +4932,7 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:231 utils/table_functions.php:231
 msgid "%s search"
 msgid_plural "%s searches"
-msgstr[0] "%s hľadanie"
+msgstr[0] "%s vyhledávání"
 msgstr[1] "%s hľadania"
 msgstr[2] "%s hľadaní"
 
@@ -4940,14 +4940,14 @@ msgstr[2] "%s hľadaní"
 #: utils/table_functions.php:235 utils/table_functions.php:309
 msgid "%s transaction"
 msgid_plural "%s transactions"
-msgstr[0] "%s transakcia"
+msgstr[0] "%s transakce"
 msgstr[1] "%s transakcie"
 msgstr[2] "%s transakci"
 
 #: EcomB2B/utils/table_functions.php:240 utils/table_functions.php:240
 msgid "%s payment account"
 msgid_plural "%s payment accounts"
-msgstr[0] "%s platobný účet"
+msgstr[0] "%s platební účet"
 msgstr[1] "%s platobné účty"
 msgstr[2] "%s platobných účtov"
 
@@ -4968,7 +4968,7 @@ msgstr[2] "%s nadčasov"
 #: EcomB2B/utils/table_functions.php:253 utils/table_functions.php:253
 msgid "%s attachment"
 msgid_plural "%s attachments"
-msgstr[0] "%s príloha"
+msgstr[0] "%s příloha"
 msgstr[1] "%s prílohy"
 msgstr[2] "%s príloh"
 
@@ -4982,14 +4982,14 @@ msgstr[2] "%s rokov"
 #: EcomB2B/utils/table_functions.php:261 utils/table_functions.php:261
 msgid "%s week"
 msgid_plural "%s weeks"
-msgstr[0] "%s týždeň"
+msgstr[0] "%s týden"
 msgstr[1] "%s týždne"
 msgstr[2] "%s týždňov"
 
 #: EcomB2B/utils/table_functions.php:265 utils/table_functions.php:265
 msgid "%s month"
 msgid_plural "%s months"
-msgstr[0] "%s mesiac"
+msgstr[0] "%s měsíc"
 msgstr[1] "%s mesiace"
 msgstr[2] "%s mesiacov"
 
@@ -5052,7 +5052,7 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:305 utils/table_functions.php:305
 msgid "%s image"
 msgid_plural "%s images"
-msgstr[0] "%s obrázok"
+msgstr[0] "%s obrázek"
 msgstr[1] "%s obrázky"
 msgstr[2] "%s obrázkov"
 
@@ -5066,7 +5066,7 @@ msgstr[2] "%s kampaní"
 #: EcomB2B/utils/table_functions.php:317 utils/table_functions.php:317
 msgid "%s offer"
 msgid_plural "%s offers"
-msgstr[0] "%s ponuka"
+msgstr[0] "%s nabídka"
 msgstr[1] "%s ponuky"
 msgstr[2] "%s ponúk"
 
@@ -5102,7 +5102,7 @@ msgstr[2] ""
 #: utils/table_functions.php:337
 msgid "%s user category"
 msgid_plural "%s user categories"
-msgstr[0] "%s užívateľská kategória"
+msgstr[0] "%s uživatelská kategorie"
 msgstr[1] "%s užívateľské kategórie"
 msgstr[2] "%s užívateľskéých kategórií"
 
@@ -5110,7 +5110,7 @@ msgstr[2] "%s užívateľskéých kategórií"
 #: utils/table_functions.php:341
 msgid "%s delivery"
 msgid_plural "%s deliveries"
-msgstr[0] "%s doručenie"
+msgstr[0] "%s doručení"
 msgstr[1] "%s doručenia"
 msgstr[2] "%s doručení"
 
@@ -5124,14 +5124,14 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:350 utils/table_functions.php:350
 msgid "%s deleted employee"
 msgid_plural "%s deleted employees"
-msgstr[0] "%s vymazaný zamestnanec"
+msgstr[0] "%s vymazaný zaměstnanec"
 msgstr[1] "%s vymazaní zamestnanci"
 msgstr[2] "%s vymazaní zamestnanci"
 
 #: EcomB2B/utils/table_functions.php:356 utils/table_functions.php:356
 msgid "%s deleted contractor"
 msgid_plural "%s deleted contractors"
-msgstr[0] "%s vymazaný dodávateľ"
+msgstr[0] "%s vymazaný dodavatel"
 msgstr[1] "%s vymazaní dodávatelia"
 msgstr[2] "%s vymazaných dodávateľov"
 
@@ -5145,7 +5145,7 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:365 utils/table_functions.php:365
 msgid "%s part location"
 msgid_plural "%s part locations"
-msgstr[0] "%s lokácia produktu"
+msgstr[0] "%s lokace produktu"
 msgstr[1] "%s lokácií produktov"
 msgstr[2] "%s lokácií produktov"
 
@@ -5166,7 +5166,7 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:381 utils/table_functions.php:381
 msgid "%s material"
 msgid_plural "%s materials"
-msgstr[0] "%s materál"
+msgstr[0] "%s materiál"
 msgstr[1] "%s materiály"
 msgstr[2] "%s materiálov"
 
@@ -5487,7 +5487,7 @@ msgstr[2] "%s obchodov z %s"
 #: EcomB2B/utils/table_functions.php:577 utils/table_functions.php:577
 msgid "%s department of %s"
 msgid_plural "%s departments of %s"
-msgstr[0] "%s oddelenie z %s"
+msgstr[0] "%s oddělení z %s"
 msgstr[1] "%s oddelenia z %s"
 msgstr[2] "%s oddelení z %s"
 
@@ -5585,21 +5585,21 @@ msgstr[2] "%s skladov z %s"
 #: EcomB2B/utils/table_functions.php:661 utils/table_functions.php:661
 msgid "%s supplier of %s"
 msgid_plural "%s suppliers of %s"
-msgstr[0] "%s dodávateľ z %s"
+msgstr[0] "%s dodavatel z %s"
 msgstr[1] "%s dodávatelia z %s"
 msgstr[2] "%s dodávateľov z %s"
 
 #: EcomB2B/utils/table_functions.php:667 utils/table_functions.php:667
 msgid "%s employee of %s"
 msgid_plural "%s employees of %s"
-msgstr[0] "%s zamestnanec z %s"
+msgstr[0] "%s zaměstnanec z %s"
 msgstr[1] "%s zamestnanci z %s"
 msgstr[2] "%s zamestnancov z %s"
 
 #: EcomB2B/utils/table_functions.php:673 utils/table_functions.php:673
 msgid "%s ex employee of %s"
 msgid_plural "%s ex employees of %s"
-msgstr[0] "%s ex zamestnanec %s"
+msgstr[0] "%s ex zaměstnanec %s"
 msgstr[1] "%s ex zamestnanci %s"
 msgstr[2] "%s ex zamestnancov %s"
 
@@ -5613,7 +5613,7 @@ msgstr[2] "%s kontraktorov z %s"
 #: EcomB2B/utils/table_functions.php:684 utils/table_functions.php:684
 msgid "%s user of %s"
 msgid_plural "%s users of %s"
-msgstr[0] "%s užívateľ z %s"
+msgstr[0] "%s uživatel z %s"
 msgstr[1] "%s užívatelia z %s"
 msgstr[2] "%s užívateľov z %s"
 
@@ -5641,7 +5641,7 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:704 utils/table_functions.php:704
 msgid "%s list of %s"
 msgid_plural "%s lists of %s"
-msgstr[0] "%s zoznam z %s"
+msgstr[0] "%s seznam z %s"
 msgstr[1] "%s zoznamy z %s"
 msgstr[2] "%s zoznamov z %s"
 
@@ -5669,7 +5669,7 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:725 utils/table_functions.php:725
 msgid "%s search of %s"
 msgid_plural "%s searches of %s"
-msgstr[0] "%s hľadanie z %s"
+msgstr[0] "%s hledání z %s"
 msgstr[1] "%s hľadania z %s"
 msgstr[2] "%s hľadaní z %s"
 
@@ -5677,14 +5677,14 @@ msgstr[2] "%s hľadaní z %s"
 #: utils/table_functions.php:731 utils/table_functions.php:805
 msgid "%s transaction of %s"
 msgid_plural "%s transaction of %s"
-msgstr[0] "%s transakcia z %s"
+msgstr[0] "%s transakce z %s"
 msgstr[1] "%s transakcií z %s"
 msgstr[2] "%s transakcií z %s"
 
 #: EcomB2B/utils/table_functions.php:737 utils/table_functions.php:737
 msgid "%s payment account of %s"
 msgid_plural "%s payment accounts of %s"
-msgstr[0] "%s platobný účet z %s"
+msgstr[0] "%s platební účet z %s"
 msgstr[1] "%s platobné účty z %s"
 msgstr[2] "%s platobných účtov z %s"
 
@@ -5705,7 +5705,7 @@ msgstr[2] "%s nadčasov z %s"
 #: EcomB2B/utils/table_functions.php:755 utils/table_functions.php:755
 msgid "%s attachment of %s"
 msgid_plural "%s attachments of %s"
-msgstr[0] "%s príloha z %s"
+msgstr[0] "%s příloha z %s"
 msgstr[1] "%s prílohy z %s"
 msgstr[2] "%s príloh z %s"
 
@@ -5719,21 +5719,21 @@ msgstr[2] "%s rokov z %s"
 #: EcomB2B/utils/table_functions.php:764 utils/table_functions.php:764
 msgid "%s month of %s"
 msgid_plural "%s months of %s"
-msgstr[0] "%s mesiac z %s"
+msgstr[0] "%s měsíc z %s"
 msgstr[1] "%s mesiace z %s"
 msgstr[2] "%s mesiacov z %s"
 
 #: EcomB2B/utils/table_functions.php:768 utils/table_functions.php:768
 msgid "%s week of %s"
 msgid_plural "%s weeks of %s"
-msgstr[0] "%s týždeň z %s"
+msgstr[0] "%s týden z %s"
 msgstr[1] "%s týždne z %s"
 msgstr[2] "%s týždňov z %s"
 
 #: EcomB2B/utils/table_functions.php:772 utils/table_functions.php:772
 msgid "%s day of %s"
 msgid_plural "%s days of %s"
-msgstr[0] "%s deň z %s"
+msgstr[0] "%s den z %s"
 msgstr[1] "%s dni z %s"
 msgstr[2] "%s dní z %s"
 
@@ -5768,7 +5768,7 @@ msgstr[2] ""
 #: EcomB2B/utils/table_functions.php:800 utils/table_functions.php:800
 msgid "%s image of %s"
 msgid_plural "%s images of %s"
-msgstr[0] "%s obrázok z %s"
+msgstr[0] "%s obrázek z %s"
 msgstr[1] "%s obrázky z %s"
 msgstr[2] "%s obrázkov z %s"
 
@@ -5782,7 +5782,7 @@ msgstr[2] "%s kampaní z %s"
 #: EcomB2B/utils/table_functions.php:816 utils/table_functions.php:816
 msgid "%s offer of %s"
 msgid_plural "%s offers of %s"
-msgstr[0] "%s ponuka z %s"
+msgstr[0] "%s nabídka z %s"
 msgstr[1] "%s ponuky z %s"
 msgstr[2] "%s ponúk z %s"
 
@@ -19650,11 +19650,11 @@ msgstr "Aktualizované"
 
 #: app_files/po_sources_from_smarty/au.php:22304
 msgid "Set all as picked"
-msgstr "Nastavit vše podle výběru"
+msgstr "Nastavit vše jako vybrané"
 
 #: app_files/po_sources_from_smarty/au.php:22307
 msgid "mark all as picked"
-msgstr "označiť ako vybrané"
+msgstr "označit vše jako vybrané"
 
 #: app_files/po_sources_from_smarty/au.php:22310
 msgid "Picked by"
@@ -19686,7 +19686,7 @@ msgstr "QC"
 
 #: app_files/po_sources_from_smarty/au.php:22478
 msgid "Refundable amount"
-msgstr "Vratná částka"
+msgstr "Částka k vrácení"
 
 #: app_files/po_sources_from_smarty/au.php:22487
 msgid "Log refund"
@@ -19694,7 +19694,7 @@ msgstr "Zaznamenat refundaci"
 
 #: app_files/po_sources_from_smarty/au.php:22523
 msgid "Missing stock"
-msgstr "Chybí zásoby"
+msgstr "Chybějící zásoby"
 
 #: app_files/po_sources_from_smarty/au.php:22532
 msgid "Add"
@@ -19720,7 +19720,7 @@ msgstr "Pomoc"
 #: app_files/po_sources_from_smarty/au.php:22547 ar_setup.php:428
 #: ar_views.php:874
 msgid "Logout"
-msgstr "Odhlásení"
+msgstr "Odhlášení"
 
 #: app_files/po_sources_from_smarty/au.php:22571
 msgid "Real time users"
@@ -19794,7 +19794,7 @@ msgstr "Zobrazit nový objekt"
 #: app_files/po_sources_from_smarty/web.php:2
 #: app_files/po_sources_from_smarty/web.php:2447
 msgid "Results"
-msgstr "Výsledek"
+msgstr "Výsledky"
 
 #: app_files/po_sources_from_smarty/web.php:8
 #: app_files/po_sources_from_smarty/web.php:221
@@ -19852,7 +19852,7 @@ msgstr "Dodacia Adresa:"
 #: app_files/po_sources_from_smarty/web.php:2729
 #: app_files/po_sources_from_smarty/web.php:2987
 msgid "To be collected at:"
-msgstr "Sbírat v:"
+msgstr "Bude vyzvednuto:"
 
 #: app_files/po_sources_from_smarty/web.php:122
 #: app_files/po_sources_from_smarty/web.php:266
@@ -20141,7 +20141,7 @@ msgstr "Vyberte uloženou kreditní kartu nebo klikněte na platit s jinou karto
 #: app_files/po_sources_from_smarty/web.php:632
 #: app_files/po_sources_from_smarty/web.php:1844
 msgid "Pleas fill the CVV field"
-msgstr "Důvody vyplňují pole CVV"
+msgstr "Prosím vyplňte VCC pole"
 
 #: app_files/po_sources_from_smarty/web.php:542
 #: app_files/po_sources_from_smarty/web.php:635
@@ -20164,7 +20164,7 @@ msgstr "Některá pole pro zadání platby jsou neplatná"
 #: app_files/po_sources_from_smarty/web.php:599
 #: app_files/po_sources_from_smarty/web.php:1808
 msgid "Use this card"
-msgstr "Použiť túto kartu"
+msgstr "Použít tuto kartu"
 
 #: app_files/po_sources_from_smarty/web.php:671
 #: app_files/po_sources_from_smarty/web.php:674
@@ -20249,7 +20249,7 @@ msgstr "Poštovní marketing"
 #: app_files/po_sources_from_smarty/web.php:2138
 #: conf/website_system_webpages.php:466
 msgid "Deliver to invoice address"
-msgstr "Doručit na faktirační adresu"
+msgstr "Doručit na fakturační adresu"
 
 #: app_files/po_sources_from_smarty/web.php:1319
 #: app_files/po_sources_from_smarty/web.php:1328
@@ -26529,7 +26529,7 @@ msgstr "Stav platby"
 
 #: conf/elements_options.php:526
 msgid "Waiting payment"
-msgstr "Čakajúci na zaplatenie"
+msgstr "Čekání na platbu"
 
 #: conf/elements_options.php:536
 msgid "Dispatch state"
@@ -32925,7 +32925,7 @@ msgstr "Dobierka"
 
 #: utils/order_functions.php:223
 msgid "Waiting Payment"
-msgstr "Čakajúci na zaplatenie"
+msgstr "Čekací na zaplacení"
 
 #: utils/order_functions.php:232
 msgid "Overpaid"
