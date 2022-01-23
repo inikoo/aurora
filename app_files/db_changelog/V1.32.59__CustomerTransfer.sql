@@ -1,0 +1,1 @@
+ALTER TABLE `Customer Dimension` ADD `transfer_tenant` VARCHAR(16) NULL DEFAULT NULL AFTER `aiku_id`, ADD `transfer_id` INT UNSIGNED NULL DEFAULT NULL AFTER `transfer_tenant`, ADD `transfer_data` LONGTEXT NULL DEFAULT NULL AFTER `transfer_id`;
