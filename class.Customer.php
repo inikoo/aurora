@@ -33,10 +33,16 @@ class Customer extends Subject
     private $label;
 
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false)
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false)
     {
-        global $db;
-        $this->db = $db;
+
+
+        if (!$_db) {
+            global $db;
+            $this->db = $db;
+        } else {
+            $this->db = $_db;
+        }
 
         $this->label         = _('Customer');
         $this->table_name    = 'Customer';
