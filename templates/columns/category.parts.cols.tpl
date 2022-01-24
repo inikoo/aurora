@@ -166,6 +166,19 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
 },
 
+{
+name: "stock_available",
+label: "{t}Stock Available{/t}",
+editable: false,
+
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='stock_available'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
 
 {
 name: "dispatched_per_week",
@@ -571,6 +584,8 @@ grid.columns.findWhere({ name: 'dispatched_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("renderable", false)
 
+grid.columns.findWhere({ name: 'stock_available'} ).set("renderable", false)
+
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'sko_description'} ).set("renderable", true)
@@ -625,6 +640,7 @@ grid.columns.findWhere({ name: 'available_forecast'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'stock_value'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'next_deliveries'} ).set("renderable", true)
 
+grid.columns.findWhere({ name: 'stock_available'} ).set("renderable", true)
 
 
 

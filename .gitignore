@@ -150,3 +150,4 @@ cron/set_up_web_menu.php
 /cron/mk_11.csv
 /cron/update_market_places.php
 /cron/update_invoices_eori.php
+/cron/copy_customers_to_other_account.oneoff.php

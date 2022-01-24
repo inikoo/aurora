@@ -239,7 +239,8 @@ if ($order == 'id') {
 
 } elseif ($order == 'locations') {
           $order = "`Part Distinct Locations`";
-
+} elseif ($order == 'stock_available') {
+    $order = "(`Part Current On Hand Stock`-`Part Current Stock In Process`-`Part Current Stock Ordered Paid`)";
 
 
 } else {
@@ -274,7 +275,7 @@ $fields
 `Part 1 Quarter Acc Dispatched`,
 `Part Valid From`,`Part Valid From`,`Part Active From`,`Part Main Image Key`,`Part Status`,
 if(`Part Total Acc Customers`=0,0,  (`Part Total Acc Repeat Customers`/`Part Total Acc Customers`)) percentage_repeat_customer_total,
-`Part Cost`,`Part Cost in Warehouse`,`Part Units Per Package`,`Part Unit Price`,`Part On Demand`,`Part Commercial Value`,`Part Fresh`
+`Part Cost`,`Part Cost in Warehouse`,`Part Units Per Package`,`Part Unit Price`,`Part On Demand`,`Part Commercial Value`,`Part Fresh`,`Part Current Stock In Process`,`Part Current Stock Ordered Paid`
 
 ";
 

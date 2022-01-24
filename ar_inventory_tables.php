@@ -394,6 +394,11 @@ function parts($_data, $db, $user, $type, $account) {
                 'stock'              => '<span class="'.($data['Part Current On Hand Stock'] < 0 ? 'error' : '').'">'.number(floor($data['Part Current On Hand Stock'])).'</span>',
                 'stock_value'        => $stock_value,
 
+                'stock_available'=>number(
+                    $data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'],
+                    6
+                ),
+
                 'dispatched'     => number($data['dispatched'], 0),
                 'dispatched_1yb' => delta($data['dispatched'], $data['dispatched_1yb']),
                 'sales'          => money($data['sales'], $account->get('Account Currency')),
