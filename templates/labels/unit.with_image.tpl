@@ -9,7 +9,7 @@
 -->
 *}
 
-{if $size=='EU30161' or $size=='EU30040'}
+{if $size=='EU30161' or $size=='EU30040' or $size=='SK06302900'}
     {assign 'text_margin' ''}
     {if $with_origin and  $with_account_signature and $with_custom_text }
 

@@ -171,6 +171,8 @@
             <tr>
                 <td class="options sizes " data-type="size" colspan="2">
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30161" class="option {if $labels_data.unit.size=='EU30161'}selected{/if}">63 x 29.6</span>
+                    <span onclick="select_option_from_asset_labels(this)" data-value="SK06302900" class="option can_image {if $labels_data.unit.size=='SK06302900'}selected{/if}">63.5 x 29.6</span>
+
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30040" class="option {if $labels_data.unit.size=='EU30040'}selected{/if}">70 x 29.7</span>
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30140" class="option can_image {if $labels_data.unit.size=='EU30140'}selected{/if}">125 x 37</span>
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30137" class="option can_image {if $labels_data.unit.size=='EU30137'}selected{/if}">130 x 60</span>
@@ -192,7 +194,8 @@
                           class="option {if $labels_data.unit.size!='EU30040'}hide{/if}  {if $labels_data.unit.set_up!='single'}selected{/if} option  sheet EU30040">A4 <b>30</b> {t}labels{/t} (EU30040)</span>
                     <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
                           class="option {if $labels_data.unit.size!='EU30161'}hide{/if}  {if $labels_data.unit.set_up!='single'}selected{/if} option sheet EU30161">A4 <b>27</b> {t}labels{/t} (EU30161)</span>
-
+                    <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
+                          class="option {if $labels_data.unit.size!='SK06302900'}hide{/if}  {if $labels_data.unit.set_up!='single'}selected{/if} option sheet SK06302900">A4 <b>27</b> {t}labels{/t} (SK06302900)</span>
 
                     <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
                           class="option {if $labels_data.unit.size!='EU30140'}hide{/if}  {if $labels_data.unit.set_up!='single'}selected{/if} option sheet EU30140">A4 <b>7</b> {t}labels{/t} (EU30140)</span>
@@ -246,6 +249,8 @@
                 <td class="options sizes " data-type="size" colspan="2">
 
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30161" class="option {if $labels_data.sko.size=='EU30161'}selected{/if}">63 x 29.6</span>
+                    <span onclick="select_option_from_asset_labels(this)" data-value="SK06302900" class="option can_image {if $labels_data.sko.size=='SK06302900'}selected{/if}">63.5 x 29.6</span>
+
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30040" class="option {if $labels_data.sko.size=='EU30040'}selected{/if}">70 x 29.7</span>
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30137" class="option {if $labels_data.sko.size=='EU30137'}selected{/if}">130 x 60</span>
 
@@ -263,6 +268,10 @@
 
                     <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
                           class="option {if $labels_data.sko.size!='EU30161'}hide{/if}  {if $labels_data.sko.set_up!='single'}selected{/if} option sheet EU30161">A4 <b>27</b> {t}labels{/t} (EU30161)</span>
+
+                    <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
+                          class="option {if $labels_data.sko.size!='SK06302900'}hide{/if}  {if $labels_data.sko.set_up!='single'}selected{/if} option sheet SK06302900">A4 <b>27</b> {t}labels{/t} (SK06302900)</span>
+
                     <span onclick="select_option_from_asset_labels(this)" data-value="sheet"
                           class="option {if $labels_data.sko.size!='EU30040'}hide{/if}  {if $labels_data.sko.set_up!='single'}selected{/if} option  sheet EU30040">A4 <b>30</b> {t}labels{/t} (EU30040)</span>
 

@@ -16,7 +16,7 @@
     {assign 'code_size' '6mm'}
 
         font-size: 6mm;
-    {elseif $size=='EU30161'}
+    {elseif $size=='EU30161' or $size=='SK06302900'}
         font-size: 3mm;
     {assign 'barcode_height' 'size="1" height="1"'}
     {assign 'code_size' '3mm'}
