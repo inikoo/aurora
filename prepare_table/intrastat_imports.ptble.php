@@ -18,7 +18,6 @@ $account_country = new Country('code', $account->get('Account Country Code'));
 $intrastat_countries = array(
     'NL',
     'BE',
-    'GB',
     'BG',
     'ES',
     'IE',
