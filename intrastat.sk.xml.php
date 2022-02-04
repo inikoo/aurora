@@ -46,7 +46,7 @@ if (isset($_SESSION['table_state'][$tab])) {
 
 $tab = 'intrastat';
 include_once 'prepare_table/'.$tab.'.ptble.php';
-$sql = "select $fields from  $table   $where $wheref $group_by  order by `Delivery Note Address Country 2 Alpha Code`,`Product Tariff Code`  ";
+$sql = "select $fields from  $table   $where $wheref   and `Product Tariff Code`  is not null and `Product Package Weight` is not null  $group_by  order by `Delivery Note Address Country 2 Alpha Code`,`Product Tariff Code`  ";
 
 
 $date = strtotime($from);
