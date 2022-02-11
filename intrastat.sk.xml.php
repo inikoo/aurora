@@ -63,7 +63,7 @@ $data = [
     'envelopeId'        => $report_ID,
     'partyType'         => $account->properties('intrastat_partyType'),
     'partyId'           => $account->properties('intrastat_partyId'),
-  //  'organizationUnit'  => $account->properties('intrastat_organizationUnit'),
+    //  'organizationUnit'  => $account->properties('intrastat_organizationUnit'),
     'partyName'         => $account->properties('intrastat_partyName'),
     'streetName'        => $account->properties('intrastat_streetName'),
     'postalCode'        => $account->properties('intrastat_postalCode'),
@@ -72,9 +72,9 @@ $data = [
     'declarationId'     => date('m', $date),
     'referencePeriod'   => date('Y-m', $date),
     'PSIId'             => $account->properties('intrastat_PSIId'),
-//    'organizationUnit1' => $account->properties('intrastat_organizationUnit1'),
+    //    'organizationUnit1' => $account->properties('intrastat_organizationUnit1'),
     'partyId1'          => $account->properties('intrastat_partyId1'),
-   // 'organizationUnit2' => $account->properties('intrastat_organizationUnit2'),
+    // 'organizationUnit2' => $account->properties('intrastat_organizationUnit2'),
     'partyName1'        => $account->properties('intrastat_partyName1'),
     'streetName1'       => $account->properties('intrastat_streetName1'),
     'postalCode1'       => $account->properties('intrastat_postalCode1'),
@@ -99,7 +99,7 @@ $stmt->execute(
 
 
 while ($row = $stmt->fetch()) {
-    if ($row['value'] <= 0 or !$row['value']  ) {
+    if ($row['value'] <= 0 or !$row['value']) {
         continue;
     }
 
@@ -123,6 +123,7 @@ while ($row = $stmt->fetch()) {
         'MSConsDestCode'      => $row['Delivery Note Address Country 2 Alpha Code'],
         'countryOfOriginCode' => $country->get('Country 2 Alpha Code'),
         'netMass'             => ceil($row['weight']),
+        'quantityInSU'        => ceil($row['weight']),
         'NatureOfTransaction' => [
             'natureOfTransactionACode' => 1,
             'natureOfTransactionBCode' => 1,
@@ -146,14 +147,14 @@ $array = [
             'time' => date('H:i:s'),
         ],
         'Party'                => [
-            '_attributes'      => [
+            '_attributes' => [
                 'partyType' => $data['partyType'],
                 'partyRole' => 'sender'
             ],
-            'partyId'          => $data['partyId'],
-         //   'organizationUnit' => $data['organizationUnit'],
-            'partyName'        => $data['partyName'],
-            'Address'          => [
+            'partyId'     => $data['partyId'],
+            //   'organizationUnit' => $data['organizationUnit'],
+            'partyName'   => $data['partyName'],
+            'Address'     => [
                 'streetName' => $data['streetName'],
                 'postalCode' => $data['postalCode'],
                 'cityName'   => $data['cityName'],
@@ -164,21 +165,21 @@ $array = [
             'declarationId'            => $data['declarationId'],
             'referencePeriod'          => $data['referencePeriod'],
             'PSIId'                    => $data['PSIId'],
-          //  'organizationUnit'         => $data['organizationUnit1'],
+            //  'organizationUnit'         => $data['organizationUnit1'],
             'Party'                    => [
-                '_attributes'      => [
+                '_attributes'   => [
                     'partyType' => 'PSI',
                     'partyRole' => 'PSI'
                 ],
-                'partyId'          => $data['partyId1'],
-            //    'organizationUnit' => $data['organizationUnit2'],
-                'partyName'        => $data['partyName1'],
-                'Address'          => [
+                'partyId'       => $data['partyId1'],
+                //    'organizationUnit' => $data['organizationUnit2'],
+                'partyName'     => $data['partyName1'],
+                'Address'       => [
                     'streetName' => $data['streetName1'],
                     'postalCode' => $data['postalCode1'],
                     'cityName'   => $data['cityName1'],
                 ],
-                'ContactPerson'    => [
+                'ContactPerson' => [
                     'contactPersonName' => $data['contactPersonName'],
                     'Address'           => [
                         'streetName'  => $data['streetName2'],
