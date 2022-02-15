@@ -1,0 +1,1 @@
+ALTER TABLE `Store Dimension` ADD COLUMN `dispatch_bcc` varchar(255) NULL COMMENT '' AFTER `Store Shopify API Key`;
