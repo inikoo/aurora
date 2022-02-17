@@ -106,7 +106,7 @@ while ($row = $stmt->fetch()) {
     if ($row['value'] > 1) {
         $invoiced_amount = floor($row['value']);
     } else {
-        $invoiced_amount = ceil($row['value']);
+        $invoiced_amount = 1;
     }
 
 
