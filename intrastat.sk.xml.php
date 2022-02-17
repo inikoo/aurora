@@ -103,6 +103,12 @@ while ($row = $stmt->fetch()) {
         continue;
     }
 
+    $tariff_code = trim($row['tariff_code']);
+    if ($tariff_code == '') {
+        continue;
+    }
+
+
     if ($row['value'] > 1) {
         $invoiced_amount = floor($row['value']);
     } else {
@@ -112,16 +118,21 @@ while ($row = $stmt->fetch()) {
 
     $country = new Country('code', $row['Product Origin Country Code']);
 
-    $weight=ceil($row['weight']);
-    if($weight<=0){
-        $weight=1;
+    $weight = ceil($row['weight']);
+    if ($weight <= 0) {
+        $weight = 1;
     }
 
+    $invoicedAmount = floor($row['value']);
+
+    if ($invoicedAmount == 0) {
+        $invoicedAmount = 1;
+    }
     $totalNumberLines++;
     $items[] = [
         'itemNumber'          => $totalNumberLines,
         'CN8'                 => [
-            'CN8Code' => $row['tariff_code'],
+            'CN8Code' => $tariff_code,
             'SUCode'  => ''
         ],
         'MSConsDestCode'      => $row['Delivery Note Address Country 2 Alpha Code'],
@@ -137,7 +148,7 @@ while ($row = $stmt->fetch()) {
         'DeliveryTerms'       => [
             'TODCode' => 'EXW'
         ],
-        'invoicedAmount'      => floor($row['value']),
+        'invoicedAmount'      => $invoicedAmount,
         'partnerId'           => ''
     ];
 }
