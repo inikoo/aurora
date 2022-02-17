@@ -112,6 +112,10 @@ while ($row = $stmt->fetch()) {
 
     $country = new Country('code', $row['Product Origin Country Code']);
 
+    $weight=ceil($row['weight']);
+    if($weight<=0){
+        $weight=1;
+    }
 
     $totalNumberLines++;
     $items[] = [
@@ -122,8 +126,8 @@ while ($row = $stmt->fetch()) {
         ],
         'MSConsDestCode'      => $row['Delivery Note Address Country 2 Alpha Code'],
         'countryOfOriginCode' => $country->get('Country 2 Alpha Code'),
-        'netMass'             => ceil($row['weight']),
-        'quantityInSU'        => ceil($row['weight']),
+        'netMass'             => $weight,
+        'quantityInSU'        => $weight,
         'NatureOfTransaction' => [
             'natureOfTransactionACode' => 1,
             'natureOfTransactionBCode' => 1,
