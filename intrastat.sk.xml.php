@@ -135,8 +135,8 @@ while ($row = $stmt->fetch()) {
             'CN8Code' => $tariff_code,
             'SUCode'  => ''
         ],
-        'MSConsDestCode'      => $row['Delivery Note Address Country 2 Alpha Code'],
-        'countryOfOriginCode' => $country->get('Country 2 Alpha Code'),
+        'MSConsDestCode'      => ($row['Delivery Note Address Country 2 Alpha Code'] == 'RE' ? 'FR' : $row['Delivery Note Address Country 2 Alpha Code']),
+        'countryOfOriginCode' => ($country->get('Country 2 Alpha Code') == 'RE' ? 'FR' : $country->get('Country 2 Alpha Code')),
         'netMass'             => $weight,
         'quantityInSU'        => $weight,
         'NatureOfTransaction' => [
