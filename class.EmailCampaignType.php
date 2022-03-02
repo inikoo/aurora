@@ -277,6 +277,9 @@ class EmailCampaignType extends DB_Table {
                     case 'Delivery Note Undispatched':
                         $name = _('Undispatched delivery notification');
                         break;
+                    case 'Delivery Note Dispatched':
+                        $name = _('Dispatched delivery notification');
+                        break;
                     default:
                         $name = $this->data['Email Campaign Type Code'];
 

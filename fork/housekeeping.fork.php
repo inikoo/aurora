@@ -2533,6 +2533,36 @@ function fork_housekeeping($job)
             $store->update_dispatching_time_data('1m');
             $store->update_sitting_time_in_warehouse();
 
+            $smarty               = new Smarty();
+            $smarty->caching_type = 'redis';
+            $base                 = '';
+            $smarty->setTemplateDir($base.'templates');
+            $smarty->setCompileDir($base.'server_files/smarty/templates_c');
+            $smarty->setCacheDir($base.'server_files/smarty/cache');
+            $smarty->setConfigDir($base.'server_files/smarty/configs');
+            $smarty->addPluginsDir('./smarty_plugins');
+
+            $recipients = $store->get_notification_recipients_objects('Delivery Note Dispatched');
+
+            if (count($recipients) > 0) {
+                $email_template_type      = get_object('Email_Template_Type', 'Delivery Note Dispatched|'.$store->id, 'code_store');
+                $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
+                $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
+
+
+                $send_data = array(
+                    'Email_Template_Type' => $email_template_type,
+                    'Email_Template'      => $email_template,
+                    'delivery_note_key'   => $delivery_note->id,
+
+                );
+
+
+                foreach ($recipients as $recipient) {
+                    $published_email_template->send($recipient, $send_data, $smarty);
+                }
+            }
+
 
             break;
         case 'delivery_note_un_dispatched':

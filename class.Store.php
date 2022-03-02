@@ -765,6 +765,7 @@ class Store extends DB_Table
             case 'Store Notification New Customer Recipients':
             case 'Store Notification Invoice Deleted Recipients':
             case 'Store Notification Delivery Note Undispatched Recipients':
+            case 'Store Notification Delivery Note Dispatched Recipients':
 
                 $encoded_value = $this->settings(preg_replace('/\s/', '_', $key));
 
@@ -790,6 +791,7 @@ class Store extends DB_Table
             case 'Notification New Customer Recipients':
             case 'Notification Invoice Deleted Recipients':
             case 'Notification Delivery Note Undispatched Recipients':
+            case 'Notification Delivery Note Dispatched Recipients':
 
                 $this->smarty->assign('mixed_recipients', $this->get('Store '.$key));
                 $this->smarty->assign('mode', 'formatted_value');
@@ -3959,6 +3961,7 @@ class Store extends DB_Table
             case 'Store Notification New Customer Recipients':
             case 'Store Notification Invoice Deleted Recipients':
             case 'Store Notification Delivery Note Undispatched Recipients':
+            case 'Store Notification Delivery Note Dispatched Recipients':
 
                 $this->update_notifications($field, $value, 'set');
 

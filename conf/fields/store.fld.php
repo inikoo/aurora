@@ -694,6 +694,17 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
                     'type'            => ''
                 ),
                 array(
+                    'id'     => 'Store_Notification_Delivery_Note_Dispatched_Recipients',
+                    'render' => true,
+
+                    'edit'            => 'mixed_recipients',
+                    'value'           => '',
+                    'formatted_value' => $object->get('Notification Delivery Note Dispatched Recipients'),
+                    'label'           => _('Delivery note dispatched'),
+                    'required'        => false,
+                    'type'            => ''
+                ),
+                array(
                     'id'     => 'Store_Notification_Delivery_Note_Undispatched_Recipients',
                     'render' => true,
 
@@ -703,7 +714,8 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
                     'label'           => _('Delivery note undispatched'),
                     'required'        => false,
                     'type'            => ''
-                )
+                ),
+
 
 
             )

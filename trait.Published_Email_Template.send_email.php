@@ -684,6 +684,11 @@ trait Send_Email
                 $this->note                        = $data['note'];
 
                 break;
+            case 'Delivery Note Dispatched':
+
+                $this->delivery_note               = get_object('delivery_note', $data['delivery_note_key']);
+
+                break;
             default:
         }
     }
@@ -711,8 +716,11 @@ trait Send_Email
                 } else {
                     $subject = _('Delivery note undispatched').' '.$this->store->get('Name');
                 }
-
                 break;
+            case 'Delivery Note Dispatched':
+                $subject = _('Dispatched order').' '.$this->store->get('Name');
+                break;
+
             case 'Newsletter':
             case 'Marketing':
 
@@ -792,6 +800,15 @@ trait Send_Email
 
                     );
                 }
+                break;
+            case 'Delivery Note Dispatched':
+
+                $text = sprintf(
+                    _('New order %s has been dispatched to %s'),
+                    $this->delivery_note->get('ID'),
+                    $this->delivery_note->get('Delivery Note Customer Name'),
+
+                );
 
                 break;
             default:
@@ -1028,6 +1045,31 @@ trait Send_Email
 
                 $html = $smarty->fetch('notification_emails/alert.ntfy.tpl');
 
+
+                break;
+
+            case 'Delivery Note Dispatched':
+
+                $subject    = 'Delivery note dispatched'.' '.$this->store->get('Name');
+                $title      = '<b>Delivery note dispatched to </b> '.$this->delivery_note->get('Delivery Note Customer Name');
+
+
+                $info = sprintf(
+                    'Delivery note %s has been undispatched to %s.',
+                    '<b>'.$this->delivery_note->get('ID').'</b>',
+                    $this->delivery_note->get('Delivery Note Customer Name')
+
+                );
+
+                $smarty->assign('type', 'Success');
+
+                $smarty->assign('store', $this->store);
+                $smarty->assign('account', $this->account);
+                $smarty->assign('title', $title);
+                $smarty->assign('subject', $subject);
+
+                $smarty->assign('info', $info);
+                $html = $smarty->fetch('notification_emails/order_dispatched.tpl');
 
                 break;
             default:

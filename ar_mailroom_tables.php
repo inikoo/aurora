@@ -123,7 +123,9 @@ function user_notifications($_data, $db, $user) {
                 break;
             case 'Delivery Note Undispatched':
                 $_type = _('Delivery note undispatched');
-
+                break;
+            case 'Delivery Note Dispatched':
+                $_type = _('Delivery note dispatched');
                 break;
 
             default:

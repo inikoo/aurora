@@ -75,6 +75,11 @@ function create_email_templates($db, $store) {
         ),
         array(
             'Email Campaign Type Status' => 'Active',
+            'Email Campaign Type Scope'  => 'User Notification',
+            'Email Campaign Type Code'   => 'Delivery Note Dispatched',
+        ),
+        array(
+            'Email Campaign Type Status' => 'Active',
             'Email Campaign Type Scope'  => 'Customer Notification',
             'Email Campaign Type Code'   => 'OOS Notification',
         ),
@@ -141,6 +146,8 @@ function create_email_templates($db, $store) {
                 case 'New Order':
                 case 'New Customer':
                 case 'Delivery Note Undispatched':
+                case 'Delivery Note Dispatched':
+
                 case 'Invoice Deleted':
 
                     $html = '';
@@ -155,6 +162,9 @@ function create_email_templates($db, $store) {
                             break;
                         case 'Delivery Note Undispatched':
                             $subject = _('Delivery note undispatched').' '.$store->get('Name');
+                            break;
+                        case 'Delivery Note Dispatched':
+                            $subject = _('Delivery note dispatched').' '.$store->get('Name');
                             break;
                         case 'Invoice Deleted':
                             $subject = _('Invoice deleted').' '.$store->get('Name');
