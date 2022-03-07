@@ -1501,33 +1501,39 @@ class Store extends DB_Table
         $recipients      = array();
         $recipients_data = $this->get('Store Notification '.$type.' Recipients');
 
-        foreach ($recipients_data['external_emails'] as $external_email) {
-            $recipients[$external_email] = new email_recipient(
 
-                0, array(
-                     'object_name'      => 'external_email',
-                     'Main Plain Email' => $external_email
-                 )
+        if(is_array($recipients_data)) {
 
-            );
-        }
+            foreach ($recipients_data['external_emails'] as $external_email) {
+                $recipients[$external_email] = new email_recipient(
 
-
-        foreach ($recipients_data['users'] as $user) {
-            if ($user->get('User Active') == 'Yes' and $user->get('User Password Recovery Email') != '') {
-                $recipients[$user->get('User Password Recovery Email')] = new email_recipient(
-
-                    $user->id, array(
-                                 'object_name'      => 'User',
-                                 'Main Plain Email' => $user->get('User Password Recovery Email'),
-                                 'Name'             => $user->get('Alias'),
-                             )
+                    0, array(
+                         'object_name'      => 'external_email',
+                         'Main Plain Email' => $external_email
+                     )
 
                 );
             }
-        }
 
-        return array_values($recipients);
+
+            foreach ($recipients_data['users'] as $user) {
+                if ($user->get('User Active') == 'Yes' and $user->get('User Password Recovery Email') != '') {
+                    $recipients[$user->get('User Password Recovery Email')] = new email_recipient(
+
+                        $user->id, array(
+                                     'object_name'      => 'User',
+                                     'Main Plain Email' => $user->get('User Password Recovery Email'),
+                                     'Name'             => $user->get('Alias'),
+                                 )
+
+                    );
+                }
+            }
+
+            return array_values($recipients);
+        }else{
+            return [];
+        }
     }
 
 

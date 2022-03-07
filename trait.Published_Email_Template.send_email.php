@@ -141,11 +141,9 @@ trait Send_Email
             $to_address = $recipient->get('Main Plain Email');
         }
 
-        if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation' and
+        if ($this->email_template_type->get('Email Campaign Type Code') == 'Delivery Confirmation'
 
-            (($this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->invoice_pdf)) or ($this->store->settings('send_dn_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->dn_pdf))
-
-            )
+            and (($this->store->settings('send_invoice_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->invoice_pdf)) or ($this->store->settings('send_dn_attachment_in_delivery_confirmation') == 'Yes' and !empty($this->dn_pdf)))
 
         ) {
             $send_raw = true;
@@ -629,8 +627,11 @@ trait Send_Email
                         if ($this->store->settings('invoice_show_CPNP') == 'Yes') {
                             $invoice_settings .= '&CPNP=1';
                         }
-
-                        $this->invoice_pdf = file_get_contents($aurora_url.'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
+                        try {
+                            $this->invoice_pdf = file_get_contents($aurora_url.'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
+                        }catch (\Throwable $exception) {
+                            \Sentry\captureException($exception);
+                        }
                     }
                 }
 
