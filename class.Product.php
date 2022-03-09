@@ -128,12 +128,11 @@ class Product extends Asset
         }
 
         switch ($key) {
-
             case 'Service Code':
             case 'Service Name':
             case 'Service Price':
             case 'Service Unit Label':
-                return $this->get(preg_replace('/Service/','Product',$key));
+                return $this->get(preg_replace('/Service/', 'Product', $key));
 
 
             case 'Image':
@@ -261,9 +260,9 @@ class Product extends Asset
                     $this->data['Product Price'],
                     $this->data['Store Currency Code']
                 );
-                if ($this->data['Product Units Per Case'] ==1 ) {
+                if ($this->data['Product Units Per Case'] == 1) {
                     $price .= '/'.$this->data['Product Unit Label'];
-                }elseif ($this->data['Product Units Per Case']  > 1) {
+                } elseif ($this->data['Product Units Per Case'] > 1) {
                     $price .= ' ('.money(
                             $this->data['Product Price'] / $this->data['Product Units Per Case'],
                             $this->data['Store Currency Code']
@@ -2313,13 +2312,12 @@ class Product extends Asset
 
 
         switch ($field) {
-
             case 'Service Code':
             case 'Service Name':
             case 'Service Price':
             case 'Service Unit Label':
 
-                $this->update_field_switcher(preg_replace('/Service/','Product',$field), $value, $options , $metadata );
+                $this->update_field_switcher(preg_replace('/Service/', 'Product', $field), $value, $options, $metadata);
 
                 break;
 
@@ -2995,10 +2993,9 @@ class Product extends Asset
                 $this->updated = $updated;
                 if ($updated) {
                     foreach ($this->get_parts('objects') as $part) {
-                        if($part->id){
+                        if ($part->id) {
                             $part->update_commercial_value();
                         }
-
                     }
 
                     $this->update_updated_markers('Price');
@@ -3775,23 +3772,33 @@ class Product extends Asset
 
     function updating_packing_data()
     {
+        $this->load_acc_data();
         $sko    = '';
         $carton = '';
         $batch  = '';
-
+        $sko_per_carton = '';
 
         if ($this->get('Product Number of Parts') == 1) {
             foreach ($this->get_parts_data('Objects') as $part_data) {
                 $sko = $part_data['Ratio'];
+
                 if ($part_data['Part']->get('Part SKOs per Carton') > 0) {
+
+
+                    $sko_per_carton=$part_data['Ratio'] * $part_data['Part']->get('Part SKOs per Carton');
+
                     $carton = $part_data['Ratio'] / $part_data['Part']->get('Part SKOs per Carton');
                 }
             }
         }
 
+
         $this->fast_update_json_field('Product Properties', 'packing_sko', $sko);
         $this->fast_update_json_field('Product Properties', 'packing_carton', $carton);
         $this->fast_update_json_field('Product Properties', 'packing_batch', $batch);
+
+
+        $this->fast_update(['Product Outers Per Carton' => $sko_per_carton]);
     }
 
     function update_weight()

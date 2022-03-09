@@ -29,7 +29,7 @@ $editor = array(
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-$sql = "SELECT `Product ID`  FROM `Product Dimension`  order by `Product Code`   ";
+$sql = "SELECT `Product ID`  FROM `Product Dimension`   order by `Product Code`   ";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
