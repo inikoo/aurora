@@ -151,3 +151,7 @@ cron/set_up_web_menu.php
 /cron/update_market_places.php
 /cron/update_invoices_eori.php
 /cron/copy_customers_to_other_account.oneoff.php
+/cron/restore_deleted_supplier.php
+/cron/sk_tc.csv
+/cron/tc.csv
+/cron/update_tariff_codes.php
