@@ -343,7 +343,35 @@
                 </td>
 
             </tr>
+            <tr class="carton_data">
 
+                <td>
+                    <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>
+                </td>
+                <td style="padding-left: 4px">
+                </td>
+
+                <td>
+                    {if $product->get('Product Outers Per Carton')==''}
+                        <span class="italic very_discreet">{t}Carton not set up{/t}</span>
+                    {elseif $product->get('Product Outers Per Carton')==1}
+                        <span class="italic very_discreet">{t}Not for sale in cartons{/t}</span>  <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i>=<i class="fal fa-cube fa-fw" title="{t}Outer{/t}" ></i>
+                    {else}
+                        <i class="fal fa-pallet fa-fw" title="{t}Carton{/t}" ></i> =   <b>{$product->get('Outers Per Carton')}</b><i class="fal fa-cube fa-fw" title="{t}Outer{/t}" ></i>
+                    {/if}
+                </td>
+
+                <td style="text-align: right">
+
+                </td>
+
+                <td style="text-align: right">
+
+                </td>
+                <td>
+                </td>
+
+            </tr>
 
         </table>
 
