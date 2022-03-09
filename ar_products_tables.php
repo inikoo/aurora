@@ -373,6 +373,13 @@ function products($_data, $db, $user, $account) {
 
             */
 
+            $outers_per_carton=$data['Product Outers Per Carton'];
+            if($outers_per_carton==''){
+                $outers_per_carton='<span class="italic super_discreet">NS</span>';
+            }elseif($outers_per_carton==1){
+                $outers_per_carton='<span class="italic very_discreet">NA</span>';
+            }
+
 
             $record_data[] = array(
 
@@ -390,7 +397,7 @@ function products($_data, $db, $user, $account) {
 
 
                 'rrp' => $rrp,
-
+                'outers_per_carton'=>$outers_per_carton,
 
                 'margin'           => $margin,
                 'web_state'        => $web_state,

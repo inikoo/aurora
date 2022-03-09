@@ -52,7 +52,14 @@ editable: false,
 sortType: "toggle",
 cell: "html"
 },
-
+{
+name: "outers_per_carton",
+label: "{t}O/Carton{/t}",
+editable: false,
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
 
 {
 name: "parts",
@@ -383,12 +390,14 @@ grid.columns.findWhere({ name: 'customer_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'percentage_repeat_customer_total'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", false)
 
+grid.columns.findWhere({ name: 'outers_per_carton'} ).set("renderable", false)
 
 
 
 
 if(view=='overview'){
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'outers_per_carton'} ).set("renderable", true)
 
 grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'margin'} ).set("renderable", true)

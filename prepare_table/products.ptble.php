@@ -306,6 +306,8 @@ if ($order == 'stock') {
     $order = "`Product Total Acc Customers`";
 } elseif ($order == 'percentage_repeat_customer_total') {
     $order = "percentage_repeat_customer_total";
+}elseif ($order == 'outers_per_carton') {
+    $order = "`Product Outers Per Carton`";
 } else {
     $order = 'P.`Product ID`';
 }
@@ -316,7 +318,10 @@ $sql_totals
 
 
 $fields
-    = " `Product Type`,`Product Customer Key`, `Product Total Acc Quantity Ordered`,P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
+    = " 
+    
+    `Product Outers Per Carton`,
+    `Product Type`,`Product Customer Key`, `Product Total Acc Quantity Ordered`,P.`Product ID`,P.`Product Code`,`Product Name`,`Product Price`,`Store Currency Code`,`Store Code`,S.`Store Key`,`Store Name`,`Product Web Configuration`,`Product Availability`,`Product Web State`,`Product Cost`,`Product Number of Parts`,P.`Product Status`,`Product Units Per Case`,
 `Product 1 Year Ago Invoiced Amount`,`Product 2 Year Ago Invoiced Amount`,`Product 3 Year Ago Invoiced Amount`,`Product 4 Year Ago Invoiced Amount`,`Product 5 Year Ago Invoiced Amount`,
 `Product 1 Quarter Ago Invoiced Amount`,`Product 2 Quarter Ago Invoiced Amount`,`Product 3 Quarter Ago Invoiced Amount`,`Product 4 Quarter Ago Invoiced Amount`,
 `Product 1 Quarter Ago 1YB Invoiced Amount`,`Product 2 Quarter Ago 1YB Invoiced Amount`,`Product 3 Quarter Ago 1YB Invoiced Amount`,`Product 4 Quarter Ago 1YB Invoiced Amount`,
