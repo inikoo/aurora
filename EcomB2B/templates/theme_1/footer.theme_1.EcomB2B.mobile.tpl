@@ -9,7 +9,7 @@
 -->
 *}
 
-<div class="outter-elements">
+<div class="outter-elements" style="clear: both">
     <div class="decoration decoration-margins"></div>
 
 <div class="footer footer-dark">

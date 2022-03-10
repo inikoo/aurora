@@ -9,7 +9,7 @@
 -->
 *}
 
-<div class="outter-elements">
+<div class="outter-elements"  style="clear: both">
 
 <div class="footer footer-dark">
 
