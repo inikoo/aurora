@@ -16,12 +16,12 @@
 
         <div class="input-icon">
             <input id="search_input" type="text" class="input-text-box input-grey-border" value="">
-            <i id="search_icon" class="ion-search"></i>
+            <i id="search_icon" class="fa fa-search"></i>
         </div>
 
 
     </div>
-    <div id="search_results" style="min-height: 400px"></div>
+    <div id="search_results" style="clear:both;min-height: 400px"></div>
 </div>
 
 

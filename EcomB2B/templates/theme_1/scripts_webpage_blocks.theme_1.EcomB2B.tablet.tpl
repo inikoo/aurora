@@ -56,6 +56,17 @@
                     search($('#search_input').val())
                 }
 
+                $('#search_icon').on("click", function () {
+                    search($('#search_input').val());
+                });
+
+                $(document).on('keyup', '#search_input', function (e) {
+                    if (e.keyCode == 13) {
+                        search($(this).val())
+                    }
+                });
+
+
                 {/if}
                 {if $with_basket==1}
 
