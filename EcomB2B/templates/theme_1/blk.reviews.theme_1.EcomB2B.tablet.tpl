@@ -14,7 +14,7 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "20"}{/if}
 
 <div id="block_{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if} " top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
-     style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
+     style="clear:both;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
     {if isset($data.provider) and isset($data.template_id) and   $data.provider=='trust_pilot'}
 
         <!-- TrustBox script -->
