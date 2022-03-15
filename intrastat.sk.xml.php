@@ -44,8 +44,15 @@ if (isset($_SESSION['table_state'][$tab])) {
 }
 
 
+
 $tab = 'intrastat';
 include_once 'prepare_table/'.$tab.'.ptble.php';
+
+$group="GROUP BY
+	LEFT(`Product Tariff Code`, 8),
+	`Delivery Note Address Country 2 Alpha Code`,`Invoice Tax Number`,IF(`Invoice Tax Number Valid`='Yes' and `Invoice Tax Number`!='' , 'Y', 'N')";
+$fields=$fields.", `Invoice Tax Number` as tax_number,
+	IF(`Invoice Tax Number Valid`='Yes', 'Y', 'N') as valid_tax_number ";
 $sql = "select $fields from  $table   $where $wheref   and `Product Tariff Code`  is not null and `Product Package Weight` is not null  $group_by  order by `Delivery Note Address Country 2 Alpha Code`,`Product Tariff Code`  ";
 
 
@@ -129,6 +136,15 @@ while ($row = $stmt->fetch()) {
         $invoicedAmount = 1;
     }
     $totalNumberLines++;
+
+
+    $tax_number='QT999999999999';
+
+    if($row['valid_tax_number']=='Y'){
+        $tax_number=$row['tax_number'];
+    }
+
+
     $items[] = [
         'itemNumber'          => $totalNumberLines,
         'CN8'                 => [
@@ -150,7 +166,7 @@ while ($row = $stmt->fetch()) {
             'TODCode' => 'EXW'
         ],
         'invoicedAmount'      => $invoicedAmount,
-        'partnerId'           => ''
+        'partnerId'           => $tax_number
     ];
 }
 
