@@ -731,6 +731,7 @@ if ($object->get('Supplier Type') != 'Archived') {
         'type'      => 'operation'
     );
 
+    /*
     if ($user->get('User Type') == 'Staff') {
         $fields[] = array(
 
@@ -743,7 +744,7 @@ if ($object->get('Supplier Type') != 'Archived') {
             'type'      => 'operation'
         );
     }
-
+*/
 
     $operations = array(
         'label'      => _('Operations'),

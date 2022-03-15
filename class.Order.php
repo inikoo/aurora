@@ -78,7 +78,6 @@ class Order extends DB_Table
             return;
         }
 
-
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id = $this->data['Order Key'];
         }

@@ -12,7 +12,6 @@
 
  Version 2.0
 */
-
 require_once 'vendor/autoload.php';
 /** @var string $dns_host */
 /** @var string $dns_port */
