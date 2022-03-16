@@ -147,7 +147,7 @@ function category_products($data, $db, $customer_key, $order) {
 
                 $stock[$row['Product ID']] = array(
                     $row['Product Availability State'],
-                    get_stock_label($show_stock_value,$row['Product Availability State'],$row['Product Availability'])
+                    get_stock_label($labels,$show_stock_value,$row['Product Availability State'],$row['Product Availability'])
                 );
 
 
@@ -187,7 +187,7 @@ function category_products($data, $db, $customer_key, $order) {
 
             $stock[$row['Product ID']] = array(
                 $row['Product Availability State'],
-                get_stock_label($show_stock_value,$row['Product Availability State'],$row['Product Availability'])
+                get_stock_label($labels,$show_stock_value,$row['Product Availability State'],$row['Product Availability'])
             );
 
         }
@@ -210,7 +210,7 @@ function category_products($data, $db, $customer_key, $order) {
 }
 
 
-function get_stock_label($show_stock_value,$stock_state,$availability){
+function get_stock_label($labels,$show_stock_value,$stock_state,$availability){
     switch ($stock_state) {
         case 'OnDemand':
             $stock_label = (!empty($labels['_stock_OnDemand']) ? $labels['_stock_OnDemand'] : _('Product made on demand'));
