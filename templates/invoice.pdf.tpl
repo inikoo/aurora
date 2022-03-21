@@ -236,6 +236,95 @@
     </tr>
 </table>
 <br>
+
+{if $group_by_tariff_code}
+<table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse;" cellpadding="8">
+    <thead>
+    <tr>
+        <td style="width:14%;text-align:left">{t}Code{/t}</td>
+        <td style="text-align:left">{t}Description{/t}</td>
+        <td style="text-align:left">{t}Qty{/t}</td>
+
+        <td style="width:10%;text-align:right">{t}Amount{/t}</td>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach from=$transactions_grouped_by_tariff_code item=transaction name=products}
+        <tr class="{if $smarty.foreach.products.last}last{/if}">
+            <td style="text-align:left">{$transaction['Code']}</td>
+            <td style="text-align:left">{$transaction['Description']}</td>
+            <td style="text-align:right">{$transaction['Qty']}</td>
+
+            <td style="text-align:right">{$transaction['Amount']}</td>
+        </tr>
+    {/foreach}
+    </tbody>
+    <tbody class="totals">
+    <tr>
+        <td style="border:none" colspan="2"></td>
+        <td>{t}Items Net{/t}</td>
+        <td>{$invoice->get('Items Net Amount')}</td>
+    </tr>
+    {if $invoice->get('Invoice Net Amount Off')!=0 }
+        <tr>
+            <td style="border:none" colspan="2"></td>
+            <td colspan="2">{t}Amount Off{/t}</td>
+            <td>{$invoice->get('Net Amount Off')}</td>
+        </tr>
+    {/if}
+
+    {if $invoice->get('Invoice Refund Net Amount')!=0 }
+        <tr>
+            <td style="border:none" colspan="2"></td>
+            <td >{t}Refunds{/t}</td>
+            <td>{$invoice->get('Refund Net Amount')}</td>
+        </tr>
+    {/if}
+    <tr>
+        <td style="border:none" colspan="2"></td>
+        <td >{t}Shipping{/t}</td>
+        <td>{$invoice->get('Shipping Net Amount')}</td>
+    </tr>
+    {if $invoice->get('Invoice Charges Net Amount')!=0}
+        <tr>
+            <td style="border:none" colspan="2"></td>
+            <td >{t}Charges{/t}</td>
+            <td>{$invoice->get('Charges Net Amount')}</td>
+        </tr>
+    {/if} {if $invoice->get('Invoice Insurance Net Amount')!=0}
+        <tr>
+            <td style="border:none" colspan="2"></td>
+            <td >{t}Insurance{/t}</td>
+            <td>{$invoice->get('Insurance Net Amount')}</td>
+        </tr>
+    {/if} {if $invoice->get('Invoice Total Net Adjust Amount')!=0}
+        <tr>
+            <td style="border:none" colspan="2"></td>
+            <td >{t}Adjusts{/t}</td>
+            <td>{$invoice->get('Total Net Adjust Amount')}</td>
+        </tr>
+    {/if}
+    <tr class="total_net">
+        <td style="border:none" colspan="2"></td>
+        <td >{t}Total Net{/t}</td>
+        <td>{$invoice->get('Total Net Amount')}</td>
+    </tr>
+    {foreach from=$tax_data item=tax }
+        <tr>
+            <td style="border:none" colspan="2">{$tax.base}</td>
+            <td class="totals" >{$tax.name}</td>
+            <td class="totals">{$tax.amount}</td>
+        </tr>
+    {/foreach}
+    <tr class="total">
+        <td style="border:none" colspan="2"></td>
+        <td ><b>{t}Total{/t}</b></td>
+        <td>{$invoice->get('Total Amount')}</td>
+    </tr>
+    </tbody>
+
+</table>
+{else}
 <table class="items" width="100%" style="font-size: 9pt; border-collapse: collapse;" cellpadding="8">
     <thead>
     <tr>
@@ -349,6 +438,7 @@
     </tr>
     </tbody>
 </table>
+{/if}
 <br> <br>
 
 

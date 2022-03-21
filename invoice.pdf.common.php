@@ -97,6 +97,11 @@ if (!empty($_REQUEST['CPNP'])) {
     $print_CPNP = false;
 }
 
+if (!empty($_REQUEST['group_by_tariff_code'])) {
+    $group_by_tariff_code = true;
+} else {
+    $group_by_tariff_code = false;
+}
 
 putenv('LC_ALL='.$_locale.'.UTF-8');
 setlocale(LC_ALL, $_locale.'.UTF-8');
@@ -123,6 +128,9 @@ if ($order->id) {
     }
 
 }
+
+$smarty->assign('group_by_tariff_code',  $group_by_tariff_code);
+
 
 $smarty->assign('pro_mode', $pro_mode);
 $smarty->assign('customer', $customer);
@@ -206,7 +214,6 @@ $sql = sprintf(
 );
 
 
-//print $sql;exit;
 
 
 if ($result = $db->query($sql)) {
@@ -551,6 +558,38 @@ if ($result = $db->query($sql)) {
 
     }
 }
+
+
+$transactions_grouped_by_tariff_code=[];
+
+$sql="select   sum(`Delivery Note Quantity` ) as Qty,  `Product Tariff Code` as Code ,sum(`Order Transaction Amount`) as Amount,`Product Name`, (select GROUP_CONCAT(`Commodity Name`) from kbase.`Commodity Code Dimension` where SUBSTRING(`Commodity Code`,1,8)=SUBSTRING(`Product Tariff Code`,1,8)         and `Commodity Name` IS NOT NULL ) as tc_name  from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) 
+where `Invoice Key`=? group by `Product Tariff Code` ;";
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    [
+        $invoice->id
+    ]
+);
+while ($row = $stmt->fetch()) {
+
+
+    if($row['Qty']>0) {
+        $row['Description'] = $row['tc_name'];
+        if ($row['Description'] == '') {
+            $row['Description'] = $row['Product Name'].' *';
+        }
+
+        $row['Amount']= money($row['Amount'], $invoice->get('Currency Code'));
+
+
+
+        $transactions_grouped_by_tariff_code[] = $row;
+    }
+
+}
+
+
+$smarty->assign('transactions_grouped_by_tariff_code', $transactions_grouped_by_tariff_code);
 
 
 $smarty->assign(
