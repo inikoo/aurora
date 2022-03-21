@@ -30,8 +30,6 @@ $tipo = $_REQUEST['tipo'];
 
 
 switch ($tipo) {
-
-
     case 'calculate_sales':
         $data = prepare_values(
             $_REQUEST, array(
@@ -318,9 +316,8 @@ switch ($tipo) {
  *
  * @throws \SmartyException
  */
-function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
-
-
+function edit_field($account, $db, $redis, $editor, $data, $smarty, $user)
+{
     $object = get_object($data['object'], $data['key']);
 
 
@@ -331,7 +328,6 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
         );
         echo json_encode($response);
         exit;
-
     }
 
     $field = preg_replace('/_/', ' ', $data['field']);
@@ -353,7 +349,6 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
 
 
     if ($data['object'] == 'Website' and preg_match('/^Localised_Labels/', $data['field'])) {
-
         /**
          * @var $object \Website
          */
@@ -379,11 +374,8 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
 
 
         return;
-
     }
     if ($data['object'] == 'Website' and preg_match('/^Website_Settings_/', $data['field'])) {
-
-
         $object->update_settings(array(preg_replace('/_/', ' ', preg_replace('/^Website_Settings_/', '', $data['field'])) => $data['value']));
 
         $formatted_field = preg_replace('/^Website /', '', $field);
@@ -408,17 +400,14 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
 
 
         return;
-
     }
 
 
     if ($object->get_object_name() == 'Page') {
         $formatted_field = preg_replace('/^Webpage /', '', $field);
         $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $formatted_field);
-
     } else {
         $formatted_field = preg_replace('/^'.$object->get_object_name().' /', '', $field);
-
     }
 
 
@@ -457,19 +446,14 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
     if (isset($data['metadata'])) {
         if (isset($data['metadata']['extra_fields'])) {
             foreach ($data['metadata']['extra_fields'] as $extra_field) {
-
                 $options = '';
                 $_field  = preg_replace('/_/', ' ', $extra_field['field']);
 
                 $_value = $extra_field['value'];
 
                 $object->update(array($_field => $_value), $options);
-
             }
-
         }
-
-
     }
 
 
@@ -479,10 +463,7 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
             'msg'   => $object->msg,
 
         );
-
-
     } else {
-
         $update_metadata = $object->get_update_metadata();
 
         $directory_field    = '';
@@ -492,11 +473,16 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
 
         if ($object->updated or true) {
             $msg = sprintf(
-                '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Updated')
+                '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>',
+                $data['field'],
+                _('Updated')
             );
             if (isset($object->deleted_value)) {
                 $msg = sprintf(
-                    '<span class="deleted">%s</span> <span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $object->deleted_value, $data['field'], _('Deleted')
+                    '<span class="deleted">%s</span> <span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>',
+                    $object->deleted_value,
+                    $data['field'],
+                    _('Deleted')
                 );
             }
 
@@ -511,10 +497,7 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
                 $update_metadata['parts_list_items'] = $smarty->fetch(
                     'parts_list_items.edit.tpl'
                 );
-
             } elseif ($field == 'Part Cost in Warehouse') {
-
-
                 include_once 'utils/new_fork.php';
                 $parts_data = array(
                     $object->id => $object->get('Part Valid From')
@@ -522,21 +505,17 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
                 );
 
                 new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'               => 'update_parts_inventory_snapshot_fact',
-                    'parts_data'         => $parts_data,
-                    'all_parts_min_date' => $object->get('Part Valid From'),
-                ), $account->get('Account Code')
+                    'au_housekeeping',
+                    array(
+                        'type'               => 'update_parts_inventory_snapshot_fact',
+                        'parts_data'         => $parts_data,
+                        'all_parts_min_date' => $object->get('Part Valid From'),
+                    ),
+                    $account->get('Account Code')
                 );
-
-
             } elseif ($field == 'Product Price') {
-
-
                 if ($object->get('Store Currency Code') != $account->get('Account Currency')) {
-
                     $exchange = currency_conversion($db, $object->get('Store Currency Code'), $account->get('Account Currency'), '- 180 minutes');
-
                 } else {
                     $exchange = 1;
                 }
@@ -544,18 +523,22 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
 
                 $update_metadata['price_cell'] = sprintf(
                     '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
-                    money($exchange * $object->get('Product Price'), $account->get('Account Currency')), $object->id, $object->get('Product Price'), $object->get('Store Currency Code'), $exchange, $object->get('Product Cost'),
-                    percentage($exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')), money($object->get('Product Price'), $object->get('Store Currency Code'))
+                    money($exchange * $object->get('Product Price'), $account->get('Account Currency')),
+                    $object->id,
+                    $object->get('Product Price'),
+                    $object->get('Store Currency Code'),
+                    $exchange,
+                    $object->get('Product Cost'),
+                    percentage($exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')),
+                    money($object->get('Product Price'), $object->get('Store Currency Code'))
                 );
 
 
                 $update_metadata['margin_cell'] = '<span  class="product_margin"  title="'._('Cost').':'.money($object->get('Product Cost'), $account->get('Account Currency')).'">'.percentage(
-                        $exchange * $object->get('Product Price') - $object->get('Product Cost'), $exchange * $object->get('Product Price')
+                        $exchange * $object->get('Product Price') - $object->get('Product Cost'),
+                        $exchange * $object->get('Product Price')
                     ).'<span>';
-
             } elseif ($field == 'Product Unit RRP') {
-
-
                 if ($object->get('Product RRP') == '') {
                     $rrp = '';
                 } else {
@@ -565,57 +548,64 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
                     }
                     $rrp = sprintf(
                         '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
-                        sprintf(_('margin %s'), percentage($object->get('Product RRP') - $object->get('Product Price'), $object->get('Product RRP'))), $object->get('Product ID'), $object->get('Product RRP') / $object->get('Product Units Per Case'),
-                        $object->get('Store Currency Code'), $rrp
+                        sprintf(_('margin %s'), percentage($object->get('Product RRP') - $object->get('Product Price'), $object->get('Product RRP'))),
+                        $object->get('Product ID'),
+                        $object->get('Product RRP') / $object->get('Product Units Per Case'),
+                        $object->get('Store Currency Code'),
+                        $rrp
 
                     );
-
                 }
 
 
                 $update_metadata['rrp_cell'] = $rrp;
-
             } elseif ($field == 'Supplier Part Unit Cost') {
-
-
                 if ($object->get_object_name() == 'Part') {
                     $main_supplier_part = get_object('Supplier_Part', $object->get('Part Main Supplier Part Key'));
 
 
                     $cost = sprintf(
-                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $main_supplier_part->get('Supplier Part Key'), $main_supplier_part->get('Supplier Part Unit Cost'),
-                        $main_supplier_part->get('Supplier Part Currency Code'), money(
-                            $main_supplier_part->get('Supplier Part Unit Cost'), $main_supplier_part->get('Supplier Part Currency Code')
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>',
+                        $main_supplier_part->get('Supplier Part Key'),
+                        $main_supplier_part->get('Supplier Part Unit Cost'),
+                        $main_supplier_part->get('Supplier Part Currency Code'),
+                        money(
+                            $main_supplier_part->get('Supplier Part Unit Cost'),
+                            $main_supplier_part->get('Supplier Part Currency Code')
                         )
                     );
-
                 } else {
-
                     $cost = sprintf(
-                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>', $object->get('Supplier Part Key'), $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code'), money(
-                                                                                                                                   $object->get('Supplier Part Unit Cost'), $object->get('Supplier Part Currency Code')
-                                                                                                                               )
+                        '<span class="part_cost"  pid="%d" cost="%s"  currency="%s"   onClick="open_edit_cost(this)">%s</span>',
+                        $object->get('Supplier Part Key'),
+                        $object->get('Supplier Part Unit Cost'),
+                        $object->get('Supplier Part Currency Code'),
+                        money(
+                            $object->get('Supplier Part Unit Cost'),
+                            $object->get('Supplier Part Currency Code')
+                        )
                     );
-
                 }
 
 
                 $update_metadata['cost_cell'] = $cost;
-
             }
-
-
         } elseif (isset($object->field_deleted)) {
             $msg             = sprintf(
-                '<span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Deleted')
+                '<span class="discreet"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>',
+                $data['field'],
+                _('Deleted')
             );
             $formatted_value = sprintf(
-                '<span class="deleted">%s</span>', $object->deleted_value
+                '<span class="deleted">%s</span>',
+                $object->deleted_value
             );
             $action          = 'deleted';
         } elseif (isset($object->field_created)) {
             $msg             = sprintf(
-                '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>', $data['field'], _('Created')
+                '<span class="success"><i class="fa fa-check " onClick="hide_edit_field_msg(\'%s\')" ></i> %s</span>',
+                $data['field'],
+                _('Created')
             );
             $formatted_value = '';
             $action          = 'new_field';
@@ -631,16 +621,10 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
                 $directory          = $smarty->fetch('delivery_addresses_directory.tpl');
                 $items_in_directory = count($object->get_other_delivery_addresses_data());
             }
-
-
         } else {
-
-
             $msg             = '';
             $formatted_value = $object->get($formatted_field);
             $action          = '';
-
-
         }
 
 
@@ -658,17 +642,13 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user) {
             'directory'          => $directory,
             'items_in_directory' => $items_in_directory
         );
-
-
     }
     echo json_encode($response);
-
 }
 
 
-function set_as_main($account, $db, $user, $editor, $data, $smarty) {
-
-
+function set_as_main($account, $db, $user, $editor, $data, $smarty)
+{
     $object = get_object($data['object'], $data['key']);
 
 
@@ -679,7 +659,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
         );
         echo json_encode($response);
         exit;
-
     }
 
     $object->editor = $editor;
@@ -694,7 +673,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
         );
-
     } elseif ($data['field'] == 'Customer_Client_Main_Plain_Mobile') {
         $object->update(array('Customer Client Preferred Contact Number' => 'Mobile'));
 
@@ -706,7 +684,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
         );
-
     } elseif ($data['field'] == 'Supplier_Main_Plain_Mobile') {
         $object->update(array('Supplier Preferred Contact Number' => 'Mobile'));
         $response = array(
@@ -716,7 +693,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
         );
-
     } elseif ($data['field'] == 'Agent_Main_Plain_Mobile') {
         $object->update(array('Agent Preferred Contact Number' => 'Mobile'));
         $response = array(
@@ -726,7 +702,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Mobile' : '')
         );
-
     } elseif ($data['field'] == 'Customer_Main_Plain_Telephone') {
         $object->update(
             array('Customer Preferred Contact Number' => 'Telephone')
@@ -738,7 +713,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
         );
-
     } elseif ($data['field'] == 'Customer_Client_Main_Plain_Telephone') {
         $object->update(
             array('Customer Client Preferred Contact Number' => 'Telephone')
@@ -750,7 +724,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
         );
-
     } elseif ($data['field'] == 'Supplier_Main_Plain_Telephone') {
         $object->update(
             array('Supplier Preferred Contact Number' => 'Telephone')
@@ -762,7 +735,6 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
         );
-
     } elseif ($data['field'] == 'Agent_Main_Plain_Telephone') {
         $object->update(
             array('Agent Preferred Contact Number' => 'Telephone')
@@ -774,9 +746,7 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
             'deleted_fields' => $object->get_deleted_fields_info(),
             'action'         => ($object->updated ? 'set_main_contact_number_Telephone' : '')
         );
-
     } elseif (preg_match('/(.+)(_\d+)$/', $data['field'], $matches)) {
-
         $value = trim(preg_replace('/_/', ' ', $matches[2]));
         $field = trim(preg_replace('/_/', ' ', $matches[1]));
 
@@ -821,29 +791,21 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty) {
                 'items_in_directory' => $items_in_directory,
                 'value'              => $value
             );
-
-
         }
-
-
     } else {
         $response = array(
             'state' => 400,
             'msg'   => 'invalid field data',
 
         );
-
     }
 
     echo json_encode($response);
-
-
 }
 
 
-function delete_object_component($account, $db, $user, $editor, $data, $smarty) {
-
-
+function delete_object_component($account, $db, $user, $editor, $data, $smarty)
+{
     $object = get_object($data['object'], $data['key']);
 
 
@@ -854,14 +816,12 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
         );
         echo json_encode($response);
         exit;
-
     }
 
     $object->editor = $editor;
 
 
     if (preg_match('/(.+)(_\d+)$/', $data['field'], $matches)) {
-
         $value = trim(preg_replace('/_/', ' ', $matches[2]));
         $field = trim(preg_replace('/_/', ' ', $matches[1]));
 
@@ -876,8 +836,6 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
 
             );
         } else {
-
-
             if ($field == 'Customer Other Delivery Address') {
                 $smarty->assign('customer', $object);
                 $directory_field = 'other_delivery_addresses';
@@ -906,33 +864,24 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty) 
                 'directory'          => $directory,
                 'items_in_directory' => $items_in_directory,
             );
-
-
         }
-
-
     } else {
         $response = array(
             'state' => 400,
             'msg'   => 'invalid field data',
 
         );
-
     }
 
     echo json_encode($response);
-
-
 }
 
 
-function object_operation($account, $db, $user, $editor, $data, $smarty) {
-
-
+function object_operation($account, $db, $user, $editor, $data, $smarty)
+{
     if ($data['object'] == 'website_footer' or $data['object'] == 'website_header') {
         $object            = get_object('website', $data['key']);
         $data['operation'] = 'reset_element';
-
     } else {
         $object = get_object($data['object'], $data['key']);
     }
@@ -942,7 +891,6 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
     if (isset($data['state'])) {
         $object->web_state = $data['state'];
-
     }
 
 
@@ -953,7 +901,6 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         );
         echo json_encode($response);
         exit;
-
     }
 
     switch ($data['operation']) {
@@ -1031,7 +978,6 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
         default:
             exit('unknown operation '.$data['operation']);
-
     }
 
 
@@ -1039,46 +985,34 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
         $response                    = array('state' => 200);
         $response['update_metadata'] = $object->get_update_metadata();
         if ($object->get_object_name() == 'Category') {
-
             if ($object->get('Category Scope') == 'Product') {
-
                 if ($object->get('Category Branch Type') == 'Root') {
                     $response['request'] = sprintf(
-                        'products/%d/categories', $object->get('Category Store Key')
+                        'products/%d/categories',
+                        $object->get('Category Store Key')
                     );
                 } else {
-
                     $response['request'] = sprintf(
-                        'products/%d/category/%d', $object->get('Category Store Key'), $object->get('Category Parent Key')
+                        'products/%d/category/%d',
+                        $object->get('Category Store Key'),
+                        $object->get('Category Parent Key')
                     );
                 }
             }
-
         } elseif ($object->get_object_name() == 'Deal Campaign') {
-
             // $response['request'] = sprintf('offers/%d/%s', $object->get('Deal Campaign Store Key'));
 
         } elseif ($object->get_object_name() == 'Supplier Delivery') {
-
             if ($user->get('User Type') == 'Agent') {
                 $response['request'] = 'agent_deliveries';
-
             } else {
-
-
                 $response['request'] = $request;
-
             }
-
         } else {
-
             if (is_string($request) and $request != '') {
                 $response['request'] = $request;
             }
-
         }
-
-
     } else {
         $response = array(
             'state' => 400,
@@ -1088,8 +1022,6 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
 
 
     echo json_encode($response);
-
-
 }
 
 /**
@@ -1102,9 +1034,8 @@ function object_operation($account, $db, $user, $editor, $data, $smarty) {
  *
  * @throws \SmartyException
  */
-function new_object($account, $db, $user, $editor, $data, $smarty) {
-
-
+function new_object($account, $db, $user, $editor, $data, $smarty)
+{
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
@@ -1114,7 +1045,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
     switch ($data['object']) {
-
         case 'shipment_label':
 
 
@@ -1141,14 +1071,16 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             $order->update(
-                ['Order Delivery Address' => json_encode($address_data)], 'force'
+                ['Order Delivery Address' => json_encode($address_data)],
+                'force'
             );
 
 
             //print_r($data['fields_data']);
 
             $delivery_note->update(
-                ['Delivery Note Address' => $order->get('Order Delivery Address')], 'force'
+                ['Delivery Note Address' => $order->get('Order Delivery Address')],
+                'force'
             );
 
             $delivery_note->get_data('id', $delivery_note->id);
@@ -1177,12 +1109,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if ($shipper->get('Code') == 'Whistl') {
-
                 $parcels = json_decode($delivery_note->properties('parcels'), true);
 
 
                 if (count($parcels) > 1) {
-
                     $response = array(
                         'state' => 400,
                         'msg'   => 'only 1 parcel allowed'
@@ -1193,8 +1123,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 }
 
                 if ($parcels[0]['weight'] > 2) {
-
-
                     $response = array(
                         'state' => 400,
                         'msg'   => 'Max weight is 2Kg'
@@ -1202,8 +1130,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     echo json_encode($response);
                     exit;
-
-
                 }
 
                 $dim = [
@@ -1214,8 +1140,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                 if ($dim[0] > 61 or $dim[1] > 26 or $dim[2] > 26) {
-
-
                     $response = array(
                         'state' => 400,
                         'msg'   => 'Max allowed dimension is 61x26x26 cm'
@@ -1223,13 +1147,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     echo json_encode($response);
                     exit;
-
-
                 }
 
                 if ($dim[0] == 0 or $dim[1] == 0 or $dim[2] == 0 or $dim[0] == '' or $dim[1] == '' or $dim[2] == '') {
-
-
                     $response = array(
                         'state' => 400,
                         'msg'   => 'Dimensions can not be zero'
@@ -1237,8 +1157,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     echo json_encode($response);
                     exit;
-
-
                 }
 
 
@@ -1262,8 +1180,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $service    = json_encode($service);
                 $reference2 = $reference2;
-
-
             }
 
 
@@ -1299,7 +1215,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     echo json_encode($response);
                     exit;
-
             }
 
 
@@ -1357,8 +1272,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     //print_r($deal_new_data);
 
                     if ($data['fields_data']['Deal Type Percentage Off']) {
-
-
                         $deal_new_data['Deal Allowance Label'] = sprintf(_('%s%% off'), $data['fields_data']['Percentage Off']);
                         $deal_new_data['Deal Terms']           = 1;
                         $deal_new_data['Deal Terms Type']      = ($voucher ? 'Category Quantity Ordered AND Voucher' : 'Category Quantity Ordered');
@@ -1376,9 +1289,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $category->get('Code'),
                             'Deal Component Allowance'              => $data['fields_data']['Percentage Off'] / 100
                         );
-
                     } elseif ($data['fields_data']['Deal Type Buy n get n free']) {
-
                         $deal_new_data['Deal Allowance Label'] = sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']);
 
 
@@ -1407,9 +1318,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $category->get('Code'),
                             'Deal Component Allowance'              => $allowance_data
                         );
-
                     } elseif ($data['fields_data']['Deal Type Buy n pay n']) {
-
                         $deal_new_data['Deal Allowance Label'] = sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']);
 
 
@@ -1427,9 +1336,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $category->get('Code'),
                             'Deal Component Allowance'              => $data['fields_data']['Deal Buy n n free B']
                         );
-
                     } else {
-
                         $response = array(
                             'state' => 400,
                             'resp'  => 'Missing deal type'
@@ -1460,7 +1367,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     break;
                 case 'campaign':
 
-                    $campaign         = get_object('Campaign', $data['parent_key']);
+                    $campaign = get_object('Campaign', $data['parent_key']);
                     /** @var $store \Store */
                     $store            = get_object('Store', $campaign->get('Store Key'));
                     $store->editor    = $editor;
@@ -1495,10 +1402,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                             if ($data['fields_data']['Trigger Extra Amount Net'] == 0) {
                                 $deal_new_data['Deal Term Label'] = _('Voucher');
-
                             } else {
                                 $deal_new_data['Deal Term Label'] = sprintf(_('Voucher & +%s'), money($data['fields_data']['Trigger Extra Amount Net'], $store->get('Store Currency Code')));
-
                             }
 
                             //'Category For Every Quantity Ordered AND Voucher','Category For Every Quantity Ordered','Category For Every Quantity Any Product Ordered AND Voucher','Category For Every Quantity Any Product Ordered','Category Quantity Ordered','Category Quantity Ordered AND Voucher','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered AND Voucher','Product For Every Quantity Ordered'
@@ -1510,7 +1415,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             );
 
                             if (!empty($data['fields_data']['Deal Type Shipping Off'])) {
-
                                 $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
                                 if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
                                     $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
@@ -1532,8 +1436,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($response);
                                     exit;
                                 } elseif ($number_shipping_deal_zones_schemas > 1) {
-
-
                                     $response = array(
                                         'state' => 400,
                                         'resp'  => 'there is more than one discounted shipping zone schema for this store'
@@ -1541,9 +1443,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($response);
                                     exit;
                                 } else {
-
                                     $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
-
                                 }
 
 
@@ -1558,11 +1458,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                                     'Deal Component Allowance'              => 'Shipping Off'
                                 );
-
-
                             } elseif ($data['fields_data']['Deal Type Percentage Off']) {
-
-
                                 if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
                                     $percentage = floatval(preg_replace('/%\s*$/', '', $data['fields_data']['Percentage']));
                                     // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
@@ -1613,10 +1509,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     'Deal Component Allowance Target Label' => '',
                                     'Deal Component Allowance'              => $percentage / 100
                                 );
-
-
                             } elseif ($data['fields_data']['Deal Type Get Item Free']) {
-
                                 if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
                                     $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
                                 } else {
@@ -1632,9 +1525,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($result);
                                     exit;
                                 }
-
                             } elseif ($data['fields_data']['Deal Type Amount Off']) {
-
                                 if ($deal_new_data['Deal Terms Type'] == 'Voucher AND Amount') {
                                     $deal_new_data['Deal Terms'] = ';'.$data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
                                 } else {
@@ -1665,10 +1556,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                             if ($data['fields_data']['Trigger Extra Amount Net'] == 0) {
                                 $deal_new_data['Deal Term Label'] = _('All orders');
-
                             } else {
                                 $deal_new_data['Deal Term Label'] = sprintf(_('Orders +%s'), money($data['fields_data']['Trigger Extra Amount Net'], $store->get('Store Currency Code')));
-
                             }
 
                             //'Category For Every Quantity Ordered AND Voucher','Category For Every Quantity Ordered','Category For Every Quantity Any Product Ordered AND Voucher','Category For Every Quantity Any Product Ordered','Category Quantity Ordered','Category Quantity Ordered AND Voucher','Department Quantity Ordered','Every Order','Family For Every Quantity Any Product Ordered','Department For Every Quantity Any Product Ordered','Voucher AND Order Interval','Amount AND Order Number','Amount AND Order Interval','Voucher AND Order Number','Voucher AND Amount','Amount','Order Total Net Amount','Order Total Net Amount AND Order Number','Order Total Net Amount AND Shipping Country','Order Total Net Amount AND Order Interval','Order Items Net Amount','Order Items Net Amount AND Order Number','Order Items Net Amount AND Shipping Country','Order Items Net Amount AND Order Interval','Order Total Amount','Order Total Amount AND Order Number','Order Total Amount AND Shipping Country','Order Total Amount AND Order Interval','Order Interval','Product Quantity Ordered','Family Quantity Ordered','Order Number','Shipping Country','Voucher','Department For Every Quantity Ordered','Family For Every Quantity Ordered','Product For Every Quantity Ordered AND Voucher','Product For Every Quantity Ordered'
@@ -1677,7 +1566,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             $deal_new_data['Deal Terms'] = $data['fields_data']['Trigger Extra Amount Net'].';Order Items Gross Amount';
 
                             if (!empty($data['fields_data']['Deal Type Shipping Off'])) {
-
                                 $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
 
 
@@ -1694,8 +1582,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($response);
                                     exit;
                                 } elseif ($number_shipping_deal_zones_schemas > 1) {
-
-
                                     $response = array(
                                         'state' => 400,
                                         'resp'  => 'there is more than one discounted shipping zone schema for this store'
@@ -1703,10 +1589,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($response);
                                     exit;
                                 } else {
-
-
                                     $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
-
                                 }
 
                                 $new_component_data = array(
@@ -1719,11 +1602,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                                     'Deal Component Allowance'              => 'Shipping Off'
                                 );
-
-
                             } elseif ($data['fields_data']['Deal Type Percentage Off']) {
-
-
                                 if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
                                     $percentage = floatval(preg_replace('/%\s*$/', '', $data['fields_data']['Percentage']));
                                     // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
@@ -1767,11 +1646,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     'Deal Component Allowance Target Label' => '',
                                     'Deal Component Allowance'              => $percentage / 100
                                 );
-
-
                             } elseif ($data['fields_data']['Deal Type Get Item Free']) {
-
-
                                 list($success, $result) = parse_deal_not_ordered_free_item($data, $deal_new_data, $store);
 
                                 if ($success) {
@@ -1781,10 +1656,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($result);
                                     exit;
                                 }
-
                             } elseif ($data['fields_data']['Deal Type Amount Off']) {
-
-
                                 list($success, $result) = parse_deal_amount_off($data, $deal_new_data, $store);
                                 if ($success) {
                                     list($deal_new_data, $new_component_data) = $result;
@@ -1917,7 +1789,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                         );
                                         echo json_encode($response);
                                         exit;
-
                                     }
 
                                     if (!is_numeric($data['fields_data']['Amount Off']) or $data['fields_data']['Amount Off'] <= 0) {
@@ -1927,7 +1798,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                         );
                                         echo json_encode($response);
                                         exit;
-
                                     }
 
 
@@ -1936,10 +1806,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                                     if ($data['fields_data']['Trigger Extra Items Amount Net'] == 0) {
                                         $deal_new_data['Deal Term Label'] = sprintf(_('%s products'), $category->get('Code'));
-
                                     } else {
                                         $deal_new_data['Deal Term Label'] = sprintf(_('%s products +%s'), $category->get('Code'), money($data['fields_data']['Trigger Extra Items Amount Net'], $store->get('Store Currency Code')));
-
                                     }
 
 
@@ -1988,7 +1856,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                             if ($data['fields_data']['Deal Type Shipping Off']) {
-
                                 $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
 
                                 //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
@@ -2004,8 +1871,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($response);
                                     exit;
                                 } elseif ($number_shipping_deal_zones_schemas > 1) {
-
-
                                     $response = array(
                                         'state' => 400,
                                         'resp'  => 'there is more than one discounted shipping zone schema for this store'
@@ -2013,9 +1878,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($response);
                                     exit;
                                 } else {
-
                                     $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
-
                                 }
 
                                 $new_component_data = array(
@@ -2028,11 +1891,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                                     'Deal Component Allowance'              => 'Shipping Off'
                                 );
-
-
                             } elseif ($data['fields_data']['Deal Type Percentage Off']) {
-
-
                                 if (preg_match('/%\s*$/', $data['fields_data']['Percentage'])) {
                                     $percentage = floatval(preg_replace('/%\s*$/', '', $data['fields_data']['Percentage']));
                                     // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
@@ -2076,11 +1935,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     'Deal Component Allowance Target Label' => '',
                                     'Deal Component Allowance'              => $percentage / 100
                                 );
-
-
                             } elseif ($data['fields_data']['Deal Type Get Item Free']) {
-
-
                                 list($success, $result) = parse_deal_not_ordered_free_item($data, $deal_new_data, $store);
 
                                 if ($success) {
@@ -2089,7 +1944,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                     echo json_encode($result);
                                     exit;
                                 }
-
                             } elseif ($data['fields_data']['Deal Type Amount Off']) {
                                 list($success, $result) = parse_deal_amount_off($data, $deal_new_data, $store);
                                 if ($success) {
@@ -2144,10 +1998,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                                     if ($data['fields_data']['Trigger Extra Amount Net'] == 0) {
                                         $deal_new_data['Deal Term Label'] = _('All orders');
-
                                     } else {
                                         $deal_new_data['Deal Term Label'] = sprintf(_('Orders +%s'), money($data['fields_data']['Trigger Extra Amount Net'], $store->get('Store Currency Code')));
-
                                     }
 
                                     $deal_new_data['Deal Terms Type'] = 'Amount';
@@ -2159,16 +2011,13 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                                     if (preg_match('/^C/', $data['fields_data']['Asset'])) {
-
                                         $category_key = preg_replace('/^C/', '', $data['fields_data']['Asset']);
                                         $category     = get_object('Category', $category_key);
 
                                         if ($data['fields_data']['Trigger Extra Items Amount Net'] == 0) {
                                             $deal_new_data['Deal Term Label'] = sprintf(_('%s products'), $category->get('Code'));
-
                                         } else {
                                             $deal_new_data['Deal Term Label'] = sprintf(_('%s products +%s'), $category->get('Code'), money($data['fields_data']['Trigger Extra Items Amount Net'], $store->get('Store Currency Code')));
-
                                         }
 
                                         $deal_new_data['Deal Terms Type'] = 'Category Amount Ordered';
@@ -2180,10 +2029,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                                 'key'          => $category->id
                                             )
                                         );
-
-
                                     } elseif (preg_match('/^P/', $data['fields_data']['Asset'])) {
-
                                         $product_id = preg_replace('/^P/', '', $data['fields_data']['Asset']);
                                         $product    = get_object('Product', $product_id);
 
@@ -2191,7 +2037,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                             $deal_new_data['Deal Term Label'] = $product->get('Code');
                                         } else {
                                             $deal_new_data['Deal Term Label'] = $product->get('Code').' +'.money($data['fields_data']['Trigger Extra Items Amount Net'], $store->get('Store Currency Code'));
-
                                         }
 
                                         $deal_new_data['Deal Terms Type'] = 'Product Amount Ordered';
@@ -2203,8 +2048,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                                 'key'          => $product->id
                                             )
                                         );
-
-
                                     } else {
                                         $response = array(
                                             'state' => 400,
@@ -2212,7 +2055,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                                         );
                                         echo json_encode($response);
                                         exit;
-
                                     }
 
 
@@ -2313,7 +2155,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
         case 'Deal_Component':
 
-
             switch ($data['parent']) {
                 case 'category':
 
@@ -2356,11 +2197,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     );
 
-                    //print_r($deal_new_data);
 
                     if ($data['fields_data']['Deal Type Percentage Off']) {
-
-
                         $deal_new_data['Deal Allowance Label'] = sprintf(_('%s%% off'), $data['fields_data']['Percentage Off']);
                         $deal_new_data['Deal Terms']           = 1;
                         $deal_new_data['Deal Terms Type']      = ($voucher ? 'Category Quantity Ordered AND Voucher' : 'Category Quantity Ordered');
@@ -2377,9 +2215,26 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $category->get('Code'),
                             'Deal Component Allowance'              => $data['fields_data']['Percentage Off'] / 100
                         );
+                    } elseif ($data['fields_data']['Deal Type Family Carton']) {
+                        $deal_new_data['Deal Allowance Label'] = sprintf(_('%s%% off'), $data['fields_data']['Percentage Off']);
+                        $deal_new_data['Deal Terms']           = 1;
+                        $deal_new_data['Deal Terms Type']      = 'Product In Category Carton';
+                        $deal_new_data['Deal Term Label']      = sprintf(_('%s cartons'), $category->get('Code'));
 
+
+                        $new_component_data = array(
+
+                            'Deal Component Allowance Label'        => sprintf(_('%s%% off'), $data['fields_data']['Percentage Off']),
+                            'Deal Component Allowance Type'         => 'Percentage Off',
+                            'Deal Component Allowance Target'       => 'Category Product',
+                            'Deal Component Allowance Target Type'  => 'Items',
+                            'Deal Component Allowance Target Key'   => $category->id,
+                            'Deal Component Allowance Target Label' => $category->get('Code'),
+                            'Deal Component Allowance'              => $data['fields_data']['Percentage Off'] / 100,
+                            'Deal Component Terms Type'             => 'Product In Category Carton',
+                            'Deal Component Trigger Scope Type'     => 'Products'
+                        );
                     } elseif ($data['fields_data']['Deal Type Buy n get n free']) {
-
                         $deal_new_data['Deal Allowance Label'] = sprintf(_('get %d free'), $data['fields_data']['Deal Buy n get n free B']);
 
 
@@ -2409,9 +2264,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $category->get('Code'),
                             'Deal Component Allowance'              => $allowance_data
                         );
-
                     } elseif ($data['fields_data']['Deal Type Buy n pay n']) {
-
                         $deal_new_data['Deal Allowance Label'] = sprintf(_('get cheapest %d free'), $data['fields_data']['Deal Buy n n free B']);
 
 
@@ -2430,9 +2283,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $category->get('Code'),
                             'Deal Component Allowance'              => $data['fields_data']['Deal Buy n n free B']
                         );
-
                     } elseif ($data['fields_data']['Deal Type Shipping']) {
-
                         //todo send shipping_deal_zones_schemas key from the UI and just test it if is valid
 
                         $shipping_deal_zones_schemas        = $store->get_shipping_zones_schemas('Deal', 'objects');
@@ -2449,8 +2300,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             echo json_encode($response);
                             exit;
                         } elseif ($number_shipping_deal_zones_schemas > 1) {
-
-
                             $response = array(
                                 'state' => 400,
                                 'resp'  => 'there is more than one discounted shipping zone schema for this store'
@@ -2458,9 +2307,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             echo json_encode($response);
                             exit;
                         } else {
-
                             $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
-
                         }
 
 
@@ -2485,7 +2332,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                             'Deal Component Allowance'              => 'Shipping Off'
                         );
-
                     }
 
 
@@ -2539,10 +2385,8 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                     if ($data['fields_data']['Trigger Extra Amount Net'] == 0) {
                         $deal_new_data['Deal Term Label'] = _('Voucher');
-
                     } else {
                         $deal_new_data['Deal Term Label'] = sprintf(_('Voucher & +%s'), money($data['fields_data']['Trigger Extra Amount Net'], $store->get('Store Currency Code')));
-
                     }
 
                     switch ($campaign->get('Code')) {
@@ -2561,7 +2405,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
                     if ($data['fields_data']['Deal Type Shipping Off']) {
-
                         $deal_new_data['Deal Allowance Label'] = _('Discounted shipping');
                         $deal_new_data['Deal Terms']           = 1;
 
@@ -2579,8 +2422,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             echo json_encode($response);
                             exit;
                         } elseif ($number_shipping_deal_zones_schemas > 1) {
-
-
                             $response = array(
                                 'state' => 400,
                                 'resp'  => 'there is more than one discounted shipping zone schema for this store'
@@ -2588,9 +2429,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             echo json_encode($response);
                             exit;
                         } else {
-
                             $shipping_deal_zones_schema = array_pop($shipping_deal_zones_schemas);
-
                         }
 
                         $new_component_data = array(
@@ -2603,11 +2442,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => $shipping_deal_zones_schema->get('Label'),
                             'Deal Component Allowance'              => 'Shipping Off'
                         );
-
-
                     } elseif ($data['fields_data']['Deal Type Percentage Off']) {
-
-
                         if (preg_match('/\%\s*$/', $data['fields_data']['Percentage'])) {
                             $percentage = floatval(preg_replace('/\%\s*$/', '', $data['fields_data']['Percentage']));
                             // $value = $this->data['Supplier Part Unit Cost'] * $value / 100;
@@ -2652,8 +2487,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                             'Deal Component Allowance Target Label' => '',
                             'Deal Component Allowance'              => $percentage / 100
                         );
-
-
                     }
 
 
@@ -2690,7 +2523,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $smarty->assign('account', $account);
                 $smarty->assign('parent', $parent);
 
@@ -2716,7 +2548,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $smarty->assign('account', $account);
                 $smarty->assign('parent', $parent);
 
@@ -2741,7 +2572,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $smarty->assign('account', $account);
                 $smarty->assign('parent', $parent);
 
@@ -2762,7 +2592,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_category($data['fields_data']);
 
             if (!$parent->error) {
-
                 $smarty->assign('account', $account);
                 $smarty->assign('parent', $parent);
 
@@ -2784,16 +2613,13 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_order($data['fields_data']);
 
             if (!$parent->error and $object->id) {
-
                 $new_object_html = '';
                 $updated_data    = array();
 
                 if ($object->get('Purchase Order Type') == 'Production') {
                     $redirect = sprintf('production/%d/order/%d', $object->get('Purchase Order Parent Key'), $object->id);
-
                 } else {
                     $redirect = sprintf('%s/%d/order/%d', strtolower($object->get('Purchase Order Parent')), $object->get('Purchase Order Parent Key'), $object->id);
-
                 }
             }
             break;
@@ -2805,7 +2631,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object                      = $parent->create_supplier_delivery($data['fields_data']);
 
             if (!$parent->error) {
-
                 $new_object_html = '';
                 $updated_data    = array();
             }
@@ -2824,7 +2649,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             if ($store->get('Store Type') == 'Dropshipping') {
                 $tab   = 'fulfilment.dropshipping_customers';
                 $_link = 'dropshipping';
-
             } else {
                 $tab   = 'fulfilment.asset_keeping_customers';
                 $_link = 'asset_keeping';
@@ -2835,7 +2659,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $new_object_html = '';
                 $updated_data    = array();
-
             }
             break;
         case 'Order':
@@ -2854,7 +2677,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $new_object_html = '';
                 $updated_data    = array();
             }
@@ -2869,17 +2691,12 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $object = new Location('warehouse_code', $parent->get('Warehouse Key'), $data['fields_data']['WarehouseArea Location Code']);
             } else {
                 $object = get_object('Location', $data['fields_data']['WarehouseArea Location Key']);
-
             }
 
 
             if ($object->id) {
-
                 $object->update_area_key($parent->id);
-
-
             } else {
-
                 $response = array(
                     'state' => 400,
                     'resp'  => _('Location not found')
@@ -2900,16 +2717,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $object = new Product('store_code', $parent->get('Category Store Key'), $data['fields_data']['Store Product Code']);
             } else {
                 $object = new Product($data['fields_data']['Store Product Key']);
-
             }
 
             if ($object->id) {
-
                 $parent->associate_subject($object->id);
-
-
             } else {
-
                 $response = array(
                     'state' => 400,
                     'resp'  => _('Product not found')
@@ -2934,17 +2746,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $object = new Category('root_key_code', $store->get('Store Family Category Key'), $data['fields_data']['Store Category Code']);
             } else {
                 $object = new Category($data['fields_data']['Store Category Key']);
-
             }
 
             if ($object->id) {
-
-
                 $parent->associate_subject($object->id);
-
-
             } else {
-
                 $response = array(
                     'state' => 400,
                     'resp'  => _('Category not found')
@@ -2962,24 +2768,17 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Part.php';
 
             if (isset($data['fields_data']['Part Reference'])) {
-
-
                 $object = new Part(
                     'reference', $data['fields_data']['Part Reference']
                 );
             } else {
                 $object = new Part($data['fields_data']['Part SKU']);
-
             }
 
             if ($object->id) {
-
                 $parent->associate_subject($object->id);
                 $object->update('Part Family Category Key', $parent->id);
-
-
             } else {
-
                 $response = array(
                     'state' => 400,
                     'resp'  => _('Part not found')
@@ -2997,22 +2796,17 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Supplier.php';
 
             if (isset($data['fields_data']['Supplier Code'])) {
-
                 $object = new Supplier(
                     'code', $data['fields_data']['Supplier Code']
                 );
             } else {
                 $object = new Supplier($data['fields_data']['Supplier Key']);
-
             }
 
             if ($object->id) {
-
                 $parent->associate_subject($object->id);
                 $metadata = $parent->get_update_metadata();
-
             } else {
-
                 $response = array(
                     'state' => 400,
                     'resp'  => _('Supplier not found')
@@ -3042,7 +2836,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_barcode($data['fields_data'], $user);
 
             if ($object == 'fork') {
-
                 $response = array(
                     'state' => 200,
                     'msg'   => '<i class="fa fa-check"></i> '._('Adding barcodes in the background'),
@@ -3054,7 +2847,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             }
 
             if (!$parent->error) {
-
             }
 
             $new_object_html = '';
@@ -3068,7 +2860,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_part($data['fields_data']);
 
             if ($parent->new_part) {
-
                 $smarty->assign('object', $object);
 
                 $new_object_html = $smarty->fetch(
@@ -3076,8 +2867,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 );
                 $updated_data    = array();
             } else {
-
-
                 $response = array(
                     'state' => 400,
                     'msg'   => $parent->msg
@@ -3091,36 +2880,31 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             include_once 'class.Product.php';
 
 
-            if($data['fields_data']['Product Type']=='Service'){
-
-                $data['fields_data']['Product Code']=$data['fields_data']['Service Code'];
-                $data['fields_data']['Product Name']=$data['fields_data']['Service Name'];
-                $data['fields_data']['Product Price']=$data['fields_data']['Service Price'];
-                $data['fields_data']['Product Unit Label']=$data['fields_data']['Service Unit Label'];
-                $data['fields_data']['Product Units Per Case']=1;
-                $data['fields_data']['Product Type']='Service';
+            if ($data['fields_data']['Product Type'] == 'Service') {
+                $data['fields_data']['Product Code']           = $data['fields_data']['Service Code'];
+                $data['fields_data']['Product Name']           = $data['fields_data']['Service Name'];
+                $data['fields_data']['Product Price']          = $data['fields_data']['Service Price'];
+                $data['fields_data']['Product Unit Label']     = $data['fields_data']['Service Unit Label'];
+                $data['fields_data']['Product Units Per Case'] = 1;
+                $data['fields_data']['Product Type']           = 'Service';
                 unset($data['fields_data']['Product Parts']);
                 unset($data['fields_data']['Service Code']);
                 unset($data['fields_data']['Service Name']);
                 unset($data['fields_data']['Service Price']);
                 unset($data['fields_data']['Service Unit Label']);
-
-            }else{
-                $data['fields_data']['Product Type']='Product';
+            } else {
+                $data['fields_data']['Product Type'] = 'Product';
             }
 
 
             $object = $parent->create_product($data['fields_data']);
 
             if ($parent->new_product) {
-
                 $smarty->assign('object', $object);
 
                 $new_object_html = $smarty->fetch('presentation_cards/product.pcard.tpl');
                 $updated_data    = array();
             } else {
-
-
                 $response = array(
                     'state' => 400,
                     'msg'   => $parent->msg
@@ -3135,7 +2919,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_manufacture_task($data['fields_data']);
 
             if ($parent->new_manufacture_task) {
-
                 $smarty->assign('object', $object);
 
                 $new_object_html = $smarty->fetch(
@@ -3143,8 +2926,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 );
                 $updated_data    = array();
             } else {
-
-
                 $response = array(
                     'state' => 400,
                     'msg'   => $parent->msg
@@ -3185,12 +2966,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $new_object_html = $smarty->fetch(
                     'presentation_cards/agent.system_user.pcard.tpl'
                 );
-
             } elseif ($parent->get_object_name() == 'Supplier') {
                 $new_object_html = $smarty->fetch(
                     'presentation_cards/supplier.system_user.pcard.tpl'
                 );
-
             }
 
             $updated_data = array();
@@ -3201,7 +2980,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 $object = $parent->create_store($data['fields_data']);
 
                 if ($parent->new_object) {
-
                     $smarty->assign('account', $account);
                     $smarty->assign('object', $object);
 
@@ -3209,7 +2987,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                         'presentation_cards/store.pcard.tpl'
                     );
                     $updated_data    = array();
-
                 } else {
                     $response = array(
                         'state' => 400,
@@ -3218,9 +2995,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     echo json_encode($response);
                     exit;
-
                 }
-
             }
             break;
         case 'Warehouse':
@@ -3243,7 +3018,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     echo json_encode($response);
                     exit;
-
                 }
             }
             break;
@@ -3258,8 +3032,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $website_user = $_result['Website_User'];
 
             if ($parent->new_customer) {
-
-
                 $object = $customer;
                 $smarty->assign('account', $account);
                 $smarty->assign('customer', $customer);
@@ -3276,7 +3048,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 );
                 echo json_encode($response);
                 exit;
-
             }
 
 
@@ -3303,7 +3074,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 );
                 echo json_encode($response);
                 exit;
-
             }
 
 
@@ -3354,7 +3124,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     $updated_data    = array();
                 }
                 break;
-
             } else {
                 $response = array(
                     'state' => 400,
@@ -3380,7 +3149,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                     );
                     $updated_data    = array();
                 }
-
             } else {
                 $response = array(
                     'state' => 400,
@@ -3423,7 +3191,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
         case 'Timesheet_Record':
 
             if ($user->can_edit('Staff')) {
-
                 include_once 'class.Timesheet_Record.php';
                 $object = $parent->create_timesheet_record($data['fields_data']);
                 if (!$parent->error) {
@@ -3469,7 +3236,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $new_object_html   = '';
                 $redirect          = 'mailroom/'.$object->get('Store Key').'/marketing/'.$object->get('Email Campaign Email Template Type Key').'/mailshot/'.$object->id;
                 $redirect_metadata = array('tab' => 'mailshot.workshop');
@@ -3487,26 +3253,19 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $smarty->assign('account', $account);
                 $smarty->assign('parent', $parent);
 
                 $smarty->assign('object', $object);
 
                 if ($object->get('Customer Poll Query Type') == 'Options') {
-
                     $new_object_html = '';
                     $redirect        = 'customers/'.$parent->id.'/poll_query/'.$object->id;
                     $updated_data    = array();
-
                 } else {
-
-
                     $new_object_html = $smarty->fetch('presentation_cards/customer_poll_query.pcard.tpl');
                     $updated_data    = array();
                 }
-
-
             }
             break;
 
@@ -3520,7 +3279,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $smarty->assign('account', $account);
                 $smarty->assign('parent', $parent);
 
@@ -3529,8 +3287,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
                 $new_object_html = $smarty->fetch('presentation_cards/customer_poll_query_option.pcard.tpl');
                 $updated_data    = array();
-
-
             }
             break;
         case 'Customers_List':
@@ -3539,14 +3295,11 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = $parent->create_customers_list($data['fields_data']);
 
             if ($parent->new_list) {
-
                 $new_object_html   = '';
                 $redirect          = 'customers/list/'.$object->id;
                 $redirect_metadata = array('tab' => 'customers.list');
                 $updated_data      = array();
             } else {
-
-
                 $response = array(
                     'state' => 400,
                     'msg'   => $parent->msg
@@ -3583,8 +3336,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = new Email_Template('find', $email_template_data, 'create');
 
             if ($object->id) {
-
-
                 $new_object_html = '';
                 $redirect        = sprintf('prospects/%d/template/%d', $data['parent_key'], $object->id);
                 $updated_data    = array();
@@ -3629,7 +3380,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $new_object_html = '';
                 $updated_data    = array();
             }
@@ -3641,13 +3391,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if (!$parent->error) {
-
                 $new_object_html = '';
                 $redirect        = 'store/'.$parent->id.'/pipeline';
                 $updated_data    = array();
             } else {
-
-
                 $response = array(
                     'state' => 400,
                     'msg'   => $parent->msg
@@ -3663,7 +3410,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if ($parent->new_warehouse_area) {
-
                 $smarty->assign('object', $object);
 
                 $new_object_html = $smarty->fetch(
@@ -3671,8 +3417,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
                 );
                 $updated_data    = array();
             } else {
-
-
                 $response = array(
                     'state' => 400,
                     'msg'   => $parent->msg
@@ -3687,13 +3431,10 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
 
             if ($parent->new_clocking_machine) {
-
                 $new_object_html = '';
                 $redirect        = 'clocking_machines/'.$object->id;
                 $updated_data    = array();
             } else {
-
-
                 $response = array(
                     'state' => 400,
                     'msg'   => $parent->msg
@@ -3708,7 +3449,6 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             $object = get_object('Customer', $data['fields_data']['Customer Key']);
             if ($object->id) {
                 $parent->associate_subject($object->id);
-
             }
             $new_object_html = '';
             $updated_data    = array();
@@ -3742,31 +3482,22 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
 
             echo json_encode($response);
             exit;
-
     }
 
 
     if ($parent->error) {
-
-
         $response = array(
             'state' => 400,
             'msg'   => '<i class="fa fa-exclamation-circle"></i> '.$parent->msg,
 
         );
-
     } elseif (!$object->id) {
-
-
         $response = array(
             'state' => 400,
             'msg'   => '<i class="fa fa-exclamation-circle"></i> '.$object->msg,
 
         );
-
     } else {
-
-
         $response = array(
             'state'             => 200,
             'msg'               => '<i class="fa fa-check"></i> '._('Success'),
@@ -3777,27 +3508,24 @@ function new_object($account, $db, $user, $editor, $data, $smarty) {
             'redirect'          => $redirect,
             'redirect_metadata' => $redirect_metadata
         );
-
-
     }
     echo json_encode($response);
-
 }
 
 
-function delete_image($account, $db, $user, $editor, $data, $smarty) {
-
+function delete_image($account, $db, $user, $editor, $data, $smarty)
+{
     include_once 'class.Image.php';
 
 
     $sql = sprintf(
-        'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $data['image_bridge_key']
+        'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ',
+        $data['image_bridge_key']
     );
 
 
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-
             $object         = get_object($row['Image Subject Object'], $row['Image Subject Object Key']);
             $object->editor = $editor;
 
@@ -3823,7 +3551,6 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
             );
             echo json_encode($response);
             exit;
-
         } else {
             $msg      = _('Image not found');
             $response = array(
@@ -3840,19 +3567,20 @@ function delete_image($account, $db, $user, $editor, $data, $smarty) {
 }
 
 
-function set_as_principal_image($account, $db, $user, $editor, $data, $smarty) {
-
+function set_as_principal_image($account, $db, $user, $editor, $data, $smarty)
+{
     include_once 'class.Image.php';
 
 
     $sql = sprintf(
-        'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $data['image_bridge_key']
+        'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ',
+        $data['image_bridge_key']
     );
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-
             $object         = get_object(
-                $row['Image Subject Object'], $row['Image Subject Object Key']
+                $row['Image Subject Object'],
+                $row['Image Subject Object Key']
             );
             $object->editor = $editor;
 
@@ -3877,7 +3605,6 @@ function set_as_principal_image($account, $db, $user, $editor, $data, $smarty) {
             );
             echo json_encode($response);
             exit;
-
         } else {
             $msg      = _('Image not found');
             $response = array(
@@ -3898,8 +3625,8 @@ function set_as_principal_image($account, $db, $user, $editor, $data, $smarty) {
  * @param $editor
  * @param $data
  */
-function delete_attachment($db, $editor, $data) {
-
+function delete_attachment($db, $editor, $data)
+{
     include_once 'class.Attachment.php';
 
 
@@ -3912,7 +3639,6 @@ function delete_attachment($db, $editor, $data) {
         )
     );
     if ($row = $stmt->fetch()) {
-
         switch ($row['Subject']) {
             case 'Customer Communications':
             case 'Customer History Attachment':
@@ -3940,7 +3666,10 @@ function delete_attachment($db, $editor, $data) {
                 $object = get_object($_object, $row['Subject Key']);
 
                 $request = sprintf(
-                    '%s/%d/delivery/%d', strtolower($object->get('Supplier Delivery Parent')), $object->get('Supplier Delivery Parent Key'), $object->id
+                    '%s/%d/delivery/%d',
+                    strtolower($object->get('Supplier Delivery Parent')),
+                    $object->get('Supplier Delivery Parent Key'),
+                    $object->id
 
                 );
             default:
@@ -3986,12 +3715,11 @@ function delete_attachment($db, $editor, $data) {
         echo json_encode($response);
         exit;
     }
-
-
 }
 
 
-function get_available_barcode($db) {
+function get_available_barcode($db)
+{
     $barcode_number = '';
     $sql            = sprintf(
         "SELECT `Barcode Number` FROM `Barcode Dimension` WHERE `Barcode Status`='Available' ORDER BY `Barcode Number`"
@@ -4011,46 +3739,36 @@ function get_available_barcode($db) {
     );
     echo json_encode($response);
     exit;
-
 }
 
 
-function edit_category_subject($account, $db, $user, $editor, $data, $smarty) {
-
+function edit_category_subject($account, $db, $user, $editor, $data, $smarty)
+{
     $category         = get_object('category', $data['category_key']);
     $category->editor = $editor;
 
 
     if ($data['operation'] == 'link') {
         $category->associate_subject($data['subject_key']);
-
-
     } else {
         $category->disassociate_subject($data['subject_key']);
-
-
     }
 
     $response = array('state' => 200);
     echo json_encode($response);
-
 }
 
 
-function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
-
+function edit_bridge($account, $db, $user, $editor, $data, $smarty)
+{
     $object         = get_object($data['object'], $data['key']);
     $object->editor = $editor;
 
 
     if ($data['operation'] == 'link') {
         $object->associate_subject($data['subject_key']);
-
-
     } else {
         $object->disassociate_subject($data['subject_key']);
-
-
     }
 
     $response = array(
@@ -4058,13 +3776,11 @@ function edit_bridge($account, $db, $user, $editor, $data, $smarty) {
         'metadata' => $object->get_update_metadata()
     );
     echo json_encode($response);
-
 }
 
 
-function create_time_series($account, $db, $data, $editor) {
-
-
+function create_time_series($account, $db, $data, $editor)
+{
     require_once 'utils/new_fork.php';
 
     $data['editor'] = $editor;
@@ -4080,13 +3796,11 @@ function create_time_series($account, $db, $data, $editor) {
 
     );
     echo json_encode($response);
-
-
 }
 
 
-function create_isf($account, $db, $data, $editor) {
-
+function create_isf($account, $db, $data, $editor)
+{
     //No longer in use
     /*
     require_once 'utils/new_fork.php';
@@ -4105,18 +3819,19 @@ function create_isf($account, $db, $data, $editor) {
     );
     echo json_encode($response);
 */
-
 }
 
-function calculate_sales($account, $db, $data, $editor) {
-
-
+function calculate_sales($account, $db, $data, $editor)
+{
     require_once 'utils/new_fork.php';
 
     $data['editor'] = $editor;
 
     list($fork_key, $msg) = new_fork(
-        'au_calculate_sales', $data, $account->get('Account Code'), $db
+        'au_calculate_sales',
+        $data,
+        $account->get('Account Code'),
+        $db
     );
 
 
@@ -4127,24 +3842,23 @@ function calculate_sales($account, $db, $data, $editor) {
 
     );
     echo json_encode($response);
-
-
 }
 
 
-function edit_image($account, $db, $user, $editor, $data, $smarty) {
-
+function edit_image($account, $db, $user, $editor, $data, $smarty)
+{
     include_once 'class.Image.php';
 
 
     $sql = sprintf(
-        'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ', $data['image_bridge_key']
+        'SELECT `Image Subject Object`,`Image Subject Object Key`,`Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Key`=%d ',
+        $data['image_bridge_key']
     );
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
-
             $object         = get_object(
-                $row['Image Subject Object'], $row['Image Subject Object Key']
+                $row['Image Subject Object'],
+                $row['Image Subject Object Key']
             );
             $object->editor = $editor;
 
@@ -4170,29 +3884,23 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
 
 
                     if ($object->get_object_name() == 'Part' and $data['value'] == 'Marketing') {
-
-
                         $sql = sprintf(
-                            'SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Code`=%s  ', prepare_mysql($object->get('Reference'))
+                            'SELECT `Product ID` FROM `Product Dimension` WHERE  `Product Code`=%s  ',
+                            prepare_mysql($object->get('Reference'))
                         );
 
 
                         if ($result = $db->query($sql)) {
                             foreach ($result as $row) {
-
                                 $product         = get_object('Product', $row['Product ID']);
                                 $product->editor = $editor;
                                 $product->link_image($row['Image Subject Image Key'], 'Marketing');
-
                             }
-
                         } else {
                             print_r($error_info = $db->errorInfo());
                             print $sql;
                             exit;
                         }
-
-
                     }
 
 
@@ -4206,7 +3914,6 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
 
                         default:
                             $formatted_value = $data['value'];
-
                     }
 
                     break;
@@ -4224,7 +3931,6 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
             );
             echo json_encode($response);
             exit;
-
         } else {
             $msg      = _('Image not found');
             $response = array(
@@ -4240,8 +3946,8 @@ function edit_image($account, $db, $user, $editor, $data, $smarty) {
     }
 }
 
-function regenerate_api($account, $db, $user, $editor, $data, $smarty) {
-
+function regenerate_api($account, $db, $user, $editor, $data, $smarty)
+{
     $api_key         = get_object('api_key', $data['api_key']);
     $api_key->editor = $editor;
     $private_key     = $api_key->regenerate_private_key();
@@ -4259,12 +3965,10 @@ function regenerate_api($account, $db, $user, $editor, $data, $smarty) {
         )
     );
     echo json_encode($response);
-
-
 }
 
-function disassociate_category($account, $db, $data, $editor) {
-
+function disassociate_category($account, $db, $data, $editor)
+{
     $category = get_object('Category', $data['parent_key']);
     $category->editor;
     $category->disassociate_subject($data['child_key']);
@@ -4283,8 +3987,8 @@ function disassociate_category($account, $db, $data, $editor) {
  * @param $editor
  * @param $user    \User
  */
-function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
-
+function transfer_customer_credit_to($account, $db, $data, $editor, $user)
+{
     include_once 'utils/currency_functions.php';
 
     $customer         = get_object('Customer', $data['customer_key']);
@@ -4349,7 +4053,13 @@ function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
     $sql = sprintf(
         'INSERT INTO `Credit Transaction Fact` 
                     (`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`,`Credit Transaction Payment Key`) 
-                    VALUES ("Return",%s,%.2f,%s,%f,%d,%d) ', prepare_mysql($date), -$data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange, $customer->id, $return->id
+                    VALUES ("Return",%s,%.2f,%s,%f,%d,%d) ',
+        prepare_mysql($date),
+        -$data['amount'],
+        prepare_mysql($store->get('Store Currency Code')),
+        $exchange,
+        $customer->id,
+        $return->id
 
 
     );
@@ -4369,13 +4079,20 @@ function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
     );
 
     $history_key = $customer->add_subject_history(
-        $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+        $history_data,
+        true,
+        'No',
+        'Changes',
+        $customer->get_object_name(),
+        $customer->id
     );
 
     $sql = sprintf(
         'INSERT INTO `Credit Transaction History Bridge` 
                     (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
-                    VALUES (%d,%d) ', $credit_key, $history_key
+                    VALUES (%d,%d) ',
+        $credit_key,
+        $history_key
 
 
     );
@@ -4388,12 +4105,10 @@ function transfer_customer_credit_to($account, $db, $data, $editor, $user) {
 
     $response = array('state' => 200);
     echo json_encode($response);
-
 }
 
-function edit_customer_account_amount($operation_type, $account, $db, $data, $editor, $user) {
-
-
+function edit_customer_account_amount($operation_type, $account, $db, $data, $editor, $user)
+{
     if (!$user->can_supervisor('accounting')) {
         $response = array(
             'state' => 400,
@@ -4434,7 +4149,13 @@ function edit_customer_account_amount($operation_type, $account, $db, $data, $ed
     $sql = sprintf(
         'INSERT INTO `Credit Transaction Fact` 
                     (`Credit Transaction Type`,`Credit Transaction Date`,`Credit Transaction Amount`,`Credit Transaction Currency Code`,`Credit Transaction Currency Exchange Rate`,`Credit Transaction Customer Key`) 
-                    VALUES (%s,%s,%.2f,%s,%f,%d) ', prepare_mysql($data['credit_transaction_type']), prepare_mysql($date), $data['amount'], prepare_mysql($store->get('Store Currency Code')), $exchange, $customer->id
+                    VALUES (%s,%s,%.2f,%s,%f,%d) ',
+        prepare_mysql($data['credit_transaction_type']),
+        prepare_mysql($date),
+        $data['amount'],
+        prepare_mysql($store->get('Store Currency Code')),
+        $exchange,
+        $customer->id
 
     );
 
@@ -4458,7 +4179,6 @@ function edit_customer_account_amount($operation_type, $account, $db, $data, $ed
                 $note = '<i class="fal fa-download "  title="'._('Funds withdrawn from customer account').'" ></i> '.money(-$data['amount'], $store->get('Store Currency Code')).($data['note'] != '' ? ', '.$data['note'] : '');
                 break;
         }
-
     } else {
         switch ($data['credit_transaction_type']) {
             case 'PayReturn':
@@ -4490,13 +4210,20 @@ function edit_customer_account_amount($operation_type, $account, $db, $data, $ed
     );
 
     $history_key = $customer->add_subject_history(
-        $history_data, true, 'No', 'Changes', $customer->get_object_name(), $customer->id
+        $history_data,
+        true,
+        'No',
+        'Changes',
+        $customer->get_object_name(),
+        $customer->id
     );
 
     $sql = sprintf(
         'INSERT INTO `Credit Transaction History Bridge` 
                     (`Credit Transaction History Credit Transaction Key`,`Credit Transaction History History Key`) 
-                    VALUES (%d,%d) ', $credit_key, $history_key
+                    VALUES (%d,%d) ',
+        $credit_key,
+        $history_key
 
 
     );
@@ -4509,5 +4236,4 @@ function edit_customer_account_amount($operation_type, $account, $db, $data, $ed
 
     $response = array('state' => 200);
     echo json_encode($response);
-
 }

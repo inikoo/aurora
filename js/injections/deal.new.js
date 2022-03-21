@@ -418,7 +418,7 @@ function toggle_category_deal_type(element){
 
 
 
-        if ($(element).attr('field') == 'Deal_Type_Percentage_Off') {
+        if ($(element).attr('field') == 'Deal_Type_Percentage_Off' || $(element).attr('field') == 'Deal_Type_Family_Carton') {
 
             $('#Percentage_field').removeClass('hide')
 

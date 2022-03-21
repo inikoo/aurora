@@ -144,7 +144,10 @@ $object_fields[] = array(
             'value'    => false,
             'custom'   => '
 <div class="button_radio_options">
+
 <span id="Deal_Type_Percentage_Off_field" field_type="button_radio_options" field="Deal_Type_Percentage_Off" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'._('Percentage off').'</span>
+<span id="Deal_Type_Family_Carton_field" field_type="button_radio_options" field="Deal_Type_Family_Carton" onclick="toggle_category_deal_type(this)" class="button value valid" style="border:1px solid #ccc;padding:5px;margin:4px">'._("Discounted carton").'</span>
+
 <span id="Deal_Type_Buy_n_get_n_free_field" field_type="button_radio_options" field="Deal_Type_Buy_n_get_n_free" onclick="toggle_category_deal_type(this)" class="button value" style="border:1px solid #ccc;padding:5px;margin:4px">'.sprintf(
                     _('Buy %s get %s free'), '<span>2</span>', 1
                 ).'</span>
