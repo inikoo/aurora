@@ -29,15 +29,15 @@ if ($order == 'code') {
 
 if($parameters['parent']=='store'){
     $where = sprintf(
-        "where `Product Store Key`=%d and `Webpage State`='Online' ", $parameters['parent_key']
+        "where `Product Store Key`=%d and `Webpage State`='Online'  and `Product Customer Key` is Null  ", $parameters['parent_key']
     );
 }elseif($parameters['parent']=='department'){
     $where = sprintf(
-        "where `Product Department Category Key`=%d and  `Product Store Key`=%d  and `Webpage State`='Online' ", $parameters['parent_key'],$parameters['store_key']
+        "where `Product Department Category Key`=%d and  `Product Store Key`=%d  and `Webpage State`='Online'   and `Product Customer Key` is Null  ", $parameters['parent_key'],$parameters['store_key']
     );
 }elseif($parameters['parent']=='family'){
     $where = sprintf(
-        "where `Product Family Category Key`=%d and  `Product Store Key`=%d  and `Webpage State`='Online' ", $parameters['parent_key'],$parameters['store_key']
+        "where `Product Family Category Key`=%d and  `Product Store Key`=%d  and `Webpage State`='Online'  and `Product Customer Key` is Null   ", $parameters['parent_key'],$parameters['store_key']
     );
     $order='`Product ID`';
     $order_direction='';
