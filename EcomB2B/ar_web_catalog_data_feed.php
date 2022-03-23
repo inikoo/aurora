@@ -196,7 +196,7 @@ switch ($_REQUEST['scope']) {
             $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=`Website Webpage Scope Scope Key`)";
         }
         */
-        $sql .= "    where `Website Webpage Scope Scope`='Product'  and `Website Webpage Scope Type`='Category_Products_Item'  and `Website Webpage Scope Webpage Key`=? ";
+        $sql .= "    where `Website Webpage Scope Scope`='Product'  and `Website Webpage Scope Type`='Category_Products_Item'  and `Website Webpage Scope Webpage Key`=?  and `Product Customer Key` is Null  ";
 
         $sql_args = array(
             $object->get('Product Category Webpage Key')
@@ -214,10 +214,10 @@ switch ($_REQUEST['scope']) {
       }
     */
         if ($_REQUEST['scope'] == 'department') {
-            $sql .= "where `Product Department Category Key`=?  and `Webpage State`='Online' ";
+            $sql .= "where `Product Department Category Key`=?  and `Webpage State`='Online' and `Product Customer Key` is Null  ";
 
         } else {
-            $sql .= "where `Product Family Category Key`=?  and `Webpage State`='Online' ";
+            $sql .= "where `Product Family Category Key`=?  and `Webpage State`='Online'   and `Product Customer Key` is Null   ";
 
         }
 
@@ -236,7 +236,7 @@ switch ($_REQUEST['scope']) {
          $sql .= " left join `Customer Portfolio Fact` on (`Customer Portfolio Product ID`=P.`Product ID`)";
      }
  */
-        $sql .= "where `Webpage Website Key`=?  and `Webpage State`='Online' ";
+        $sql .= "where `Webpage Website Key`=?  and `Webpage State`='Online' and `Product Customer Key` is Null  ";
 
 
         $sql_args = array(
