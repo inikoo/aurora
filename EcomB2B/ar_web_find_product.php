@@ -74,7 +74,7 @@ function find_products($db, $website, $customer, $data) {
 
     $sql =
         "select `Product ID`,`Product Code`,`Product Name`,`Product Current Key`,`Product Availability`,`Product Web State`,`Customer Portfolio Reference` from `Product Dimension`  left join  `Customer Portfolio Fact` on (`Product ID`=`Customer Portfolio Product ID` and `Customer Portfolio Customer Key`=?) 
-     where    `Product Store Key`=? and  `Product Web State` in ('For Sale','Out of Stock') and `Product Code` like ? order by  `Product Code` limit "
+     where    `Product Store Key`=? and  `Product Web State` in ('For Sale','Out of Stock') and  ( `Product Customer Key` is Null or  `Product Customer Key`=? )  and   `Product Code` like ? order by  `Product Code` limit "
         .$max_results * 2;
 
     $stmt = $db->prepare($sql);
@@ -82,6 +82,7 @@ function find_products($db, $website, $customer, $data) {
         array(
             $customer->id,
             $website->get('Website Store Key'),
+            $customer->id,
             $q.'%'
 
         )
