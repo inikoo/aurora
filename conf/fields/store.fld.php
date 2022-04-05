@@ -657,7 +657,7 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
 
 
         array(
-            'label'      => _('Email BCC').' <span class="margin_left_5 small warning">Use only when no attachments</span>',
+            'label'      => _('Email BCC'),
             'show_title' => true,
             'class'      => '',
             'fields'     => array(
