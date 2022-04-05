@@ -256,7 +256,8 @@ trait Send_Email
             if (!is_null($this->bcc)) {
                 $request['Bcc'] = $this->bcc;
             }
-        } else {
+        }
+        else {
             $request                               = array();
             $request['Source']                     = $_source;
             $request['Destination']['ToAddresses'] = array($to_address);
@@ -580,8 +581,10 @@ trait Send_Email
                     $this->placeholders['[Tracking URL]'] = '';
                 }
 
-                if ($this->store->get('dispatch_bcc') != '') {
-                    $this->bcc = [$this->store->get('dispatch_bcc')];
+                $bcc=$this->store->get_bcc_recipients('Delivery Note Dispatched');
+
+                if (count($bcc)>0) {
+                    $this->bcc = $bcc;
                 }
 
 
@@ -627,10 +630,12 @@ trait Send_Email
                         if ($this->store->settings('invoice_show_CPNP') == 'Yes') {
                             $invoice_settings .= '&CPNP=1';
                         }
-                        try {
-                            $this->invoice_pdf = file_get_contents($aurora_url.'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
-                        }catch (\Throwable $exception) {
-                            \Sentry\captureException($exception);
+                        if (ENVIRONMENT != 'DEVEL') {
+                            try {
+                                $this->invoice_pdf = file_get_contents($aurora_url.'/pdf/invoice.pdf.php?id='.$this->order->get('Order Invoice Key').$invoice_settings.'&sak='.$sak);
+                            } catch (\Throwable $exception) {
+                                \Sentry\captureException($exception);
+                            }
                         }
                     }
                 }
@@ -649,10 +654,12 @@ trait Send_Email
                     );
                     $sak       = safeEncrypt($auth_data, md5('82$je&4WN1g2B^{|bRbcEdx!Nz$OAZDI3ZkNs[cm9Q1)8buaLN'.SKEY));
 
-                    try {
-                        $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
-                    } catch (\Throwable $exception) {
-                        \Sentry\captureException($exception);
+                    if (ENVIRONMENT != 'DEVEL') {
+                        try {
+                            $this->dn_pdf = file_get_contents($aurora_url.'/pdf/dn.pdf.php?id='.$delivery_note->id.'&sak='.$sak);
+                        } catch (\Throwable $exception) {
+                            \Sentry\captureException($exception);
+                        }
                     }
                 }
 

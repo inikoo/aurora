@@ -766,6 +766,7 @@ class Store extends DB_Table
             case 'Store Notification Invoice Deleted Recipients':
             case 'Store Notification Delivery Note Undispatched Recipients':
             case 'Store Notification Delivery Note Dispatched Recipients':
+            case 'Store BCC Delivery Note Dispatched Recipients':
 
                 $encoded_value = $this->settings(preg_replace('/\s/', '_', $key));
 
@@ -792,6 +793,7 @@ class Store extends DB_Table
             case 'Notification Invoice Deleted Recipients':
             case 'Notification Delivery Note Undispatched Recipients':
             case 'Notification Delivery Note Dispatched Recipients':
+            case 'BCC Delivery Note Dispatched Recipients':
 
                 $this->smarty->assign('mixed_recipients', $this->get('Store '.$key));
                 $this->smarty->assign('mode', 'formatted_value');
@@ -1473,6 +1475,25 @@ class Store extends DB_Table
 
 
         $this->update(array('Store Active Deal Campaigns' => $campaigns), 'no_history');
+    }
+
+    function get_bcc_recipients($type): array
+    {
+        $recipients      = array();
+        $recipients_data = $this->get('Store BCC '.$type.' Recipients');
+
+        foreach ($recipients_data['external_emails'] as $external_emails) {
+            $recipients[$external_emails] = $external_emails;
+        }
+
+
+        foreach ($recipients_data['users'] as $user) {
+            if ($user->get('User Active') == 'Yes' and $user->get('User Password Recovery Email') != '') {
+                $recipients[$user->get('User Password Recovery Email')] = $user->get('User Password Recovery Email');
+            }
+        }
+
+        return array_values($recipients);
     }
 
     function get_notification_recipients($type): array
@@ -3968,6 +3989,7 @@ class Store extends DB_Table
             case 'Store Notification Invoice Deleted Recipients':
             case 'Store Notification Delivery Note Undispatched Recipients':
             case 'Store Notification Delivery Note Dispatched Recipients':
+            case 'Store BCC Delivery Note Dispatched Recipients':
 
                 $this->update_notifications($field, $value, 'set');
 

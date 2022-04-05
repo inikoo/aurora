@@ -24,6 +24,8 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
     $countries = get_countries($db);
 
 
+
+
     $options_yes_no = array(
         'Yes' => _('Yes'),
         'No'  => _('No')
@@ -648,6 +650,32 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
 
 
                 ),
+
+
+            )
+        ),
+
+
+        array(
+            'label'      => _('Email BCC').' <span class="margin_left_5 small warning">Use only when no attachments</span>',
+            'show_title' => true,
+            'class'      => '',
+            'fields'     => array(
+
+
+                array(
+                    'id'     => 'Store_BCC_Delivery_Note_Dispatched_Recipients',
+                    'render' => true,
+
+                    'edit'            => 'mixed_recipients',
+                    'value'           => '',
+                    'formatted_value' => $object->get('BCC Delivery Note Dispatched Recipients'),
+                    'label'           => _('Order dispatched'),
+                    'required'        => false,
+                    'type'            => ''
+                ),
+
+
 
 
             )
