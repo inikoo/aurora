@@ -584,7 +584,16 @@ trait Send_Email
                 $bcc=$this->store->get_bcc_recipients('Delivery Note Dispatched');
 
                 if (count($bcc)>0) {
-                    $this->bcc = $bcc;
+
+
+
+                    $_bbc=[];
+                    foreach($bcc as $key){
+                        $_bbc[]="'". $key."'";
+                    }
+
+
+                    $this->bcc = $_bbc;
                 }
 
 
