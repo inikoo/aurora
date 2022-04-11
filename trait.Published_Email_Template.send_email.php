@@ -593,7 +593,7 @@ trait Send_Email
                    // }
 
 
-                    $this->bcc = $bbc;
+                    $this->bcc = $bcc;
                 }
 
 
