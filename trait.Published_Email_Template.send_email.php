@@ -399,7 +399,7 @@ trait Send_Email
         } catch (AwsException $e) {
 
             \Sentry\captureException($e);
-
+            Sentry\captureMessage("Request -> ".json_encode($request));
 
             //print_r($request);
 
