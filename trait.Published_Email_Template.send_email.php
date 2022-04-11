@@ -586,7 +586,6 @@ trait Send_Email
                 if (count($bcc)>0) {
 
 
-
                    // $_bbc=[];
                    // foreach($bcc as $key){
                    //     $_bbc[]="'". $key."'";
