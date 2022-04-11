@@ -587,13 +587,13 @@ trait Send_Email
 
 
 
-                    $_bbc=[];
-                    foreach($bcc as $key){
-                        $_bbc[]="'". $key."'";
-                    }
+                   // $_bbc=[];
+                   // foreach($bcc as $key){
+                   //     $_bbc[]="'". $key."'";
+                   // }
 
 
-                    $this->bcc = $_bbc;
+                    $this->bcc = $bbc;
                 }
 
 
