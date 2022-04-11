@@ -170,7 +170,6 @@ trait Send_Email
             $message .= "From: ".$_source."\n";
 
 
-            Sentry\captureMessage("$message");
 
 
 
@@ -262,7 +261,10 @@ trait Send_Email
             if (!is_null($this->bcc)) {
                 $request['Bcc'] = $this->bcc;
 
-                Sentry\captureMessage("BCC ".json_encode($this->bcc));
+                Sentry\captureMessage("To -> ".json_encode(array($to_address)));
+
+
+                Sentry\captureMessage("BCC -> ".json_encode($this->bcc));
 
 
             }
@@ -395,6 +397,10 @@ trait Send_Email
 
             $this->email_tracking = $email_tracking;
         } catch (AwsException $e) {
+
+            \Sentry\captureException($e);
+
+
             //print_r($request);
 
             //echo $e->getAwsRequestId()."\n";
