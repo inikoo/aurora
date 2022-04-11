@@ -163,9 +163,15 @@ trait Send_Email
         $html_part = $this->get_email_html($email_tracking, $recipient, $data, $smarty, $localised_labels);
         $text_part = $this->get_email_plain_text();
 
+
+
         if ($send_raw) {
             $message = "To: ".$to_address."\n";
             $message .= "From: ".$_source."\n";
+
+
+            Sentry\captureMessage("$message");
+
 
 
             $separator_multipart = md5($this->id.time());
@@ -255,6 +261,10 @@ trait Send_Email
 
             if (!is_null($this->bcc)) {
                 $request['Bcc'] = $this->bcc;
+
+                Sentry\captureMessage("BCC ".json_encode($this->bcc));
+
+
             }
         }
         else {
