@@ -261,10 +261,10 @@ trait Send_Email
             if (!is_null($this->bcc)) {
                 $request['Bcc'] = $this->bcc;
 
-                Sentry\captureMessage("To -> ".json_encode(array($to_address)));
+             //   Sentry\captureMessage("To -> ".json_encode(array($to_address)));
 
 
-                Sentry\captureMessage("BCC -> ".json_encode($this->bcc));
+             //   Sentry\captureMessage("BCC -> ".json_encode($this->bcc));
 
 
             }

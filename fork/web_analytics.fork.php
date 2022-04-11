@@ -58,10 +58,16 @@ function fork_web_analytics($job): bool {
             //  print_r($webpage_data);
             //print_r($data);
 
+
+        $device_label='';
+        if($user_agent_data and is_array($user_agent_data)){
+            $device_label=sprintf('<i title="%s" class="far fa-fw %s"></i>', $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''), $user_agent_data['Icon']);
+        }
+
             $webuser_data = array(
                 'os'           => $user_agent_data['OS Code'],
                 'device'       => $data['device'],
-                'device_label' => sprintf('<i title="%s" class="far fa-fw %s"></i>', $user_agent_data['Software'].($user_agent_data['Software Details'] != '' ? ' ('.$user_agent_data['Software Details'].')' : ''), $user_agent_data['Icon']),
+                'device_label' => $device_label,
                 //'ip'           => $ip,
                 //'geo_location' => $geolocation_data,
                 //'server_data'  => $data['server_data']
