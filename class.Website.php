@@ -916,7 +916,7 @@ class Website extends DB_Table {
 
 
         $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage Code` not in 
+            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage Code` not in 
                                                           ('in_process.sys','profile.sys','basket.sys','checkout.sys','favourites.sys','home.sys','not_found.sys','offline.sys','reset_pwd.sys','search.sys',
                                                           'thanks.sys','welcome.sys','unsubscribe.sys'
                                                           )  and   `Webpage State`='Online'   ", $this->id
@@ -924,7 +924,7 @@ class Website extends DB_Table {
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $updated = $row['Webpage Launch Date'];
+                $updated = $row['Webpage Last Launch Date'];
                 $sitemap->url($row['Webpage URL'], $updated, 'monthly');
             }
         }
@@ -933,12 +933,12 @@ class Website extends DB_Table {
         $sitemap->page('products');
 
         $sql = sprintf(
-            "SELECT `Webpage Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
+            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $updated = $row['Webpage Launch Date'];
+                $updated = $row['Webpage Last Launch Date'];
                 $sitemap->url($row['Webpage URL'], $updated, 'weekly');
             }
         } else {

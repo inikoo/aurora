@@ -2911,6 +2911,7 @@ class Page extends DB_Table {
 
 
         }
+        $this->fast_update(array('Webpage Last Launch Date' => gmdate('Y-m-d H:i:s')));
 
 
         if ($this->get('Webpage Launch Date') == '') {
