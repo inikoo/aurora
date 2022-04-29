@@ -131,6 +131,19 @@
             {/if}
         </div>
 
+        <div class="adr" style="margin-top: 15px;">
+            <span>{$order->get('Order Customer Name')}</span>
+        </div>
+        <div class="adr" style="margin-top: 7px;">
+            <span>{$order->get('Order Customer Contact Name')}</span>
+        </div>
+        <div class="adr" style="margin-top: 7px;">
+            <span>{$order->get('Order Email')}</span>
+        </div>
+        <div class="adr" style="margin-top: 7px;">
+            <span>{$order->get('Order Telephone')}</span>
+        </div>
+
         <script>
 
             $( ".adr span" ).on( "click", function() {
