@@ -131,8 +131,32 @@
             {/if}
         </div>
 
+        <script>
+
+            $( ".adr span" ).on( "click", function() {
+                console.log( $( this ).text() );
+
+                let aux = document.createElement("input");
+
+                // Assign it the value of the specified element
+                aux.setAttribute("value",$( this ).text());
+
+                // Append it to the body
+                document.body.appendChild(aux);
+
+                // Highlight its content
+                aux.select();
+
+                // Copy the highlighted text
+                document.execCommand("copy");
+
+                // Remove it from the body
+                document.body.removeChild(aux);
 
 
+            });
+
+        </script>
 
 
 
