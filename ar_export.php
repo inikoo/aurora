@@ -25,7 +25,7 @@ if (!isset($_REQUEST['tipo'])) {
     echo json_encode($response);
     exit;
 }
-
+$extra_where='';
 
 $_data = prepare_values(
     $_REQUEST, array(
@@ -127,6 +127,22 @@ else {
         $_tipo = 'invoices';
     } elseif ($_data['tipo'] == 'in_process_parts' or $_data['tipo'] == 'active_parts' or $_data['tipo'] == 'discontinuing_parts' or $_data['tipo'] == 'discontinued_parts') {
         $_tipo = 'parts';
+
+        if ($_data['tipo'] == 'active_parts') {
+            $extra_where = ' and `Part Status`="In Use"';
+
+        } elseif ( $_data['tipo'] == 'discontinuing_parts') {
+            $extra_where = ' and `Part Status`="Discontinuing"';
+
+        } elseif ( $_data['tipo'] == 'discontinued_parts') {
+            $extra_where = ' and `Part Status`="Not In Use"';
+
+        } elseif ($_data['tipo'] == 'in_process_parts') {
+            $extra_where = ' and `Part Status`="In Process"';
+
+        }
+
+
     } elseif ($_data['tipo'] == 'parts_barcode_errors') {
         $_tipo = 'part_barcode_errors';
     } elseif ($_data['tipo'] == 'parts_to_replenish_picking_location') {
@@ -202,7 +218,8 @@ if ($fields == '') {
 /** @var string $sql_totals */
 
 
-$sql = "select $fields from $table $where $wheref  $group_by order by $order $order_direction ";
+$sql = "select $fields from $table $where $extra_where $wheref  $group_by order by $order $order_direction ";
+
 
 
 if ($_export_data['tipo'] == 'products') {
