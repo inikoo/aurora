@@ -461,7 +461,7 @@ FROM `Deal Component Dimension`   left join
                                         'icon'            => $row['Deal Component Icon'],
                                         'name'            => $row['Deal Name Label'],
                                         'until'           => $row['Deal Component Expiration Date'],
-                                        'until_formatted' => strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].' +0:00')),
+                                        'until_formatted' => strftime("%a %e %b %Y", strtotime($row['Deal Component Expiration Date'].'')),
                                         'term'            => $row['Deal Term Label'],
                                         'allowance'       => $row['Deal Component Allowance Label']
                                     );
