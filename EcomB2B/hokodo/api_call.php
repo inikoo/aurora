@@ -10,7 +10,7 @@ function api_post_call($url, $data, $api_key = false, $type = 'POST')
 {
     $ch = curl_init();
 
-    $base_url = 'https://api.hokodo.co/v1';
+    $base_url = 'https://api.hokodo.co/v1/';
     if (ENVIRONMENT == 'DEVEL') {
         $base_url = 'https://api-sandbox.hokodo.co/v1/';
     }

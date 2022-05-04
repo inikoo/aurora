@@ -2437,7 +2437,7 @@ from
         $website = get_object('Website', $store->get('Store Website Key'));
         $api_key = $website->get_api_key('Hokodo');
 
-        $_base_url = 'https://api.hokodo.co/v1';
+        $_base_url = 'https://api.hokodo.co/v1/';
         if (ENVIRONMENT == 'DEVEL') {
             $_base_url = 'https://api-sandbox.hokodo.co/v1/';
         }
