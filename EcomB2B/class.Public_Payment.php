@@ -429,4 +429,27 @@ class Public_Payment extends DBW_Table {
     }
 
 
+    function update_payment_parents() {
+        $order = get_object('Order', $this->data['Payment Order Key']);
+
+
+        $order->update_totals();
+
+
+        $invoice = get_object('Invoice', $this->data['Payment Invoice Key']);
+        if ($invoice->id) {
+            $invoice->update_payments_totals();
+        }
+        $account = get_object('Account', 1);
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping', array(
+            'type'        => 'payment_updated',
+            'payment_key' => $this->id,
+            'store_key' => $order->get('Order Store Key'),
+        ), $account->get('Account Code'), $this->db
+        );
+
+    }
+
 }

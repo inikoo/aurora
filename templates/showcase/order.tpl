@@ -5,6 +5,7 @@
 {assign deleted_invoices $order->get_deleted_invoices('objects')}
 
 {assign payments $order->get_payments('objects','Completed')}
+{assign approving_payments $order->get_payments('objects','Approving')}
 
 
 <div class="sticky_notes">
@@ -845,12 +846,11 @@
 
 
             <div id="expected_payment" class="payment node  {if $expected_payment==''}hide{/if} ">
-
-
                 <span class="node_label   ">{$expected_payment}</span>
-
-
             </div>
+
+
+
 
 
             <div id="create_payment" class="payment node">
@@ -873,6 +873,16 @@
 
 
             <div id="payment_nodes">
+                {foreach from=$approving_payments item=payment}
+                    <div class="payment node">
+                        <span class="node_label">
+                            <span class="link error"
+                                  onClick="change_view('order/{$order->id}/payment/{$payment->id}')">{if $payment->payment_account->get('Payment Account Block')=='Accounts'  or  $payment->get('Payment Method')=='Account'    }{t}Credit{/t}{else}{$payment->get('Payment Account Code')}{/if}  ({t}Approving{/t}) </span> </span>
+                        <span class="node_amount error"> {$payment->get('Transaction Amount')}</span>
+                    </div>
+                {/foreach}
+
+
                 {foreach from=$payments item=payment}
                     <div class="payment node">
                         <span class="node_label">

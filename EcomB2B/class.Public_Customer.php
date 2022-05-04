@@ -227,6 +227,13 @@ class Public_Customer extends DBW_Table {
 
         switch ($key) {
 
+            case 'hokodo_array_data':
+
+                if(empty($this->data['hokodo_data'])){
+                    return [];
+                }
+                return json_decode($this->data['hokodo_data'],true);
+
             case 'Customer EORI':
             case 'EORI':
                 return $this->metadata('eori');

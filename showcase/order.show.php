@@ -23,7 +23,10 @@ function get_order_showcase($data, $smarty, $user, $db)
     $store = get_object('store', $order->get('Order Store Key'));
 
     //$order->update_aiku($order->get_table_name(), 'refresh_order');
-    //exit;
+
+   //  $order->send_hokodo_invoice(2113277);
+   // $order->confirm_hokodo_order_fulfilment();
+  //  exit;
 
    // $order->update_tax();
 

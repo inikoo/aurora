@@ -733,7 +733,15 @@ $smarty->assign('extra_comments', $extra_comments);
 $html = $smarty->fetch('invoice.pdf.tpl');
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 $mpdf->WriteHTML($html);
-$mpdf->Output($invoice->get('Public ID').'.pdf', 'I');
+if(!empty($save_to_file)){
+    $mpdf->Output($save_to_file, 'F');
+
+}else{
+    $mpdf->Output($invoice->get('Public ID').'.pdf', 'I');
+
+}
+
+
 
 
 

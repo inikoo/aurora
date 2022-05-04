@@ -48,6 +48,8 @@ trait OrderPayments {
 
         if ($filter == 'Completed') {
             $where = ' and `Payment Transaction Status`="Completed" ';
+        }elseif ($filter == 'Approving') {
+            $where = ' and `Payment Transaction Status`="Approving" ';
         } elseif ($filter == 'Completed_or_Pending') {
             $where = ' and (`Payment Transaction Status`="Completed" or `Payment Transaction Status`="Pending" ) ';
         } else {

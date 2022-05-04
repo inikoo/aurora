@@ -377,6 +377,12 @@ trait OrderOperations
             2
         );
 
+
+        if($this->data['hokodo_order_id']){
+            $this->cancel_hokodo_payment();
+        }
+
+
         $sql = "UPDATE `Order Dimension` SET  `Order Cancelled Date`=?, `Order State`=?,`Order Payment State`='NA',`Order To Pay Amount`=?,`Order Cancel Note`=?,
 				`Order Balance Net Amount`=0,`Order Balance tax Amount`=0,`Order Balance Total Amount`=0,`Order Items Cost`=0,
 				`Order Invoiced Balance Net Amount`=0,`Order Invoiced Balance Tax Amount`=0,`Order Invoiced Balance Total Amount`=0 ,`Order Invoiced Outstanding Balance Net Amount`=0,`Order Invoiced Outstanding Balance Tax Amount`=0,`Order Invoiced Outstanding Balance Total Amount`=0,`Order Invoiced Profit Amount`=0
@@ -515,6 +521,88 @@ trait OrderOperations
         }
 
         return true;
+    }
+
+    function cancel_hokodo_payment(){
+
+        $db=$this->db;
+        $store   = get_object('Store', $this->get('Order Store Key'));
+        $website = get_object('Website', $store->get('Store Website Key'));
+        $api_key = $website->get_api_key('Hokodo');
+
+        $order=$this;
+
+        $items=[];
+        $sql  = "select * from `Order Transaction Fact` OTF  left join `Product Dimension` P  on (OTF.`Product ID`=P.`Product Id`) where `Order Key`=? 
+                
+                                                                                                                    and `Order Quantity`>0
+                                                                                                                    and `Order Transaction Amount`!=0 ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            [
+                $order->id
+            ]
+        );
+        while ($row = $stmt->fetch()) {
+            $item_total  = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
+            $item_tax    = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
+
+
+            $items[] = [
+                "item_id"            => $row['Order Transaction Fact Key'],
+                "quantity"           => $row['Order Quantity'],
+                "unit_price"         => floor($item_total / $row['Order Quantity']),
+                "total_amount"       => $item_total,
+                "tax_amount"         => $item_tax,
+            ];
+        }
+
+        $sql  = "select * from `Order No Product Transaction Fact` OTF  where `Order Key`=? and (`Transaction Net Amount`+`Transaction Tax Amount`)>0
+                                                                                                                   ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            [
+                $order->id
+            ]
+        );
+        while ($row = $stmt->fetch()) {
+
+
+
+            $item_total  = floor(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
+            $item_tax    = floor(100 * $row['Transaction Tax Amount']);
+
+
+
+            $items[] = [
+                "item_id"            => 'np-'.$row['Order No Product Transaction Fact Key'],
+
+                "quantity"           => 1,
+
+                "total_amount"       => $item_total,
+                "tax_amount"         => $item_tax,
+
+            ];
+        }
+
+        include_once 'EcomB2B/hokodo/api_call.php';
+
+        $res=api_post_call('payment/orders/'.$this->data['hokodo_order_id'].'/cancel',
+                           ['items'=>$items],$api_key,'PUT'
+        );
+
+       //  print_r($res);
+
+
+         $payment=get_object('Payment',$order->data['pending_hokodo_payment_id']);
+         $payment->fast_update(
+             [
+                 'Payment Transaction Status Info'=>''
+             ]
+         );
+         $payment->delete();
+
+
     }
 
 

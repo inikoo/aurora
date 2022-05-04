@@ -303,6 +303,9 @@ function payments($_data, $db, $user) {
                 case 'Pending':
                     $status = _('Pending');
                     break;
+                case 'Approving':
+                    $status = _('Approving');
+                    break;
                 case 'Completed':
                     $status = _('Completed');
 
@@ -360,7 +363,16 @@ function payments($_data, $db, $user) {
             $notes = '';
 
 
-            $amount = '<span class=" '.($data['Payment Transaction Amount'] < 0 ? 'error' : '').'  '.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
+            if($data['Payment Transaction Status']=='Pending' or $data['Payment Transaction Status']=='Approving' ){
+                            $amount =  '<i class="fal fa-clock"></i>   <span class=" '.($data['Payment Transaction Amount'] < 0 ? 'error' : '').' very_discreet " >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
+
+                }else{
+                            $amount = '<span class=" '.($data['Payment Transaction Amount'] < 0 ? 'error' : '').'  '.($data['Payment Transaction Status'] != 'Completed' ? 'strikethrough' : '').'" >'.money($data['Payment Transaction Amount'], $data['Payment Currency Code']).'</span>';
+
+                }
+
+
+
 
 
             $refunds = '';

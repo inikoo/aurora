@@ -139,6 +139,15 @@
 
                     {if $block=='Checkout' }
                         <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width:450px;min-height:300px;border:none;"></iframe>
+
+                    {elseif $block=='Hokodo' }
+                        <iframe src="ar_web_payment_account_hokodo_iframe.php?order_key={$order->id}" title="Checkout"
+
+                                onload='javascript:(function(o){
+                                        o.style.height=400+o.contentWindow.document.body.scrollHeight+"px";}(this));'
+                                style="height:200px;width:100%;border:none;overflow:hidden;"
+
+
                     {elseif $block=='BTree' }
 
 

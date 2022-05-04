@@ -896,6 +896,32 @@ class Website extends DB_Table {
 
     }
 
+
+    function get_api_key($code){
+
+        $api_key='';
+        $sql =
+            "SELECT login 
+FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
+WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id,
+                $code
+            ]
+        );
+
+        while ($row = $stmt->fetch()) {
+            $api_key = $row['login'];
+        }
+
+
+        return $api_key;
+
+    }
+
     function update_sitemap() {
 
 

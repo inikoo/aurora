@@ -342,7 +342,14 @@ class Public_Website
                     $short_label     = '';
                     $analytics_label = 'Bank';
                     break;
+                case 'Hokodo':
 
+                    $icon            = 'fa fa-money-check-alt';
+                    $tab_label_index = 'Buy now play later';
+                    $tab_label       = 'Buy now play later';
+                    $short_label     = 'Buy now play later';
+                    $analytics_label = 'Hokodo';
+                    break;
                 case 'ConD':
 
 
@@ -500,16 +507,61 @@ class Public_Website
 
                 $poll_queries[] = $row;
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
         return $poll_queries;
     }
 
+    function get_api_key($code){
+
+        $api_key='';
+        $sql =
+            "SELECT login 
+FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
+WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`=? ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id,
+                $code
+            ]
+        );
+
+        while ($row = $stmt->fetch()) {
+            $api_key = $row['login'];
+        }
+
+
+        return $api_key;
+
+    }
+
+    function get_payment_account__key($code){
+
+        $payment_account__key='';
+        $sql =
+            "SELECT `Payment Account Store Payment Account Key`
+FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
+WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`=? ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id,
+                $code
+            ]
+        );
+
+        while ($row = $stmt->fetch()) {
+            $payment_account__key = $row['Payment Account Store Payment Account Key'];
+        }
+
+
+        return $payment_account__key;
+
+    }
+
 }
 
 
-?>
+
