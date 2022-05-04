@@ -343,12 +343,15 @@ class Public_Website
                     $analytics_label = 'Bank';
                     break;
                 case 'Hokodo':
-
-                    $icon            = 'fa fa-money-check-alt';
-                    $tab_label_index = 'Buy now play later';
-                    $tab_label       = 'Buy now play later';
-                    $short_label     = 'Buy now play later';
-                    $analytics_label = 'Hokodo';
+                    if (in_array($options, $payment_account->get('Valid Delivery Countries'))) {
+                        $icon            = 'fa fa-money-check-alt';
+                        $tab_label_index = 'Buy now play later';
+                        $tab_label       = 'Buy now play later';
+                        $short_label     = 'Buy now play later';
+                        $analytics_label = 'Hokodo';
+                    } else {
+                        $ok = false;
+                    }
                     break;
                 case 'ConD':
 

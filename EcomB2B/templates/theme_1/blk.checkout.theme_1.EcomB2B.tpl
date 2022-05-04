@@ -145,7 +145,11 @@
     {if $order->get('Order Basket To Pay Amount')>0}
     <div class="container clear  {if $order->get('Order Basket To Pay Amount')==0}hide{/if}">
 
-                {assign "payment_accounts" $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'))  }
+                {assign "payment_accounts" $website->get_payment_accounts(
+                $order->get('Order Delivery Address Country 2 Alpha Code'),
+                $order->get('Order Invoice Address Country 2 Alpha Code')
+
+                )  }
 
                 <ul class="tabs3">
 
