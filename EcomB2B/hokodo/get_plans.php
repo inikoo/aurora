@@ -216,7 +216,7 @@ function get_plans($db, $order, $customer, $website)
             if ($plans == '') {
                 return [
                     'status' => 'ok',
-                    'plans'  => '<span style="color:tomato">Sorry, we can not offer you this payment method</span',
+                    'plans'  => '<span style="color:tomato">Sorry, we can not offer you this payment method, please use another one</span',
                 ];
             }
 
