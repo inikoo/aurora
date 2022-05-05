@@ -426,10 +426,7 @@
 
                     'proprietor_address_city': $('#proprietor_address_city').val(),
                     'proprietor_address_postcode': $('#proprietor_address_postcode').val(),
-                    'birth_date': $('#birth_date').val()
-
-
-
+                    'birth_date': $('#birth_date').val(),
                     'vat_number': $('#vat_number').val()
                 },
                 success: function(raw_data)
