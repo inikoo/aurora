@@ -35,14 +35,12 @@ $can_change_state = ($object->get('Webpage Scope') == 'System' ? false : true);
 
 
 if ($object->get('Webpage Scope') == 'Category Categories' or $object->get('Webpage Scope') == 'Category Products') {
-
     $scope = get_object('Category', $object->get('Webpage Scope Key'));
 
 
     if ($scope->get('Product Category Public') == 'No') {
         $can_change_state = false;
     }
-
 }
 
 
@@ -70,7 +68,6 @@ if ($object->get('Webpage Scope') == 'Category Products') {
     if (!$category->id) {
         $can_delete = true;
     }
-
 }
 
 
@@ -100,7 +97,6 @@ if (in_array(
                                          'Category Products'
                                      )
     ) and $can_change_state) {
-
     $object_fields[] =
 
         array(
@@ -112,12 +108,14 @@ if (in_array(
 
 
                 array(
-                    'id'        => 'reindex_webpage',
-                    'render'    => ($website->get('Website Status') != 'Active' ? false : true),
+                    'id'     => 'reindex_webpage',
+                    'render' => ($website->get('Website Status') != 'Active' ? false : true),
 
                     'class'     => 'operation',
                     'value'     => '',
-                    'label'     => '<span data-data=\'{ "object": "old_page", "key":"'.$object->id.'"}\' style="margin:10px 0px;padding:10px;border:1px solid #ccc" onClick="reindex_object(this)" class="delete_object button">'._("Reindex").' <i class="fa fa-sync-alt padding_left_5  "></i></span>',
+                    'label'     => '<span data-data=\'{ "object": "old_page", "key":"'.$object->id.'"}\' style="margin:10px 0px;padding:10px;border:1px solid #ccc" onClick="reindex_object(this)" class="delete_object button">'._(
+                            "Reindex"
+                        ).' <i class="fa fa-sync-alt padding_left_5  "></i></span>',
                     'reference' => '',
                     'type'      => 'operation'
                 ),
@@ -178,55 +176,59 @@ if (in_array(
 
             )
         );
-
 }
 
 $object_fields[] = array(
     'label'      => _('Id'),
     'show_title' => true,
     'fields'     => array(
-
-
         array(
             'id'                => 'Webpage_Code',
-            'render'            => ($can_update_code or $new ? true : false),
+            'render'            => ($can_update_code or $new),
             'edit'              => ($edit ? 'string' : ''),
             'value'             => htmlspecialchars($object->get('Webpage Code')),
             'formatted_value'   => $object->get('Code'),
             'label'             => _('Code').' <span class="small">(<i class="fa fa-exclamation-triangle warning padding_right_5  '.($new ? 'hide' : '').' " title="'._('URL will change').'"></i>URL)</span>',
             'required'          => true,
             'type'              => 'value',
-            'server_validation' => json_encode(array('tipo' => 'check_for_duplicates')),
-
+            'server_validation' => json_encode(array(
+                                                   'tipo'       => 'check_for_duplicates',
+                                                   'parent'     => 'website',
+                                                   'parent_key' => $website->id,
+                                               )),
         ),
-
-
-
-
-
+        array(
+            'id'                => 'Webpage_Canonical_Code',
+            'render'            => ($can_update_code or $new),
+            'edit'              => ($edit ? 'string' : ''),
+            'value'             => htmlspecialchars($object->get('Webpage Canonical Code')),
+            'formatted_value'   => $object->get('Canonical Code'),
+            'label'             => _('Canonical Url'),
+            'required'          => true,
+            'type'              => 'value',
+            'server_validation' => json_encode(array(
+                                                   'tipo'       => 'check_for_duplicates',
+                                                   'parent'     => 'website',
+                                                   'parent_key' => $website->id,
+                                               )),
+        ),
     )
 );
 
 
-
-if($object->get('Webpage Scope')=='Category Categories'){
-    $children_format_label=_("Department's family/products format");
-
-}elseif($object->get('Webpage Scope')=='Category Products'){
-    $children_format_label=_("Family products format");
-
-}else{
-    $children_format_label=_('Children format');
+if ($object->get('Webpage Scope') == 'Category Categories') {
+    $children_format_label = _("Department's family/products format");
+} elseif ($object->get('Webpage Scope') == 'Category Products') {
+    $children_format_label = _("Family products format");
+} else {
+    $children_format_label = _('Children format');
 }
-
 
 
 $object_fields[] = array(
     'label'      => _('Browser title').' <span style="font-weight: lighter" class="small padding_left_10 Webpage_Browser_Title">'.$object->get_browser_title().'</span>',
     'show_title' => true,
     'fields'     => array(
-
-
 
 
         array(
@@ -243,14 +245,14 @@ $object_fields[] = array(
         ),
 
         array(
-            'id'   => 'Children_Browser_Title_Format',
-            'edit' => ($edit ? 'string' : ''),
-            'render'            => (($object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products')?true:false),
+            'id'     => 'Children_Browser_Title_Format',
+            'edit'   => ($edit ? 'string' : ''),
+            'render' => (($object->get('Webpage Scope') == 'Category Categories' or $object->get('Webpage Scope') == 'Category Products') ? true : false),
 
             'value'           => htmlspecialchars($object->get('Webpage Children Browser Title Format')),
             'formatted_value' => $object->get('Children Browser Title Format'),
             'label'           => '<i class="fa fa-level-down padding_right_5	"></i>'.$children_format_label,
-            'required'            => (($object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products')?true:false),
+            'required'        => (($object->get('Webpage Scope') == 'Category Categories' or $object->get('Webpage Scope') == 'Category Products') ? true : false),
             'type'            => 'value',
 
 
@@ -262,13 +264,10 @@ $object_fields[] = array(
 
 
 $object_fields[] = array(
-    'label'      => _('Description'),
+    'label' => _('Description'),
 
     'show_title' => true,
     'fields'     => array(
-
-
-
 
 
         array(
@@ -290,8 +289,6 @@ $object_fields[] = array(
 
 
 if (in_array($object->get('Webpage Scope'), array('HomepageToLaunch'))) {
-
-
     $object_fields[] = array(
         'label'      => _('Webpage settings'),
         'show_title' => true,
@@ -317,7 +314,6 @@ if (in_array($object->get('Webpage Scope'), array('HomepageToLaunch'))) {
 }
 
 if (in_array($object->get('Webpage Scope'), array('Contact'))) {
-
     $object_fields[] = array(
         'label'      => _('Contact'),
         'show_title' => true,
@@ -395,8 +391,6 @@ if (in_array($object->get('Webpage Scope'), array('Contact'))) {
 
         )
     );
-
-
 }
 
 
@@ -416,7 +410,11 @@ if (!$new and $object->get('Webpage Scope') == 'Category Products') {
                     '<span type="submit" class="button" file="/webpage_images.zip.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive" aria-hidden="true"></i> %s</span>
 <span type="submit" class="padding_left_30 button" file="/webpage_texts.txt.php?parent=category&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fal fa-file-alt" aria-hidden="true"></i> %s</span>
 
-', $object->get('Webpage Scope Key'), _('Images (including products)'), $object->get('Webpage Scope Key'), _('Text (including products)')
+',
+                    $object->get('Webpage Scope Key'),
+                    _('Images (including products)'),
+                    $object->get('Webpage Scope Key'),
+                    _('Text (including products)')
 
 
                 ),
@@ -430,7 +428,6 @@ if (!$new and $object->get('Webpage Scope') == 'Category Products') {
     );
 
     $object_fields[] = $export_operations;
-
 }
 
 if (!$new and $object->get('Webpage Scope') == 'Product') {
@@ -449,7 +446,11 @@ if (!$new and $object->get('Webpage Scope') == 'Product') {
                     '<span type="submit" class="button" file="/webpage_images.zip.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fa fa-file-archive" aria-hidden="true"></i> %s</span>
                     <span type="submit" class="padding_left_30 button" file="/webpage_texts.txt.php?parent=product&key=%d" onclick="window.open($(this).attr(\'file\'))"><i class="fal fa-file-alt" aria-hidden="true"></i> %s</span>
 
-', $object->get('Webpage Scope Key'), _('Images'), $object->get('Webpage Scope Key'), _('Text')
+',
+                    $object->get('Webpage Scope Key'),
+                    _('Images'),
+                    $object->get('Webpage Scope Key'),
+                    _('Text')
 
                 ),
                 'reference' => '',
@@ -462,12 +463,10 @@ if (!$new and $object->get('Webpage Scope') == 'Product') {
     );
 
     $object_fields[] = $export_operations;
-
 }
 
 
 if (in_array($object->get('Webpage Scope'), array('Register'))) {
-
     $object_fields[] = array(
         'label'      => _('Registration type'),
         'show_title' => true,
@@ -486,7 +485,6 @@ if (in_array($object->get('Webpage Scope'), array('Register'))) {
 
         )
     );
-
 }
 
 
@@ -497,11 +495,11 @@ $operations = array(
     'fields'     => array(
 
 
-
-
         array(
             'id'        => 'unpublish_webpage',
-            'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Online' and ($object->get('Webpage Scope')=='Info' or $object->get('Webpage Scope')=='Product' or $object->get('Webpage Scope')=='Category Categories' or $object->get('Webpage Scope')=='Category Products'   )   ? true : false),
+            'render'    => ($website->get('Website Status') == 'Active' and $object->get('Webpage State') == 'Online' and ($object->get('Webpage Scope') == 'Info' or $object->get('Webpage Scope') == 'Product' or $object->get(
+                        'Webpage Scope'
+                    ) == 'Category Categories' or $object->get('Webpage Scope') == 'Category Products') ? true : false),
             'class'     => 'operation',
             'value'     => '',
             'label'     => ' <span style="margin-left:40px" webpage_key="'.$object->id.'" onClick="publish(this,\'unpublish_webpage\')" class="error button ">'._("Unpublish web page")
@@ -512,9 +510,9 @@ $operations = array(
 
 
         array(
-            'id'        => 'reset_webpage',
-            'class'     => 'operation',
-            'value'     => '',
+            'id'    => 'reset_webpage',
+            'class' => 'operation',
+            'value' => '',
 
 
             'label'     => '<i class="fa fa-fw fa-lock-alt button"    onClick="'.($edit ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'SS\')').'"  style="margin-right:20px"></i> <span data-data=\'{ "object": "webpage", "key":"'.$object->id.'"}\' onClick="reset_object(this)" class="delete_object disabled ">'
@@ -542,7 +540,6 @@ $operations = array(
 );
 
 if (!$new) {
-
     $object_fields[] = $operations;
 }
 

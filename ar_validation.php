@@ -1017,17 +1017,19 @@ function check_for_duplicates($data, $db, $user, $account) {
 
             switch ($field) {
                 case 'Webpage Code':
+                case 'Webpage Canonical Code':
 
 
                     $invalid_msg              = _('Webpage code already used');
                     $sql                      = sprintf(
-                        "SELECT P.`Page Key` AS `key` ,`Webpage Code` AS field FROM `Page Store Dimension` P WHERE  `Webpage Code`=%s  AND `Webpage Website Key`=%s  ", prepare_mysql($data['value']), $data['parent_key']
+                        "SELECT P.`Page Key` AS `key` ,`Webpage Code` AS field FROM `Page Store Dimension` P WHERE  (`Webpage Code`=%s or `Webpage Canonical Code`=%s   )  AND `Webpage Website Key`=%s  ", prepare_mysql($data['value']), prepare_mysql($data['value']), $data['parent_key']
 
                     );
                     $validation_sql_queries[] = array(
                         'sql'         => $sql,
                         'invalid_msg' => $invalid_msg
                     );
+                    break;
 
             }
 

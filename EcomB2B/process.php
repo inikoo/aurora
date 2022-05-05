@@ -69,7 +69,8 @@ if ($url == 'sitemap.xml') {
     print $xml;
     exit;
 
-} elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
+}
+elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
 
 
     $db = new PDO(
@@ -153,6 +154,8 @@ function get_url($db, $website_key, $url) {
     if ($page_key) {
         return $page_key;
     }
+
+
     $_tmp_url = preg_replace('/\/$/', '', $url);
 
     if (!$page_key and preg_match('/[a-z0-9_\-]\/$/i', $url)) {
@@ -213,12 +216,13 @@ function get_url($db, $website_key, $url) {
  */
 function get_page_key_from_code($website_key, $code, $db) {
 
-    $sql = "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=? AND `Webpage Code`=? ";
+    $sql = "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=? AND ( `Webpage Code`=? or `Webpage Canonical Code`=? ) ";
 
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array(
             $website_key,
+            $code,
             $code
         )
     );

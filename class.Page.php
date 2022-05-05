@@ -319,7 +319,14 @@ class Page extends DB_Table {
         $website = get_object('website', $this->get('Webpage Website Key'));
 
 
-        $this->update(array('Webpage URL' => 'https://'.$website->get('Website URL').'/'.strtolower($this->get('Code'))), 'no_history');
+        $url_code=$this->get('Code');
+        if($this->get('Canonical Code')!=''){
+            $url_code=$this->get('Canonical Code');
+
+        }
+
+
+        $this->update(array('Webpage URL' => 'https://'.$website->get('Website URL').'/'.strtolower($url_code)), 'no_history');
 
 
     }
@@ -1184,6 +1191,7 @@ class Page extends DB_Table {
 
                 break;
             case('Webpage Code'):
+            case('Webpage Canonical Code'):
 
                 $this->update_field($field, $value, $options);
                 $this->update_url();
@@ -1199,6 +1207,7 @@ class Page extends DB_Table {
 
 
                 break;
+
 
 
             case 'Store Email':
