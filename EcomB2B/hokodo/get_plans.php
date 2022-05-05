@@ -238,7 +238,7 @@ $plans.=' <label class="rounded-tl-md rounded-tr-md relative border p-4 flex fle
 
     return [
         'status' => 'error',
-        '≈'=>'Sorry, we can not offer you this service',
+        'msg'=>'Sorry, we can not offer you this service',
         'raw_data'=>json_encode($raw_results)
     ];
 

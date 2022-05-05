@@ -46,6 +46,7 @@ $raw_results = api_post_call('organisations', array(
     "company"    => $company_id,
     'registered' => date('c', strtotime($customer->get('Customer First Contacted Date')))
 ),                           $api_key);
+$raw_results0=$raw_results;
 
 
 $org_id = $raw_results['id'];
@@ -60,7 +61,7 @@ $data    = array(
 $user_id = false;
 
 $raw_results = api_post_call('users', $data, $api_key);
-
+$raw_results1=$raw_results;
 $user_id=$raw_results['id'];
 $data        = [
     'id'   => $org_id,
@@ -118,7 +119,11 @@ if ($user_id) {
 
 echo json_encode(
     [
-        'status' => 'error'
+        'status' => 'error',
+        'raw_results'=>$raw_results,
+        'raw_results1'=>$raw_results1,
+        'raw_results0'=>$raw_results0
+
     ]
 );
 

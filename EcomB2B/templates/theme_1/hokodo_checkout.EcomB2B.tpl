@@ -142,7 +142,10 @@
                     <div>
                         <label for="birth_date" class="block text-sm font-medium text-gray-700"> Proprietor's date of birth (e.g. 1969-12-31)  </label>
                         <div class="mt-1">
-                            <input id="birth_date" placeholder="YYYY-MM-DD" name="birth_date" type="text"  required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            {literal}
+                            <input type="text" id="birth_date"  name="birth_date"  placeholder="YYYY-MM-DD" required pattern="(?:19|20)(?:(?:[13579][26]|[02468][048])-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))|(?:[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:29|30))|(?:(?:0[13578]|1[02])-31)))"    autofocus autocomplete="nope">
+                            {/literal}
+
                         </div>
                     </div>
 
