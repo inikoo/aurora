@@ -181,6 +181,7 @@ function get_plans($db, $order, $customer, $website)
 
             $plans = '';
 
+
             foreach ($raw_results['offered_payment_plans'] as $plan_data) {
                 if ($plan_data['status'] == 'offered') {
                     switch ($plan_data['name']) {
@@ -217,13 +218,14 @@ function get_plans($db, $order, $customer, $website)
                 return [
                     'status' => 'ok',
                     'plans'  => '<span style="color:tomato">Sorry, we can not offer you this payment method, please use another one</span',
+                    'log'    => $raw_results
                 ];
             }
 
             return [
                 'status'   => 'ok',
                 'plans'    => $plans,
-                'order_id' => $order_id
+                'order_id' => $order_id,
 
             ];
         }

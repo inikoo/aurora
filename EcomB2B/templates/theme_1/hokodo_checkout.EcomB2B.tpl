@@ -149,6 +149,12 @@
                         </div>
                     </div>
 
+                    <div>
+                        <label for="vat_number" class="block text-sm font-medium text-gray-700"> VAT number (If available)</label>
+                        <div class="mt-1">
+                            <input id="vat_number" name="vat_number" type="text" placeholder="{t}Vat number{/t}"  class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                    </div>
 
 
                     <div>
@@ -413,16 +419,18 @@
                     'trading_address_city': $('#trading_address_city').val(),
                     'trading_address_postcode': $('#trading_address_postcode').val(),
 
+
                     'proprietor_name': $('#proprietor_name').val(),
                     'proprietor_address': $('#proprietor_address').val(),
                     'proprietor_address2': $('#proprietor_address2').val(),
 
                     'proprietor_address_city': $('#proprietor_address_city').val(),
                     'proprietor_address_postcode': $('#proprietor_address_postcode').val(),
-
-
-
                     'birth_date': $('#birth_date').val()
+
+
+
+                    'vat_number': $('#vat_number').val()
                 },
                 success: function(raw_data)
                 {

@@ -21,7 +21,7 @@ $company_id = '';
 $email = $customer->get('Customer Main Plain Email');
 
 if (ENVIRONMENT == 'DEVEL') {
-  //  $email = 'rulovico@gmail.com';
+    //  $email = 'rulovico@gmail.com';
 }
 
 
@@ -37,12 +37,15 @@ if ($customer->data['hokodo_sole_id']) {
         "proprietor_address_city"     => $_POST['proprietor_address_city'],
         "proprietor_address_postcode" => $_POST['proprietor_address_postcode'],
         'date_of_birth'               => $_POST['birth_date'],
+        'vat_number'                  => $_POST['vat_number'],
 
     ];
     $raw_results = api_post_call('soletraders/'.$customer->data['hokodo_sole_id'], $data, $api_key, 'PATCH');
 
-   // print_r($raw_results);
-   // exit;
+
+    $res1=$raw_results;
+    // print_r($raw_results);
+    // exit;
 
     $customer->fast_update(
         [
@@ -59,9 +62,9 @@ if ($customer->data['hokodo_sole_id']) {
     exit;
 } else {
     $data        = array(
-        "name"       => $customer->get('Customer Main Contact Name'),
-        "email"      => trim($email),
-        "phone"      => trim($customer->get_telephone()),
+        "name"  => $customer->get('Customer Main Contact Name'),
+        "email" => trim($email),
+        "phone" => trim($customer->get_telephone()),
 
         'registered' => date('c', strtotime($customer->get('Customer First Contacted Date'))),
 
