@@ -136,27 +136,25 @@ function get_plans($db, $order, $customer, $website)
 
     );
 
-   // print $api_key.' || ';
-   //print_r($data);
-   //exit;
+    // print $api_key.' || ';
+    //print_r($data);
+    //exit;
 
 
     $raw_results = api_post_call('payment/orders', $data, $api_key);
-   // print_r($raw_results);
+    // print_r($raw_results);
 
     if (!empty($raw_results['id'])) {
-
-
-       // print_r($raw_results);
+        // print_r($raw_results);
 
 
         $order_id = $raw_results['id'];
 
 
-        $website_url='https://'.$website->get('Website URL');
+        $website_url = 'https://'.$website->get('Website URL');
 
         if (ENVIRONMENT == 'DEVEL') {
-            $website_url='http://ds.ir:88';
+            $website_url = 'http://ds.ir:88';
         }
 
 
@@ -167,41 +165,43 @@ function get_plans($db, $order, $customer, $website)
                 "failure"        => "$website_url/checkout.sys",
                 "cancel"         => "$website_url/checkout.sys",
                 "notification"   => "$website_url/ar_web_hokodo_notification.php?order_id=".$order->id,
-               // "notification"   => "https://8a88-212-139-223-82.ngrok.io/test_ar_web_hokodo_notification.php?order_id=".$order->id,
-                "merchant_terms" =>  "$website_url/return_policy",
+                // "notification"   => "https://8a88-212-139-223-82.ngrok.io/test_ar_web_hokodo_notification.php?order_id=".$order->id,
+                "merchant_terms" => "$website_url/return_policy",
             ]
         ];
 
-       // print_r($offer_data);
+        // print_r($offer_data);
 
         $raw_results = api_post_call('payment/offers', $offer_data, $api_key);
 
 
-
-        if(isset($raw_results['id'])){
-
+        if (isset($raw_results['id'])) {
             //print_r($raw_results['offered_payment_plans']);
 
 
-            $plans='';
+            $plans = '';
 
-            foreach($raw_results['offered_payment_plans'] as $plan_data){
+            foreach ($raw_results['offered_payment_plans'] as $plan_data) {
+                if ($plan_data['status'] == 'offered') {
+                    switch ($plan_data['name']) {
+                        case '30d':
+                            $plan_name = sprintf(_('%s days credit'), 30);
+                            break;
+                        case '60d':
+                            $plan_name = sprintf(_('%s days credit'), 60);
+                            break;
+                        case '90d':
+                            $plan_name = sprintf(_('%s days credit'), 90);
+                            break;
+                        default:
+                            $plan_name = $plan_data['name'];
+                    }
 
 
-                switch ($plan_data['name']){
-                    case '30d':
-                        $plan_name=sprintf(_('%s days credit'),30);
-                        break;
-                    default:
-                        $plan_name=$plan_data['name'];
+                    $details = 'Buy now. Pay Later.';
+                    $details .= ' <b>'.'No interest. No fees.'.'</b>';
 
-                }
-
-
-                $details='Buy now. Pay Later.';
-                $details.=' <b>'.'No interest. No fees.'.'</b>';
-
-$plans.=' <label class="rounded-tl-md rounded-tr-md relative border p-4 flex flex-col cursor-pointer  focus:outline-none">
+                    $plans .= ' <label class="rounded-tl-md rounded-tr-md relative border p-4 flex flex-col cursor-pointer  focus:outline-none">
                         <div class="flex items-center text-sm">
                             <input  type="radio" name="paying-plan"  data-id="'.$plan_data['id'].'"  value="'.$plan_data['payment_url'].'" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" aria-labelledby="paying-plans-0-label" aria-describedby="paying-plans-0-description-0 paying-plans-0-description-1">
                             <span  class="ml-3 font-medium">'.$plan_name.'</span>
@@ -209,38 +209,29 @@ $plans.=' <label class="rounded-tl-md rounded-tr-md relative border p-4 flex fle
 
                         <p  class="ml-6 pl-1 text-sm ">'.$details.'</p>
                     </label>';
-
-
-
-
+                }
             }
 
 
-
-            if($plans==''){
+            if ($plans == '') {
                 return [
                     'status' => 'ok',
-                    'plans'=>'<span style="color:tomato">Sorry, we can not offer you this payment method</span',
+                    'plans'  => '<span style="color:tomato">Sorry, we can not offer you this payment method</span',
                 ];
             }
 
             return [
-                'status'=>'ok',
-                'plans'=>$plans,
-                'order_id'=>$order_id
+                'status'   => 'ok',
+                'plans'    => $plans,
+                'order_id' => $order_id
 
             ];
         }
-
-
-
     }
 
     return [
-        'status' => 'error',
-        'msg'=>'Sorry, we can not offer you this service',
-        'raw_data'=>json_encode($raw_results)
+        'status'   => 'error',
+        'msg'      => 'Sorry, we can not offer you this service',
+        'raw_data' => json_encode($raw_results)
     ];
-
-
 }
