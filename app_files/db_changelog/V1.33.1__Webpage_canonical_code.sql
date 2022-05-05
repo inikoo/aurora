@@ -1,0 +1,2 @@
+ALTER TABLE `Page Store Dimension` ADD COLUMN `Webpage Canonical Code` varchar(255) NULL COMMENT '' AFTER `Webpage Code`;
+CREATE UNIQUE INDEX `Webpage Code_3` ON `Page Store Dimension` (`Webpage Canonical Code`,`Webpage Website Key`) USING BTREE;
