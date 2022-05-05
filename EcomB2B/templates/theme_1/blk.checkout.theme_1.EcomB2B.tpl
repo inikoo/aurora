@@ -193,6 +193,8 @@
 
                     {/foreach}
 
+
+
                     {foreach from=$payment_accounts item=payment_account key=key}
 
                         {assign "block" $payment_account.object->get("Block")  }
@@ -208,7 +210,7 @@
 
                                         onload='javascript:(function(o){
                                         o.style.height=400+o.contentWindow.document.body.scrollHeight+"px";}(this));'
-                                        style="height:200px;width:100%;border:none;overflow:hidden;"
+                                        style="height:200px;width:100%;border:none;overflow:hidden;"  ></iframe>
 
 
                             {elseif $block=='BTree' }
