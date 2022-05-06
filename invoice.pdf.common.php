@@ -562,8 +562,9 @@ if ($result = $db->query($sql)) {
 
 $transactions_grouped_by_tariff_code=[];
 
-$sql="select   sum(`Delivery Note Quantity` ) as Qty,  `Product Tariff Code` as Code ,sum(`Order Transaction Amount`) as Amount,`Product Name`, (select GROUP_CONCAT(`Commodity Name`) from kbase.`Commodity Code Dimension` where SUBSTRING(`Commodity Code`,1,8)=SUBSTRING(`Product Tariff Code`,1,8)         and `Commodity Name` IS NOT NULL ) as tc_name  from `Order Transaction Fact` OTF left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) 
-where `Invoice Key`=? group by `Product Tariff Code` ;";
+$sql="select `Product Origin Country Code` origin, group_concat(`Product Code` SEPARATOR ', ') as codes,    sum(`Delivery Note Quantity` ) as Qty,  `Product Tariff Code` as Code ,sum(`Order Transaction Amount`) as Amount,`Product Name`, (select GROUP_CONCAT(`Commodity Name`) from kbase.`Commodity Code Dimension` where SUBSTRING(`Commodity Code`,1,8)=SUBSTRING(`Product Tariff Code`,1,8)         and `Commodity Name` IS NOT NULL ) as tc_name  from `Order Transaction Fact` OTF 
+    left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) 
+where `Invoice Key`=? group by `Product Tariff Code`,`Product Origin Country Code` ;";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
@@ -580,6 +581,13 @@ while ($row = $stmt->fetch()) {
         }
 
         $row['Amount']= money($row['Amount'], $invoice->get('Currency Code'));
+
+
+        if(strlen($row['codes'])>700){
+            $row['codes']=$string = substr($row['codes'],0,700).'...';
+
+        }
+
 
 
 
