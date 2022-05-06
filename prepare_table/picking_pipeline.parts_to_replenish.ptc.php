@@ -36,7 +36,7 @@ class prepare_table_picking_pipeline_parts_to_replenish extends prepare_table {
     function prepare_table() {
 
         $this->where =
-            ' where  `Minimum Quantity`>=0 and   `Minimum Quantity`>=(`Quantity On Hand`-  IFNULL(JSON_EXTRACT(`Part Location Metadata`,\'$.stock_in_process\'),0) - IFNULL(JSON_EXTRACT(`Part Location Metadata`,\'$.stock_ordered_paid\'),0)   ) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  and `Part Distinct Locations`>1  ';
+            ' where  `Minimum Quantity`>=0  and   `Minimum Quantity`>=(`Quantity On Hand`-  IFNULL(JSON_EXTRACT(`Part Location Metadata`,\'$.stock_in_process\'),0) - IFNULL(JSON_EXTRACT(`Part Location Metadata`,\'$.stock_ordered_paid\'),0)   ) and (P.`Part Current On Hand Stock`-`Quantity On Hand`)>=0  and `Part Distinct Locations`>1  ';
         $this->where .= sprintf(' and `Location Picking Pipeline Picking Pipeline Key`=%d ', $this->parameters['parent_key']);
 
 
@@ -62,6 +62,7 @@ class prepare_table_picking_pipeline_parts_to_replenish extends prepare_table {
 
 
         }
+
 
 
         $this->order_direction = $this->sort_direction;
@@ -98,14 +99,20 @@ class prepare_table_picking_pipeline_parts_to_replenish extends prepare_table {
 
         $this->sql_totals = "select count(*) as num from $this->table $this->where ";
 
+
+
     }
 
     function get_data() {
 
 
         $sql = "select $this->fields from $this->table $this->where $this->wheref order by $this->order $this->order_direction limit $this->start_from,$this->number_results";
+
+
+
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
+        $count=1;
         while ($data = $stmt->fetch()) {
 
             $locations_data = preg_split('/,/', $data['location_data']);
@@ -195,7 +202,7 @@ class prepare_table_picking_pipeline_parts_to_replenish extends prepare_table {
 
 
             $this->table_data[] = array(
-                'id'                    => (integer)$data['Location Key'],
+                'id'                    => $count++,
                 'location'              => ($data['Warehouse Flag Key'] ? sprintf(
                         '<i class="fa fa-flag %s" aria-hidden="true" title="%s"></i>', strtolower($data['Warehouse Flag Color']), $data['Warehouse Flag Label']
                     ) : '<i class="far fa-flag super_discreet" aria-hidden="true"></i>').' <span class="link" onClick="change_view(\'locations/'.$data['Location Warehouse Key'].'/'.$data['Location Key'].'\')">'.$data['Location Code'].'</span>',
@@ -213,6 +220,7 @@ class prepare_table_picking_pipeline_parts_to_replenish extends prepare_table {
 
 
         }
+
 
     }
 }

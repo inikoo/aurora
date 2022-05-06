@@ -357,7 +357,7 @@ class Picking_Pipeline extends DB_Table {
         $part_locations_to_replenish  = 0;
 
 
-        $sql = "SELECT count(*) AS num FROM `Part Location Dimension` left join `Location Picking Pipeline Bridge` on (`Location Key`=`Location Picking Pipeline Location Key`)   WHERE  `Location Picking Pipeline Picking Pipeline Key`=?  AND  `Minimum Quantity`>=0 AND `Can Pick`='Yes'";
+        $sql = "SELECT count(*) AS num FROM `Part Location Dimension` left join `Location Picking Pipeline Bridge` on (`Location Key`=`Location Picking Pipeline Location Key`)   WHERE  `Location Picking Pipeline Picking Pipeline Key`=?  AND  `Minimum Quantity`>=0 ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -372,10 +372,11 @@ class Picking_Pipeline extends DB_Table {
 
 
 
+
         $sql = "SELECT count(*) AS num  FROM `Part Location Dimension` PL  LEFT JOIN `Part Dimension` P ON (PL.`Part SKU`=P.`Part SKU`) 
                  left join `Location Picking Pipeline Bridge` on (`Location Key`=`Location Picking Pipeline Location Key`)
               
-                    WHERE `Can Pick`='Yes' AND `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`  - IFNULL(JSON_EXTRACT(`Part Location Metadata`,'$.stock_in_process'),0) - IFNULL(JSON_EXTRACT(`Part Location Metadata`,'$.stock_ordered_paid'),0)   ) AND 
+                    WHERE   `Minimum Quantity`>=0 AND   `Minimum Quantity`>=(`Quantity On Hand`  - IFNULL(JSON_EXTRACT(`Part Location Metadata`,'$.stock_in_process'),0) - IFNULL(JSON_EXTRACT(`Part Location Metadata`,'$.stock_ordered_paid'),0)   ) AND 
                             ( P.`Part Current On Hand Stock` -`Quantity On Hand`)>=0  AND `Location Picking Pipeline Picking Pipeline Key`=? and `Part Distinct Locations`>1 ";
 
 
