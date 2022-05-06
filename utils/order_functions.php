@@ -9,139 +9,148 @@
 */
 
 
-function get_orders_operations($row, $user) {
-
-
+function get_orders_operations($row, $user)
+{
     include_once 'class.Order.php';
 
     $operations = '<div id="operations'.$row['Order Key'].'">';
     $class      = 'right';
 
 
- 
-        if ($row['Order State'] == 'InBasket') {
+    if ($row['Order State'] == 'InBasket') {
+        $operations .= '<div class="buttons small '.$class.'">';
+        $operations .= sprintf(
+            "<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+            $row['Order Key'],
+            $row['Order Public ID'],
+            $row['Order Customer Name'],
+            _('Delete')
+        );
+        $operations .= ' <button   onClick="location.href=\`order.php?id='.$row['Order Key'].'&modify=1\`">'._('Modify Order in Basket')."</button>";
 
+        $operations .= '</div>';
+    } elseif ($row['Order State'] == 'InProcess') {
+        $operations .= '<div class="buttons small '.$class.'">';
+        $operations .= sprintf(
+            "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+            $row['Order Key'],
+            $row['Order Public ID'],
+            $row['Order Customer Name'],
+            _('Cancel')
+        );
+
+        $operations .= sprintf(
+            "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
+            $row['Order Key'],
+            ($row['Order Number Items'] == 0 ? 'disabled' : ''),
+            $row['Order Key'],
+            _('Send for picking')
+        );
+
+        //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Edit Order'));
+
+        $operations .= '</div>';
+    } else {
+        if ($row['Order State'] == 'In Process') {
             $operations .= '<div class="buttons small '.$class.'">';
             $operations .= sprintf(
-                "<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>", $row['Order Key'],
-                $row['Order Public ID'], $row['Order Customer Name'], _('Delete')
-            );
-            $operations .= ' <button   onClick="location.href=\`order.php?id='.$row['Order Key'].'&modify=1\`">'._('Modify Order in Basket')."</button>";
-
-            $operations .= '</div>';
-
-        } elseif ($row['Order State'] == 'InProcess') {
-            $operations .= '<div class="buttons small '.$class.'">';
-            $operations .= sprintf(
-                "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+                "<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
                 $row['Order Key'],
-                $row['Order Public ID'], $row['Order Customer Name'], _('Cancel')
-            );
-
-            $operations .= sprintf(
-                "<i id=\"send_to_warehouse_button_%d\" class=\"%s fa fa-hand-lizard fa-flip-horizontal button edit \" onClick=\"create_delivery_note_from_list(this,%d)\" title='%s'></i>",
-                $row['Order Key'], ($row['Order Number Items'] == 0 ? 'disabled' : ''), $row['Order Key'], _('Send for picking')
+                ($row['Order Number Items'] == 0 ? 'disabled' : ''),
+                $row['Order Key'],
+                $row['Order Key'],
+                _('Send Warehouse')
             );
 
             //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Edit Order'));
+            $operations .= sprintf(
+                "<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+                $row['Order Key'],
+                $row['Order Public ID'],
+                $row['Order Customer Name'],
+                _('Cancel')
+            );
+            $operations .= '</div>';
+        } elseif (in_array(
+            $row['Order State'], array(
+                                   'Ready to Pick',
+                                   'Picking',
+                                   'Picked',
+                                   'Packing',
+                                   'Packed'
+                               )
+        )) {
+            $operations .= '<div class="buttons small '.$class.'">';
+
+
+            $operations .= sprintf(
+                "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
+                $row['Order Key'],
+                $row['Order Public ID'],
+                $row['Order Customer Name'],
+                _('Cancel')
+            );
+
+
+            $operations .= sprintf(
+                "<button onClick=\"change_view('delivery_notes/%d/%d')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
+                $row['Order Store Key'],
+                $row['Delivery Note Key']
+                ,
+                $row['Order Customer Name'],
+                _('Cancel')
+            );
 
             $operations .= '</div>';
-
-        } else {
-            if ($row['Order State'] == 'In Process') {
-                $operations .= '<div class="buttons small '.$class.'">';
-                $operations .= sprintf(
-                    "<button id=\"send_to_warehouse_button_%d\" class=\"%s\" onClick=\"create_delivery_note_from_list(this,%d)\"><img id=\"send_to_warehouse_img_%d\" style='height:12px;width:12px' src='art/icons/cart_go.png'> %s</button>",
-                    $row['Order Key'], ($row['Order Number Items'] == 0 ? 'disabled' : ''), $row['Order Key'], $row['Order Key'], _('Send Warehouse')
-                );
-
-                //$operations.=sprintf("<button onClick=\"location.href='order.php?id=%d&referral=store_pending_orders'\"><img style='height:12px;width:12px' src='art/icons/cart_edit.png'> %s</button>",$row['Order Key'],_('Edit Order'));
-                $operations .= sprintf(
-                    "<button onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>", $row['Order Key'],
-                    $row['Order Public ID'], $row['Order Customer Name'], _('Cancel')
-                );
-                $operations .= '</div>';
-
-            } elseif (in_array(
-                $row['Order State'], array(
-                    'Ready to Pick',
-                    'Picking',
-                    'Picked',
-                    'Packing',
-                    'Packed'
-                )
-            )) {
-
-                $operations .= '<div class="buttons small '.$class.'">';
-
-
-                $operations .= sprintf(
-                    "<i class=\"fa fa-minus-circle error padding_right_10 button edit\" onClick=\"open_cancel_dialog_from_list(this,%d,'%s, %s')\" title='%s'></i>",
-                    $row['Order Key'],
-                    $row['Order Public ID'], $row['Order Customer Name'], _('Cancel')
-                );
-
-
-                $operations .= sprintf(
-                    "<button onClick=\"change_view('delivery_notes/%d/%d')\"><img style='height:12px;width:12px' src='art/icons/cross.png'> %s</button>",
-                    $row['Order Store Key'],
-                    $row['Delivery Note Key']
-                    , $row['Order Customer Name'], _('Cancel')
-                );
-
-                $operations .= '</div>';
-
-            } elseif ($row['Order State'] == 'Packed Done') {
-
-                $operations .= '<div class="buttons small '.$class.'">';
-                if ($row['Order Invoiced'] == 'No') {
-                    $operations .= '<button  onClick="create_invoice(this,'.$row['Order Key'].')"><img id="create_invoice_img_'.$row['Order Key']
-                        .'" style="height:12px;width:12px" src="/art/icons/money.png"> '._('Create Invoice')."</button>";
-                } else {
-                    $operations .= '<button  onClick="approve_dispatching(this,'.$row['Order Key'].')"><img id="approve_dispatching_img_'.$row['Order Key']
-                        .'" style="height:12px;width:12px" src="/art/icons/package_green.png"> '._('Approve Dispatching')."</button>";
-
-
-                }
-                $operations .= '</div>';
-
-            } elseif ($row['Order State'] == 'Ready to Ship') {
-                $operations .= '<div class="buttons small '.$class.'">';
-                $order = new Order($row['Order Key']);
-                $dns   = $order->get_delivery_notes_objects();
-                if (count($dns) == 1) {
-                    foreach ($dns as $dn) {
-
-                        $operations .= '<button  onClick="set_as_dispatched('.$dn->data['Delivery Note Key'].','.$user->get_staff_key().',\'order\',\''.$row['Order Key']
-                            .'\')" ><img id="set_as_dispatched_img_'.$dn->data['Delivery Note Key'].'" src="/art/icons/lorry_go.png" alt=""> '._(
-                                'Mark as Dispatched'
-                            )."</button>";
-                    }
-                }
-
-                $operations .= '</div>';
-
+        } elseif ($row['Order State'] == 'Packed Done') {
+            $operations .= '<div class="buttons small '.$class.'">';
+            if ($row['Order Invoiced'] == 'No') {
+                $operations .= '<button  onClick="create_invoice(this,'.$row['Order Key'].')"><img id="create_invoice_img_'.$row['Order Key']
+                    .'" style="height:12px;width:12px" src="/art/icons/money.png"> '._('Create Invoice')."</button>";
             } else {
-                $operations .= '';
-
-                $public_id = sprintf(
-                    "<a href='dn.php?id=%d'>%s</a>", $row['Order Key'], $row['Order Public ID']
-                );
-                $public_id = $row['Order Public ID'];
-                $public_id = sprintf(
-                    "<a href='order_pick_aid.php?id=%d'> %s</a>", $row['Order Key'], $row['Order Public ID']
-                );
+                $operations .= '<button  onClick="approve_dispatching(this,'.$row['Order Key'].')"><img id="approve_dispatching_img_'.$row['Order Key']
+                    .'" style="height:12px;width:12px" src="/art/icons/package_green.png"> '._('Approve Dispatching')."</button>";
             }
+            $operations .= '</div>';
+        } elseif ($row['Order State'] == 'Ready to Ship') {
+            $operations .= '<div class="buttons small '.$class.'">';
+            $order      = new Order($row['Order Key']);
+            $dns        = $order->get_delivery_notes_objects();
+            if (count($dns) == 1) {
+                foreach ($dns as $dn) {
+                    $operations .= '<button  onClick="set_as_dispatched('.$dn->data['Delivery Note Key'].','.$user->get_staff_key().',\'order\',\''.$row['Order Key']
+                        .'\')" ><img id="set_as_dispatched_img_'.$dn->data['Delivery Note Key'].'" src="/art/icons/lorry_go.png" alt=""> '._(
+                            'Mark as Dispatched'
+                        )."</button>";
+                }
+            }
+
+            $operations .= '</div>';
+        } else {
+            $operations .= '';
+
+            $public_id = sprintf(
+                "<a href='dn.php?id=%d'>%s</a>",
+                $row['Order Key'],
+                $row['Order Public ID']
+            );
+            $public_id = $row['Order Public ID'];
+            $public_id = sprintf(
+                "<a href='order_pick_aid.php?id=%d'> %s</a>",
+                $row['Order Key'],
+                $row['Order Public ID']
+            );
         }
-    
+    }
+
     $operations .= '</div>';
 
     return $operations;
-
 }
 
 
-function get_order_formatted_dispatch_state($state,$replacement_state, $order_key) {
+function get_order_formatted_dispatch_state($state, $replacement_state, $order_key)
+{
     switch ($state) {
         case 'InProcess':
             $dispatch_state = _('Submitted');
@@ -160,10 +169,10 @@ function get_order_formatted_dispatch_state($state,$replacement_state, $order_ke
             $dispatch_state = _('In warehouse');
             break;
         case 'Dispatched':
-            switch ($replacement_state){
+            switch ($replacement_state) {
                 case 'InWarehouse':
                     $dispatch_state = _('Replacement in warehouse');
-                break;
+                    break;
                 case 'PackedDone':
                     $dispatch_state = _('Replacement packed');
                     break;
@@ -181,12 +190,10 @@ function get_order_formatted_dispatch_state($state,$replacement_state, $order_ke
     }
 
     return '<span id="dispatch_state_'.$order_key.'">'.$dispatch_state.'</span>';
-
 }
 
-function get_order_formatted_payment_state($data) {
-
-
+function get_order_formatted_payment_state($data)
+{
     switch ($data['Order Payment State']) {
         case 'NA':
             ///$payment_state='<span style="opacity:.6">'._('No Applicable').'</span>';
@@ -197,35 +204,59 @@ function get_order_formatted_payment_state($data) {
             if ($data['Order State'] == 'InBasket' or $data['Order State'] == 'Cancelled') {
                 $payment_state = '';
             } else {
-
                 //Credit Card','Cash','Paypal','Check','Bank Transfer','Cash on Delivery','Other','Unknown','Account
+
+
                 switch ($data['Order Payment Method']) {
                     case 'Bank Transfer':
-                        $payment_method = _('Bank Transfer');
+                        $payment_method = _('Waiting Bank Transfer');
                         break;
                     case 'Cash on Delivery':
-                        $payment_method = _('Cash on Delivery');
+                        $payment_method = _('Waiting Cash on Delivery');
                         break;
                     case 'Other':
-                        $payment_method = _('Other');
+                        $payment_method = _('Waiting Other');
                         break;
                     case 'Credit Card':
-                        $payment_method = _('Credit Card');
+                        $payment_method = _('Waiting Credit Card');
                         break;
                     case 'Unknown':
                         $payment_method = '';
+
+                        if ($data['Order Checkout Block Payment Account Key'] != '' and $data['Order To Pay Amount'] != 0) {
+                            $payment_account = get_object('Payment_Account', $data['Order Checkout Block Payment Account Key']);
+
+                            switch ($payment_account->get('Payment Account Block')) {
+                                case 'ConD':
+                                    $payment_method = '<i class="fa fa-handshake" aria-hidden="true"></i> '._('Cash on delivery');
+                                    break;
+                                case 'Bank':
+                                    $payment_method = _('Waiting bank transfer');
+                                    break;
+                                case 'Hokodo':
+                                    $payment_method = _('Waiting hokodo approval');
+                                    break;
+                                case 'Cash':
+                                    $payment_method = _('Will pay with cash');
+
+                                    break;
+                            }
+                        }
+
+
                         break;
                     default:
                         $payment_method = $data['Order Payment Method'];
                 }
 
 
-                $payment_state = _('Waiting Payment');
-                if ($payment_method != '') {
-                    $payment_state .= ' ('.$payment_method.')';
-                }
+                $payment_state=$payment_method;
 
+                //$payment_state = _('Waiting Payment');
 
+                //if ($payment_method != '') {
+                //    $payment_state .= ' ('.$payment_method.')';
+               // }
             }
             break;
         case 'OverPaid':
@@ -247,7 +278,8 @@ function get_order_formatted_payment_state($data) {
     return $payment_state;
 }
 
-function get_invoice_operations($row, $user, $parent = 'order', $parent_key = '') {
+function get_invoice_operations($row, $user, $parent = 'order', $parent_key = '')
+{
     $operations = '<div  id="operations'.$row['Invoice Key'].'">';
 
 
@@ -259,12 +291,11 @@ function get_invoice_operations($row, $user, $parent = 'order', $parent_key = ''
 
     $operations .= '</div>';
 
-    return  $operations;
-
+    return $operations;
 }
 
-function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
-
+function get_dn_operations($row, $user, $parent = 'order', $parent_key = '')
+{
     if ($parent == 'order') {
         $class = 'right';
     } else {
@@ -277,16 +308,11 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
 
 
     if ($row['Delivery Note State'] == 'Ready to be Picked') {
-
         $operations .= '<div class="buttons small '.$class.'">';
         if ($parent == 'order') {
-
             $operations .= '<button style="display:none"  class="first" onClick="show_dialog_process_delivery_note(this,'.$row['Delivery Note Key']
                 .')"><img style="height:12px;width:12px" src="/art/icons/lorry_go.png"> '._('Process Delivery Note')."</button>";
-
         } else {
-
-
             if ($user->can_edit('assign_pp')) {
                 $operations .= '<button  class="first" onClick="assign_picker(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="/art/icons/user.png"> '._('Assign Picker')
                     ."</button>";
@@ -297,11 +323,9 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
             } elseif ($user->can_edit('pick')) {
                 $operations .= ' <button  onClick="pick_it_fast(this,'.$user->get_staff_key().','.$row['Delivery Note Key'].')"><img id="pick_it_fast_img_'.$row['Delivery Note Key']
                     .'" style="height:12px;width:12px" src="/art/icons/paste_plain.png"> '._('Start Picking')."</button>";
-
             }
         }
         $operations .= '</div>';
-
     } elseif ($row['Delivery Note State'] == 'Picker Assigned') {
         $operations .= '<div class="buttons small '.$class.'">';
         if ($user->can_edit('assign_pp')) {
@@ -323,8 +347,7 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
 
 
         $operations .= '</div>';
-    }  elseif ($row['Delivery Note State'] == 'Picking') {
-
+    } elseif ($row['Delivery Note State'] == 'Picking') {
         $operations .= '<div class="buttons small '.$class.'">';
 
         if ($row['Delivery Note Assigned Picker Key'] == $user->get_staff_key() and $parent != 'order') {
@@ -341,7 +364,6 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
         if ($user->can_edit('assign_pp') and $row['Delivery Note Assigned Packer Key'] == 0) {
             $operations .= '<button  class="first" onClick="assign_packer(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="/art/icons/user_red.png"> '._('Assign Packer')
                 ."</button>";
-
         }
 
         $operations .= '</div>';
@@ -355,18 +377,14 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
         if ($user->can_edit('assign_pp')) {
             $operations .= '<button  class="first" onClick="assign_packer(this,'.$row['Delivery Note Key'].')"><img style="height:12px;width:12px" src="/art/icons/user_red.png"> '._('Assign Packer')
                 ."</button>";
-
         }
 
         if ($user->can_edit('pack')) {
             $operations .= '<button   onClick="pack_it_fast(this,'.$user->get_staff_key().','.$row['Delivery Note Key'].')"><img id="pack_it_fast_img_'.$row['Delivery Note Key']
                 .'"  style="height:12px;width:12px" src="/art/icons/briefcase.png"> '._('Start packing')."</button>";
-
-
         }
         $operations .= '</div>';
     } elseif ($row['Delivery Note State'] == 'Packing') {
-
         $operations .= '<div class="buttons small '.$class.'">';
         $operations .= '<span style="float:left;margin-left:7px"> <img style="height:12px;width:12px" src="/art/icons/user_red.png" title="'._('Packing by').'"/>  <span style="font-weight:bold">'
             .$row['Delivery Note Assigned Packer Alias'].'</span>';
@@ -378,9 +396,7 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
             $operations .= '<a   href="order_pack_aid.php?id='.$row['Delivery Note Key'].'"  ><img style="height:12px;width:12px" src="/art/icons/briefcase.png"> '._('Packing Aid')."</a>";
         }
         $operations .= '</div>';
-
     } elseif ($row['Delivery Note State'] == 'Packed') {
-
         $operations .= '<div class="buttons small '.$class.'">';
         if ($user->can_edit('assign_pp')) {
             $operations .= '<button   onClick="approve_packing('.$row['Delivery Note Key'].','.$user->get_staff_key().',\'warehouse_orders\')"><img id="approve_packing_img_'.$row['Delivery Note Key']
@@ -389,20 +405,14 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
             $operations .= '<span style="margin-left:7px">'._(
                     'Waiting for packing approval'
                 ).'</span>';
-
         }
 
         $operations .= '</div>';
-
-
     } elseif ($row['Delivery Note State'] == 'Packed Done') {
-
         $operations .= '<div class="buttons small '.$class.'">';
 
 
         if ($user->can_edit('orders')) {
-
-
             $operations .= ' <button '.($row['Delivery Note Invoiced'] == 'No' and $row['Delivery Note Type'] == 'Order' ? ' class="disabled" title="'._('Order not invoiced').'"' : '')
                 .' onclick="approve_dispatching('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="approve_dispatching_img_'
                 .$row['Delivery Note Key'].'" src="/art/icons/package_green.png" alt=""> '._(
@@ -416,8 +426,6 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
                     'Waiting shipping approval'
                 ).'</a>';
         }
-
-
     } elseif ($row['Delivery Note State'] == 'Approved') {
         $operations .= '<div class="buttons small '.$class.'">
 		<button  onClick="set_as_dispatched('.$row['Delivery Note Key'].','.$user->get_staff_key().',\''.$parent.'\',\''.$parent_key.'\')" ><img id="set_as_dispatched_img_'.$row['Delivery Note Key']
@@ -437,34 +445,41 @@ function get_dn_operations($row, $user, $parent = 'order', $parent_key = '') {
     $operations .= '<div style="clear:both"></div></div>';
 
     return $operations;
-
 }
 
-function post_transaction_notes($data) {
+function post_transaction_notes($data)
+{
     $notes = '';
     switch ($data['Operation']) {
         case 'Resend':
             switch ($data['State']) {
                 case 'In Process':
                     $notes .= sprintf(
-                        '<a href="new_post_order.php?id=%d">%s</a>', $data['Order Key'], _('Item to be resended in process')
+                        '<a href="new_post_order.php?id=%d">%s</a>',
+                        $data['Order Key'],
+                        _('Item to be resended in process')
                     );
                     break;
                 case 'In Warehouse':
                     $notes .= sprintf(
-                        '%s (<a href="dn.php?id=%d">%s</a>)', _('In warehouse'), $data['Delivery Note Key'], $data['Delivery Note ID']
+                        '%s (<a href="dn.php?id=%d">%s</a>)',
+                        _('In warehouse'),
+                        $data['Delivery Note Key'],
+                        $data['Delivery Note ID']
                     );
 
 
                     break;
                 case 'Dispatched':
                     $notes .= sprintf(
-                        ',%s <a href="dn.php?id=%d">%s</a>', _('Dispatched'), $data['Delivery Note Key'], $data['Delivery Note ID']
+                        ',%s <a href="dn.php?id=%d">%s</a>',
+                        _('Dispatched'),
+                        $data['Delivery Note Key'],
+                        $data['Delivery Note ID']
                     );
                     break;
                 default:
                     $notes .= '';
-
             }
 
             break;
@@ -475,22 +490,28 @@ function post_transaction_notes($data) {
             switch ($data['State']) {
                 case 'In Process':
                     $notes .= sprintf(
-                        '<a href="new_post_order.php?id=%d">%s</a>', $data['Order Key'], _('Credit in process')
+                        '<a href="new_post_order.php?id=%d">%s</a>',
+                        $data['Order Key'],
+                        _('Credit in process')
                     );
                     break;
                 case 'Saved':
                     $notes .= sprintf(
-                        '<a href="customer.php?id=%d">%s</a>', $data['Customer Key'], _('Credit in customer file')
+                        '<a href="customer.php?id=%d">%s</a>',
+                        $data['Customer Key'],
+                        _('Credit in customer file')
                     );
                     break;
                 case 'Dispatched':
                     $notes .= sprintf(
-                        ',%s <a href="dn.php?id=%d">%s</a>', _('Dispatched'), $data['Delivery Note Key'], $data['Delivery Note ID']
+                        ',%s <a href="dn.php?id=%d">%s</a>',
+                        _('Dispatched'),
+                        $data['Delivery Note Key'],
+                        $data['Delivery Note ID']
                     );
                     break;
                 default:
                     $notes .= '';
-
             }
 
             break;

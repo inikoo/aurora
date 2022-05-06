@@ -434,6 +434,9 @@ class Order extends DB_Table
                         case 'Bank':
                             return _('Waiting bank transfer');
 
+                        case 'Hokodo':
+                            return _('Waiting hokodo approval');
+
                         case 'Cash':
                             return _('Will pay with cash');
 
