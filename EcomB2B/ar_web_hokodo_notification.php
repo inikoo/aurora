@@ -61,7 +61,8 @@ if (!empty($data['data']['order']['deferred_payment'])) {
         'Payment Metadata'=>json_encode($data)
     ];
 
-    $to_update['Payment Transaction Status']=$ref;
+
+   // $to_update['Payment Transaction Status']=$ref;
 
     if($status=='pending_review' or $status=='customer_action_required'){
         $status='Approving';
