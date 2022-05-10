@@ -2880,39 +2880,73 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
             include_once 'class.Product.php';
 
 
-            if ($data['fields_data']['Product Type'] == 'Service') {
-                $data['fields_data']['Product Code']           = $data['fields_data']['Service Code'];
-                $data['fields_data']['Product Name']           = $data['fields_data']['Service Name'];
-                $data['fields_data']['Product Price']          = $data['fields_data']['Service Price'];
-                $data['fields_data']['Product Unit Label']     = $data['fields_data']['Service Unit Label'];
-                $data['fields_data']['Product Units Per Case'] = 1;
-                $data['fields_data']['Product Type']           = 'Service';
-                unset($data['fields_data']['Product Parts']);
-                unset($data['fields_data']['Service Code']);
-                unset($data['fields_data']['Service Name']);
-                unset($data['fields_data']['Service Price']);
-                unset($data['fields_data']['Service Unit Label']);
-            } else {
-                $data['fields_data']['Product Type'] = 'Product';
+            if($data['parent']=='product'){
+
+                //print_r($data);
+
+                $product_parent=get_object('Product',$data['parent_key']);
+
+
+
+
+
+
+                $object = $product_parent->create_variant($data['fields_data']);
+
+                if ($product_parent->new_product) {
+                    $smarty->assign('object', $object);
+
+                    $new_object_html = $smarty->fetch('presentation_cards/product.pcard.tpl');
+                    $updated_data    = array();
+                } else {
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => $product_parent->msg
+
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+
+            }else {
+
+
+
+                if ($data['fields_data']['Product Type'] == 'Service') {
+                    $data['fields_data']['Product Code']           = $data['fields_data']['Service Code'];
+                    $data['fields_data']['Product Name']           = $data['fields_data']['Service Name'];
+                    $data['fields_data']['Product Price']          = $data['fields_data']['Service Price'];
+                    $data['fields_data']['Product Unit Label']     = $data['fields_data']['Service Unit Label'];
+                    $data['fields_data']['Product Units Per Case'] = 1;
+                    $data['fields_data']['Product Type']           = 'Service';
+                    unset($data['fields_data']['Product Parts']);
+                    unset($data['fields_data']['Service Code']);
+                    unset($data['fields_data']['Service Name']);
+                    unset($data['fields_data']['Service Price']);
+                    unset($data['fields_data']['Service Unit Label']);
+                } else {
+                    $data['fields_data']['Product Type'] = 'Product';
+                }
+
+
+                $object = $parent->create_product($data['fields_data']);
+
+                if ($parent->new_product) {
+                    $smarty->assign('object', $object);
+
+                    $new_object_html = $smarty->fetch('presentation_cards/product.pcard.tpl');
+                    $updated_data    = array();
+                } else {
+                    $response = array(
+                        'state' => 400,
+                        'msg'   => $parent->msg
+
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
             }
 
-
-            $object = $parent->create_product($data['fields_data']);
-
-            if ($parent->new_product) {
-                $smarty->assign('object', $object);
-
-                $new_object_html = $smarty->fetch('presentation_cards/product.pcard.tpl');
-                $updated_data    = array();
-            } else {
-                $response = array(
-                    'state' => 400,
-                    'msg'   => $parent->msg
-
-                );
-                echo json_encode($response);
-                exit;
-            }
             break;
         case 'Manufacture_Task':
             include_once 'class.Manufacture_Task.php';

@@ -1499,7 +1499,22 @@ function get_tabs($data, $db, $account, $modules, $user, $smarty, $requested_tab
         }
 
 
-    } elseif ($data['section'] == 'employees') {
+    } elseif ($data['section'] == 'product') {
+
+
+
+     if($data['_object']->get('is_variant')=='Yes'){
+         $_content['tabs']['product.variants']['class'] = 'hide';
+         $_content['tabs']['product.webpages']['class'] = 'hide';
+
+     }else{
+         $_content['tabs']['product.variants']['class'] = '';
+         $_content['tabs']['product.webpages']['class'] = '';
+
+     }
+
+
+    }  elseif ($data['section'] == 'employees') {
 
         if (!$user->can_edit('Staff')) {
             $_content['tabs']['exemployees']['class']       = 'hide';

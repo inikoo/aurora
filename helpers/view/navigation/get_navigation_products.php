@@ -7,6 +7,7 @@
  */
 require_once 'navigation/products.nav.php';
 function get_navigation_products($data, $smarty, $user, $db, $account) {
+
     switch ($data['section']) {
 
         case 'store':
@@ -47,6 +48,8 @@ function get_navigation_products($data, $smarty, $user, $db, $account) {
             return get_website_new_navigation($data, $smarty);
         case 'picking_pipeline':
             return get_picking_pipeline_navigation($data, $smarty);
+        case 'product.variant.new':
+            return get_new_product_variant_navigation($data, $smarty, $user, $db, $account);
 
     }
     return array([],'','');
@@ -65,3 +68,5 @@ function get_navigation_products_server($data, $smarty, $user, $db, $account): a
     }
     return array([],'','');
 }
+
+//curl -X POST https://api-m.sandbox.paypal.com/v1/identity/generate-token -H 'Content-Type: application/json' -H 'Authorization: Bearer <ACCESS-TOKEN>' -H 'Accept-Language: en_US'

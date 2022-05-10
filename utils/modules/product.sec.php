@@ -32,6 +32,11 @@ function get_product_section() {
               'icon'  => 'database',
               'title' => _('Details')
           ),
+          'product.variants' => array(
+              'label' => _('Variations'),
+              'icon'  => 'stream',
+              'title' => _('Variations')
+          ),
 
           'product.webpages' => array(
               'label' => _('Webpages'),

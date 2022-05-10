@@ -39,6 +39,9 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'variants':
+        variants(get_table_parameters(), $db, $user, $account);
+        break;
     case 'stores':
         stores(get_table_parameters(), $db, $user);
         break;
@@ -104,9 +107,8 @@ switch ($tipo) {
 }
 
 
-function stores($_data, $db, $user) {
-
-
+function stores($_data, $db, $user)
+{
     $rtext_label = 'store';
 
     include_once 'prepare_table/init.php';
@@ -115,8 +117,6 @@ function stores($_data, $db, $user) {
     $record_data = array();
 
     foreach ($db->query($sql) as $data) {
-
-
         $record_data[] = array(
             'access' => (in_array($data['Store Key'], $user->stores) ? '<i title="'._('Store worker access').'" class="fa fa-fw   fa-user-hard-hat "></i>' : '<i title="'._('View only').'" style="color:#603cb8" class="fa fa-fw fa-mask "></i>'),
 
@@ -131,7 +131,6 @@ function stores($_data, $db, $user) {
             'discontinued'  => number($data['Store Discontinued Products']),
 
         );
-
     }
 
     $response = array(
@@ -149,9 +148,8 @@ function stores($_data, $db, $user) {
 }
 
 
-function products($_data, $db, $user, $account) {
-
-
+function products($_data, $db, $user, $account)
+{
     include_once 'utils/currency_functions.php';
 
     if ($_data['parameters']['parent'] == 'customer_favourites') {
@@ -162,7 +160,6 @@ function products($_data, $db, $user, $account) {
 
     if ($_data['parameters']['parent'] == 'part') {
         include_once 'class.Product.php';
-
     } elseif ($_data['parameters']['parent'] == 'category') {
         include_once 'class.Category.php';
         $category = new Category($_data['parameters']['parent_key']);
@@ -177,30 +174,29 @@ function products($_data, $db, $user, $account) {
 
     $record_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             $associated = sprintf(
-                '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']
+                '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>',
+                $data['Product ID']
             );
 
-            $icon='fa-cube';
-            if($data['Product Type']=='Service'){
-                $icon='fa-spa';
+            $icon = 'fa-cube';
+            if ($data['Product Type'] == 'Service') {
+                $icon = 'fa-spa';
             }
 
             switch ($data['Product Status']) {
                 case 'Active':
-                    $status = sprintf('<i class="fa %s" aria-hidden="true" title="%s"></i>',$icon, _('Active'));
+                    $status = sprintf('<i class="fa %s" aria-hidden="true" title="%s"></i>', $icon, _('Active'));
                     break;
                 case 'Discontinuing':
-                    $status = sprintf('<i class="fa %s warning" aria-hidden="true" title="%s"></i>', $icon,_('Discontinuing'));
+                    $status = sprintf('<i class="fa %s warning" aria-hidden="true" title="%s"></i>', $icon, _('Discontinuing'));
                     break;
                 case 'Discontinued':
-                    $status = sprintf('<i class="fal %s very_discreet" aria-hidden="true" title="%s"></i>',$icon, _('Discontinued'));
+                    $status = sprintf('<i class="fal %s very_discreet" aria-hidden="true" title="%s"></i>', $icon, _('Discontinued'));
                     break;
                 case 'Suspended':
-                    $status = sprintf('<i class="fa %s error" aria-hidden="true" title="%s"></i>', $icon,_('Suspended'));
+                    $status = sprintf('<i class="fa %s error" aria-hidden="true" title="%s"></i>', $icon, _('Suspended'));
                     break;
                 default:
                     $status = $data['Product Status'];
@@ -247,7 +243,6 @@ function products($_data, $db, $user, $account) {
                     if ($data['Product Status'] != 'Active') {
                         $web_state = _('Offline');
                     } else {
-
                         $web_state = '<span class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($data['Product Status'] == 'Active'
                                 ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
                     }
@@ -257,27 +252,26 @@ function products($_data, $db, $user, $account) {
                     break;
             }
 
-            if($data['Product Customer Key']){
-                $web_state=' <i title="'._('Customer custom product').'" class="far purple fa-user-shield padding_left_5" aria-hidden="true"></i> '.$web_state;
+            if ($data['Product Customer Key']) {
+                $web_state = ' <i title="'._('Customer custom product').'" class="far purple fa-user-shield padding_left_5" aria-hidden="true"></i> '.$web_state;
             }
 
             if ($data['Store Currency Code'] != $account->get('Account Currency')) {
-
                 $exchange = currency_conversion(
-                    $db, $data['Store Currency Code'], $account->get('Account Currency'), '- 180 minutes'
+                    $db,
+                    $data['Store Currency Code'],
+                    $account->get('Account Currency'),
+                    '- 180 minutes'
                 );
-
             } else {
                 $exchange = 1;
             }
 
 
             if ($_data['parameters']['parent'] == 'part') {
-
                 $product = new Product('id', $data['Product ID']);
                 $parts   = $product->get('Parts');
             } else {
-
                 $parts = '';
             }
 
@@ -290,11 +284,14 @@ function products($_data, $db, $user, $account) {
                     $rrp .= '/'.$data['Product Unit Label'];
                 }
                 $rrp = sprintf(
-                    '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>', sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])),
-                    $data['Product ID'], $data['Product RRP'] / $data['Product Units Per Case'], $data['Store Currency Code'], $rrp
+                    '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
+                    sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])),
+                    $data['Product ID'],
+                    $data['Product RRP'] / $data['Product Units Per Case'],
+                    $data['Store Currency Code'],
+                    $rrp
 
                 );
-
             }
 
 
@@ -302,16 +299,19 @@ function products($_data, $db, $user, $account) {
 
 
             $margin = '<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
-                    $exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']
+                    $exchange * $data['Product Price'] - $data['Product Cost'],
+                    $exchange * $data['Product Price']
                 ).'<span>';
 
 
             switch ($_data['parameters']['parent']) {
-
                 case 'part':
 
                     $code = sprintf(
-                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>', $_data['parameters']['parent_key'], $data['Product ID'], '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
+                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>',
+                        $_data['parameters']['parent_key'],
+                        $data['Product ID'],
+                        '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
                         $data['Product Code']
                     );
                     $name = number($data['Product Part Ratio'], 5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
@@ -326,7 +326,6 @@ function products($_data, $db, $user, $account) {
                         if ($_recommended_margin_ratio * .8 > $_actual_margin_ratio) {
                             $margin = '<i class="fa yellow fa-exclamation-triangle " title="'.sprintf(_('Margin %s lower than expected'), percentage($_actual_margin_ratio, $_recommended_margin_ratio)).'"></i> '.$margin;
                         }
-
                     }
 
 
@@ -334,10 +333,8 @@ function products($_data, $db, $user, $account) {
                 case 'category':
                     if ($data['Product Units Per Case'] == 1) {
                         $name = '<span>'.$data['Product Name'].'</span>';
-
                     } else {
                         $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
-
                     }
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'], $path, $data['Product ID'], $name, $data['Product Code']);
 
@@ -346,10 +343,8 @@ function products($_data, $db, $user, $account) {
 
                     if ($data['Product Units Per Case'] == 1) {
                         $name = '<span>'.$data['Product Name'].'</span>';
-
                     } else {
                         $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
-
                     }
 
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
@@ -373,11 +368,11 @@ function products($_data, $db, $user, $account) {
 
             */
 
-            $outers_per_carton=$data['Product Outers Per Carton'];
-            if($outers_per_carton==''){
-                $outers_per_carton='<span class="italic super_discreet">NS</span>';
-            }elseif($outers_per_carton==1){
-                $outers_per_carton='<span class="italic very_discreet">NA</span>';
+            $outers_per_carton = $data['Product Outers Per Carton'];
+            if ($outers_per_carton == '') {
+                $outers_per_carton = '<span class="italic super_discreet">NS</span>';
+            } elseif ($outers_per_carton == 1) {
+                $outers_per_carton = '<span class="italic very_discreet">NA</span>';
             }
 
 
@@ -391,13 +386,19 @@ function products($_data, $db, $user, $account) {
                 'name'       => $name,
                 'price'      => sprintf(
                     '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
-                    money($exchange * $data['Product Price'], $account->get('Account Currency')), $data['Product ID'], $data['Product Price'], $data['Store Currency Code'], $exchange, $data['Product Cost'],
-                    percentage($exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']), money($data['Product Price'], $data['Store Currency Code'])
+                    money($exchange * $data['Product Price'], $account->get('Account Currency')),
+                    $data['Product ID'],
+                    $data['Product Price'],
+                    $data['Store Currency Code'],
+                    $exchange,
+                    $data['Product Cost'],
+                    percentage($exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']),
+                    money($data['Product Price'], $data['Store Currency Code'])
                 ),
 
 
-                'rrp' => $rrp,
-                'outers_per_carton'=>$outers_per_carton,
+                'rrp'               => $rrp,
+                'outers_per_carton' => $outers_per_carton,
 
                 'margin'           => $margin,
                 'web_state'        => $web_state,
@@ -409,105 +410,146 @@ function products($_data, $db, $user, $account) {
                 'dc_sales_1yb'     => delta($data['dc_sales'], $data['dc_sales_1yb']),
                 'qty_invoiced'     => number($data['qty_invoiced']),
                 'qty_invoiced_1yb' => delta(
-                    $data['qty_invoiced'], $data['qty_invoiced_1yb']
+                    $data['qty_invoiced'],
+                    $data['qty_invoiced_1yb']
                 ),
 
 
                 'sales_year0' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Year To Day Acc Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product Year To Day Acc Invoiced Amount"], $data["Product Year To Day Acc 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Year To Day Acc Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Year To Day Acc Invoiced Amount"],
+                        $data["Product Year To Day Acc 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_year1' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 1 Year Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 1 Year Ago Invoiced Amount"], $data["Product 2 Year Ago Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 1 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 1 Year Ago Invoiced Amount"],
+                        $data["Product 2 Year Ago Invoiced Amount"]
                     )
                 ),
                 'sales_year2' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 2 Year Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 2 Year Ago Invoiced Amount"], $data["Product 3 Year Ago Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 2 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 2 Year Ago Invoiced Amount"],
+                        $data["Product 3 Year Ago Invoiced Amount"]
                     )
                 ),
                 'sales_year3' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 3 Year Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 3 Year Ago Invoiced Amount"], $data["Product 4 Year Ago Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 3 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 3 Year Ago Invoiced Amount"],
+                        $data["Product 4 Year Ago Invoiced Amount"]
                     )
                 ),
                 'sales_year4' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 4 Year Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 4 Year Ago Invoiced Amount"], $data["Product 5 Year Ago Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 4 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 4 Year Ago Invoiced Amount"],
+                        $data["Product 5 Year Ago Invoiced Amount"]
                     )
                 ),
 
                 'sales_quarter0' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Quarter To Day Acc Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product Quarter To Day Acc Invoiced Amount"], $data["Product Quarter To Day Acc 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Quarter To Day Acc Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Quarter To Day Acc Invoiced Amount"],
+                        $data["Product Quarter To Day Acc 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter1' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 1 Quarter Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 1 Quarter Ago Invoiced Amount"], $data["Product 1 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 1 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 1 Quarter Ago Invoiced Amount"],
+                        $data["Product 1 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter2' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 2 Quarter Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 2 Quarter Ago Invoiced Amount"], $data["Product 2 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 2 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 2 Quarter Ago Invoiced Amount"],
+                        $data["Product 2 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter3' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 3 Quarter Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 3 Quarter Ago Invoiced Amount"], $data["Product 3 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 3 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 3 Quarter Ago Invoiced Amount"],
+                        $data["Product 3 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter4' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product 4 Quarter Ago Invoiced Amount'], $data['Store Currency Code']
-                ), delta_icon(
-                        $data["Product 4 Quarter Ago Invoiced Amount"], $data["Product 4 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 4 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 4 Quarter Ago Invoiced Amount"],
+                        $data["Product 4 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
 
 
                 'sales_total'                      => money(
-                    $data['Product Total Acc Invoiced Amount'], $data['Store Currency Code']
+                    $data['Product Total Acc Invoiced Amount'],
+                    $data['Store Currency Code']
                 ),
                 'dispatched_total'                 => number(
-                    $data['Product Total Acc Quantity Invoiced'], 0
+                    $data['Product Total Acc Quantity Invoiced'],
+                    0
                 ),
                 'customer_total'                   => number(
-                    $data['Product Total Acc Customers'], 0
+                    $data['Product Total Acc Customers'],
+                    0
                 ),
                 'percentage_repeat_customer_total' => percentage(
-                    $data['Product Total Acc Repeat Customers'], $data['Product Total Acc Customers']
+                    $data['Product Total Acc Repeat Customers'],
+                    $data['Product Total Acc Customers']
                 ),
 
                 'disassociate_from_customer' => sprintf('<i class="far button fa-trash-alt" onclick="remove_product_from_customer(this,%d)" ></i>', $data['Product ID'])
 
 
-
             );
-
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -529,9 +571,8 @@ function products($_data, $db, $user, $account) {
 }
 
 
-function services($_data, $db, $user) {
-
-
+function services($_data, $db, $user)
+{
     $rtext_label = 'service';
 
 
@@ -542,11 +583,10 @@ function services($_data, $db, $user) {
 
     $record_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             $associated = sprintf(
-                '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']
+                '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>',
+                $data['Product ID']
             );
 
 
@@ -559,13 +599,11 @@ function services($_data, $db, $user) {
                 'code'       => $data['Product Code'],
                 'name'       => $data['Product Name'],
                 'price'      => money(
-                    $data['Product Price'], $data['Store Currency Code']
+                    $data['Product Price'],
+                    $data['Store Currency Code']
                 ),
             );
-
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -587,8 +625,8 @@ function services($_data, $db, $user) {
 }
 
 
-function categories($_data, $db, $user) {
-
+function categories($_data, $db, $user)
+{
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
@@ -596,9 +634,7 @@ function categories($_data, $db, $user) {
     $record_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             switch ($data['Category Branch Type']) {
                 case 'Root':
                     $level = _('Root');
@@ -618,7 +654,10 @@ function categories($_data, $db, $user) {
             $record_data[] = array(
                 'id'                  => (integer)$data['Category Key'],
                 'code'                => sprintf(
-                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Category Store Key'], $data['Category Key'], $data['Category Code']
+                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>',
+                    $data['Category Store Key'],
+                    $data['Category Key'],
+                    $data['Category Code']
                 ),
                 'label'               => $data['Category Label'],
                 'subjects'            => number(
@@ -627,12 +666,11 @@ function categories($_data, $db, $user) {
                 'level'               => $level,
                 'subcategories'       => number($data['Category Children']),
                 'percentage_assigned' => percentage(
-                    $data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
+                    $data['Category Number Subjects'],
+                    ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
                 )
             );
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -654,9 +692,8 @@ function categories($_data, $db, $user) {
 }
 
 
-function category_all_products($_data, $db, $user) {
-
-
+function category_all_products($_data, $db, $user)
+{
     $rtext_label = 'product';
 
     include_once 'prepare_table/init.php';
@@ -666,16 +703,16 @@ function category_all_products($_data, $db, $user) {
 
     $record_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             if ($data['associated']) {
                 $associated = sprintf(
-                    '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']
+                    '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>',
+                    $data['Product ID']
                 );
             } else {
                 $associated = sprintf(
-                    '<i key="%d" class="fa fa-fw fa-unlink button very_discreet" aria-hidden="true" onClick="edit_category_subject(this)" ></i>', $data['Product ID']
+                    '<i key="%d" class="fa fa-fw fa-unlink button very_discreet" aria-hidden="true" onClick="edit_category_subject(this)" ></i>',
+                    $data['Product ID']
                 );
             }
 
@@ -686,12 +723,12 @@ function category_all_products($_data, $db, $user) {
                 'code'       => $data['Product Code'],
                 'name'       => $data['Product Name'],
                 'price'      => money(
-                    $data['Product Price'], $data['Store Currency Code']
+                    $data['Product Price'],
+                    $data['Store Currency Code']
                 ),
                 'family'     => $data['Category Code']
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -712,9 +749,8 @@ function category_all_products($_data, $db, $user) {
 }
 
 
-function sales_history($_data, $db, $user, $account) {
-
-
+function sales_history($_data, $db, $user, $account)
+{
     $skip_get_table_totals = true;
 
     include_once 'prepare_table/init.php';
@@ -790,14 +826,22 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql_totals = sprintf(
-        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
+        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ',
+        $sql_totals_fields,
+        prepare_mysql($from),
+        prepare_mysql($to)
 
     );
     list($rtext, $total, $filtered) = get_table_totals($db, $sql_totals, '', $rtext_label, false);
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s',
+        prepare_mysql($from),
+        prepare_mysql($to),
+        $_group_by,
+        "`Date` $order_direction ",
+        "$start_from,$number_results"
     );
 
 
@@ -806,11 +850,7 @@ function sales_history($_data, $db, $user, $account) {
     $from_date = '';
     $to_date   = '';
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
-
             if ($to_date == '') {
                 $to_date = $data['Date'];
             }
@@ -823,14 +863,12 @@ function sales_history($_data, $db, $user, $account) {
                 $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-
-
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
+                    "(%e %b) %Y %W ",
+                    strtotime($data['Date'].' +0:00')
                 );
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
@@ -849,10 +887,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
             );
-
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql";
@@ -905,7 +940,12 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ",
+        $date_field,
+        prepare_mysql($from_date),
+        $date_field,
+        prepare_mysql($to_date),
+        " $group_by "
     );
 
 
@@ -913,10 +953,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
@@ -943,8 +980,6 @@ function sales_history($_data, $db, $user, $account) {
 
 
             if (array_key_exists($_date, $record_data)) {
-
-
                 $record_data[$_date] = array(
                     'sales'     => money($data['sales'], $currency),
                     'customers' => number($data['customers']),
@@ -956,14 +991,13 @@ function sales_history($_data, $db, $user, $account) {
 
                 if (isset($last_year_data[$_date_last_year])) {
                     $record_data[$_date]['delta_sales_1yb'] = '<span title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon(
-                            $data['sales'], $last_year_data[$_date_last_year]['_sales']
+                            $data['sales'],
+                            $last_year_data[$_date_last_year]['_sales']
                         ).'</span>';
                 }
-
             }
         }
-
-    } 
+    }
 
 
     // print_r($record_data);
@@ -983,9 +1017,8 @@ function sales_history($_data, $db, $user, $account) {
 }
 
 
-function parts($_data, $db, $user, $account) {
-
-
+function parts($_data, $db, $user, $account)
+{
     if (!$user->can_view('stores')) {
         echo json_encode(
             array(
@@ -1007,8 +1040,6 @@ function parts($_data, $db, $user, $account) {
     $record_data = array();
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             switch ($data['Part Stock Status']) {
                 case 'Surplus':
                     $stock_status       = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
@@ -1045,17 +1076,20 @@ function parts($_data, $db, $user, $account) {
                 $weeks_available = '-';
             } else {
                 $weeks_available = number(
-                    $data['Part Days Available Forecast'] / 7, 0
+                    $data['Part Days Available Forecast'] / 7,
+                    0
                 );
             }
 
             $dispatched_per_week = number(
-                $data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0
+                $data['Part 1 Quarter Acc Dispatched'] * 4 / 52,
+                0
             );
 
 
             $reference = sprintf(
-                '<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Part SKU'],
+                '<span class="link" onclick="change_view(\'part/%d\')">%s</span>',
+                $data['Part SKU'],
                 ($data['Part Reference'] == '' ? '<i class="fa error fa-exclamation-circle"></i> <span class="discreet italic">'._('Reference missing').'</span>' : $data['Part Reference'])
             );
 
@@ -1073,8 +1107,6 @@ function parts($_data, $db, $user, $account) {
                 'weeks_available'     => $weeks_available,
                 'dispatched_per_week' => $dispatched_per_week
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1098,8 +1130,8 @@ function parts($_data, $db, $user, $account) {
 }
 
 
-function product_categories_categories($_data, $db, $user) {
-
+function product_categories_categories($_data, $db, $user)
+{
     include_once 'class.Category.php';
     include_once 'class.Store.php';
 
@@ -1131,8 +1163,6 @@ function product_categories_categories($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
-
             switch ($data['Product Category Status']) {
                 case 'In Process':
                     $status = _('In process');
@@ -1160,7 +1190,10 @@ function product_categories_categories($_data, $db, $user) {
                 'store_key' => (integer)$data['Category Store Key'],
 
                 'code' => sprintf(
-                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>', $data['Category Store Key'], $data['Category Key'], $data['Category Code']
+                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>',
+                    $data['Category Store Key'],
+                    $data['Category Key'],
+                    $data['Category Code']
                 ),
 
                 'label'            => $data['Category Label'],
@@ -1179,70 +1212,101 @@ function product_categories_categories($_data, $db, $user) {
 
 
                 'sales_year0' => sprintf(
-                    '<span>%s</span> %s', money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),
+                    '<span>%s</span> %s',
+                    money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),
                     delta_icon($data["Product Category Year To Day Acc Invoiced Amount"], $data["Product Category Year To Day Acc 1YB Invoiced Amount"])
                 ),
                 'sales_year1' => sprintf(
-                    '<span>%s</span> %s', money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
+                    '<span>%s</span> %s',
+                    money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
+                    delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
                 ),
                 'sales_year2' => sprintf(
-                    '<span>%s</span> %s', money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
+                    '<span>%s</span> %s',
+                    money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
+                    delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
                 ),
                 'sales_year3' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Category 3 Year Ago Invoiced Amount'], $data['Product Category Currency Code']
-                ), delta_icon(
-                        $data["Product Category 3 Year Ago Invoiced Amount"], $data["Product Category 4 Year Ago Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 3 Year Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 3 Year Ago Invoiced Amount"],
+                        $data["Product Category 4 Year Ago Invoiced Amount"]
                     )
                 ),
                 'sales_year4' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Category 4 Year Ago Invoiced Amount'], $data['Product Category Currency Code']
-                ), delta_icon(
-                        $data["Product Category 4 Year Ago Invoiced Amount"], $data["Product Category 5 Year Ago Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 4 Year Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 4 Year Ago Invoiced Amount"],
+                        $data["Product Category 5 Year Ago Invoiced Amount"]
                     )
                 ),
 
                 'sales_quarter0' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Category Quarter To Day Acc Invoiced Amount'], $data['Product Category Currency Code']
-                ), delta_icon(
-                        $data["Product Category Quarter To Day Acc Invoiced Amount"], $data["Product Category Quarter To Day Acc 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category Quarter To Day Acc Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category Quarter To Day Acc Invoiced Amount"],
+                        $data["Product Category Quarter To Day Acc 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter1' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Category 1 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-                ), delta_icon(
-                        $data["Product Category 1 Quarter Ago Invoiced Amount"], $data["Product Category 1 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 1 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 1 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 1 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter2' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Category 2 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-                ), delta_icon(
-                        $data["Product Category 2 Quarter Ago Invoiced Amount"], $data["Product Category 2 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 2 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 2 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 2 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter3' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Category 3 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-                ), delta_icon(
-                        $data["Product Category 3 Quarter Ago Invoiced Amount"], $data["Product Category 3 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 3 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 3 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 3 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
                 'sales_quarter4' => sprintf(
-                    '<span>%s</span> %s', money(
-                    $data['Product Category 4 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-                ), delta_icon(
-                        $data["Product Category 4 Quarter Ago Invoiced Amount"], $data["Product Category 4 Quarter Ago 1YB Invoiced Amount"]
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 4 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 4 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 4 Quarter Ago 1YB Invoiced Amount"]
                     )
                 ),
 
 
             );
-
-
         }
     } else {
         print_r($error_info = $db->errorInfo());
@@ -1267,8 +1331,8 @@ function product_categories_categories($_data, $db, $user) {
 }
 
 
-function product_categories_products($_data, $db, $user) {
-
+function product_categories_products($_data, $db, $user)
+{
     include_once 'class.Category.php';
     include_once 'class.Store.php';
 
@@ -1297,7 +1361,6 @@ function product_categories_products($_data, $db, $user) {
 
 
     foreach ($db->query($sql) as $data) {
-
         switch ($data['Product Category Status']) {
             case 'In Process':
                 $status = sprintf('<i class="fa fa-circle-thin warning discreet" aria-hidden="true" title="%s"></i>', _('Empty'));
@@ -1324,54 +1387,51 @@ function product_categories_products($_data, $db, $user) {
 
         if ($data['Page Key'] > 0 and $data['Product Category Public'] == 'Yes') {
             $webpage = sprintf(
-                '<span onclick="change_view(\'webpage/%d\')" class="link %s">%s</span>', $data['Page Key'], ($data['Webpage State'] == 'Offline' ? 'discreet strikethrough' : ''), $data['Webpage Code']
+                '<span onclick="change_view(\'webpage/%d\')" class="link %s">%s</span>',
+                $data['Page Key'],
+                ($data['Webpage State'] == 'Offline' ? 'discreet strikethrough' : ''),
+                $data['Webpage Code']
             );
 
             if ($data['Webpage State'] == 'InProcess') {
                 $webpage .= '  <i class="fa fa-child" aria-hidden="true"></i>';
-
             }
-
         } else {
             $webpage = '<span class="super_discreet">-</span>';
         }
 
         if ($data['Product Category Public'] == 'No') {
             $webpage_state = '<i class="fa fa-microphone-slash" aria-hidden="true"></i>';
-
         } else {
-
             if ($data['Page Key'] == '') {
                 $webpage_state = '<i class="fa fa-exclamation-circle error" aria-hidden="true"></i>';
-
             } else {
-
                 if ($data['Webpage State'] == 'Online') {
                     if ($data['Product Category Status'] == 'Discontinued') {
                         $webpage_state = '<i class="far fa-globe warning" aria-hidden="true"></i>';
-
                     } else {
                         $webpage_state = '<i class="far fa-globe success" aria-hidden="true"></i>';
-
                     }
-
                 } else {
                     $webpage_state = '<i class="far fa-globe super_discreet" aria-hidden="true"></i>';
-
                 }
-
-
             }
-
         }
 
 
         $code = sprintf(
-            '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>', $data['Category Store Key'], $parent->id, $data['Product Category Key'], $data['Category Code']
+            '<span class="link" onClick="change_view(\'products/%d/category/%d>%d\')">%s</span>',
+            $data['Category Store Key'],
+            $parent->id,
+            $data['Product Category Key'],
+            $data['Category Code']
         );
 
         $remove = sprintf(
-            '<span class="button" onClick="disassociate_category_from_table(this,%s,%d)"> <i class="fa fas padding_left_5 fa-unlink"></i> %s</span>', $parent->id, $data['Product Category Key'], _('Unlink')
+            '<span class="button" onClick="disassociate_category_from_table(this,%s,%d)"> <i class="fa fas padding_left_5 fa-unlink"></i> %s</span>',
+            $parent->id,
+            $data['Product Category Key'],
+            _('Unlink')
         );
 
 
@@ -1399,69 +1459,101 @@ function product_categories_products($_data, $db, $user) {
             'remove'                  => $remove,
 
             'sales_year0' => sprintf(
-                '<span>%s</span> %s', money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),
+                '<span>%s</span> %s',
+                money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),
                 delta_icon($data["Product Category Year To Day Acc Invoiced Amount"], $data["Product Category Year To Day Acc 1YB Invoiced Amount"])
             ),
             'sales_year1' => sprintf(
-                '<span>%s</span> %s', money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
+                '<span>%s</span> %s',
+                money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
+                delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
             ),
             'sales_year2' => sprintf(
-                '<span>%s</span> %s', money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']), delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
+                '<span>%s</span> %s',
+                money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
+                delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
             ),
             'sales_year3' => sprintf(
-                '<span>%s</span> %s', money(
-                $data['Product Category 3 Year Ago Invoiced Amount'], $data['Product Category Currency Code']
-            ), delta_icon(
-                    $data["Product Category 3 Year Ago Invoiced Amount"], $data["Product Category 4 Year Ago Invoiced Amount"]
+                '<span>%s</span> %s',
+                money(
+                    $data['Product Category 3 Year Ago Invoiced Amount'],
+                    $data['Product Category Currency Code']
+                ),
+                delta_icon(
+                    $data["Product Category 3 Year Ago Invoiced Amount"],
+                    $data["Product Category 4 Year Ago Invoiced Amount"]
                 )
             ),
             'sales_year4' => sprintf(
-                '<span>%s</span> %s', money(
-                $data['Product Category 4 Year Ago Invoiced Amount'], $data['Product Category Currency Code']
-            ), delta_icon(
-                    $data["Product Category 4 Year Ago Invoiced Amount"], $data["Product Category 5 Year Ago Invoiced Amount"]
+                '<span>%s</span> %s',
+                money(
+                    $data['Product Category 4 Year Ago Invoiced Amount'],
+                    $data['Product Category Currency Code']
+                ),
+                delta_icon(
+                    $data["Product Category 4 Year Ago Invoiced Amount"],
+                    $data["Product Category 5 Year Ago Invoiced Amount"]
                 )
             ),
 
             'sales_quarter0' => sprintf(
-                '<span>%s</span> %s', money(
-                $data['Product Category Quarter To Day Acc Invoiced Amount'], $data['Product Category Currency Code']
-            ), delta_icon(
-                    $data["Product Category Quarter To Day Acc Invoiced Amount"], $data["Product Category Quarter To Day Acc 1YB Invoiced Amount"]
+                '<span>%s</span> %s',
+                money(
+                    $data['Product Category Quarter To Day Acc Invoiced Amount'],
+                    $data['Product Category Currency Code']
+                ),
+                delta_icon(
+                    $data["Product Category Quarter To Day Acc Invoiced Amount"],
+                    $data["Product Category Quarter To Day Acc 1YB Invoiced Amount"]
                 )
             ),
             'sales_quarter1' => sprintf(
-                '<span>%s</span> %s', money(
-                $data['Product Category 1 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-            ), delta_icon(
-                    $data["Product Category 1 Quarter Ago Invoiced Amount"], $data["Product Category 1 Quarter Ago 1YB Invoiced Amount"]
+                '<span>%s</span> %s',
+                money(
+                    $data['Product Category 1 Quarter Ago Invoiced Amount'],
+                    $data['Product Category Currency Code']
+                ),
+                delta_icon(
+                    $data["Product Category 1 Quarter Ago Invoiced Amount"],
+                    $data["Product Category 1 Quarter Ago 1YB Invoiced Amount"]
                 )
             ),
             'sales_quarter2' => sprintf(
-                '<span>%s</span> %s', money(
-                $data['Product Category 2 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-            ), delta_icon(
-                    $data["Product Category 2 Quarter Ago Invoiced Amount"], $data["Product Category 2 Quarter Ago 1YB Invoiced Amount"]
+                '<span>%s</span> %s',
+                money(
+                    $data['Product Category 2 Quarter Ago Invoiced Amount'],
+                    $data['Product Category Currency Code']
+                ),
+                delta_icon(
+                    $data["Product Category 2 Quarter Ago Invoiced Amount"],
+                    $data["Product Category 2 Quarter Ago 1YB Invoiced Amount"]
                 )
             ),
             'sales_quarter3' => sprintf(
-                '<span>%s</span> %s', money(
-                $data['Product Category 3 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-            ), delta_icon(
-                    $data["Product Category 3 Quarter Ago Invoiced Amount"], $data["Product Category 3 Quarter Ago 1YB Invoiced Amount"]
+                '<span>%s</span> %s',
+                money(
+                    $data['Product Category 3 Quarter Ago Invoiced Amount'],
+                    $data['Product Category Currency Code']
+                ),
+                delta_icon(
+                    $data["Product Category 3 Quarter Ago Invoiced Amount"],
+                    $data["Product Category 3 Quarter Ago 1YB Invoiced Amount"]
                 )
             ),
             'sales_quarter4' => sprintf(
-                '<span>%s</span> %s', money(
-                $data['Product Category 4 Quarter Ago Invoiced Amount'], $data['Product Category Currency Code']
-            ), delta_icon(
-                    $data["Product Category 4 Quarter Ago Invoiced Amount"], $data["Product Category 4 Quarter Ago 1YB Invoiced Amount"]
+                '<span>%s</span> %s',
+                money(
+                    $data['Product Category 4 Quarter Ago Invoiced Amount'],
+                    $data['Product Category Currency Code']
+                ),
+                delta_icon(
+                    $data["Product Category 4 Quarter Ago Invoiced Amount"],
+                    $data["Product Category 4 Quarter Ago 1YB Invoiced Amount"]
                 )
             ),
 
 
         );
-
     }
 
     //  print_r($record_data);
@@ -1481,9 +1573,8 @@ function product_categories_products($_data, $db, $user) {
 }
 
 
-function charges($_data, $db, $user) {
-
-
+function charges($_data, $db, $user)
+{
     $rtext_label = 'charge';
 
     include_once 'prepare_table/init.php';
@@ -1492,13 +1583,10 @@ function charges($_data, $db, $user) {
     $record_data = array();
 
     foreach ($db->query($sql) as $data) {
-
-
         if ($data['Charge Active'] == 'Yes') {
             $status = '<i class="fa fa-play success"></i>';
         } else {
             $status = '<i class="fa fa-pause error"></i>';
-
         }
 
         $record_data[] = array(
@@ -1511,7 +1599,6 @@ function charges($_data, $db, $user) {
             'status'    => $status
 
         );
-
     }
 
     $response = array(
@@ -1529,9 +1616,8 @@ function charges($_data, $db, $user) {
 }
 
 
-function shipping_zones($_data, $db, $user) {
-
-
+function shipping_zones($_data, $db, $user)
+{
     $rtext_label = 'shipping zone';
 
     include_once 'prepare_table/init.php';
@@ -1542,7 +1628,6 @@ function shipping_zones($_data, $db, $user) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
-
             $price       = '';
             $territories = '';
 
@@ -1550,7 +1635,6 @@ function shipping_zones($_data, $db, $user) {
 
 
             if ($data['Shipping Zone Territories'] != '') {
-
                 $territories_data = json_decode($data['Shipping Zone Territories'], true);
 
 
@@ -1563,9 +1647,7 @@ function shipping_zones($_data, $db, $user) {
                     if (isset($territory['included_postal_codes'])) {
                         $territories .= ' <span class="success small discreet" >(<i class="fa fa-map-marker-smile " title="'._('Include postal codes').'" ></i> '.$territory['included_postal_codes'].')</span> ';
                     }
-
                 }
-
             }
 
 
@@ -1575,8 +1657,6 @@ function shipping_zones($_data, $db, $user) {
 
                     $price .= '<div class="as_table">';
                     foreach ($price_data['steps'] as $step) {
-
-
                         $price .= '<div class="as_row">';
 
                         $price .= '<div class="as_cell  width_75"><span class="discreet">'._('Items').' <i class="fa fa-dollar-sign"></i></span> </div>';
@@ -1585,11 +1665,9 @@ function shipping_zones($_data, $db, $user) {
 
 
                         if ($step['price'] === 'TBC') {
-
                             $amount = 'TBC';
                         } else {
                             $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
-
                         }
                         $price .= ' <div class="as_cell">'.money($step['from'], $_data['parameters']['store_currency']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
                         $price .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
@@ -1613,7 +1691,6 @@ function shipping_zones($_data, $db, $user) {
                             $amount = 'TBC';
                         } else {
                             $amount = ($step['price'] == 0 ? '<span class="success ">'._('free').'</span>' : '<span class="highlight">'.money($step['price'], $_data['parameters']['store_currency']).'</span>');
-
                         }
                         $price .= ' <div class="as_cell">'.smart_weight($step['from']).'</div> <div class="as_cell align_center width_50"><i class="fal fa-arrow-right"></i> </div><div class="as_cell">'.$to.'</div> ';
                         $price .= '<div class="as_cell discreet align_center width_50"><i class="fal hide fa-equals"></i></div> <div  class="width_75 aright ">'.$amount.'</div>';
@@ -1661,9 +1738,8 @@ function shipping_zones($_data, $db, $user) {
 }
 
 
-function shipping_zones_schemas($_data, $db, $user) {
-
-
+function shipping_zones_schemas($_data, $db, $user)
+{
     $rtext_label = 'shipping zone schema';
 
     include_once 'prepare_table/init.php';
@@ -1727,9 +1803,8 @@ function shipping_zones_schemas($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function back_to_stock_notification_request_products($_data, $db, $user, $account) {
-
-
+function back_to_stock_notification_request_products($_data, $db, $user, $account)
+{
     include_once 'utils/currency_functions.php';
 
     $rtext_label = 'product';
@@ -1742,9 +1817,7 @@ function back_to_stock_notification_request_products($_data, $db, $user, $accoun
 
     $record_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             switch ($data['Product Web State']) {
                 case 'For Sale':
                     $web_state = '<span class="'.(($data['Product Availability'] <= 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($data['Product Web Configuration'] == 'Online Force For Sale'
@@ -1766,7 +1839,6 @@ function back_to_stock_notification_request_products($_data, $db, $user, $accoun
                     if ($data['Product Status'] != 'Active') {
                         $web_state = _('Offline');
                     } else {
-
                         $web_state = '<span class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($data['Product Status'] == 'Active'
                                 ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
                     }
@@ -1815,10 +1887,7 @@ function back_to_stock_notification_request_products($_data, $db, $user, $accoun
 
 
             );
-
-
         }
-
     } else {
         print "$sql\n";
         print_r($error_info = $db->errorInfo());
@@ -1841,8 +1910,8 @@ function back_to_stock_notification_request_products($_data, $db, $user, $accoun
 }
 
 
-function customers($_data, $db, $user) {
-
+function customers($_data, $db, $user)
+{
     $rtext_label = 'customer';
 
 
@@ -1854,10 +1923,7 @@ function customers($_data, $db, $user) {
     $adata = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             switch ($data['Customer Type by Activity']) {
                 case 'ToApprove':
                     $activity = _('To be approved');
@@ -1898,7 +1964,6 @@ function customers($_data, $db, $user) {
 
             );
         }
-
     }
 
 
@@ -1917,8 +1982,8 @@ function customers($_data, $db, $user) {
 }
 
 
-function back_to_stock_notification_request_customers($_data, $db, $user) {
-
+function back_to_stock_notification_request_customers($_data, $db, $user)
+{
     $rtext_label = 'back to stock request';
 
 
@@ -1930,10 +1995,7 @@ function back_to_stock_notification_request_customers($_data, $db, $user) {
     $adata = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             switch ($data['Back in Stock Reminder State']) {
                 case 'Waiting':
                     $state = _('Waiting');
@@ -1986,7 +2048,6 @@ function back_to_stock_notification_request_customers($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -2009,8 +2070,8 @@ function back_to_stock_notification_request_customers($_data, $db, $user) {
 }
 
 
-function webpages($_data, $db, $user) {
-
+function webpages($_data, $db, $user)
+{
     $rtext_label = 'webpage';
     include_once 'prepare_table/init.php';
 
@@ -2020,12 +2081,10 @@ function webpages($_data, $db, $user) {
     $adata = array();
 
     foreach ($db->query($sql) as $data) {
-
         if ($data['Webpage State'] == 'Online') {
             $state = '<i class="far fa-globe" aria-hidden="true"></i>';
         } else {
             $state = '<i class="far fa-globe very_discreet" aria-hidden="true"></i>';
-
         }
 
 
@@ -2085,7 +2144,6 @@ function webpages($_data, $db, $user) {
 
 
         );
-
     }
 
     $response = array(
@@ -2102,3 +2160,421 @@ function webpages($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function variants($_data, $db, $user, $account)
+{
+    include_once 'utils/currency_functions.php';
+
+
+    $rtext_label = 'variant';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql         = "select $fields from $table $where $wheref $group_by order by $order $order_direction limit $start_from,$number_results";
+    $record_data = array();
+
+    $record_data = array();
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            if ($data['is_variant'] == 'Yes') {
+                $variant_type = '<i class="fa fa-stream"></i>';
+            } else {
+                $variant_type = '<i class="fa fa-bring-forward purple"></i>';
+            }
+
+            $associated = sprintf(
+                '<i key="%d" class="fa fa-fw fa-link button" aria-hidden="true" onClick="edit_category_subject(this)" ></i>',
+                $data['Product ID']
+            );
+
+            $icon = 'fa-cube';
+            if ($data['Product Type'] == 'Service') {
+                $icon = 'fa-spa';
+            }
+
+            switch ($data['Product Status']) {
+                case 'Active':
+                    $status = sprintf('<i class="fa %s" aria-hidden="true" title="%s"></i>', $icon, _('Active'));
+                    break;
+                case 'Discontinuing':
+                    $status = sprintf('<i class="fa %s warning" aria-hidden="true" title="%s"></i>', $icon, _('Discontinuing'));
+                    break;
+                case 'Discontinued':
+                    $status = sprintf('<i class="fal %s very_discreet" aria-hidden="true" title="%s"></i>', $icon, _('Discontinued'));
+                    break;
+                case 'Suspended':
+                    $status = sprintf('<i class="fa %s error" aria-hidden="true" title="%s"></i>', $icon, _('Suspended'));
+                    break;
+                default:
+                    $status = $data['Product Status'];
+                    break;
+            }
+
+            /*
+            switch ($data['Product Web Configuration']) {
+                case 'Online Auto':
+                    $web_configuration = _('Automatic');
+                    break;
+                case 'Online Force For Sale':
+                    $web_configuration = _('For sale').' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>';
+                    break;
+                case 'Online Force Out of Stock':
+                    $web_configuration = _('Out of Stock').' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>';
+                    break;
+                case 'Offline':
+                    $web_configuration = _('Offline');
+                    break;
+                default:
+                    $web_configuration = $data['Product Web Configuration'];
+                    break;
+            }
+*/
+            switch ($data['Product Web State']) {
+                case 'For Sale':
+                    $web_state = '<span class="'.(($data['Product Availability'] <= 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Online').'</span>'.($data['Product Web Configuration'] == 'Online Force For Sale'
+                            ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
+                    break;
+                case 'Out of Stock':
+
+
+                    $web_state = '<span  class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Out of Stock').'</span>'.($data['Product Web Configuration'] == 'Online Force Out of Stock'
+                            ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
+
+
+                    break;
+                case 'Discontinued':
+                    $web_state = _('Discontinued');
+                    break;
+                case 'Offline':
+
+                    if ($data['Product Status'] != 'Active') {
+                        $web_state = _('Offline');
+                    } else {
+                        $web_state = '<span class="'.(($data['Product Availability'] > 0 and $data['Product Number of Parts'] > 0) ? 'error' : '').'">'._('Offline').'</span>'.($data['Product Status'] == 'Active'
+                                ? ' <i class="fa fa-thumbtack padding_left_5" aria-hidden="true"></i>' : '');
+                    }
+                    break;
+                default:
+                    $web_state = $data['Product Web State'];
+                    break;
+            }
+
+            if ($data['Product Customer Key']) {
+                $web_state = ' <i title="'._('Customer custom product').'" class="far purple fa-user-shield padding_left_5" aria-hidden="true"></i> '.$web_state;
+            }
+
+            if ($data['Store Currency Code'] != $account->get('Account Currency')) {
+                $exchange = currency_conversion(
+                    $db,
+                    $data['Store Currency Code'],
+                    $account->get('Account Currency'),
+                    '- 180 minutes'
+                );
+            } else {
+                $exchange = 1;
+            }
+
+
+            if ($_data['parameters']['parent'] == 'part') {
+                $product = new Product('id', $data['Product ID']);
+                $parts   = $product->get('Parts');
+            } else {
+                $parts = '';
+            }
+
+
+            if ($data['Product RRP'] == '') {
+                $rrp = '';
+            } else {
+                $rrp = money($data['Product RRP'] / $data['Product Units Per Case'], $data['Store Currency Code']);
+                if ($data['Product Units Per Case'] != 1) {
+                    $rrp .= '/'.$data['Product Unit Label'];
+                }
+                $rrp = sprintf(
+                    '<span style="cursor:text" class="product_rrp" title="%s" pid="%d" rrp="%s"  currency="%s"   onClick="open_edit_rrp(this)">%s</span>',
+                    sprintf(_('margin %s'), percentage($data['Product RRP'] - $data['Product Price'], $data['Product RRP'])),
+                    $data['Product ID'],
+                    $data['Product RRP'] / $data['Product Units Per Case'],
+                    $data['Store Currency Code'],
+                    $rrp
+
+                );
+            }
+
+
+            //  print_r($_data);
+
+
+            $margin = '<span class="product_margin" title="'._('Cost').':'.money($data['Product Cost'], $account->get('Account Currency')).'">'.percentage(
+                    $exchange * $data['Product Price'] - $data['Product Cost'],
+                    $exchange * $data['Product Price']
+                ).'<span>';
+
+
+            switch ($_data['parameters']['parent']) {
+                case 'part':
+
+                    $code = sprintf(
+                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>',
+                        $_data['parameters']['parent_key'],
+                        $data['Product ID'],
+                        '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
+                        $data['Product Code']
+                    );
+                    $name = number($data['Product Part Ratio'], 5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
+                            ? '<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>' : '');
+
+
+                    if ($data['Part Units Per Package'] != 0 and $data['Part Unit Price'] != 0 and $exchange != 0 and $data['Product Price'] > 0) {
+                        $_recommended_margin_ratio = ($data['Part Unit Price'] - ($data['Part Cost in Warehouse'] / $data['Part Units Per Package'])) / $data['Part Unit Price'];
+
+                        $_actual_margin_ratio = ($exchange * $data['Product Price'] - $data['Product Cost']) / ($exchange * $data['Product Price']);
+
+                        if ($_recommended_margin_ratio * .8 > $_actual_margin_ratio) {
+                            $margin = '<i class="fa yellow fa-exclamation-triangle " title="'.sprintf(_('Margin %s lower than expected'), percentage($_actual_margin_ratio, $_recommended_margin_ratio)).'"></i> '.$margin;
+                        }
+                    }
+
+
+                    break;
+                case 'category':
+                    if ($data['Product Units Per Case'] == 1) {
+                        $name = '<span>'.$data['Product Name'].'</span>';
+                    } else {
+                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+                    }
+                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'], $path, $data['Product ID'], $name, $data['Product Code']);
+
+                    break;
+                default:
+
+                    if ($data['Product Units Per Case'] == 1) {
+                        $name = '<span>'.$data['Product Name'].'</span>';
+                    } else {
+                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+                    }
+
+                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
+
+                    break;
+            }
+
+
+            /*
+
+                        events: {
+                            "click": function() {
+                                change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id")
+
+                                                                                                                      {else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id")
+
+                       {else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
+            }
+            },
+                        className: "link width_150",
+
+            */
+
+            $outers_per_carton = $data['Product Outers Per Carton'];
+            if ($outers_per_carton == '') {
+                $outers_per_carton = '<span class="italic super_discreet">NS</span>';
+            } elseif ($outers_per_carton == 1) {
+                $outers_per_carton = '<span class="italic very_discreet">NA</span>';
+            }
+
+
+            $record_data[] = array(
+
+                'id'           => (integer)$data['Product ID'],
+                'variant_type' => $variant_type,
+                'store_key'    => (integer)$data['Store Key'],
+                'associated'   => $associated,
+                'store'        => sprintf('<span class="button" onClick="change_view(\'store/%d\')" title="%s"">%s</span>', $data['Store Key'], $data['Store Name'], $data['Store Code']),
+                'code'         => $code,
+                'name'         => $name,
+                'units'        => $data['Product Units Per Case'],
+                'price_unit'  => money( $data['Product Price'] / $data['Product Units Per Case'],$data['Store Currency Code']).'/u',
+                'price' => sprintf(
+                    '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
+                    money($exchange * $data['Product Price'], $account->get('Account Currency')),
+                    $data['Product ID'],
+                    $data['Product Price'],
+                    $data['Store Currency Code'],
+                    $exchange,
+                    $data['Product Cost'],
+                    percentage($exchange * $data['Product Price'] - $data['Product Cost'], $exchange * $data['Product Price']),
+                    money($data['Product Price'], $data['Store Currency Code'])
+                ),
+
+
+                'rrp'               => $rrp,
+                'outers_per_carton' => $outers_per_carton,
+                'margin'            => $margin,
+                'web_state'         => $web_state,
+                'status'            => $status,
+                'parts'             => $parts,
+                'sales'             => money($data['sales'], $data['Store Currency Code']),
+                'sales_1yb'         => delta($data['sales'], $data['sales_1yb']),
+                'dc_sales'          => money($data['dc_sales'], $account->get('Account Currency')),
+                'dc_sales_1yb'      => delta($data['dc_sales'], $data['dc_sales_1yb']),
+                'qty_invoiced'      => number($data['qty_invoiced']),
+                'qty_invoiced_1yb'  => delta(
+                    $data['qty_invoiced'],
+                    $data['qty_invoiced_1yb']
+                ),
+
+
+                'sales_year0' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Year To Day Acc Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Year To Day Acc Invoiced Amount"],
+                        $data["Product Year To Day Acc 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_year1' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 1 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 1 Year Ago Invoiced Amount"],
+                        $data["Product 2 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year2' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 2 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 2 Year Ago Invoiced Amount"],
+                        $data["Product 3 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year3' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 3 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 3 Year Ago Invoiced Amount"],
+                        $data["Product 4 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year4' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 4 Year Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 4 Year Ago Invoiced Amount"],
+                        $data["Product 5 Year Ago Invoiced Amount"]
+                    )
+                ),
+
+                'sales_quarter0' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Quarter To Day Acc Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Quarter To Day Acc Invoiced Amount"],
+                        $data["Product Quarter To Day Acc 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter1' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 1 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 1 Quarter Ago Invoiced Amount"],
+                        $data["Product 1 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter2' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 2 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 2 Quarter Ago Invoiced Amount"],
+                        $data["Product 2 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter3' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 3 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 3 Quarter Ago Invoiced Amount"],
+                        $data["Product 3 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter4' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product 4 Quarter Ago Invoiced Amount'],
+                        $data['Store Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product 4 Quarter Ago Invoiced Amount"],
+                        $data["Product 4 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+
+
+                'sales_total'                      => money(
+                    $data['Product Total Acc Invoiced Amount'],
+                    $data['Store Currency Code']
+                ),
+                'dispatched_total'                 => number(
+                    $data['Product Total Acc Quantity Invoiced'],
+                    0
+                ),
+                'customer_total'                   => number(
+                    $data['Product Total Acc Customers'],
+                    0
+                ),
+                'percentage_repeat_customer_total' => percentage(
+                    $data['Product Total Acc Repeat Customers'],
+                    $data['Product Total Acc Customers']
+                ),
+
+                'disassociate_from_customer' => sprintf('<i class="far button fa-trash-alt" onclick="remove_product_from_customer(this,%d)" ></i>', $data['Product ID'])
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

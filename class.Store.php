@@ -3573,7 +3573,9 @@ class Store extends DB_Table
 
 
                 foreach ($this->get_websites('objects') as $website) {
-                    $website->create_product_webpage($product->id);
+                    if($product->data['is_variant']=='No'){
+                        $website->create_product_webpage($product->id);
+                    }
                 }
 
 

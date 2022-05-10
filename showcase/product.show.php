@@ -21,6 +21,8 @@ function get_product_showcase($data, $smarty, $db) {
         return "";
     }
 
+   // $product->updating_packing_data();
+
     $product->load_acc_data();
     $product->get_webpage();
 
@@ -37,7 +39,7 @@ function get_product_showcase($data, $smarty, $db) {
 
     //$product->sync_aiku();
     //$product->sync_aiku();
-   // exit();
+   //exit();
 
     $images = $product->get_images_slideshow();
 
@@ -87,6 +89,7 @@ function get_product_showcase($data, $smarty, $db) {
     $smarty->assign('product', $product);
     $smarty->assign('department_data', $department_data);
     $smarty->assign('family_data', $family_data);
+
 
 
     $smarty->assign(

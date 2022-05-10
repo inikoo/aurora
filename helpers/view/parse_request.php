@@ -750,7 +750,6 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                     $module  = 'products';
                     $section = 'products';
 
-
                     if (is_numeric($view_path[0])) {
 
                         $parent     = 'store';
@@ -771,24 +770,26 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                 $section    = 'categories';
                                 $parent     = 'store';
                                 $parent_key = $view_path[0];
-                            } else {
+                            }
+                            else {
                                 if ($view_path[1] == 'category') {
-
                                     $section = 'category';
                                     $object  = 'category';
 
 
                                     if (isset($view_path[2])) {
-
                                         $view_path[2] = preg_replace(
-                                            '/>$/', '', $view_path[2]
+                                            '/>$/',
+                                            '',
+                                            $view_path[2]
                                         );
                                         if (preg_match(
-                                            '/^(\d+>)+(\d+)$/', $view_path[2]
+                                            '/^(\d+>)+(\d+)$/',
+                                            $view_path[2]
                                         )) {
-
                                             $parent_categories = preg_split(
-                                                '/>/', $view_path[2]
+                                                '/>/',
+                                                $view_path[2]
                                             );
                                             $metadata          = $parent_categories;
                                             $key               = array_pop(
@@ -804,9 +805,7 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
 
 
                                             if (isset($view_path[3])) {
-
                                                 if ($view_path[3] == 'product') {
-
                                                     $parent_key = $key;
 
                                                     $section = 'product';
@@ -814,17 +813,10 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
                                                         )) {
-
                                                         $key = $view_path[4];
-
-
                                                     }
-
                                                 }
-
-
                                             }
-
                                         } elseif (is_numeric($view_path[2])) {
                                             $key = $view_path[2];
                                             include_once 'class.Category.php';
@@ -841,13 +833,10 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                                 $parent_key = $category->get(
                                                     'Category Parent Key'
                                                 );
-
                                             }
 
 
                                             if (isset($view_path[3])) {
-
-
                                                 if (is_numeric($view_path[3])) {
                                                     $section    = 'product';
                                                     $parent     = 'category';
@@ -860,15 +849,9 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                                     if (isset($view_path[4]) and is_numeric(
                                                             $view_path[4]
                                                         )) {
-
                                                         $key = $view_path[4];
-
                                                     }
-
-
                                                 } elseif ($view_path[3] == 'deal_component') {
-
-
                                                     $section    = 'deal_component';
                                                     $object     = 'deal_component';
                                                     $parent     = 'category';
@@ -879,16 +862,10 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                                         if (is_numeric($view_path[4])) {
                                                             $key = $view_path[4];
                                                         } elseif ($view_path[4] == 'new') {
-
-
                                                             $key     = 0;
                                                             $section = 'deal_component.new';
-
                                                         }
-
                                                     }
-
-
                                                 } elseif ($view_path[3] == 'upload') {
                                                     //$module='account';
                                                     $section    = 'upload';
@@ -899,36 +876,44 @@ function parse_request($_data, PDO $db, array $modules, User $user): array {
                                                         if (is_numeric(
                                                             $view_path[4]
                                                         )) {
-
                                                             $key = $view_path[4];
                                                         }
                                                     }
-
                                                 }
+                                            }
+                                        } elseif ($view_path[2] == 'new') {
+                                            $section = 'main_category.new';
+                                        }
+                                    }
+                                } else {
+                                    if (is_numeric($view_path[1])) {
+                                        if (isset($view_path[2])  and isset($view_path[3]) and $view_path[2] == 'variants') {
+
+                                            $object     = 'product';
+                                            $parent     = 'product';
+                                            $parent_key = $view_path[1];
+                                            if($view_path[3] == 'new'){
+                                                $section = 'product.variant.new';
+                                                $key     = 0;
+                                            }else{
+
+                                                $section    = 'product.variant';
+
+                                                $key        = $view_path[3];
 
                                             }
 
 
-                                        } elseif ($view_path[2] == 'new') {
-
-                                            $section = 'main_category.new';
-
+                                        } else {
+                                            $section    = 'product';
+                                            $object     = 'product';
+                                            $key        = $view_path[1];
+                                            $parent     = 'store';
+                                            $parent_key = $view_path[0];
                                         }
-                                    }
-
-                                } else {
-                                    if (is_numeric($view_path[1])) {
-                                        $section    = 'product';
-                                        $object     = 'product';
-                                        $key        = $view_path[1];
-                                        $parent     = 'store';
-                                        $parent_key = $view_path[0];
-
-
                                     }
                                 }
                             }
-
 
                         }
                     } elseif ($view_path[0] == 'all') {

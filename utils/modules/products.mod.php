@@ -19,6 +19,17 @@ function get_products_module(): array {
         'section'  => 'products',
         'sections' => array(
 
+            'product.variant.new' => array(
+                'type' => 'new_object',
+                'tabs' => array(
+                    'product.variant.new' => array(
+                        'label' => _('New variant')
+                    ),
+
+                )
+
+            ),
+
             'store' => array(
                 'type'      => 'left_button',
                 'label'     => _('Dashboard'),
