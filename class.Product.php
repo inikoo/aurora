@@ -771,6 +771,98 @@ class Product extends Asset
         }
     }
 
+
+    function create_variant($variant_data){
+
+        $this->new_product=false;
+        $code=$this->data['Product Code'].'-'.$variant_data['Product Code'];
+
+        if ($code == '') {
+            $this->error      = true;
+            $this->msg        = _("Code missing");
+            $this->error_code = 'product_code_missing';
+            $this->metadata   = '';
+
+            return false;
+        }
+
+        $sql  = "SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(array(
+                           $code,
+                           $this->id
+                       ));
+        if ($row = $stmt->fetch()) {
+            if ($row['num'] > 0) {
+                $this->error      = true;
+                $this->msg        = sprintf(_('Duplicated code (%s)'), $code);
+                $this->error_code = 'duplicate_product_code_reference';
+                $this->metadata   = $code;
+
+                return get_object('Product', $row['Product ID']);
+            }
+        }
+
+
+        $variant_data['Product Code']=$code;
+
+        $variant_data['Product Unit Label']=$this->data['Product Unit Label'];
+        $variant_data['Product Unit RRP']='';
+
+        $variant_data['is_variant']='Yes';
+        $variant_data['variant_parent_id']=$this->id;
+
+        $variant_data['Product Family Category Key']=$this->data['Product Family Category Key'];
+
+        $store=get_object('Store',$this->get('Product Store Key'));
+        $store->editor=$this->editor;
+
+        //print_r($variant_data);
+
+        $variant=$store->create_product($variant_data);
+
+        if($variant->id){
+            $variant->fast_update(
+                [
+                    'Product RRP'=>$this->data['Product RRP']
+                ]
+            );
+        }
+
+
+        $this->new_product=$store->new_product;
+        $this->msg=$store->msg;
+
+        $this->update_variants_stats();
+
+        return $variant;
+
+
+    }
+
+    function update_variants_stats(){
+
+        $number_variants=0;
+        $sql="select count(*) as num from `Product Dimension` where `variant_parent_id`=?  ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id
+            ]
+        );
+        while ($row = $stmt->fetch()) {
+            $number_variants=$row['num'];
+        }
+
+        $this->fast_update(
+            [
+                'has_variants'=>$number_variants>0?'Yes':'No'
+            ]
+        );
+
+    }
+
+
     function create($data)
     {
         include_once 'utils/natural_language.php';
@@ -865,6 +957,13 @@ class Product extends Asset
 
             $this->update_historic_object();
             $this->get_data('id', $this->id);
+
+            if($this->data['is_variant']=='No') {
+                $this->fast_update([
+                                       'variant_parent_id' => $this->id,
+
+                                   ]);
+            }
 
 
             $this->fork_index_elastic_search();
@@ -3773,25 +3872,27 @@ class Product extends Asset
     function updating_packing_data()
     {
         $this->load_acc_data();
-        $sko    = '';
-        $carton = '';
-        $batch  = '';
+        $sko            = '';
+        $carton         = '';
+        $batch          = '';
         $sko_per_carton = '';
 
         if ($this->get('Product Number of Parts') == 1) {
             foreach ($this->get_parts_data('Objects') as $part_data) {
                 $sko = $part_data['Ratio'];
 
+
+
                 if ($part_data['Part']->get('Part SKOs per Carton') > 0) {
-
-
-                    $sko_per_carton=$part_data['Ratio'] * $part_data['Part']->get('Part SKOs per Carton');
+                    $sko_per_carton =   $part_data['Part']->get('Part SKOs per Carton')/$part_data['Ratio'];
 
                     $carton = $part_data['Ratio'] / $part_data['Part']->get('Part SKOs per Carton');
+
+
+
                 }
             }
         }
-
 
         $this->fast_update_json_field('Product Properties', 'packing_sko', $sko);
         $this->fast_update_json_field('Product Properties', 'packing_carton', $carton);
