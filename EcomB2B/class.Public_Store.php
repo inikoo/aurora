@@ -176,6 +176,16 @@ class Public_Store {
         switch ($key) {
 
 
+            case 'reviews_data':
+
+                $data=[];
+                if($this->data['Store Reviews Settings']!=''){
+                    $data=json_decode($this->data['Store Reviews Settings'],true);
+
+                }
+
+                return $data;
+
             case 'Telephone':
             case 'Email':
             case 'Address':

@@ -79,6 +79,25 @@ class Public_Webpage {
 
         switch ($key) {
 
+            case 'assets_for_reviews':
+
+                $codes=[];
+                $sql='select LOWER(`Webpage Code`) as code  from `Website Webpage Scope Map`  left join  `Page Store Dimension` on (`Website Webpage Scope Scope Webpage Key`=`Page Key`) where  `Website Webpage Scope Type`="Category_Products_Item" and
+                                                                                                                                                          `Webpage State`="Online"  and `Website Webpage Scope Webpage Key`=?
+                                                                                                                                                         ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $this->id
+                    ]
+                );
+                while ($row = $stmt->fetch()) {
+                    $codes[]=$row['code'];
+                }
+
+                return join(';', $codes);
+
+
             case 'Signature':
                 $store = get_object('Store', $this->data['Webpage Store Key']);
 
