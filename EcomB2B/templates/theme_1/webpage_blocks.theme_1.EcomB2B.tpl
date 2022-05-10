@@ -451,7 +451,7 @@
                                 },
                                 //Questions settings:
                                 questions:{
-                                    hide_if_no_results: true,
+                                    hide_if_no_results: false,
                                     enable_ask_question: true,
                                     show_dates: true,
                                     //Display group questions by providing a grouping variable, new questions will be assigned to this group.
@@ -664,7 +664,7 @@
                             },
                             //Questions settings:
                             questions:{
-                                hide_if_no_results: true,
+                                hide_if_no_results: false,
                                 enable_ask_question: true,
                                 show_dates: true,
                                 //Display group questions by providing a grouping variable, new questions will be assigned to this group.
