@@ -2392,6 +2392,7 @@ function variants($_data, $db, $user, $account)
                 'store'        => sprintf('<span class="button" onClick="change_view(\'store/%d\')" title="%s"">%s</span>', $data['Store Key'], $data['Store Name'], $data['Store Code']),
                 'code'         => $code,
                 'name'         => $name,
+                'menu_name'=>$data['Product Variant Short Name'],
                 'units'        => $data['Product Units Per Case'],
                 'price_unit'  => money( $data['Product Price'] / $data['Product Units Per Case'],$data['Store Currency Code']).'/u',
                 'price' => sprintf(
