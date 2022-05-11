@@ -3610,7 +3610,7 @@ class Part extends Asset
             $stmt->execute(array($this->id));
             $data_to_update = array();
             while ($row = $stmt->fetch()) {
-                //  print_r($row);
+                // print_r($row);
 
 
                 if ($row['Inventory Transaction Section'] == 'In' and $row['Inventory Transaction Type'] == 'In') {
@@ -3627,6 +3627,7 @@ class Part extends Asset
                             $stmt2 = $this->db->prepare($sql);
                             $stmt2->execute(array($this->id));
                             if ($row2 = $stmt2->fetch()) {
+
                                 $current_cost_per_sko = $row2['cost_per_sko'];
                                 $booked_in            = true;
                             }
@@ -3635,6 +3636,13 @@ class Part extends Asset
 
                         $amount = $row['Inventory Transaction Quantity'] * $current_cost_per_sko;
                         $sql    = "UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=?  WHERE `Inventory Transaction Key`=? ";
+                        /*
+                        print "$sql\n";
+                        print_r(array(
+                                    $row['Inventory Transaction Quantity'],
+                                    $current_cost_per_sko,
+                                ));
+                        */
                         $this->db->prepare($sql)->execute(array(
                                                               $amount,
                                                               $row['Inventory Transaction Key']
@@ -3646,12 +3654,26 @@ class Part extends Asset
                 $old_running_stock = $running_stock;
 
                 $running_stock       = $running_stock + $row['Inventory Transaction Quantity'];
+
+               // print "!!!!!!!!  $running_stock_value  $amount \n";
+
                 $running_stock_value = $running_stock_value + $amount;
+
+
 
                 if ($old_running_stock > 0 and $running_stock > $threshold) {
                     $current_cost_per_sko = $running_stock_value / $running_stock;
+                  //  print "+++++++  $amount $running_stock_value  $running_stock \n";
+
                 } elseif ($type == 'in' and $row['Inventory Transaction Quantity'] > 0) {
                     $current_cost_per_sko = $row['Inventory Transaction Amount'] / $row['Inventory Transaction Quantity'];
+                  //  print "AAAAAA  $current_cost_per_sko\n";
+
+                    if($old_running_stock<0){
+                        $running_stock_value=$running_stock*$current_cost_per_sko;
+                    }
+
+
                 }
 
 
@@ -3660,7 +3682,7 @@ class Part extends Asset
                 $running_stock = $running_stock_units / $units_factor;
 
 
-                // print "Qty $running_stock  ($running_stock_units)u | $ $running_stock_value  ( $current_cost_per_sko )  \n";
+                 //print "Qty $running_stock  >> $units_factor  ($running_stock_units)u | $ $running_stock_value  ( $current_cost_per_sko )  Val/U  ".($running_stock_value/$running_stock_units)."  ".($units_factor*$running_stock_value/$running_stock_units)."     \n";
 
 
                 $data_to_update[] = array(

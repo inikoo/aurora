@@ -26,19 +26,21 @@ update_parts_data($db);
 function update_parts_data($db) {
 
 
-    $sql = "SELECT `Part SKU` FROM `Part Dimension`  where `Part Status`='In Use'  ORDER BY `Part Reference`   ";
+    $sql = "SELECT `Part SKU` FROM `Part Dimension`  where `Part Status`='In Use' and `Part Cost in Warehouse`<0   ORDER BY `Part Reference`   ";
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
             $part = new Part($row['Part SKU']);
 
-            print $part->get('Reference')."\r";
+            print $part->get('Reference')."\n";
+
+            $part->update_stock_run();
 
            // foreach($part->get_locations('part_location_object') as $pl) {
            //     $pl->update_stock();
            // }
 
-            $part->update(['materials'=>$part->get('Part Materials')],'no_history');
+            //$part->update(['materials'=>$part->get('Part Materials')],'no_history');
 
            // $part->update_stock();
             //$part->update_available_forecast();
