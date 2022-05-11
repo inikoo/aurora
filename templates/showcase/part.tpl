@@ -28,7 +28,7 @@
 
 <div class="asset_container">
 
-    <div class="block picture showcase_component" style="width: 370px">
+    <div class="block picture showcase_component" style="width: 340px">
 
         <div class="data_container">
             {assign "image_key" $part->get_main_image_key()}
