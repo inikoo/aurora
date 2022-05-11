@@ -2311,69 +2311,8 @@ function variants($_data, $db, $user, $account)
                 ).'<span>';
 
 
-            switch ($_data['parameters']['parent']) {
-                case 'part':
+            $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $data['Product Name'], $data['Product Code']);
 
-                    $code = sprintf(
-                        '<span class="link" onClick="change_view(\'part/%d/product/%d\')" title="%s">%s</span>',
-                        $_data['parameters']['parent_key'],
-                        $data['Product ID'],
-                        '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>',
-                        $data['Product Code']
-                    );
-                    $name = number($data['Product Part Ratio'], 5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
-                            ? '<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>' : '');
-
-
-                    if ($data['Part Units Per Package'] != 0 and $data['Part Unit Price'] != 0 and $exchange != 0 and $data['Product Price'] > 0) {
-                        $_recommended_margin_ratio = ($data['Part Unit Price'] - ($data['Part Cost in Warehouse'] / $data['Part Units Per Package'])) / $data['Part Unit Price'];
-
-                        $_actual_margin_ratio = ($exchange * $data['Product Price'] - $data['Product Cost']) / ($exchange * $data['Product Price']);
-
-                        if ($_recommended_margin_ratio * .8 > $_actual_margin_ratio) {
-                            $margin = '<i class="fa yellow fa-exclamation-triangle " title="'.sprintf(_('Margin %s lower than expected'), percentage($_actual_margin_ratio, $_recommended_margin_ratio)).'"></i> '.$margin;
-                        }
-                    }
-
-
-                    break;
-                case 'category':
-                    if ($data['Product Units Per Case'] == 1) {
-                        $name = '<span>'.$data['Product Name'].'</span>';
-                    } else {
-                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
-                    }
-                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'], $path, $data['Product ID'], $name, $data['Product Code']);
-
-                    break;
-                default:
-
-                    if ($data['Product Units Per Case'] == 1) {
-                        $name = '<span>'.$data['Product Name'].'</span>';
-                    } else {
-                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
-                    }
-
-                    $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
-
-                    break;
-            }
-
-
-            /*
-
-                        events: {
-                            "click": function() {
-                                change_view( {if $data['section']=='part'}'part/{$data['key']}/product/' + this.model.get("id")
-
-                                                                                                                      {else if $data['section']=='category'}'products/{$data['store']->id}/category/{$data['_object']->get('Category Position')}/product/' + this.model.get("id")
-
-                       {else}'products/{$data['parent_key']}/'+this.model.get("id"){/if})
-            }
-            },
-                        className: "link width_150",
-
-            */
 
             $outers_per_carton = $data['Product Outers Per Carton'];
             if ($outers_per_carton == '') {
@@ -2391,11 +2330,26 @@ function variants($_data, $db, $user, $account)
                 'associated'   => $associated,
                 'store'        => sprintf('<span class="button" onClick="change_view(\'store/%d\')" title="%s"">%s</span>', $data['Store Key'], $data['Store Name'], $data['Store Code']),
                 'code'         => $code,
-                'name'         => $name,
-                'menu_name'=>$data['Product Variant Short Name'],
-                'units'        => $data['Product Units Per Case'],
-                'price_unit'  => money( $data['Product Price'] / $data['Product Units Per Case'],$data['Store Currency Code']).'/u',
-                'price' => sprintf(
+
+                'name' => sprintf(
+                    '<span style="cursor:text" class="Product_Name"  data-id="%d" data-value="%s" data-field="%s"  onClick="open_edit_txt(this)">%s</span>',
+                    $data['Product ID'],
+                    $data['Product Name'],
+                    'Product_Name',
+                    $data['Product Name'] == '' ? '<span class="discreet italic">'._('Set value').'</span>' : $data['Product Name'],
+                ),
+
+                'menu_name' => sprintf(
+                    '<span style="cursor:text" class="Product_Variant_Short_Name"  data-id="%d" data-value="%s" data-field="%s"  onClick="open_edit_txt(this)">%s</span>',
+                    $data['Product ID'],
+                    $data['Product Variant Short Name'],
+                    'Product_Variant_Short_Name',
+                    $data['Product Variant Short Name'] == '' ? '<span class="discreet italic">'._('Set value').'</span>' : $data['Product Variant Short Name'],
+                ),
+
+                'units'      => $data['Product Units Per Case'],
+                'price_unit' => money($data['Product Price'] / $data['Product Units Per Case'], $data['Store Currency Code']).'/u',
+                'price'      => sprintf(
                     '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
                     money($exchange * $data['Product Price'], $account->get('Account Currency')),
                     $data['Product ID'],

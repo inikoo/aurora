@@ -155,3 +155,4 @@ cron/set_up_web_menu.php
 /cron/sk_tc.csv
 /cron/tc.csv
 /cron/update_tariff_codes.php
+/test_ar_web_hokodo_notification.php

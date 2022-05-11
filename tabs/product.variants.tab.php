@@ -57,6 +57,7 @@ $table_buttons[] = array(
 
 $smarty->assign('table_buttons', $table_buttons);
 
+$smarty->assign('table_top_template', 'product.variants.edit.tpl');
 
 include 'utils/get_table_html.php';
 

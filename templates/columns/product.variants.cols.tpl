@@ -38,22 +38,6 @@ className: "width_20"
 
 },
 
-
-{
-name: "name",
-label: "{t}Name{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-},
-
-{
-name: "menu_name",
-label: "{t}Menu label{/t}",
-editable: false,
-sortType: "toggle",
-cell: "html"
-},
 {
 name: "units",
 label: "{t}Units{/t}",
@@ -61,6 +45,22 @@ editable: false,
 sortType: "toggle",
 cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 headerCell: integerHeaderCell
+},
+
+{
+name: "name",
+label: "{t}Unit name{/t}",
+editable: false,
+sortType: "toggle",
+cell: "html"
+},
+
+{
+name: "menu_name",
+label: "{t}Variant label{/t}",
+editable: false,
+sortType: "toggle",
+cell: "html"
 },
 
 {
