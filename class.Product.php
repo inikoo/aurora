@@ -1218,6 +1218,9 @@ class Product extends Asset
             case 'Product Web Configuration':
                 $label = _('web configuration');
                 break;
+            case 'Product Variant Short Name':
+                $label = _('short menu name');
+                break;
             default:
                 $label = $field;
         }

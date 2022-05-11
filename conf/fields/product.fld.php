@@ -12,6 +12,8 @@
 
 function get_product_variant_fields(Product $product, User $user, PDO $db, $options): array
 {
+
+    // THIS ONLY USE FOR NEW
     include_once 'utils/static_data.php';
     include_once 'utils/country_functions.php';
 
@@ -153,7 +155,7 @@ function get_product_variant_fields(Product $product, User $user, PDO $db, $opti
                     'id'              => 'Product_Name',
                     'class'           => 'product_field '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
                     'edit'            => ($edit ? 'string' : ''),
-                    'value'           => htmlspecialchars($product->get('Product Name')),
+                    'value'           => htmlspecialchars($options['parent_product']->get('Product Name')),
                     'formatted_value' => $product->get('Name'),
                     'label'           => _('Variant full name'),
                     'required'        => true,
@@ -161,7 +163,18 @@ function get_product_variant_fields(Product $product, User $user, PDO $db, $opti
 
 
                 ),
+                array(
+                    'id'              => 'Product_Variant_Short_Name',
+                    'class'           => 'product_field  '.((!$new and  ( $product->get('Product Type') == 'Service' or $product->get('has_variants') == 'Yes'   or $product->get('is_variant') == 'No' ) )    ? 'hide' : ''),
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => htmlspecialchars($product->get('Product Variant Short Name')),
+                    'formatted_value' => $product->get('Variant Short Name'),
+                    'label'           => ucfirst($product->get_field_label('Product Variant Short Name')),
+                    'required'        => true,
+                    'type'            => 'value'
 
+
+                ),
 
             )
         ),
@@ -604,6 +617,18 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
                     'value'           => htmlspecialchars($product->get('Product Name')),
                     'formatted_value' => $product->get('Name'),
                     'label'           => ucfirst($product->get_field_label('Product Name')),
+                    'required'        => true,
+                    'type'            => 'value'
+
+
+                ),
+                array(
+                    'id'              => 'Product_Variant_Short_Name',
+                    'class'           => 'product_field  '.((!$new and  ( $product->get('Product Type') == 'Service' or $product->get('has_variants') == 'Yes'   or $product->get('is_variant') == 'No' ) )    ? 'hide' : ''),
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => htmlspecialchars($product->get('Product Variant Short Name')),
+                    'formatted_value' => $product->get('Variant Short Name'),
+                    'label'           => ucfirst($product->get_field_label('Product Variant Short Name')),
                     'required'        => true,
                     'type'            => 'value'
 
