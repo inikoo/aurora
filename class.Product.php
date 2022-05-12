@@ -843,10 +843,12 @@ class Product extends Asset
     function update_variants_stats(){
 
         $number_variants=0;
-        $sql="select count(*) as num from `Product Dimension` where `variant_parent_id`=?  ";
+        $number_visible_variants=0;
+        $sql="select count(*) as num from `Product Dimension` where `variant_parent_id`=?  and `Product ID`!=?  ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             [
+                $this->id,
                 $this->id
             ]
         );
@@ -854,9 +856,24 @@ class Product extends Asset
             $number_variants=$row['num'];
         }
 
+        $sql="select count(*) as num from `Product Dimension` where `variant_parent_id`=? and `Product Show Variant`='Yes' and `Product ID`!=?  ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id,
+                $this->id
+            ]
+        );
+        while ($row = $stmt->fetch()) {
+            $number_visible_variants=$row['num'];
+        }
+
+
         $this->fast_update(
             [
-                'has_variants'=>$number_variants>0?'Yes':'No'
+                'has_variants'=>$number_variants>0?'Yes':'No',
+                'number_variants'=>$number_variants,
+                'number_visible_variants'=>$number_visible_variants
             ]
         );
 
