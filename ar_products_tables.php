@@ -2330,6 +2330,17 @@ function variants($_data, $db, $user, $account)
                 'associated'   => $associated,
                 'store'        => sprintf('<span class="button" onClick="change_view(\'store/%d\')" title="%s"">%s</span>', $data['Store Key'], $data['Store Name'], $data['Store Code']),
                 'code'         => $code,
+                'visibility'   => sprintf(
+                    '<i style="cursor:pointer" class="  Product_Show_Variant fa fa-%s %s"  data-id="%d" data-value="%s" data-field="%s"  onClick="change_visibility(this)"></i>',
+                    $data['Product Show Variant']=='Yes'?'eye':'eye-slash',
+                    $data['is_variant'] == 'Yes'?'':'hide',
+
+                    $data['Product ID'],
+                    $data['Product Show Variant'],
+                    'Product_Show_Variant',
+                ),
+
+
 
                 'name' => sprintf(
                     '<span style="cursor:text" class="Product_Name"  data-id="%d" data-value="%s" data-field="%s"  onClick="open_edit_txt(this)">%s</span>',

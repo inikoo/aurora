@@ -17,6 +17,18 @@ className: "width_20"
 })
 
 },
+
+{
+name: "visibility",
+label: "",
+editable: false,
+sortable: false,
+
+cell: Backgrid.HtmlCell.extend({
+className: "width_20"
+})
+
+},
 {
 name: "code",
 label: "{t}Code{/t}   ",
@@ -100,6 +112,22 @@ cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
 
 headerCell: integerHeaderCell
 },
+
+
+
+{
+name: "position",
+label: "{t}Position{/t}",
+editable: false,
+sortType: "toggle",
+
+cell: Backgrid.HtmlCell.extend({
+className: ""
+})
+
+},
+
+
 {
 name: "rrp",
 label: "{t}RRP{/t}",
@@ -396,6 +424,8 @@ grid.columns.findWhere({ name: 'sales_quarter3'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'units'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'price_unit'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'visibility'} ).set("renderable", false)
+grid.columns.findWhere({ name: 'position'} ).set("renderable", false)
 
 
 
@@ -408,6 +438,9 @@ grid.columns.findWhere({ name: 'menu_name'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'price'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'margin'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'price_unit'} ).set("renderable", true)
+
+grid.columns.findWhere({ name: 'visibility'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'position'} ).set("renderable", true)
 
 
 
