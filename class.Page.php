@@ -958,7 +958,7 @@ class Page extends DB_Table {
 
 
         $sql =
-            "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  WHERE  `Category Key`=?  AND `Product Web State` IN  ('For Sale','Out of Stock') and `Product Customer Key` is null  ORDER BY `Product Web State`,`Product Code File As`";
+            "SELECT P.`Product ID`  FROM `Category Bridge` B  LEFT JOIN `Product Dimension` P ON (`Subject Key`=P.`Product ID`)  WHERE  `Category Key`=?  AND `Product Web State` IN  ('For Sale','Out of Stock') and is_variant!='Yes'  and `Product Customer Key` is null  ORDER BY `Product Web State`,`Product Code File As`";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -2430,7 +2430,7 @@ class Page extends DB_Table {
 
                     $_product = get_object('Product', $row['key']);
                     $_webpage = $_product->get_webpage();
-                    if ($_webpage->id and $_webpage->data['Webpage State'] == 'Online') {
+                    if ($_webpage->id and $_webpage->data['Webpage State'] == 'Online'   ) {
                         $see_also[$_webpage->id] = array(
                             'type'     => 'Sales',
                             'value'    => $row['score'],
