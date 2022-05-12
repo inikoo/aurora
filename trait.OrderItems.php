@@ -603,7 +603,7 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
     function get_items(): array
     {
         $sql = sprintf(
-            'SELECT  `Category Code`,`Product Price`,    (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+            'SELECT  `Category Code`,`Product Price`, is_variant,variant_parent_id,   (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
 FROM `Order Transaction Fact` OTF 
 LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)
  LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  
@@ -671,10 +671,26 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                 } else {
                     $qty = number($row['Order Quantity']);
                 }
+                
+                
+                $code=sprintf('<a href="/'.strtolower($row['Product Code']).'">%s</a>', $row['Product Code']);
+                if($row['is_variant']=='Yes'){
+                    $sql="select `Product Code` from `Product Dimension` where `Product ID`=? ";
+                    $stmt2 = $this->db->prepare($sql);
+                    $stmt2->execute(
+                        [
+                            $row['variant_parent_id']
+                        ]
+                    );
+                    if ($row2 = $stmt2->fetch()) {
+                        $code=sprintf('<a href="/'.strtolower($row2['Product Code']).'?variant=%s">%s</a>', $row['Product Code'],$row['Product Code']);
+
+                    }
+                }
 
 
                 $items[$row['Order Transaction Fact Key']] = array(
-                    'code'             => sprintf('<a href="/'.strtolower($row['Product Code']).'">%s</a>', $row['Product Code']),
+                    'code'             => $code,
                     'code_description' => '<b class="item_code">'.$row['Product Code'].'</b> <span class="item_description">'.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
                     'description'      => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
                     'price_raw'        => $row['Product Price'],

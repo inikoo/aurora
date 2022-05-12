@@ -12,7 +12,8 @@
 */
 
 
-class Public_Product {
+class Public_Product
+{
 
     public $table_name = 'Product';
 
@@ -53,8 +54,8 @@ class Public_Product {
      */
     private $db;
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
-
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false)
+    {
         global $db;
         $this->db      = $db;
         $this->id      = false;
@@ -68,17 +69,15 @@ class Public_Product {
         }
 
         $this->get_data($arg1, $arg2, $arg3);
-
-
     }
 
 
-    function get_data($key, $id, $aux_id = false) {
-
-
+    function get_data($key, $id, $aux_id = false)
+    {
         if ($key == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Product Dimension` WHERE `Product ID`=%d", $id
+                "SELECT * FROM `Product Dimension` WHERE `Product ID`=%d",
+                $id
             );
 
 
@@ -86,21 +85,22 @@ class Public_Product {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];
                 $this->properties  = json_decode($this->data['Product Properties'], true);
-
             }
         } elseif ($key == 'store_code') {
             $sql = sprintf(
-                "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%s  AND `Product Code`=%s", $id, prepare_mysql($aux_id)
+                "SELECT * FROM `Product Dimension` WHERE `Product Store Key`=%s  AND `Product Code`=%s",
+                $id,
+                prepare_mysql($aux_id)
             );
             if ($this->data = $this->db->query($sql)->fetch()) {
                 $this->id          = $this->data['Product ID'];
                 $this->historic_id = $this->data['Product Current Key'];
                 $this->properties  = json_decode($this->data['Product Properties'], true);
-
             }
         } elseif ($key == 'historic_key') {
             $sql = sprintf(
-                "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%d", $id
+                "SELECT * FROM `Product History Dimension` WHERE `Product Key`=%d",
+                $id
             );
 
 
@@ -109,25 +109,21 @@ class Public_Product {
                 $this->id          = $this->data['Product ID'];
 
 
-
                 $sql = sprintf("SELECT * FROM `Product Dimension` WHERE `Product ID`=%d", $this->data['Product ID']);
                 if ($row = $this->db->query($sql)->fetch()) {
-
                     foreach ($row as $key => $value) {
                         $this->data[$key] = $value;
                     }
                 }
-                $this->properties  = json_decode($this->data['Product Properties'], true);
-
+                $this->properties = json_decode($this->data['Product Properties'], true);
             }
         } else {
-
-
             return;
         }
 
         $sql = sprintf(
-            "SELECT * FROM `Product Data` WHERE `Product ID`=%d", $this->id
+            "SELECT * FROM `Product Data` WHERE `Product ID`=%d",
+            $this->id
         );
 
 
@@ -140,26 +136,52 @@ class Public_Product {
         }
 
         $sql = sprintf(
-            'SELECT * FROM `Store Dimension` WHERE `Store Key`=%d ', $this->data['Product Store Key']
+            'SELECT * FROM `Store Dimension` WHERE `Store Key`=%d ',
+            $this->data['Product Store Key']
         );
         if ($row = $this->db->query($sql)->fetch()) {
-
             foreach ($row as $key => $value) {
                 $this->data[$key] = $value;
             }
         }
-
     }
 
-    function get($key, $arg1 = '') {
+    function get_variants()
+    {
+        $variants = [];
 
+        if($this->data['number_visible_variants']==0){
+            return $variants;
+        }
+
+        $sql      = "select `Product ID` from `Product Dimension` where `variant_parent_id`=?  order by  `Product Variant Position`,`Product ID` ";
+        $stmt     = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id
+            ]
+        );
+
+        while ($row = $stmt->fetch()) {
+            $variants[] = get_object('Product', $row['Product ID']);
+        }
+
+        return $variants;
+    }
+
+
+
+
+    function get($key, $arg1 = '')
+    {
         switch ($key) {
-
 
             case 'Favourite Key':
 
                 $sql = sprintf(
-                    'SELECT `Customer Favourite Product Key`  FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Product ID`=%d AND `Customer Favourite Product Customer Key`=%d ', $this->id, $arg1
+                    'SELECT `Customer Favourite Product Key`  FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Product ID`=%d AND `Customer Favourite Product Customer Key`=%d ',
+                    $this->id,
+                    $arg1
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -201,15 +223,13 @@ class Public_Product {
                 return $this->data['Product '.$key];
 
 
-
-
-
-
             case 'Ordered Quantity':
-                $ordered_quantity='';
+                $ordered_quantity = '';
 
                 $sql = sprintf(
-                    "SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=%d", $arg1, $this->id
+                    "SELECT `Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d AND `Product ID`=%d",
+                    $arg1,
+                    $this->id
                 );
 
                 if ($result = $this->db->query($sql)) {
@@ -220,12 +240,10 @@ class Public_Product {
                         }
                     } else {
                         $ordered_quantity = '';
-
                     }
                 }
 
                 return $ordered_quantity;
-
 
 
             case 'Product Name':
@@ -241,9 +259,10 @@ class Public_Product {
             case 'Product Web State':
             case 'Product Customer Key':
             case 'Product Current Key':
-            return $this->data[$key];
-
-
+            case 'number_visible_variants':
+            case  'Product Variant Short Name':
+            case 'Product Units Per Case':
+                return $this->data[$key];
 
 
             case 'Name':
@@ -255,8 +274,6 @@ class Public_Product {
                 }
 
 
-
-
             case 'Origin':
                 if ($this->data['Product Origin Country Code'] != '') {
                     include_once 'class.Country.php';
@@ -264,7 +281,6 @@ class Public_Product {
                     if (trim($country->get('Country Name')) != '') {
                         return '<img alt="" data-country_key="'.$country->id.'"   src="/art/flags/'.strtolower($country->get('Country 2 Alpha Code')).'.png" title="'.$country->get('Country Code').'"> '._($country->get('Country Name'));
                     }
-
                 }
 
                 return '';
@@ -284,8 +300,6 @@ class Public_Product {
                     )
                 );
                 if ($row = $stmt->fetch()) {
-
-
                     $image_website = 'rwi/'.get_image_size($row['Image Key'], 330, 330, 'fit_highest').'_'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
                     $img           = '/wi/'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
 
@@ -316,17 +330,15 @@ class Public_Product {
             case 'Image':
             case 'Image Mobile In Family Webpage':
 
-                if($key=='Image'){
-                    $size='320x280';
-                }else{
-                    $size='340x214';
-
+                if ($key == 'Image') {
+                    $size = '320x280';
+                } else {
+                    $size = '340x214';
                 }
 
                 $image_key = $this->data['Product Main Image Key'];
 
                 if ($image_key) {
-
                     $image_format = $this->properties('wi_ext');
 
                     if ($image_format == '') {
@@ -340,31 +352,23 @@ class Public_Product {
                         if ($row = $stmt->fetch()) {
                             $image_format = $row['Image File Format'];
 
-                            $sql =  "UPDATE `Product Dimension` SET `Product Properties`= JSON_SET(`Product Properties`,'$.wi_ext',?) WHERE `Product ID`=?";
+                            $sql  = "UPDATE `Product Dimension` SET `Product Properties`= JSON_SET(`Product Properties`,'$.wi_ext',?) WHERE `Product ID`=?";
                             $stmt = $this->db->prepare($sql);
                             $stmt->bindParam(1, $image_format);
                             $stmt->bindParam(2, $this->id);
                             $stmt->execute();
                         }
-
-
                     }
                     if ($image_format == '') {
                         $img = '/wi.php?s='.$size.'&id='.$image_key;
-
-                    }else{
+                    } else {
                         $img = 'rwi/'.$size.'_'.$image_key.'.'.$image_format;
-
                     }
-
-
                 } else {
                     $img = '/art/nopic.png';
-
                 }
 
                 return $img;
-
 
 
             case 'Webpage Key':
@@ -399,10 +403,7 @@ class Public_Product {
 
 
                 if ($this->data['Product Units Per Case'] != 1) {
-
                     $price = '('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
-
-
                 } else {
                     $price = '';
                 }
@@ -410,7 +411,17 @@ class Public_Product {
 
                 return $price;
 
+            case 'Price Per Unit Bis':
 
+
+                if ($this->data['Product Units Per Case'] != 1) {
+                    $price = preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'];
+                } else {
+                    $price = '';
+                }
+
+
+                return $price;
             case 'Webpage RRP':
             case 'RRP':
 
@@ -418,7 +429,7 @@ class Public_Product {
                     return '';
                 }
 
-                if($this->data['Product Units Per Case']==0){
+                if ($this->data['Product Units Per Case'] == 0) {
                     return '';
                 }
 
@@ -445,8 +456,6 @@ class Public_Product {
                 }
 
                 return $label;
-
-
 
 
             case 'Out of Stock Class':
@@ -484,23 +493,21 @@ class Public_Product {
 
                 if ($this->data['Product Next Supplier Shipment'] != '' and $this->data['Product Next Supplier Shipment'] != '0000-00-00 00:00:00') {
                     return strftime("%e %b %y", strtotime($this->data['Product Next Supplier Shipment'].' +0:00'));
-
                 } else {
                     return '';
                 }
 
-                break;
+
 
             case 'Next Supplier Shipment Timestamp':
 
                 if ($this->data['Product Next Supplier Shipment'] != '' and $this->data['Product Next Supplier Shipment'] != '0000-00-00 00:00:00') {
                     return strtotime($this->data['Product Next Supplier Shipment'].' +0:00');
-
                 } else {
                     return '';
                 }
 
-                break;
+
             case 'Unit Weight':
                 include_once 'utils/natural_language.php';
 
@@ -528,7 +535,7 @@ class Public_Product {
                 if ($this->data[$this->table_name.' '.$key] != '') {
                     $data = json_decode($this->data[$this->table_name.' '.$key], true);
 
-                    if(!is_array($data)){
+                    if (!is_array($data)) {
                         return '';
                     }
 
@@ -540,22 +547,28 @@ class Public_Product {
 
                             $dimensions = number(
                                     convert_units(
-                                        $data['l'], 'm', $data['units']
+                                        $data['l'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).'x'.number(
                                     convert_units(
-                                        $data['w'], 'm', $data['units']
+                                        $data['w'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).'x'.number(
                                     convert_units(
-                                        $data['h'], 'm', $data['units']
+                                        $data['h'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
                             if ($this->data[$this->table_name." $tag Weight"] > 0 and $data['vol'] > 0) {
-
                                 $dimensions .= '<span class="discreet density">, '.number(
-                                        $this->data[$this->table_name." $tag Weight"] / $data['vol'], 3
+                                        $this->data[$this->table_name." $tag Weight"] / $data['vol'],
+                                        3
                                     ).'Kg/L</span>';
                             }
 
@@ -563,11 +576,15 @@ class Public_Product {
                         case 'Sheet':
                             $dimensions = number(
                                     convert_units(
-                                        $data['l'], 'm', $data['units']
+                                        $data['l'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).'x'.number(
                                     convert_units(
-                                        $data['w'], 'm', $data['units']
+                                        $data['w'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).' ('.$data['units'].')';
 
@@ -576,11 +593,15 @@ class Public_Product {
                         case 'Cilinder':
                             $dimensions = number(
                                     convert_units(
-                                        $data['h'], 'm', $data['units']
+                                        $data['h'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).'x'.number(
                                     convert_units(
-                                        $data['w'], 'm', $data['units']
+                                        $data['w'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).' ('.$data['units'].')';
                             $dimensions .= '<span class="discreet volume">, '.volume($data['vol']).'</span>';
@@ -597,7 +618,9 @@ class Public_Product {
 
                             $dimensions = _('Diameter').' '.number(
                                     convert_units(
-                                        $data['l'], 'm', $data['units']
+                                        $data['l'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).$data['units'];
                             $dimensions .= ', <span class="discreet">'.volume(
@@ -614,7 +637,9 @@ class Public_Product {
                         case 'String':
                             $dimensions = number(
                                     convert_units(
-                                        $data['l'], 'm', $data['units']
+                                        $data['l'],
+                                        'm',
+                                        $data['units']
                                     )
                                 ).$data['units'];
                             break;
@@ -623,12 +648,10 @@ class Public_Product {
                         default:
                             $dimensions = '';
                     }
-
                 }
 
 
                 return $dimensions;
-
 
 
             case 'Unit Dimensions Short':
@@ -645,25 +668,32 @@ class Public_Product {
 
                 if ($this->data[$this->table_name.' '.$key] != '') {
                     $data = json_decode(
-                        $this->data[$this->table_name.' '.$key], true
+                        $this->data[$this->table_name.' '.$key],
+                        true
                     );
 
-                    if($data) {
+                    if ($data) {
                         include_once 'utils/units_functions.php';
                         switch ($data['type']) {
                             case 'Rectangular':
 
                                 $dimensions = number(
                                         convert_units(
-                                            $data['l'], 'm', $data['units']
+                                            $data['l'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).'x'.number(
                                         convert_units(
-                                            $data['w'], 'm', $data['units']
+                                            $data['w'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).'x'.number(
                                         convert_units(
-                                            $data['h'], 'm', $data['units']
+                                            $data['h'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).' ('.$data['units'].')';
 
@@ -672,11 +702,15 @@ class Public_Product {
                             case 'Sheet':
                                 $dimensions = number(
                                         convert_units(
-                                            $data['l'], 'm', $data['units']
+                                            $data['l'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).'x'.number(
                                         convert_units(
-                                            $data['w'], 'm', $data['units']
+                                            $data['w'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).' ('.$data['units'].')';
 
@@ -685,11 +719,15 @@ class Public_Product {
                             case 'Cilinder':
                                 $dimensions = number(
                                         convert_units(
-                                            $data['h'], 'm', $data['units']
+                                            $data['h'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).'x'.number(
                                         convert_units(
-                                            $data['w'], 'm', $data['units']
+                                            $data['w'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).' ('.$data['units'].')';
 
@@ -705,7 +743,9 @@ class Public_Product {
                             case 'String':
                                 $dimensions = number(
                                         convert_units(
-                                            $data['l'], 'm', $data['units']
+                                            $data['l'],
+                                            'm',
+                                            $data['units']
                                         )
                                     ).$data['units'];
                                 break;
@@ -715,27 +755,24 @@ class Public_Product {
                                 $dimensions = '';
                         }
                     }
-
                 }
 
 
                 return $dimensions;
 
 
-
             case 'Materials':
 
 
                 if ($this->data[$this->table_name.' Materials'] != '') {
-
                     $xhtml_materials = '';
 
-                    $materials_data  = json_decode(
-                        $this->data[$this->table_name.' Materials'], true
+                    $materials_data = json_decode(
+                        $this->data[$this->table_name.' Materials'],
+                        true
                     );
 
-                    if($materials_data) {
-
+                    if ($materials_data) {
                         foreach ($materials_data as $material_data) {
                             if (!array_key_exists('id', $material_data)) {
                                 continue;
@@ -749,19 +786,23 @@ class Public_Product {
 
                             if ($material_data['id'] > 0) {
                                 $xhtml_materials .= sprintf(
-                                    ', %s<span >%s</span>', $may_contain_tag, $material_data['name']
+                                    ', %s<span >%s</span>',
+                                    $may_contain_tag,
+                                    $material_data['name']
                                 );
                             } else {
                                 $xhtml_materials .= sprintf(
-                                    ', %s%s', $may_contain_tag, $material_data['name']
+                                    ', %s%s',
+                                    $may_contain_tag,
+                                    $material_data['name']
                                 );
-
                             }
 
 
                             if ($material_data['ratio'] > 0) {
                                 $xhtml_materials .= sprintf(
-                                    ' (%s)', percentage($material_data['ratio'], 1)
+                                    ' (%s)',
+                                    percentage($material_data['ratio'], 1)
                                 );
                             }
                         }
@@ -772,8 +813,6 @@ class Public_Product {
                     }
 
                     return $xhtml_materials;
-
-
                 } else {
                     return '';
                 }
@@ -807,17 +846,18 @@ class Public_Product {
         return '';
     }
 
-    function properties($key) {
+    function properties($key)
+    {
         return (isset($this->properties[$key]) ? $this->properties[$key] : '');
     }
 
-    function load_webpage() {
-
+    function load_webpage()
+    {
         $this->webpage = get_object('public_webpage-scope_product', $this->id);
     }
 
-    function get_attachments() {
-
+    function get_attachments()
+    {
         $attachments = array();
 
 
@@ -829,7 +869,6 @@ class Public_Product {
 
         if ($result2 = $this->db->query($sql)) {
             foreach ($result2 as $row2) {
-
                 if ($row2['Attachment Subject Type'] == 'MSDS') {
                     $label = '<span title="'._('Material safety data sheet').'">MSDS</span>';
                 } else {
@@ -847,12 +886,10 @@ class Public_Product {
 
 
         return $attachments;
-
-
     }
 
-    function get_image_gallery() {
-
+    function get_image_gallery()
+    {
         include_once 'utils/image_functions.php';
 
         $gallery = array();
@@ -868,7 +905,6 @@ class Public_Product {
         );
         while ($row = $stmt->fetch()) {
             if ($row['Image Key']) {
-
                 $image_website = 'rwi/'.get_image_size($row['Image Key'], '', 50, 'height').'_'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
                 $img           = 'wi/'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
 
@@ -887,16 +923,17 @@ class Public_Product {
 
 
         return $gallery;
-
     }
 
-    function get_number_images() {
-
+    function get_number_images()
+    {
         $subject = $this->table_name;
 
         $number_of_images = 0;
         $sql              = sprintf(
-            "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ", prepare_mysql($subject), $this->id
+            "SELECT count(*) AS num FROM `Image Subject Bridge` WHERE `Image Subject Object`=%s AND `Image Subject Object Key`=%d ",
+            prepare_mysql($subject),
+            $this->id
         );
         //print $sql;
 
@@ -911,13 +948,13 @@ class Public_Product {
         return $number_of_images;
     }
 
-    function get_object_name() {
+    function get_object_name()
+    {
         return $this->table_name;
-
     }
 
-    function get_deal_components($scope = 'keys', $options = 'Active') {
-
+    function get_deal_components($scope = 'keys', $options = 'Active')
+    {
         switch ($options) {
             case 'Active':
                 $where = 'AND `Deal Component Status`=\'Active\'';
@@ -934,40 +971,33 @@ class Public_Product {
         $parent_categories = $this->get_parent_categories();
 
         if (count($parent_categories) > 0) {
-
             $sql = sprintf(
-                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where", join(',', $parent_categories)
+                "SELECT `Deal Component Key` FROM `Deal Component Dimension` WHERE `Deal Component Allowance Target`='Category' AND `Deal Component Allowance Target Key` in (%s) $where",
+                join(',', $parent_categories)
 
             );
 
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
                     if ($scope == 'objects') {
                         $deal_components[$row['Deal Component Key']] = get_object('DealComponent', $row['Deal Component Key']);
                     } else {
                         $deal_components[$row['Deal Component Key']] = $row['Deal Component Key'];
                     }
-
-
                 }
             } else {
                 print_r($error_info = $this->db->errorInfo());
                 exit;
             }
-
         }
 
 
         return $deal_components;
-
-
     }
 
-    function get_parent_categories($scope = 'keys') {
-
-
+    function get_parent_categories($scope = 'keys')
+    {
         $type              = 'Product';
         $parent_categories = array();
 
@@ -982,20 +1012,18 @@ class Public_Product {
 
             prepare_mysql('Category Products'),
 
-            $this->id, prepare_mysql($type)
+            $this->id,
+            prepare_mysql($type)
         );
 
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
                 if ($scope == 'keys') {
                     $parent_categories[$row['Category Key']] = $row['Category Key'];
                 } elseif ($scope == 'objects') {
                     $parent_categories[$row['Category Key']] = get_object('Category', $row['Category Key']);
                 } elseif ($scope == 'data') {
-
-
                     $value = $row['Category Label'];
 
                     $parent_categories[] = array(
@@ -1008,7 +1036,6 @@ class Public_Product {
 
                     );
                 }
-
             }
         } else {
             print_r($error_info = $this->db->errorInfo());
@@ -1019,8 +1046,8 @@ class Public_Product {
         return $parent_categories;
     }
 
-    function get_images_slideshow() {
-
+    function get_images_slideshow()
+    {
         include_once __DIR__.'/utils/natural_language.php';
 
 
