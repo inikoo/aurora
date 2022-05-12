@@ -2321,6 +2321,8 @@ function variants($_data, $db, $user, $account)
                 $outers_per_carton = '<span class="italic very_discreet">NA</span>';
             }
 
+$position=$data['Product Variant Position']<10?10:$data['Product Variant Position']/10;
+
 
             $record_data[] = array(
 
@@ -2339,7 +2341,7 @@ function variants($_data, $db, $user, $account)
                     $data['Product Show Variant'],
                     'Product_Show_Variant',
                 ),
-
+                'position'=>get_ordinal_suffix($position),
 
 
                 'name' => sprintf(

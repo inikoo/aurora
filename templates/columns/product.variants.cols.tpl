@@ -121,9 +121,9 @@ label: "{t}Position{/t}",
 editable: false,
 sortType: "toggle",
 
-cell: Backgrid.HtmlCell.extend({
-className: ""
-})
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
 
 },
 

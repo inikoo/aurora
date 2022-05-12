@@ -840,6 +840,38 @@ class Product extends Asset
 
     }
 
+
+    function reindex_variants_positions(){
+        $sql="select `Product Variant Position`,`Product ID` from `Product Dimension` where `variant_parent_id`=?  order by  `Product Variant Position`,`Product ID` ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id
+            ]
+        );
+        $positions=[];
+        $position_index=0;
+        while ($row = $stmt->fetch()) {
+            $position_index++;
+
+            $positions[$row['Product ID']]=$position_index;
+
+        }
+
+
+        foreach($positions as $product_id=>$position){
+            $sql="update `Product Dimension` set `Product Variant Position`=? where`Product ID` =?  ";
+            $this->db->prepare($sql)->execute(
+                [
+                    $position*10,
+                    $product_id
+                ]
+            );
+
+        }
+
+    }
+
     function update_variants_stats(){
 
         $number_variants=0;
