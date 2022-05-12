@@ -11,7 +11,7 @@
 
 
 <div id="variant_chooser_dialog_{$master_id}" class="variant_chooser_dialog hide" style="position: absolute;z-index: 10000;background: #FFF" >
-    <table class="variant_chooser" style="width: 600px"  >
+    <table class="variant_chooser" >
         <tr>
             <th></th>
             <th style="text-align: right">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</th>

@@ -18,7 +18,7 @@
         cursor: pointer;
     }
     .variant_chooser td {
-        border-bottom: 1px solid #eee;padding:4px 10px;
+        border-bottom: 1px solid #eee;padding:4px 30px;
     }
     .variant_chooser tr:hover {
         color:#333;
