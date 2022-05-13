@@ -2917,12 +2917,15 @@ class Part extends Asset
             case 'Part Origin Country Code':
 
 
+
                 if ($value == '') {
                     $this->error = true;
                     $this->msg   = _("Country of origin missing");
 
                     return;
                 }
+
+
 
                 include_once 'class.Country.php';
                 $country = new Country('find', $value);
@@ -2934,11 +2937,18 @@ class Part extends Asset
                 }
 
 
+                print $this->id." $field ".$country->get('Country Code')."\n";
+
+
+
                 $this->update_field(
                     $field,
                     $country->get('Country Code'),
                     $options
                 );
+
+                exit('pppppp');
+
                 $updated = $this->updated;
 
                 foreach ($this->get_products('objects') as $product) {

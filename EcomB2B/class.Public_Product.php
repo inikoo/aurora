@@ -150,12 +150,12 @@ class Public_Product
     {
         $variants = [];
 
-        if($this->data['number_visible_variants']==0){
+        if ($this->data['number_visible_variants'] == 0) {
             return $variants;
         }
 
-        $sql      = "select `Product ID` from `Product Dimension` where `variant_parent_id`=?  order by  `Product Variant Position`,`Product ID` ";
-        $stmt     = $this->db->prepare($sql);
+        $sql  = "select `Product ID` from `Product Dimension` where `variant_parent_id`=?  order by  `Product Variant Position`,`Product ID` ";
+        $stmt = $this->db->prepare($sql);
         $stmt->execute(
             [
                 $this->id
@@ -163,19 +163,40 @@ class Public_Product
         );
 
         while ($row = $stmt->fetch()) {
-            $variants[] = get_object('Product', $row['Product ID']);
+            $variants[] = get_object('Public_Product', $row['Product ID']);
         }
 
         return $variants;
     }
 
+    function get_variants_data()
+    {
+        $variants_data = [];
 
+        foreach ($this->get_variants() as $variant) {
+            $variants_data[] = [
+                'id'                      => $variant->id,
+                'product_id'              => $variant->id,
+                'code'                    => $variant->get('Code'),
+                'name'                    => $variant->get('Name'),
+                'price'                   => $variant->get('Price'),
+                'units'                   => $variant->get('Product Units Per Case'),
+                'price_unit_bis'          => $variant->get('Price Per Unit Bis'),
+                'label'                   => $variant->get('Product Variant Short Name'),
+                'web_state'               => $variant->get('Web State'),
+                'next_shipment_timestamp' => $variant->get('Next Supplier Shipment Timestamp')
+
+
+            ];
+        }
+
+        return $variants_data;
+    }
 
 
     function get($key, $arg1 = '')
     {
         switch ($key) {
-
             case 'Favourite Key':
 
                 $sql = sprintf(
@@ -414,14 +435,11 @@ class Public_Product
             case 'Price Per Unit Bis':
 
 
-                if ($this->data['Product Units Per Case'] != 1) {
-                    $price = preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'];
-                } else {
-                    $price = '';
-                }
+
+                return preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'];
 
 
-                return $price;
+
             case 'Webpage RRP':
             case 'RRP':
 
@@ -496,7 +514,6 @@ class Public_Product
                 } else {
                     return '';
                 }
-
 
 
             case 'Next Supplier Shipment Timestamp':
