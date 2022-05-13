@@ -34,7 +34,7 @@
                     {counter print=false assign="counter"}
                     <div class="product_block item product_container" data-product_id="{$item.product_id}">
                         <div class="product_header_text _au_vw_">
-                            {$item.header_text}
+                            <p style="margin-bottom: 0px!important;"> {$item.header_text}</p>
                         </div>
 
 
@@ -126,41 +126,44 @@
                                         </div>
 
                                     </div>
-                                {/if}
+                                {else}
+                                    {if $item.web_state=='Out of Stock'}
 
-                                {if $item.web_state=='Out of Stock'}
+
+                                        {if !empty($item.next_shipment_timestamp)  }
+                                            <div class="  out_of_stock_row  out_of_stock {if  $item.next_shipment_timestamp<$smarty.now}hide{/if} "
+                                                 style="opacity:1;font-style: italic;;position:absolute;bottom:15px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 226px">
+                                                <span style="padding-left: 10px">{t}Expected{/t}: {$item.next_shipment_timestamp|date_format:"%x"}</span>
+                                            </div>
+                                        {/if}
+                                        <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
+                                            <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
+                                            <i data-product_id="{$item.product_id}"
+                                               data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                               data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                               title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                               class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5"
+                                               aria-hidden="true"></i>
 
 
-                                    {if !empty($item.next_shipment_timestamp)  }
-                                        <div class="  out_of_stock_row  out_of_stock {if  $item.next_shipment_timestamp<$smarty.now}hide{/if} "
-                                             style="opacity:1;font-style: italic;;position:absolute;bottom:15px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 226px">
-                                            <span style="padding-left: 10px">{t}Expected{/t}: {$item.next_shipment_timestamp|date_format:"%x"}</span>
+                                        </div>
+                                    {elseif  $item.web_state=='For Sale'}
+                                        <div class="order_row empty  order_row_{$item.product_id} ">
+                                            <input maxlength=6 class='order_input  ' type="text"' size='2' value=''
+                                            data-ovalue=''>
+
+                                            <div class="label sim_button" style="margin-left:57px">
+                                                <i class="hide fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span
+                                                        class="hide">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
+                                            </div>
+
+
                                         </div>
                                     {/if}
-                                    <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
-                                        <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
-                                        <i data-product_id="{$item.product_id}"
-                                           data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
-                                           data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                           title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                           class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5"
-                                           aria-hidden="true"></i>
 
-
-                                    </div>
-                                {elseif  $item.web_state=='For Sale'}
-                                    <div class="order_row empty  order_row_{$item.product_id} ">
-                                        <input maxlength=6 class='order_input  ' type="text"' size='2' value=''
-                                        data-ovalue=''>
-
-                                        <div class="label sim_button" style="margin-left:57px">
-                                            <i class="hide fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span
-                                                    class="hide">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
-                                        </div>
-
-
-                                    </div>
                                 {/if}
+
+
                             {else}
                                 {foreach from=$item.variants item=variant name=variant}
                                     <div id="ordering_variant_{$variant.id}"
@@ -202,40 +205,44 @@
                                                 </div>
 
                                             </div>
-                                         {/if}
-                                        {if $variant.web_state=='Out of Stock'}
+                                         {else}
+
+                                            {if $variant.web_state=='Out of Stock'}
 
 
-                                            {if !empty($variant.next_shipment_timestamp)  }
-                                                <div class="  out_of_stock_row  out_of_stock {if  $variant.next_shipment_timestamp<$smarty.now}hide{/if} "
-                                                     style="opacity:1;font-style: italic;;position:absolute;bottom:15px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 226px">
-                                                    <span style="padding-left: 10px">{t}Expected{/t}: {$variant.next_shipment_timestamp|date_format:"%x"}</span>
+                                                {if !empty($variant.next_shipment_timestamp)  }
+                                                    <div class="  out_of_stock_row  out_of_stock {if  $variant.next_shipment_timestamp<$smarty.now}hide{/if} "
+                                                         style="opacity:1;font-style: italic;;position:absolute;bottom:15px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 226px">
+                                                        <span style="padding-left: 10px">{t}Expected{/t}: {$variant.next_shipment_timestamp|date_format:"%x"}</span>
+                                                    </div>
+                                                {/if}
+                                                <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
+                                                    <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
+                                                    <i data-product_id="{$variant.product_id}"
+                                                       data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                                       data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                       title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                       class="far fa-envelope like_button reminder out_of_stock_reminders_{$variant.product_id} margin_left_5"
+                                                       aria-hidden="true"></i>
+
+
+                                                </div>
+                                            {elseif  $variant.web_state=='For Sale'}
+                                                <div class="order_row empty  order_row_{$variant.id} ">
+                                                    <input maxlength=6 class='order_input  ' type="text"' size='2' value=''
+                                                    data-ovalue=''>
+
+                                                    <div class="label sim_button" style="margin-left:57px">
+                                                        <i class="hide fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span
+                                                                class="hide">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
+                                                    </div>
+
+
                                                 </div>
                                             {/if}
-                                            <div class="ordering log_in can_not_order  out_of_stock_row  out_of_stock ">
-                                                <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
-                                                <i data-product_id="{$variant.product_id}"
-                                                   data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
-                                                   data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                                   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                                   class="far fa-envelope like_button reminder out_of_stock_reminders_{$variant.product_id} margin_left_5"
-                                                   aria-hidden="true"></i>
 
+                                         {/if}
 
-                                            </div>
-                                        {elseif  $variant.web_state=='For Sale'}
-                                            <div class="order_row empty  order_row_{$variant.id} ">
-                                                <input maxlength=6 class='order_input  ' type="text"' size='2' value=''
-                                                data-ovalue=''>
-
-                                                <div class="label sim_button" style="margin-left:57px">
-                                                    <i class="hide fa fa-hand-pointer fa-fw" aria-hidden="true"></i> <span
-                                                            class="hide">{if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}</span>
-                                                </div>
-
-
-                                            </div>
-                                        {/if}
 
                                     </div>
 
