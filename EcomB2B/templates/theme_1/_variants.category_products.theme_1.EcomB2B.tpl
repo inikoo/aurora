@@ -11,7 +11,7 @@
 
 
 
-<div id="variant_chooser_dialog_{$master_id}" class="variant_chooser_dialog hide" style="width:226px;position: absolute;z-index: 10000;background: #FFF" >
+<div id="variant_chooser_dialog_{$master_id}" class="variant_chooser_dialog hide" style="width:226px;position: absolute;z-index: 4000;background: #FFF" >
     <table class="variant_chooser" >
         <tr>
             <th></th>
