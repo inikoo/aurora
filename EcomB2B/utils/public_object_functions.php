@@ -53,6 +53,7 @@ function get_object($object_name, $key, $load_other_data = false) {
             include_once 'class.Public_Image.php';
             $object = new Public_Image($key);
             break;
+        case 'public_product':
         case 'product':
         case 'service':
             include_once 'class.Public_Product.php';
