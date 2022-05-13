@@ -772,10 +772,10 @@ class Product extends Asset
     }
 
 
-    function create_variant($variant_data){
-
-        $this->new_product=false;
-        $code=$this->data['Product Code'].'-'.$variant_data['Product Code'];
+    function create_variant($variant_data)
+    {
+        $this->new_product = false;
+        $code              = $this->data['Product Code'].'-'.$variant_data['Product Code'];
 
         if ($code == '') {
             $this->error      = true;
@@ -804,80 +804,90 @@ class Product extends Asset
         }
 
 
-        $variant_data['Product Code']=$code;
+        $variant_data['Product Code'] = $code;
 
-        $variant_data['Product Unit Label']=$this->data['Product Unit Label'];
-        $variant_data['Product Unit RRP']='';
+        $variant_data['Product Unit Label'] = $this->data['Product Unit Label'];
+        $variant_data['Product Unit RRP']   = '';
 
-        $variant_data['is_variant']='Yes';
-        $variant_data['variant_parent_id']=$this->id;
+        $variant_data['is_variant']        = 'Yes';
+        $variant_data['variant_parent_id'] = $this->id;
 
-        $variant_data['Product Family Category Key']=$this->data['Product Family Category Key'];
+        $variant_data['Product Family Category Key'] = $this->data['Product Family Category Key'];
 
-        $store=get_object('Store',$this->get('Product Store Key'));
-        $store->editor=$this->editor;
+        $store         = get_object('Store', $this->get('Product Store Key'));
+        $store->editor = $this->editor;
 
         //print_r($variant_data);
 
-        $variant=$store->create_product($variant_data);
+        $variant = $store->create_product($variant_data);
 
-        if($variant->id){
+        if ($variant->id) {
             $variant->fast_update(
                 [
-                    'Product RRP'=>$this->data['Product RRP']
+                    'Product RRP' => $this->data['Product RRP']
                 ]
             );
         }
 
 
-        $this->new_product=$store->new_product;
-        $this->msg=$store->msg;
+        $this->new_product = $store->new_product;
+        $this->msg         = $store->msg;
 
         $this->update_variants_stats();
 
+
+        require_once 'utils/new_fork.php';
+        new_housekeeping_fork(
+            'au_housekeeping',
+            array(
+                'type'       => 'update_product_webpages',
+                'product_id' => $this->id,
+                'scope'      => 'variants',
+                'editor'     => $this->editor
+            ),
+            DNS_ACCOUNT_CODE
+        );
+
+
         return $variant;
-
-
     }
 
 
-    function reindex_variants_positions(){
-        $sql="select `Product Variant Position`,`Product ID` from `Product Dimension` where `variant_parent_id`=?  order by  `Product Variant Position`,`Product ID` ";
+    function reindex_variants_positions()
+    {
+        $sql  = "select `Product Variant Position`,`Product ID` from `Product Dimension` where `variant_parent_id`=?  order by  `Product Variant Position`,`Product ID` ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             [
                 $this->id
             ]
         );
-        $positions=[];
-        $position_index=0;
+        $positions      = [];
+        $position_index = 0;
         while ($row = $stmt->fetch()) {
             $position_index++;
 
-            $positions[$row['Product ID']]=$position_index;
-
+            $positions[$row['Product ID']] = $position_index;
         }
 
 
-        foreach($positions as $product_id=>$position){
-            $sql="update `Product Dimension` set `Product Variant Position`=? where`Product ID` =?  ";
+        foreach ($positions as $product_id => $position) {
+            $sql = "update `Product Dimension` set `Product Variant Position`=? where`Product ID` =?  ";
             $this->db->prepare($sql)->execute(
                 [
-                    $position*10,
+                    $position * 10,
                     $product_id
                 ]
             );
-
         }
-
     }
 
-    function update_variants_stats(){
-
-        $number_variants=0;
-        $number_visible_variants=0;
-        $sql="select count(*) as num from `Product Dimension` where `variant_parent_id`=?  and `Product ID`!=?  ";
-        $stmt = $this->db->prepare($sql);
+    function update_variants_stats()
+    {
+        $number_variants         = 0;
+        $number_visible_variants = 0;
+        $sql                     = "select count(*) as num from `Product Dimension` where `variant_parent_id`=?  and `Product ID`!=?  ";
+        $stmt                    = $this->db->prepare($sql);
         $stmt->execute(
             [
                 $this->id,
@@ -885,10 +895,10 @@ class Product extends Asset
             ]
         );
         while ($row = $stmt->fetch()) {
-            $number_variants=$row['num'];
+            $number_variants = $row['num'];
         }
 
-        $sql="select count(*) as num from `Product Dimension` where `variant_parent_id`=? and `Product Show Variant`='Yes' and `Product ID`!=?  ";
+        $sql  = "select count(*) as num from `Product Dimension` where `variant_parent_id`=? and `Product Show Variant`='Yes' and `Product ID`!=?  ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             [
@@ -897,18 +907,17 @@ class Product extends Asset
             ]
         );
         while ($row = $stmt->fetch()) {
-            $number_visible_variants=$row['num'];
+            $number_visible_variants = $row['num'];
         }
 
 
         $this->fast_update(
             [
-                'has_variants'=>$number_variants>0?'Yes':'No',
-                'number_variants'=>$number_variants,
-                'number_visible_variants'=>$number_visible_variants
+                'has_variants'            => $number_variants > 0 ? 'Yes' : 'No',
+                'number_variants'         => $number_variants,
+                'number_visible_variants' => $number_visible_variants
             ]
         );
-
     }
 
 
@@ -1007,7 +1016,7 @@ class Product extends Asset
             $this->update_historic_object();
             $this->get_data('id', $this->id);
 
-            if($this->data['is_variant']=='No') {
+            if ($this->data['is_variant'] == 'No') {
                 $this->fast_update([
                                        'variant_parent_id' => $this->id,
 
@@ -3107,7 +3116,32 @@ class Product extends Asset
 
                 break;
 
+            case 'Product Variant Short Name':
+                if ($value == '') {
+                    $this->error = true;
+                    $this->msg   = _('Value missing');
 
+                    return;
+                }
+                $this->update_field($field, $value, $options);
+
+                $id = $this->id;
+                if ($this->data['is_variant'] == 'Yes') {
+                    $id = $this->data['variant_parent_id'];
+                }
+
+                new_housekeeping_fork(
+                    'au_housekeeping',
+                    array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $id,
+                        'scope'      => 'variants',
+                        'editor'     => $this->editor
+                    ),
+                    DNS_ACCOUNT_CODE
+                );
+
+                break;
             case 'Product Price':
 
 
@@ -3153,11 +3187,17 @@ class Product extends Asset
 
 
                     require_once 'utils/new_fork.php';
+
+                    $id = $this->id;
+                    if ($this->data['is_variant'] == 'Yes') {
+                        $id = $this->data['variant_parent_id'];
+                    }
+
                     new_housekeeping_fork(
                         'au_housekeeping',
                         array(
                             'type'       => 'update_product_webpages',
-                            'product_id' => $this->id,
+                            'product_id' => $id,
                             'scope'      => 'price',
                             'editor'     => $this->editor
                         ),
@@ -3934,14 +3974,10 @@ class Product extends Asset
                 $sko = $part_data['Ratio'];
 
 
-
                 if ($part_data['Part']->get('Part SKOs per Carton') > 0) {
-                    $sko_per_carton =   $part_data['Part']->get('Part SKOs per Carton')/$part_data['Ratio'];
+                    $sko_per_carton = $part_data['Part']->get('Part SKOs per Carton') / $part_data['Ratio'];
 
                     $carton = $part_data['Ratio'] / $part_data['Part']->get('Part SKOs per Carton');
-
-
-
                 }
             }
         }
