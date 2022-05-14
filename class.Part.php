@@ -2937,7 +2937,7 @@ class Part extends Asset
                 }
 
 
-                print $this->id." $field ".$country->get('Country Code')."\n";
+
 
 
 
@@ -2947,7 +2947,7 @@ class Part extends Asset
                     $options
                 );
 
-                exit('pppppp');
+
 
                 $updated = $this->updated;
 
@@ -4316,9 +4316,6 @@ class Part extends Asset
                 $sales_data['required']        = $row['required'];
                 $sales_data['deliveries']      = $row['deliveries'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
         }
 
 
@@ -4867,9 +4864,6 @@ class Part extends Asset
                         if ($row = $result->fetch()) {
                             $invoiced = $row['invoiced'];
                         }
-                    } else {
-                        print_r($error_info = $this->db->errorInfo());
-                        exit;
                     }
 
 
