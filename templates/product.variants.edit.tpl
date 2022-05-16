@@ -34,6 +34,8 @@
 </div>
 
 
+
+
 <div id="set_price_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
     <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_product_price_dialog()" aria-hidden="true"></i>
     {t}Price{/t} (<span id="set_price_currency"></span>)
@@ -47,13 +49,33 @@
 
 <script>
 
+    function open_edit_position(element){
+
+        var element=$(element)
+        var offset = element.offset()
+
+        $('#set_text_value')
+            .data('product_id',element.data('id'))
+            .data('field',element.data('field'))
+            .data('type','position')
+            .data('element',element).css('width', '40px')
+        $('#set_text_dialog').removeClass('hide').offset({
+            top: offset.top -7.5,
+            left: offset.left +element.width()- $('#set_text_dialog').width()-30
+        })
+
+        $('#set_text_value').focus();
+
+    }
+
     function open_edit_txt(element){
         var element=$(element)
         var offset = element.offset()
         $('#set_text_value').val(element.data('value'))
             .data('product_id',element.data('id'))
             .data('field',element.data('field'))
-            .data('element',element).focus()
+            .data('type','text')
+            .data('element',element).focus().css('width', '300px')
         $('#set_text_dialog').removeClass('hide').offset({
             top: offset.top -7.5,
             left: offset.left +element.width()- $('#set_text_dialog').width()
@@ -100,13 +122,31 @@
             $.getJSON(request, function (r) {
 
                 $('#set_text_save').removeClass('fa-spinner fa-spin')
-
-                console.log(r)
-                element = $('#set_text_value').data('element');
-                var tr = element.closest('tr')
-                tr.find('.'+$('#set_text_value').data('field')).parent().html(r.value)
                 close_product_text_dialog();
-                console.log(r)
+
+
+                if($('#set_text_value').data('field')=='Product_Variant_Position'){
+                    $('#set_text_value').val('')
+                    rows.fetch({
+                        reset: true
+                    });
+                }else{
+                    element = $('#set_text_value').data('element');
+                    var tr = element.closest('tr')
+                    tr.find('.'+$('#set_text_value').data('field')).html(r.value).data('value',r.value)
+                }
+
+
+
+
+
+
+
+
+
+                //console.log($('#set_text_value').data('field'))
+                //console.log(r)
+
             });
         }
     }
@@ -122,7 +162,7 @@
 
 
 
-    function open_edit_variant_price(element){
+    function open_edit_price(element){
 
 
         var element=$(element)
@@ -196,7 +236,7 @@
 
                 $('#set_price_save').removeClass('fa-spinner fa-spin')
 
-                console.log(r)
+
                 element = $('#set_price_value').data('element');
                 var tr = element.closest('tr')
                 tr.find('.product_price').parent().html(r.update_metadata.price_cell)

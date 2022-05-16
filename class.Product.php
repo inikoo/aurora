@@ -862,7 +862,7 @@ class Product extends Asset
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             [
-                $this->id
+                $this->data['variant_parent_id']
             ]
         );
         $positions      = [];
@@ -3119,6 +3119,44 @@ class Product extends Asset
 
                 break;
 
+            case 'Product Variant Position':
+
+                $sql  = "select `Product Variant Position`,`Product ID` from `Product Dimension` where `variant_parent_id`=?  and `Product ID`!=?  order by  `Product Variant Position`,`Product ID` ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $this->data['variant_parent_id'],
+                        $this->id
+                    ]
+                );
+                $positions      = [];
+                $position_index = 0;
+                while ($row = $stmt->fetch()) {
+                    $position_index++;
+                    $positions[$row['Product ID']] = $position_index;
+                }
+
+
+
+
+                foreach ($positions as $product_id => $position) {
+                    $sql = "update `Product Dimension` set `Product Variant Position`=? where`Product ID` =?  ";
+                    $this->db->prepare($sql)->execute(
+                        [
+                            $position * 10,
+                            $product_id
+                        ]
+                    );
+                }
+
+
+                $new_pos = ($value * 10) - 5;
+
+                $this->fast_update([$field => $new_pos]);
+                $this->reindex_variants_positions();
+
+
+                break;
             case 'Product Variant Short Name':
                 if ($value == '') {
                     $this->error = true;

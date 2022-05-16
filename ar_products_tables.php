@@ -2341,8 +2341,13 @@ $position=$data['Product Variant Position']<10?10:$data['Product Variant Positio
                     $data['Product Show Variant'],
                     'Product_Show_Variant',
                 ),
-                'position'=>get_ordinal_suffix($position),
 
+                'position' => sprintf(
+                    '<span style="cursor:text" class="Product_Variant_Position"  data-id="%d"  data-field="%s"  onClick="open_edit_position(this)">%s</span>',
+                    $data['Product ID'],
+                    'Product_Variant_Position',
+                    get_ordinal_suffix($position)
+                ),
 
                 'name' => sprintf(
                     '<span style="cursor:text" class="Product_Name"  data-id="%d" data-value="%s" data-field="%s"  onClick="open_edit_txt(this)">%s</span>',
@@ -2363,7 +2368,7 @@ $position=$data['Product Variant Position']<10?10:$data['Product Variant Positio
                 'units'      => $data['Product Units Per Case'],
                 'price_unit' => money($data['Product Price'] / $data['Product Units Per Case'], $data['Store Currency Code']).'/u',
                 'price'      => sprintf(
-                    '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_variant_price(this)">%s</span>',
+                    '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',
                     money($exchange * $data['Product Price'], $account->get('Account Currency')),
                     $data['Product ID'],
                     $data['Product Price'],

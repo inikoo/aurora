@@ -113,6 +113,8 @@ $_order = $order;
 
 if ($order == 'stock') {
     $order = '`Product Availability`';
+}  elseif ($order == 'position') {
+    $order = '`Product Variant Position`';
 } elseif ($order == 'code') {
     $order = '`Product Code File As`';
 } elseif ($order == 'name') {
