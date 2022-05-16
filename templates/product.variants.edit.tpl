@@ -37,7 +37,7 @@
 <div id="set_price_dialog" class="hide" style="position:absolute;border:1px solid #ccc;background-color: white;padding:10px 10px;z-index: 100">
     <i style="position:relative;top:-7px;margin-right:10px" class="fa fa-window-close button" onClick="close_product_price_dialog()" aria-hidden="true"></i>
     {t}Price{/t} (<span id="set_price_currency"></span>)
-    <input id="set_price_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" product_id="" /> <i id="set_price_save" onClick="save_product_price(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i>
+    <input id="set_price_value" class=" width_75" value="" old_margin="" ovalue="" exchange="" cost="" data-product_id="" /> <i id="set_price_save" onClick="save_product_price(this)" class="fa  fa-cloud fa-fw button  save    " aria-hidden="true"></i>
 </div>
 
 <div class="hide"  style="border-bottom: 1px solid #ccc;min-height: 120px">
@@ -92,6 +92,7 @@
     }
     function  save_product_text(){
 
+
         if($('#set_text_save').hasClass('valid')){
             $('#set_text_save').addClass('fa-spinner fa-spin').removeClass('valid changed')
             var request='/ar_edit.php?tipo=edit_field&object=Product&key='+ $('#set_text_value').data('product_id')+'&field='+$('#set_text_value').data('field')+'&value='+ $('#set_text_value').val()
@@ -118,15 +119,18 @@
     function close_product_text_dialog(){
         $('#set_text_dialog').addClass('hide')
     }
-    
-    
 
-    function open_edit_price(element){
+
+
+    function open_edit_variant_price(element){
+
 
         var element=$(element)
         var offset = element.offset()
         $('#set_price_currency').html(element.attr('currency'))
-        $('#set_price_value').val(element.attr('price')).data('product_id',element.attr('pid')).attr('ovalue',element.attr('price')).attr('old_margin',element.attr('old_margin')).attr('exchange',element.attr('exchange')).attr('cost',element.attr('cost')).data('element',element).focus()
+        $('#set_price_value').val(element.attr('price')).attr('product_id',element.attr('pid')).attr('ovalue',element.attr('price')).attr('old_margin',element.attr('old_margin')).attr('exchange',element.attr('exchange')).attr('cost',element.attr('cost')).data('element',element).focus()
+
+
         $('#set_price_dialog').removeClass('hide').offset({
             top: offset.top -7.5,
             left: offset.left +element.width()- $('#set_price_dialog').width()-20
@@ -181,7 +185,7 @@
 
 
     }
-    
+
     function  save_product_price(){
 
         if($('#set_price_save').hasClass('valid')){
