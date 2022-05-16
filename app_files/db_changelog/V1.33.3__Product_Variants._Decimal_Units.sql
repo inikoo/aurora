@@ -1,0 +1,2 @@
+ALTER TABLE `Product Dimension` CHANGE `Product Units Per Case` `Product Units Per Case` decimal(12,3) NULL COMMENT '';
+ALTER TABLE `Product History Dimension` CHANGE `Product History Units Per Case` `Product History Units Per Case` decimal(12,3) NULL COMMENT '';
