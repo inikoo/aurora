@@ -41,6 +41,19 @@
 
     function open_variant_chooser(element,master_id){
 
+
+        let icon=$(element).find('i');
+        if(icon.hasClass('fa-angle-up')){
+
+
+            $('#variant_chooser_dialog_'+master_id).addClass('hide')
+
+            icon.addClass('fa-angle-down').removeClass('fa-angle-up')
+            return;
+        }
+        icon.removeClass('fa-angle-down').addClass('fa-angle-up')
+
+
         let dialog=$('#variant_chooser_dialog_'+master_id)
 
         let offset = $(element).offset();

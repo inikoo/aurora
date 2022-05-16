@@ -264,9 +264,9 @@ if ($result = $db->query($sql)) {
         } else {
 
             $desc = '';
-            if ($units > 1) {
-                $desc = number($units).'x ';
-            }
+
+            $desc = number($units).'x ';
+
             $desc .= ' '.$name;
             if ($price > 0) {
                 $desc .= ' ('.money($price, $currency, $_locale).')';

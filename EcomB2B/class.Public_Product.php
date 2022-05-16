@@ -181,6 +181,7 @@ class Public_Product
                 'name'                    => $variant->get('Name'),
                 'price'                   => $variant->get('Price'),
                 'units'                   => $variant->get('Product Units Per Case'),
+                'formatted_units'         => get_html_fractions($variant->get('Product Units Per Case')),
                 'price_unit_bis'          => $variant->get('Price Per Unit Bis'),
                 'label'                   => $variant->get('Product Variant Short Name'),
                 'web_state'               => $variant->get('Web State'),
@@ -197,6 +198,11 @@ class Public_Product
     function get($key, $arg1 = '')
     {
         switch ($key) {
+
+            case 'Formatted Units':
+
+                return get_html_fractions($this->data['Product Units Per Case']);
+
             case 'Favourite Key':
 
                 $sql = sprintf(
@@ -289,7 +295,9 @@ class Public_Product
             case 'Name':
 
                 if ($this->data['Product Units Per Case'] > 1) {
-                    return $this->data['Product Units Per Case'].'x '.$this->data['Product Name'];
+                    return get_html_fractions($this->data['Product Units Per Case']).'x '.$this->data['Product Name'];
+                } elseif ($this->data['Product Units Per Case'] <= 1) {
+                    return get_html_fractions($this->data['Product Units Per Case']).' '.$this->data['Product Name'];
                 } else {
                     return $this->data['Product Name'];
                 }
@@ -435,9 +443,7 @@ class Public_Product
             case 'Price Per Unit Bis':
 
 
-
                 return preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'];
-
 
 
             case 'Webpage RRP':

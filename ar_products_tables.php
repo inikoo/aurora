@@ -315,7 +315,7 @@ function products($_data, $db, $user, $account)
                         $data['Product Code']
                     );
                     $name = number($data['Product Part Ratio'], 5).' <i class="far fa-box" title="'.sprintf(_('Each outer pick %s part SKOs'), number($data['Product Part Ratio'])).'"></i> =  '.$data['Product Name'].($data['Product Units Per Case'] != 1
-                            ? '<span class="discreet italic small">('.$data['Product Units Per Case'].' '._('units').')</span>' : '');
+                            ? '<span class="discreet italic small">('.get_html_fractions($data['Product Units Per Case']).' '._('units').')</span>' : '');
 
 
                     if ($data['Part Units Per Package'] != 0 and $data['Part Unit Price'] != 0 and $exchange != 0 and $data['Product Price'] > 0) {
@@ -331,21 +331,31 @@ function products($_data, $db, $user, $account)
 
                     break;
                 case 'category':
-                    if ($data['Product Units Per Case'] == 1) {
-                        $name = '<span>'.$data['Product Name'].'</span>';
-                    } else {
-                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+
+
+                    $_units=get_html_fractions($data['Product Units Per Case']);
+                    if(is_numeric($_units)){
+                        $_units.='x';
                     }
+
+
+                    $name =  $_units.' <span> '.$data['Product Name'].'</span>';
+
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%sproduct/%d\')" title="%s">%s</span>', $data['Store Key'], $path, $data['Product ID'], $name, $data['Product Code']);
 
                     break;
                 default:
 
-                    if ($data['Product Units Per Case'] == 1) {
-                        $name = '<span>'.$data['Product Name'].'</span>';
-                    } else {
-                        $name = '<span >'.$data['Product Units Per Case'].'</span>x <span>'.$data['Product Name'].'</span>';
+
+                    $_units=get_html_fractions($data['Product Units Per Case']);
+                    if(is_numeric($_units)){
+                        $_units.='x';
                     }
+
+
+                        $name =  $_units.' <span> '.$data['Product Name'].'</span>';
+
 
                     $code = sprintf('<span class="link" onClick="change_view(\'products/%d/%d\')" title="%s">%s</span>', $data['Store Key'], $data['Product ID'], $name, $data['Product Code']);
 
@@ -2321,7 +2331,7 @@ function variants($_data, $db, $user, $account)
                 $outers_per_carton = '<span class="italic very_discreet">NA</span>';
             }
 
-$position=$data['Product Variant Position']<10?10:$data['Product Variant Position']/10;
+            $position = $data['Product Variant Position'] < 10 ? 10 : $data['Product Variant Position'] / 10;
 
 
             $record_data[] = array(
@@ -2334,8 +2344,8 @@ $position=$data['Product Variant Position']<10?10:$data['Product Variant Positio
                 'code'         => $code,
                 'visibility'   => sprintf(
                     '<i style="cursor:pointer" class="  Product_Show_Variant fa fa-%s %s"  data-id="%d" data-value="%s"   onClick="change_variant_visibility(this)"></i>',
-                    $data['Product Show Variant']=='Yes'?'eye':'eye-slash',
-                    $data['is_variant'] == 'Yes'?'':'hide',
+                    $data['Product Show Variant'] == 'Yes' ? 'eye' : 'eye-slash',
+                    $data['is_variant'] == 'Yes' ? '' : 'hide',
 
                     $data['Product ID'],
                     $data['Product Show Variant'],
@@ -2364,7 +2374,7 @@ $position=$data['Product Variant Position']<10?10:$data['Product Variant Positio
                     $data['Product Variant Short Name'] == '' ? '<span class="discreet italic">'._('Set value').'</span>' : $data['Product Variant Short Name'],
                 ),
 
-                'units'      => $data['Product Units Per Case'],
+                'units'      => get_html_fractions($data['Product Units Per Case']),
                 'price_unit' => money($data['Product Price'] / $data['Product Units Per Case'], $data['Store Currency Code']).'/u',
                 'price'      => sprintf(
                     '<span style="cursor:text" class="product_price" title="%s" pid="%d" price="%s"    currency="%s"  exchange="%s" cost="%s" old_margin="%s" onClick="open_edit_price(this)">%s</span>',

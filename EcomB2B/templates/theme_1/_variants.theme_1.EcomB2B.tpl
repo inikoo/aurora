@@ -27,7 +27,7 @@
             >
                 <td>{$variant->get('Product Variant Short Name')}</td>
                 <td   style="text-align: right">{$variant->get('Price')}</td>
-                <td   style="text-align: right">{$variant->get('Product Units Per Case')}</td>
+                <td   style="text-align: right">{$variant->get('Formatted Units')}</td>
                 <td   style="text-align: right">{$variant->get('Price Per Unit Bis')}</td>
             </tr>
         {/foreach}

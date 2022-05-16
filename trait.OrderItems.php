@@ -29,8 +29,6 @@ trait OrderItems
         $gross_discounts = 0;
 
 
-
-
         $order_type = $data['Order Type'] ?? $this->data['Order Type'];
 
 
@@ -360,7 +358,6 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
                         'undo_submit_operations'
                     );
                 } else {
-
                     if ($this->get('Order Number Ordered Products') == 0) {
                         $operations = array(
                             'invoice_services_operations',
@@ -368,7 +365,7 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
                             'undo_submit_operations',
                             'proforma_operations'
                         );
-                    }else{
+                    } else {
                         $operations = array(
                             'send_to_warehouse_operations',
                             'cancel_operations',
@@ -376,8 +373,6 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
                             'proforma_operations'
                         );
                     }
-
-
                 }
             } elseif ($this->get('Order State') == 'InWarehouse') {
                 $operations = array('cancel_operations');
@@ -671,11 +666,11 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                 } else {
                     $qty = number($row['Order Quantity']);
                 }
-                
-                
-                $code=sprintf('<a href="/'.strtolower($row['Product Code']).'">%s</a>', $row['Product Code']);
-                if($row['is_variant']=='Yes'){
-                    $sql="select `Product Code` from `Product Dimension` where `Product ID`=? ";
+
+
+                $code = sprintf('<a href="/'.strtolower($row['Product Code']).'">%s</a>', $row['Product Code']);
+                if ($row['is_variant'] == 'Yes') {
+                    $sql   = "select `Product Code` from `Product Dimension` where `Product ID`=? ";
                     $stmt2 = $this->db->prepare($sql);
                     $stmt2->execute(
                         [
@@ -683,16 +678,20 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                         ]
                     );
                     if ($row2 = $stmt2->fetch()) {
-                        $code=sprintf('<a href="/'.strtolower($row2['Product Code']).'?variant=%s">%s</a>', $row['Product Code'],$row['Product Code']);
-
+                        $code = sprintf('<a href="/'.strtolower($row2['Product Code']).'?variant=%s">%s</a>', $row['Product Code'], $row['Product Code']);
                     }
                 }
-
+                if ($row['Product History Units Per Case'] >= 1) {
+                    $name = get_html_fractions($row['Product History Units Per Case']).'x '.$row['Product History Name'];
+                } else {
+                    $name = get_html_fractions($row['Product History Units Per Case']).' '.$row['Product History Name'];
+                }
+                $name .= $deal_info.$out_of_stock_info;
 
                 $items[$row['Order Transaction Fact Key']] = array(
                     'code'             => $code,
                     'code_description' => '<b class="item_code">'.$row['Product Code'].'</b> <span class="item_description">'.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
-                    'description'      => $row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.$out_of_stock_info,
+                    'description'      => $name,
                     'price_raw'        => $row['Product Price'],
                     'qty'              => $qty,
                     'qty_raw'          => $row['Order Quantity'] + 0,

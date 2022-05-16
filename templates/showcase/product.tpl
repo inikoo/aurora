@@ -4,7 +4,7 @@
 
 <div class="name_and_categories">
     <span class="strong">
-        <span class="Units_Per_Case_in_Name {if $product->get('Product Units Per Case')==1}hide{/if}"><span class="Product_Units_Per_Case">{$product->get('Units Per Case')}</span>x</span> <span class="Product_Name Service_Name">{$product->get('Name')}</span></span>
+        <span class="Units_And_Name">{$product->get('Units And Name')}</span>
     <ul class="tags Categories" style="float:right">
 
         {if $family_data.id}

@@ -1887,11 +1887,15 @@ function order_items($_data, $db, $user)
         $currency = $data['Product Currency'];
 
 
-        $description = '';
+
         if ($units > 1) {
-            $description = number($units).'x ';
+            $description= get_html_fractions($units).'x '.$name;
+        } elseif ($units <= 1) {
+            $description= get_html_fractions($units).' '.$name;
+        } else {
+            $description= $name;
         }
-        $description .= ' '.$name;
+
 
 
         if ($data['Product UN Number']) {

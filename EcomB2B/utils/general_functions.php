@@ -353,4 +353,68 @@ function base64_url_decode($input) {
 }
 
 
-?>
+
+function is_whole_number($number) {
+    return (is_float(($f = filter_var($number, FILTER_VALIDATE_FLOAT))) && floor($f) === $f);
+}
+
+function get_html_fractions($number){
+
+    if (is_whole_number($number)) {
+        return number($number);
+    } else {
+        $hole = floor($number);
+        $reminder = $number - $hole;
+        $qty = $hole;
+        if($qty==0){
+            $qty='';
+        }
+
+        if($reminder==0.5){
+            $qty .= '&#xBD;';
+            return $qty;
+        }else{
+            return number($number);
+
+        }
+
+
+
+        /*
+
+        $residuo = round($reminder * $row['Part Units Per Package'], 2);
+
+        if ($residuo == 1 and $row['Part Units Per Package'] == 2) {
+            $qty .= '&#xBD;';
+        } elseif ($residuo == 1 and $row['Part Units Per Package'] == 3) {
+            $qty .= '&#8531;';
+        } elseif ($residuo == 2 and $row['Part Units Per Package'] == 3) {
+            $qty .= '&#8532;';
+        } elseif ($residuo == 1 and $row['Part Units Per Package'] == 4) {
+            $qty .= '&#188;';
+        } elseif ($residuo == 3 and $row['Part Units Per Package'] == 4) {
+            $qty .= '&#190;';
+        } elseif ($residuo == 1 and $row['Part Units Per Package'] == 6) {
+            $qty .= '&#8537;';
+        } elseif ($residuo == 5 and $row['Part Units Per Package'] == 6) {
+            $qty .= '&#8538;';
+        } elseif ($residuo == 1 and $row['Part Units Per Package'] == 8) {
+            $qty .= '&#8539;';
+        } elseif ($residuo == 3 and $row['Part Units Per Package'] == 8) {
+            $qty .= '&#8540;';
+        } elseif ($residuo == 5 and $row['Part Units Per Package'] == 8) {
+            $qty .= '&#8541;';
+        } elseif ($residuo == 7 and $row['Part Units Per Package'] == 8) {
+            $qty .= '&#8542;';
+        } else {
+            $qty .= '<sup style="">'.$residuo.'</sup>&#8260;<sub style="">'.$row['Part Units Per Package'].'</sub>';
+
+        }
+
+        */
+        return $qty;
+
+
+    }
+
+}

@@ -2666,13 +2666,21 @@ from
                     $out_of_stock_info = '';
                 }
 
+              
+                if ($row['Product Units Per Case'] >= 1) {
+                    $name= get_html_fractions($row['Product Units Per Case']).'x '.$row['Product Name'];
+                } else{
+                    $name= get_html_fractions($row['Product Units Per Case']).' '.$row['Product Name'];
+                }
+
+
 
                 $items[] = array(
                     'otf_key'              => $row['Order Transaction Fact Key'],
                     'code'                 => $row['Product Code'],
                     'product_id'           => $row['Product ID'],
                     'product_historic_key' => $row['Product Key'],
-                    'description'          => $row['Product History Units Per Case'].'x '.$row['Product History Name'],
+                    'description'          => $name,
                     'deal_info'            => $deal_info,
                     'out_of_stock_info'    => $out_of_stock_info,
                     'qty'                  => $qty,

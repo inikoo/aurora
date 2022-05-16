@@ -128,6 +128,18 @@ class Product extends Asset
         }
 
         switch ($key) {
+
+            case 'Units And Name':
+
+                if ($this->data['Product Units Per Case'] > 1) {
+                    return get_html_fractions($this->data['Product Units Per Case']).'x '.$this->data['Product Name'];
+                } elseif ($this->data['Product Units Per Case'] <= 1) {
+                    return get_html_fractions($this->data['Product Units Per Case']).' '.$this->data['Product Name'];
+                } else {
+                    return $this->data['Product Name'];
+                }
+                break;
+
             case 'Service Code':
             case 'Service Name':
             case 'Service Price':
@@ -3024,6 +3036,15 @@ class Product extends Asset
 
                 $this->updated = $updated;
 
+
+                $this->update_metadata = array(
+
+                    'class_html' => array(
+                        'Units_And_Name'               => $this->get('Units And Name'),
+
+
+                    )
+                );
 
                 if ($updated) {
                     require_once 'utils/new_fork.php';

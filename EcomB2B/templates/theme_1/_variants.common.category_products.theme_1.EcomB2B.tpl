@@ -106,7 +106,6 @@
 
         let parent = $(this).closest('.product_block.product_container')
 
-        console.log(parent)
 
 
 

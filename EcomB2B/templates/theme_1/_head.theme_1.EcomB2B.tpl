@@ -42,6 +42,9 @@
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
             {/literal}
+
+
+
             ga('create', 'UA-100778677-1', 'auto', 'auTracker');
             ga('auTracker.require', 'ec');
             ga('auTracker.set', 'transport', 'beacon');

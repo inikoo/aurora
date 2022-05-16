@@ -29,7 +29,7 @@
                 <td class="smaller_font"  >{$variant.label}</td>
                 <td   style="text-align: right">{$variant.price}</td>
                 <td   style="text-align: right">{$variant.price_unit_bis}</td>
-                <td  class="smaller_font"  style="text-align: right;padding-left: 0px;">{$variant.units}</td>
+                <td  class="smaller_font"  style="text-align: right;padding-left: 0px;">{$variant.formatted_units}</td>
             </tr>
         {/foreach}
         <tr></tr>

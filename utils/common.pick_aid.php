@@ -12,6 +12,7 @@
 
 use Mpdf\Mpdf;
 
+include_once 'utils/general_functions.php';
 
 function get_pick_aid_mpdf($type) {
 
@@ -323,8 +324,4 @@ WHERE `Delivery Note Key`=%d ORDER BY `Location File As`,`Part Reference` ", $de
     return $html;
 
 
-}
-
-function is_whole_number($number) {
-    return (is_float(($f = filter_var($number, FILTER_VALIDATE_FLOAT))) && floor($f) === $f);
 }
