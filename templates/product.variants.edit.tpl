@@ -153,7 +153,45 @@
 
 
 
+function change_variant_visibility(element){
 
+        var value='';
+
+    if($(element).hasClass('fa-spin') ){
+        return;
+    }
+
+        if($(element).hasClass('fa-eye') ){
+            value='No'
+        }else{
+            value='Yes'
+        }
+
+        $(element).addClass('fa-spinner fa-spin')
+
+    var request='/ar_edit.php?tipo=edit_field&object=Product&key='+ $(element).data('id')+'&field=Product_Show_Variant&value='+ value
+    console.log(request)
+    $.getJSON(request, function (r) {
+
+        $(element).removeClass('fa-spinner fa-spin')
+
+
+        console.log()
+
+        if(r.value=='Yes'){
+            $(element).addClass('fa-eye').removeClass('fa-eye-slash')
+        }else{
+            $(element).removeClass('fa-eye').addClass('fa-eye-slash')
+
+        }
+
+
+
+
+    });
+
+
+}
 
 
     function close_product_text_dialog(){

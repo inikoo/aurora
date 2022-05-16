@@ -816,6 +816,7 @@ class Product extends Asset
 
         $variant_data['Product Variant Position'] = 10000;
 
+        $variant_data['Product Show Variant']='No';
 
         $store         = get_object('Store', $this->get('Product Store Key'));
         $store->editor = $this->editor;
