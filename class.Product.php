@@ -814,6 +814,9 @@ class Product extends Asset
 
         $variant_data['Product Family Category Key'] = $this->data['Product Family Category Key'];
 
+        $variant_data['Product Variant Position'] = 10000;
+
+
         $store         = get_object('Store', $this->get('Product Store Key'));
         $store->editor = $this->editor;
 
@@ -834,7 +837,7 @@ class Product extends Asset
         $this->msg         = $store->msg;
 
         $this->update_variants_stats();
-
+        $this->reindex_variants_positions();
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
