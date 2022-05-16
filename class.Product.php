@@ -3156,6 +3156,41 @@ class Product extends Asset
                 $this->fast_update([$field => $new_pos]);
                 $this->reindex_variants_positions();
 
+                $id = $this->id;
+                if ($this->data['is_variant'] == 'Yes') {
+                    $id = $this->data['variant_parent_id'];
+                }
+                include_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping',
+                    array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $id,
+                        'scope'      => 'variants',
+                        'editor'     => $this->editor
+                    ),
+                    DNS_ACCOUNT_CODE
+                );
+
+                break;
+            case 'Product Show Variant':
+                $this->update_field($field, $value, $options);
+
+                $id = $this->id;
+                if ($this->data['is_variant'] == 'Yes') {
+                    $id = $this->data['variant_parent_id'];
+                }
+                include_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_housekeeping',
+                    array(
+                        'type'       => 'update_product_webpages',
+                        'product_id' => $id,
+                        'scope'      => 'variants',
+                        'editor'     => $this->editor
+                    ),
+                    DNS_ACCOUNT_CODE
+                );
 
                 break;
             case 'Product Variant Short Name':
@@ -3171,8 +3206,8 @@ class Product extends Asset
                 if ($this->data['is_variant'] == 'Yes') {
                     $id = $this->data['variant_parent_id'];
                 }
-                include_once 'utils/new_fork.php';
 
+                include_once 'utils/new_fork.php';
                 new_housekeeping_fork(
                     'au_housekeeping',
                     array(
