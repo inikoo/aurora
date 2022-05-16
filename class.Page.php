@@ -1108,7 +1108,7 @@ class Page extends DB_Table
             }
         }
 
-        $content_data = $this->get('Content Data');
+
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '')

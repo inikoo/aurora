@@ -11,6 +11,9 @@
 
 
 <style>
+
+
+
     .variant_chooser{
         font-size: x-small;
         border:1px solid #ccc;border-bottom: 1px solid #ccc;
@@ -30,22 +33,62 @@
         color:#000;
     }
 
-
-    {assign current $variants[0]}
-
     .variant_chooser th {
         border-bottom: 1px solid #ccc;font-size: xx-small;padding:4px 10px;
     }
+    .variant_chooser_dialog{
+        width:226px;position: absolute;z-index: 4000;background: #FFF;
+    }
+
+    .variant_chooser td.smaller_font {
+        font-size: xx-small
+    }
+
+    {if $device=='mobile'}
+
+    .variant_chooser_dialog {
+        width: 100%;
+    }
+
+    .variant_chooser{
+        font-size: medium;
+
+    }
+    .variant_chooser th {
+        font-size: medium;
+    }
+    .variant_chooser td.smaller_font {
+        font-size: medium;padding-top:20px;padding-bottom:20px;
+    }
+
+
+
+    {/if}
 </style>
+
 
 <script>
 
 
     function open_variant_chooser(element,master_id){
 
+        let icon=$(element).find('i');
+        if(icon.hasClass('fa-angle-down')){
+
+
+            $('#variant_chooser_dialog_'+master_id).addClass('hide')
+
+            icon.addClass('fa-angle-up').removeClass('fa-angle-down')
+            return;
+        }
+
+
         let dialog=$('#variant_chooser_dialog_'+master_id)
 
         let offset = $(element).offset();
+
+
+        icon.removeClass('fa-angle-up').addClass('fa-angle-down')
 
 
         dialog.removeClass('hide').offset({
@@ -63,9 +106,12 @@
 
         let parent = $(this).closest('.product_block.product_container')
 
+        console.log(parent)
+
 
 
         parent.find('.Product_Code').html($(this).data('code'))
+        parent.find('.Mobil_Product_Price').html($(this).data('price'))
 
 
 

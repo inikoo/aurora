@@ -15,7 +15,6 @@ include_once('utils/image_functions.php');
 
 function digest_website_content_data_blocks($content_data) {
 
-
     include_once('utils/image_functions.php');
 
 
@@ -170,6 +169,16 @@ function digest_website_content_data_blocks($content_data) {
             case 'category_products':
                 foreach ($block['items'] as $item_key => $item) {
                     if ($item['type'] == 'product') {
+
+
+                        if(!empty($item['header_text'])){
+                            $content_data['blocks'][$block_key]['items'][$item_key]['mpbile_header_text'] = trim(strip_tags($item['header_text']));
+
+                        }else{
+                            $content_data['blocks'][$block_key]['items'][$item_key]['mpbile_header_text'] = '';
+
+                        }
+
 
                         $image_mobile_website = $item['image_src'];
                         if (preg_match('/id=(\d+)/', $item['image_src'], $matches)) {

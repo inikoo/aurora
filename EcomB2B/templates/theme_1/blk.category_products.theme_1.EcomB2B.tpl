@@ -184,6 +184,8 @@
                                                   style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
                                 {$variant.label}
                                 <div style="font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;"><span >{t}More buying options{/t} ☝</span></div><i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i></span></div>
+
+
                                         </div>
 
 
@@ -326,7 +328,10 @@
 
     <div style="clear:both"></div>
 </div>
-{include file="theme_1/_variants.common.category_products.theme_1.EcomB2B.tpl"  }
+
+
+{include file="theme_1/_variants.common.category_products.theme_1.EcomB2B.tpl" device="desktop"   }
+
 
 <script>
     {foreach from=$data.items item=item  name=analytics_data}

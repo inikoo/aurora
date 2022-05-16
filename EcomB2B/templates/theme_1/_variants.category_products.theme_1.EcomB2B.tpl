@@ -11,7 +11,7 @@
 
 
 
-<div id="variant_chooser_dialog_{$master_id}" class="variant_chooser_dialog hide" style="width:226px;position: absolute;z-index: 4000;background: #FFF" >
+<div id="variant_chooser_dialog_{$master_id}" class="variant_chooser_dialog hide"   >
     <table class="variant_chooser" >
         <tr>
             <th></th>
@@ -21,15 +21,15 @@
 
         </tr>
         {foreach from=$variants item=$variant  name=variant}
-            <tr class="variant_option {if $master_id==$variant.id}current{/if}   "
+            <tr class="variant_option {if $master_id==$variant.id}current{/if}"
                     data-id="{$variant.id}"
                     data-name="{$variant.name}"
                     data-code="{$variant.code}"
-            >
-                <td style="font-size: xx-small">{$variant.label}</td>
+                    data-price="{$variant.price}">
+                <td class="smaller_font"  >{$variant.label}</td>
                 <td   style="text-align: right">{$variant.price}</td>
                 <td   style="text-align: right">{$variant.price_unit_bis}</td>
-                <td   style="text-align: right;padding-left: 0px;font-size: xx-small">{$variant.units}</td>
+                <td  class="smaller_font"  style="text-align: right;padding-left: 0px;">{$variant.units}</td>
             </tr>
         {/foreach}
         <tr></tr>
