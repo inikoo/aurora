@@ -3129,6 +3129,7 @@ class Product extends Asset
                 if ($this->data['is_variant'] == 'Yes') {
                     $id = $this->data['variant_parent_id'];
                 }
+                include_once 'utils/new_fork.php';
 
                 new_housekeeping_fork(
                     'au_housekeeping',
