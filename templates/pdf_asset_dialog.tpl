@@ -78,6 +78,11 @@
                     <i class="far fa-square margin_right_10" data-value="en_GB"></i> <span class="discreet">{t}English{/t}</span>
                 </td>
             </tr>
+            <tr data-field='hide_payment_status' class="button pdf_option"  onclick="check_field_value(this)">
+                <td>
+                    <i class="far fa-square margin_right_10" ></i> <span class="discreet">{t}Hide payment status{/t}</span>
+                </td>
+            </tr>
             <tr data-field='group_by_tariff_code' style="border-top:1px solid #ccc" class="button pdf_option" onclick="check_field_value(this)">
                 <td style="padding-top: 3px">
                     <i class="far fa-square   margin_right_10"></i> <span class="discreet">{t}Group by tariff code{/t}</span>
