@@ -1,0 +1,1 @@
+ALTER TABLE `Website Dimension` ADD COLUMN `Website Google Adwords Tag Manager Data` varchar(255) NULL COMMENT '';
