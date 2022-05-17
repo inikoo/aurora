@@ -216,6 +216,16 @@ function get_thanks_html($data, $customer, $db,$account) {
     $smarty->assign('timestamp', $timestamp);
 
 
+    $smarty->assign('adwords_tag_manager_data', $website->get('Website Google Adwords Tag Manager Data'));
+
+    $conversion=[
+        'value'=>$order->get('Order Total Net Amount'),
+        'currency'=>$order->get('Order Currency'),
+        'transaction_id'=> $order->get('Public ID'),
+    ];
+    $smarty->assign('adwords_conversion_data', $conversion);
+
+
     $response = array(
         'state' => 200,
         'html'  => $smarty->fetch('theme_1/blk.thanks.theme_1.EcomB2B'.($template_suffix != '' ? '.'.$template_suffix : '').'.tpl'),

@@ -246,6 +246,8 @@ class Public_Website
             case 'Website Google Tag Manager Code':
             case 'Website Text Font':
             case 'Website Registration Type':
+            case 'Website Google Adwords Tag Manager Data':
+
                 return $this->data[$key];
             case 'Store Key':
                 return $this->data['Website '.$key];

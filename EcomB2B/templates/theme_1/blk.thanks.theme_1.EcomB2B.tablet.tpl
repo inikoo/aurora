@@ -46,6 +46,18 @@
 
 
         function submit_auTracker(){
+
+                {if isset($adwords_tag_manager_data)}
+
+
+                gtag('event', 'conversion', {
+                        'send_to': '{$adwords_tag_manager_data}',
+                        'value': '{$adwords_conversion_data['value']}',
+                        'currency': '{$adwords_conversion_data['currency']}',
+                        'transaction_id': '{$adwords_conversion_data['transaction_id']}'
+                });
+                {/if}
+
                 {foreach from=$analytics_items item="item" }
                 ga('auTracker.ec:addProduct',{$item} );
                 {/foreach}
