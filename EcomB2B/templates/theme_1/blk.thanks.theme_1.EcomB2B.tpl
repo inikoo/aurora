@@ -50,6 +50,10 @@
 
                         console.log('hey :)')
 
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){
+                        dataLayer.push(arguments);}
+
                         gtag('event', 'conversion', {
                         'send_to': '{$adwords_tag_manager_data}',
                         'value': '{$adwords_conversion_data['value']}',

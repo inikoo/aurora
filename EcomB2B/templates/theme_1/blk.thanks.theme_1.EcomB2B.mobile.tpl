@@ -48,7 +48,9 @@
         function submit_auTracker(){
 
                 {if isset($adwords_tag_manager_data)}
-
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){
+                        dataLayer.push(arguments);}
                 console.log('hey :)')
 
                 gtag('event', 'conversion', {
