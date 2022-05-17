@@ -58,6 +58,12 @@ if (!empty($_REQUEST['commodity'])) {
     $print_tariff_code = false;
 }
 
+if (!empty($_REQUEST['hide_payment_status'])) {
+    $hide_payment_status = true;
+} else {
+    $hide_payment_status = false;
+}
+
 
 if (!empty($_REQUEST['barcode'])) {
     $print_barcode = true;
@@ -137,6 +143,7 @@ $smarty->assign('customer', $customer);
 $smarty->assign('number_orders', $number_orders);
 $smarty->assign('number_dns', $number_dns);
 
+$smarty->assign('hide_payment_status', $hide_payment_status);
 
 $mpdf = new Mpdf(
     [
