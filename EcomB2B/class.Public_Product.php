@@ -296,7 +296,7 @@ class Public_Product
 
                 if ($this->data['Product Units Per Case'] > 1) {
                     return get_html_fractions($this->data['Product Units Per Case']).'x '.$this->data['Product Name'];
-                } elseif ($this->data['Product Units Per Case'] <= 1) {
+                } elseif ($this->data['Product Units Per Case'] < 1) {
                     return get_html_fractions($this->data['Product Units Per Case']).' '.$this->data['Product Name'];
                 } else {
                     return $this->data['Product Name'];
