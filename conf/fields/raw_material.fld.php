@@ -57,7 +57,15 @@ function get_raw_material_edit_fields($raw_material, $user) {
                 'type'              => 'value'
             ),
 
-
+            array(
+                'id'              => 'Raw_Material_Unit_Label',
+                'edit'            => ($edit ? 'string' : ''),
+                'value'           =>  $raw_material->get('Raw Material Unit Label'),
+                'formatted_value' => $raw_material->get('Unit Label'),
+                'label'           => ucfirst($raw_material->get_field_label('Raw Material Unit Label')),
+                'required'        => true,
+                'type'            => 'value skip'
+            ),
         )
     );
 
