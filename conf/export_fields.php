@@ -1439,7 +1439,7 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'checked' => 1
             ),
             array(
-                'name'    => '( select group_concat(`Location Code`) from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`)  where PL.`Part SKU`=P.`Part SKU`   ) as locations',
+                'name'    => '( select group_concat(`Location Code` SEPARATOR \' \') from `Part Location Dimension` PL left join `Location Dimension` L on (PL.`Location Key`=L.`Location Key`)  where PL.`Part SKU`=P.`Part SKU`   ) as locations',
                 'label'   => _('Locations'),
                 'checked' => 0
             ),
