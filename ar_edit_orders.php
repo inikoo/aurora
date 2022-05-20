@@ -1429,7 +1429,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
     $payment_account->editor = $editor;
 
     $order = get_object('Order', $payment->get('Payment Order Key'));
-
+    $metadata='';
 
     switch ($data['operation']) {
         case 'Refund':
