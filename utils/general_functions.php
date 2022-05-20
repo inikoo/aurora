@@ -440,8 +440,17 @@ function get_html_fractions($number){
         if($reminder==0.5){
             $qty .= '&#xBD;';
             return $qty;
+        }elseif($reminder==0.25){
+            $qty .= '&#188;';
+            return $qty;
+        }elseif($reminder==0.2){
+            $qty .= '&#8533;';
+            return $qty;
+        }elseif($reminder==0.1){
+            $qty .= '&#8530;';
+            return $qty;
         }else{
-            return number($number);
+            return number($number,3);
 
         }
 
