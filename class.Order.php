@@ -2320,7 +2320,7 @@ from
 
     function send_hokodo_invoice($invoice_key)
     {
-       // return;
+        // return;
         $db = $this->db;
 
 
@@ -2330,12 +2330,10 @@ from
 
         $payment_data = json_decode($payment->get('Payment Metadata'), true);
 
-        if($payment->get('Payment Transaction Status')=='Pending' and $payment->get('Payment Metadata')==''){
+        if ($payment->get('Payment Transaction Status') == 'Pending' and $payment->get('Payment Metadata') == '') {
             $payment->delete();
             return;
         }
-
-
 
 
         //print_r($payment_data);
@@ -2370,7 +2368,8 @@ from
                             ];
                         }
                     }
-                } else {
+                }
+                else {
                     $id = str_replace("np-", "", $item['item_id']);
 
                     $sql  = "select * from `Order No Product Transaction Fact` OTF  where `Order No Product Transaction Fact Key`=? 
@@ -2397,8 +2396,9 @@ from
                     }
                 }
             }
-        }else{
-            Sentry\captureMessage('Hokodo order no items: ' .$this->id.' '.$this->get('Public ID'));
+        } else {
+
+            Sentry\captureMessage('Hokodo order no items: '.$this->id.' '.$this->get('Public ID'));
         }
 
 
@@ -2412,7 +2412,7 @@ from
         //print_r($new_items);
 
 
-        if(count($new_items)>0) {
+        if (count($new_items) > 0) {
             $res = api_post_call(
                 'payment/orders/'.$this->data['hokodo_order_id'].'/cancel',
                 ['items' => $new_items],
@@ -2421,8 +2421,7 @@ from
                 $this->db
             );
 
-            if(isset($res['total_amount'])){
-
+            if (isset($res['total_amount'])) {
                 $payment->fast_update(
                     [
                         'Payment Transaction Amount' => $res['total_amount'] / 100
@@ -2431,16 +2430,8 @@ from
                 $payment->update_payment_parents();
                 $payment->fork_index_elastic_search();
             }
-
-
-
         }
         //print_r($res);
-
-
-
-
-
 
 
         $smarty = new Smarty();
@@ -2465,24 +2456,24 @@ from
             $_base_url = 'https://api-sandbox.hokodo.co/v1/';
         }
 
-        $hokodo_order_id=$this->data['hokodo_order_id'];
-        $invoice=get_object('Invoice',$invoice_key);
-        $amount=$invoice->get('Invoice Total Amount');
-        $cmd    = "curl --request POST \
+        $hokodo_order_id = $this->data['hokodo_order_id'];
+        $invoice         = get_object('Invoice', $invoice_key);
+        $amount          = $invoice->get('Invoice Total Amount');
+        $cmd             = "curl --request POST \
   --url $_base_url/payment/orders/$hokodo_order_id/documents \
   --header 'Authorization: Token $api_key' \
   --form doc_type=invoice \
   --form description=invoice_description \
   --form amount=$amount \
   --form file=@$save_to_file";
-        $output = shell_exec($cmd);
+        $output          = shell_exec($cmd);
 
         $sql = "insert into hokodo_debug (`request`,`data`,`response`,`date`,`status`) values (?,?,?,?,?) ";
         $db->prepare($sql)->execute(
             [
                 "$_base_url/payment/orders/$hokodo_order_id/documents",
                 json_encode([
-                    'amount'=>$amount
+                                'amount' => $amount
                             ]),
                 $output,
                 gmdate('Y-m-d H:i:s'),
@@ -2490,8 +2481,6 @@ from
 
             ]
         );
-
-
         // print_r(json_decode($output,true));
 
 
@@ -2704,13 +2693,12 @@ from
                     $out_of_stock_info = '';
                 }
 
-              
-                if ($row['Product Units Per Case'] >= 1) {
-                    $name= get_html_fractions($row['Product Units Per Case']).'x '.$row['Product Name'];
-                } else{
-                    $name= get_html_fractions($row['Product Units Per Case']).' '.$row['Product Name'];
-                }
 
+                if ($row['Product Units Per Case'] >= 1) {
+                    $name = get_html_fractions($row['Product Units Per Case']).'x '.$row['Product Name'];
+                } else {
+                    $name = get_html_fractions($row['Product Units Per Case']).' '.$row['Product Name'];
+                }
 
 
                 $items[] = array(
@@ -3176,7 +3164,7 @@ WHERE `Order Transaction Fact Key`=?";
         $payment = get_object('Payment', $this->data['pending_hokodo_payment_id']);
 
 
-      //  print_r($transactions);
+        //  print_r($transactions);
 
 
         foreach ($transactions as $transaction) {
@@ -3209,9 +3197,7 @@ WHERE `Order Transaction Fact Key`=?";
 
                     ];
                 }
-            }elseif($transaction['type'] == 'onptf'){
-
-
+            } elseif ($transaction['type'] == 'onptf') {
                 $sql  = "select * from `Order No Product Transaction Fact` OTF  where `Order No Product Transaction Fact Key`=? 
                                                                                                                    ";
                 $stmt = $this->db->prepare($sql);
@@ -3221,7 +3207,6 @@ WHERE `Order Transaction Fact Key`=?";
                     ]
                 );
                 while ($row = $stmt->fetch()) {
-
                     $tax_rate = 0;
                     $sql      = "select `Tax Category Rate` from kbase.`Tax Category Dimension` where `Tax Category Key`=? ";
                     $stmt2    = $this->db->prepare($sql);
@@ -3231,9 +3216,8 @@ WHERE `Order Transaction Fact Key`=?";
                         ]
                     );
                     while ($row2 = $stmt2->fetch()) {
-                        $tax_rate = $row2['Tax Category Rate'] ;
+                        $tax_rate = $row2['Tax Category Rate'];
                     }
-
 
 
                     $items[] = [
@@ -3241,17 +3225,11 @@ WHERE `Order Transaction Fact Key`=?";
                         'description'  => 'refund',
                         "quantity"     => 1,
                         "unit_price"   => floor(-$transaction['amount'] * 100) + floor(-$transaction['amount'] * $tax_rate * 100),
-                        "total_amount" => floor(-$transaction['amount'] * 100) + floor(-$transaction['amount'] *$tax_rate * 100),
-                        "tax_amount"   => floor(-$transaction['amount'] * $tax_rate* 100)
+                        "total_amount" => floor(-$transaction['amount'] * 100) + floor(-$transaction['amount'] * $tax_rate * 100),
+                        "tax_amount"   => floor(-$transaction['amount'] * $tax_rate * 100)
 
                     ];
-
-
-
-
                 }
-
-
             }
         }
 
@@ -3268,7 +3246,6 @@ WHERE `Order Transaction Fact Key`=?";
         );
 
 
-
         $payment->fast_update(
             [
                 'Payment Transaction Amount' => $res['total_amount'] / 100
@@ -3276,7 +3253,6 @@ WHERE `Order Transaction Fact Key`=?";
         );
         $payment->update_payment_parents();
         $payment->fork_index_elastic_search();
-
         //print_r($res);
 
     }
