@@ -223,7 +223,7 @@ function get_order_formatted_payment_state($data)
                     case 'Unknown':
                         $payment_method = '';
 
-                        if ($data['Order Checkout Block Payment Account Key'] != '' and $data['Order To Pay Amount'] != 0) {
+                        if ( isset($data['Order Checkout Block Payment Account Key']) and   $data['Order Checkout Block Payment Account Key'] != '' and $data['Order To Pay Amount'] != 0) {
                             $payment_account = get_object('Payment_Account', $data['Order Checkout Block Payment Account Key']);
 
                             switch ($payment_account->get('Payment Account Block')) {

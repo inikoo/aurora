@@ -213,7 +213,7 @@ if ($order == 'public_id') {
 
 $fields = '
 
-if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`) as submitted_date,
+if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created Date`,`Order Submitted by Customer Date`) as submitted_date,`Order Checkout Block Payment Account Key`,`Order To Pay Amount`,
 
 `Order Replacement State`,`Order Invoiced`,`Order Number Items`,`Order Store Key`,`Payment Account Name`,`Order Payment Method`,`Order Balance Total Amount`,`Order Payment State`,`Order State`,`Order Type`,`Order Currency Exchange`,`Order Currency`,O.`Order Key`,O.`Order Public ID`,`Order Customer Key`,`Order Customer Name`,O.`Order Last Updated Date`,O.`Order Date`,`Order Total Amount`,
      (select group_concat(concat_ws("|",`Delivery Note Key`,`Delivery Note ID`)) from `Delivery Note Dimension` where `Delivery Note Order Key`=O.`Order Key` and `Delivery Note State` in ("Ready to be Picked","Picking","Picked","Packing","Packed")   ) as delivery_notes,
