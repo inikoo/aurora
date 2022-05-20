@@ -2330,6 +2330,14 @@ from
 
         $payment_data = json_decode($payment->get('Payment Metadata'), true);
 
+        if($payment->get('Payment Transaction Status')=='Pending' and $payment->get('Payment Metadata')==''){
+            $payment->delete();
+            return;
+        }
+
+
+
+
         //print_r($payment_data);
         $new_items = [];
         foreach ($payment_data['data']['order']['items'] as $item) {
