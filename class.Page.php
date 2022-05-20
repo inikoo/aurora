@@ -953,8 +953,7 @@ class Page extends DB_Table
 
                                 $content_data['blocks'][$block_key]['items'][$item_key]['price_unit']     = $product->get('Price Per Unit');
                                 $content_data['blocks'][$block_key]['items'][$item_key]['price_unit_bis'] = $product->get('Price Per Unit Bis');
-
-                                $content_data['blocks'][$block_key]['items'][$item_key]['variants'] = $product->get_variants_data();
+                                $content_data['blocks'][$block_key]['items'][$item_key]['variants']       = $product->get_variants_data();
 
 
                                 $content_data['blocks'][$block_key]['items'][$item_key]['rrp']          = $product->get('RRP');
@@ -1021,7 +1020,8 @@ class Page extends DB_Table
                     'next_shipment_timestamp' => $product->get('Next Supplier Shipment Timestamp'),
                     'category'                => $product->get('Family Code'),
                     'raw_price'               => $product->get('Product Price'),
-                    'number_visible_variants' => $product->get('number_visible_variants')
+                    'number_visible_variants' => $product->get('number_visible_variants'),
+
 
 
                 );
@@ -1032,6 +1032,7 @@ class Page extends DB_Table
         }
 
         //$items_out_of_stock = array_reverse($items_out_of_stock);
+
 
 
         foreach ($items_out_of_stock as $product_id => $item_data) {
@@ -1063,7 +1064,8 @@ class Page extends DB_Table
                     'next_shipment_timestamp' => $product->get('Next Supplier Shipment Timestamp'),
                     'category'                => $product->get('Family Code'),
                     'raw_price'               => $product->get('Product Price'),
-                    'number_visible_variants' => $product->get('number_visible_variants')
+                    'number_visible_variants' => $product->get('number_visible_variants'),
+                    'variants'                => $product->get_variants_data()
 
 
                 );
