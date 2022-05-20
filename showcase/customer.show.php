@@ -34,7 +34,6 @@ function get_customer_showcase($data, $smarty, $db, $redis, $account) {
     $smarty->assign('store', $data['store']);
 
     if ($customer->deleted) {
-        $smarty->assign('customer', $customer);
 
         return $smarty->fetch('showcase/deleted_customer.tpl');
 
