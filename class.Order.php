@@ -2312,7 +2312,8 @@ from
                 'payment/orders/'.$this->data['hokodo_order_id'].'/fulfill',
                 ['items' => $items],
                 $api_key,
-                'PUT'
+                'PUT',
+                $this->db
             );
         }
     }
@@ -2335,59 +2336,61 @@ from
             if ($item['type'] == 'product') {
                 $id = $item['item_id'];
 
-               // print_r($item);
+                    // print_r($item);
 
-                $sql  = "select * from `Order Transaction Fact` OTF  left join `Product Dimension` P  on (OTF.`Product ID`=P.`Product Id`) where `Order Transaction Fact Key`=? 
+                    $sql  = "select * from `Order Transaction Fact` OTF  left join `Product Dimension` P  on (OTF.`Product ID`=P.`Product Id`) where `Order Transaction Fact Key`=? 
                                                                                                                   ";
-                $stmt = $db->prepare($sql);
-                $stmt->execute(
-                    [
-                        $id
-                    ]
-                );
-                while ($row = $stmt->fetch()) {
-                    $item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
-                    $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute(
+                        [
+                            $id
+                        ]
+                    );
+                    while ($row = $stmt->fetch()) {
+                        $item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
+                        $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
 
-                    //print_r($item_total);
+                        //print_r($item_total);
 
-                    if ($item_total < $item['total_amount'] or $item_tax < $item['tax_amount']) {
-                        $new_items[] = [
-                            'item_id'      => $item['item_id'],
-                            'quantity'     => $item['quantity']-$row['Delivery Note Quantity'],
-                            'total_amount' => $item['total_amount'] - $item_total,
-                            'tax_amount'   => $item['tax_amount'] - $item_tax,
-                        ];
+                        if ($item_total < $item['total_amount'] or $item_tax < $item['tax_amount']) {
+                            $new_items[] = [
+                                'item_id'      => $item['item_id'],
+                                'quantity'     => $item['quantity'] - $row['Delivery Note Quantity'],
+                                'total_amount' => $item['total_amount'] - $item_total,
+                                'tax_amount'   => $item['tax_amount'] - $item_tax,
+                            ];
+                        }
                     }
-                }
-            } else {
-                $id = str_replace("np-", "", $item['item_id']);
+                } else {
+                    $id = str_replace("np-", "", $item['item_id']);
 
-                $sql  = "select * from `Order No Product Transaction Fact` OTF  where `Order No Product Transaction Fact Key`=? 
+                    $sql  = "select * from `Order No Product Transaction Fact` OTF  where `Order No Product Transaction Fact Key`=? 
                                                                                                                    ";
-                $stmt = $db->prepare($sql);
-                $stmt->execute(
-                    [
-                        $id
-                    ]
-                );
-                while ($row = $stmt->fetch()) {
+                    $stmt = $db->prepare($sql);
+                    $stmt->execute(
+                        [
+                            $id
+                        ]
+                    );
+                    while ($row = $stmt->fetch()) {
+                        $item_total = floor(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
+                        $item_tax   = floor(100 * $row['Transaction Tax Amount']);
 
-                    $item_total = floor(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
-                    $item_tax   = floor(100 * $row['Transaction Tax Amount']);
 
-
-                    if ($item_total < $item['total_amount'] or $item_tax < $item['tax_amount']) {
-                        $new_items[] = [
-                            'item_id'      => $item['item_id'],
-                            'quantity'     => round(($item['total_amount'] - $item_total) / $item['total_amount'], 3),
-                            'total_amount' => $item['total_amount'] - $item_total,
-                            'tax_amount'   => $item['tax_amount'] - $item_tax,
-                        ];
+                        if ($item_total < $item['total_amount'] or $item_tax < $item['tax_amount']) {
+                            $new_items[] = [
+                                'item_id'      => $item['item_id'],
+                                'quantity'     => round(($item['total_amount'] - $item_total) / $item['total_amount'], 3),
+                                'total_amount' => $item['total_amount'] - $item_total,
+                                'tax_amount'   => $item['tax_amount'] - $item_tax,
+                            ];
+                        }
                     }
                 }
             }
+        }else{
+            Sentry\captureMessage('Hokodo order no items: ' .$this->id.' '.$this->get('Public ID'));
         }
 
 
@@ -2401,24 +2404,33 @@ from
         //print_r($new_items);
 
 
+        if(count($new_items)>0) {
+            $res = api_post_call(
+                'payment/orders/'.$this->data['hokodo_order_id'].'/cancel',
+                ['items' => $new_items],
+                $api_key,
+                'PUT',
+                $this->db
+            );
 
-        $res = api_post_call(
-            'payment/orders/'.$this->data['hokodo_order_id'].'/cancel',
-            ['items' => $new_items],
-            $api_key,
-            'PUT'
-        );
+            if(isset($res['total_amount'])){
 
+                $payment->fast_update(
+                    [
+                        'Payment Transaction Amount' => $res['total_amount'] / 100
+                    ]
+                );
+                $payment->update_payment_parents();
+                $payment->fork_index_elastic_search();
+            }
+
+
+
+        }
         //print_r($res);
 
 
-        $payment->fast_update(
-            [
-                'Payment Transaction Amount' => $res['total_amount'] / 100
-            ]
-        );
-        $payment->update_payment_parents();
-        $payment->fork_index_elastic_search();
+
 
 
 
@@ -2445,15 +2457,33 @@ from
             $_base_url = 'https://api-sandbox.hokodo.co/v1/';
         }
 
-
+        $hokodo_order_id=$this->data['hokodo_order_id'];
+        $invoice=get_object('Invoice',$invoice_key);
+        $amount=$invoice->get('Invoice Total Amount');
         $cmd    = "curl --request POST \
-  --url $_base_url/payment/orders/order-inU6jgjwE5qWdcWKwZaMGM/documents \
+  --url $_base_url/payment/orders/$hokodo_order_id/documents \
   --header 'Authorization: Token $api_key' \
   --form doc_type=invoice \
   --form description=invoice_description \
-  --form amount=1111 \
+  --form amount=$amount \
   --form file=@$save_to_file";
         $output = shell_exec($cmd);
+
+        $sql = "insert into hokodo_debug (`request`,`data`,`response`,`date`,`status`) values (?,?,?,?,?) ";
+        $db->prepare($sql)->execute(
+            [
+                "$_base_url/payment/orders/$hokodo_order_id/documents",
+                json_encode([
+                    'amount'=>$amount
+                            ]),
+                $output,
+                gmdate('Y-m-d H:i:s'),
+                'ok'
+
+            ]
+        );
+
+
         // print_r(json_decode($output,true));
 
 
@@ -3225,7 +3255,8 @@ WHERE `Order Transaction Fact Key`=?";
             'payment/orders/'.$this->data['hokodo_order_id'].'/discount',
             ['items' => $items],
             $api_key,
-            'PUT'
+            'PUT',
+            $this->db
         );
 
 
@@ -3711,7 +3742,8 @@ WHERE `Order Transaction Fact Key`=?";
             'payment/orders/'.$this->data['hokodo_order_id'].'/return',
             ['items' => $items],
             $api_key,
-            'PUT'
+            'PUT',
+            $this->db
         );
     }
 

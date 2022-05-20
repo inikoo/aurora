@@ -6,7 +6,7 @@
  *  Version 3.0
  */
 
-function api_post_call($url, $data, $api_key = false, $type = 'POST')
+function api_post_call($url, $data, $api_key = false, $type = 'POST',$db=false)
 {
     $ch = curl_init();
 
@@ -32,10 +32,33 @@ function api_post_call($url, $data, $api_key = false, $type = 'POST')
     }
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-    if (!curl_errno($ch)) {
-        return json_decode(curl_exec($ch), true);
-    } else {
+
+    $res=curl_exec($ch);
+    if($res === false){
+        Sentry\captureMessage('Curl error: ' . curl_error($ch));
+        curl_close($ch);
+    }else{
+        curl_close($ch);
+
+        if($db) {
+            $sql = "insert into hokodo_debug (`request`,`data`,`response`,`date`,`status`) values (?,?,?,?,?) ";
+            $db->prepare($sql)->execute(
+                [
+                    $url,
+                    json_encode($data),
+                    $res,
+                    gmdate('Y-m-d H:i:s'),
+                    'ok'
+
+                ]
+            );
+        }
+
+        return json_decode($res, true);
+
     }
 
-    curl_close($ch);
+
+
+
 }

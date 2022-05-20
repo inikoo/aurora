@@ -588,7 +588,7 @@ trait OrderOperations
         include_once 'EcomB2B/hokodo/api_call.php';
 
         $res=api_post_call('payment/orders/'.$this->data['hokodo_order_id'].'/cancel',
-                           ['items'=>$items],$api_key,'PUT'
+                           ['items'=>$items],$api_key,'PUT',$this->db
         );
 
        //  print_r($res);
