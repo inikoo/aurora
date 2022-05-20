@@ -2445,17 +2445,19 @@ from
         $store   = get_object('Store', $this->get('Order Store Key'));
         $website = get_object('Website', $store->get('Store Website Key'));
         $api_key = $website->get_api_key('Hokodo');
-
-        $_base_url = 'https://api.hokodo.co/v1/';
+        $_base_url = 'https://api.hokodo.co/v1';
         if (ENVIRONMENT == 'DEVEL') {
-            $_base_url = 'https://api-sandbox.hokodo.co/v1/';
+            $_base_url = 'https://api-sandbox.hokodo.co/v1';
         }
 
         $hokodo_order_id = $this->data['hokodo_order_id'];
         $invoice         = get_object('Invoice', $invoice_key);
         $amount          = $invoice->get('Invoice Total Amount');
+
+        $url=$_base_url.'/payment/orders/'.$hokodo_order_id.'/documents';
+
         $cmd             = "curl --request POST \
-  --url $_base_url/payment/orders/$hokodo_order_id/documents \
+  --url $url \
   --header 'Authorization: Token $api_key' \
   --form doc_type=invoice \
   --form description=invoice_description \
@@ -2466,13 +2468,13 @@ from
         $sql = "insert into hokodo_debug (`request`,`data`,`response`,`date`,`status`) values (?,?,?,?,?) ";
         $db->prepare($sql)->execute(
             [
-                "$_base_url/payment/orders/$hokodo_order_id/documents",
+                $url,
                 json_encode([
                                 'amount' => $amount
                             ]),
                 $output,
                 gmdate('Y-m-d H:i:s'),
-                'ok'
+                'ok-v2'
 
             ]
         );
