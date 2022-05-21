@@ -84,6 +84,17 @@ if (!empty($data['data']['order']['deferred_payment'])) {
 
 
 
+    }elseif($status=='fulfilled'){
+
+        $to_update['Payment Transaction Status Info']='Fulfilled';
+
+        if(isset($data['data']['order']['total_amount'])){
+            $to_update['Payment Transaction Amount']=$data['data']['order']['total_amount']/100;
+
+        }
+
+
+
     }
 
 
