@@ -436,6 +436,9 @@ class Order extends DB_Table
 
                         case 'Hokodo':
 
+
+
+
                             $_payments=$this->get_payments('keys','Approving');
                             if(count($_payments)>0){
                                 return _('Waiting hokodo approval').' ('.count($_payments).')';
@@ -2460,7 +2463,7 @@ from
 
         $hokodo_order_id = $this->data['hokodo_order_id'];
         $invoice         = get_object('Invoice', $invoice_key);
-        $amount          = $invoice->get('Invoice Total Amount');
+        $amount          = floor($invoice->get('Invoice Total Amount')*100);
 
         $url=$_base_url.'/payment/orders/'.$hokodo_order_id.'/documents';
 

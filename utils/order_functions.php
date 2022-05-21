@@ -192,7 +192,7 @@ function get_order_formatted_dispatch_state($state, $replacement_state, $order_k
     return '<span id="dispatch_state_'.$order_key.'">'.$dispatch_state.'</span>';
 }
 
-function get_order_formatted_payment_state($data)
+function get_order_formatted_payment_state($data,$db)
 {
     switch ($data['Order Payment State']) {
         case 'NA':
@@ -234,7 +234,23 @@ function get_order_formatted_payment_state($data)
                                     $payment_method = _('Waiting bank transfer');
                                     break;
                                 case 'Hokodo':
-                                    $payment_method = _('Waiting hokodo approval');
+
+                                    $sql="select count(*) as num from `Payment Dimension` where (`Payment Transaction Status` = 'Approving') AND (`Payment Account Code` = 'Hokodo')  and `Payment Order Key`=? ";
+                                    $stmt = $db->prepare($sql);
+                                    $stmt->execute(
+                                        [
+                                            $data['Order Key']
+                                        ]
+                                    );
+
+                                    while ($row = $stmt->fetch()) {
+                                        if($row['num']>0){
+                                            $payment_method = _('Waiting hokodo approval');
+
+                                        }
+                                    }
+
+
                                     break;
                                 case 'Cash':
                                     $payment_method = _('Will pay with cash');

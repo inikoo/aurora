@@ -24,7 +24,6 @@ function get_order_showcase($data, $smarty, $user, $db)
 
     //$order->update_aiku($order->get_table_name(), 'refresh_order');
 
-   //  $order->send_hokodo_invoice(2113277);
    // $order->confirm_hokodo_order_fulfilment();
   //  exit;
 

@@ -201,7 +201,7 @@ function orders_in_process_not_paid($_data, $db, $user, $account)
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-        $payment_state = get_order_formatted_payment_state($data);
+        $payment_state = get_order_formatted_payment_state($data,$db);
         include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
@@ -456,7 +456,7 @@ function orders_in_warehouse($_data, $db, $user)
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-        $payment_state = get_order_formatted_payment_state($data);
+        $payment_state = get_order_formatted_payment_state($data,$db);
 
         include_once 'class.Order.php';
 
@@ -605,7 +605,7 @@ function orders_in_warehouse_no_alerts($_data, $db, $user, $account)
                 }
             }
         } else {
-            $payment_state = get_order_formatted_payment_state($data);
+            $payment_state = get_order_formatted_payment_state($data,$db);
             $total_amount  = money($data['Order Total Amount'], $data['Order Currency']);
             $deliveries    = '';
 
@@ -688,7 +688,7 @@ function orders_in_warehouse_with_alerts($_data, $db, $user, $account)
 
     // print $sql;
     foreach ($db->query($sql) as $data) {
-        $payment_state = get_order_formatted_payment_state($data);
+        $payment_state = get_order_formatted_payment_state($data,$db);
 
         include_once 'class.Order.php';
 
@@ -785,7 +785,7 @@ function orders_packed($_data, $db, $user, $account)
 
 
     foreach ($db->query($sql) as $data) {
-        $payment_state = get_order_formatted_payment_state($data);
+        $payment_state = get_order_formatted_payment_state($data,$db);
         include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
@@ -879,7 +879,7 @@ function orders_packed_done($_data, $db, $user, $account)
 
 
     foreach ($db->query($sql) as $data) {
-        $payment_state = get_order_formatted_payment_state($data);
+        $payment_state = get_order_formatted_payment_state($data,$db);
         include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
@@ -973,7 +973,7 @@ function orders_approved($_data, $db, $user, $account)
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-        $payment_state = get_order_formatted_payment_state($data);
+        $payment_state = get_order_formatted_payment_state($data,$db);
 
         include_once 'class.Order.php';
 
@@ -1069,7 +1069,7 @@ function orders_dispatched_today($_data, $db, $user, $account)
 
     //   print $sql;
     foreach ($db->query($sql) as $data) {
-        $payment_state = get_order_formatted_payment_state($data);
+        $payment_state = get_order_formatted_payment_state($data,$db);
         include_once 'class.Order.php';
 
         $operations = '<div id="operations'.$data['Order Key'].'">';
