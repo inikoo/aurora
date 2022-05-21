@@ -84,7 +84,7 @@ if (!empty($data['data']['order']['deferred_payment'])) {
 
 
 
-    }elseif($status=='fulfilled'){
+    }elseif($status=='fulfilled'  or $status=='part_fulfilled'){
 
         $to_update['Payment Transaction Status Info']='Fulfilled';
 
