@@ -435,7 +435,15 @@ class Order extends DB_Table
                             return _('Waiting bank transfer');
 
                         case 'Hokodo':
-                            return _('Waiting hokodo approval');
+
+                            $_payments=$this->get_payments('keys','Approving');
+                            if(count($_payments)>0){
+                                return _('Waiting hokodo approval').' ('.count($_payments).')';
+                            }else{
+                                return '';
+                            }
+
+
 
                         case 'Cash':
                             return _('Will pay with cash');

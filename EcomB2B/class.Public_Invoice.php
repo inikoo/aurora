@@ -275,6 +275,8 @@ class Public_Invoice extends DBW_Table {
 
         if ($filter == 'Completed') {
             $where = ' and `Payment Transaction Status`="Completed" ';
+        }elseif ($filter == 'Pending') {
+            $where = ' and `Payment Transaction Status` in ("Pending","Approving") ';
         } else {
             $where = '';
         }
