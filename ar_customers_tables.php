@@ -250,7 +250,11 @@ function customers($_data, $db, $user) {
 
             }
 
+            $disassociate_from_category='';
 
+            if(isset($_data['parameters']['parent_key'])) {
+                $disassociate_from_category = sprintf('<i class="fa button fa-unlink" onclick="disassociate_category_from_table(this,%d,%d)" ></i>', $_data['parameters']['parent_key'], $data['Customer Key']);
+            }
             $table_data[] = array(
                 'id'           => (integer)$data['Customer Key'],
                 'store_key'    => $data['Customer Store Key'],
@@ -296,7 +300,7 @@ function customers($_data, $db, $user) {
                 'failed_logins'              => number($data['Customer Number Web Failed Logins']),
                 'requests'                   => number($data['Customer Number Web Requests']),
                 'clients'                    => number($data['Customer Number Clients']),
-                'disassociate_from_category' => sprintf('<i class="fa button fa-unlink" onclick="disassociate_category_from_table(this,%d,%d)" ></i>', $_data['parameters']['parent_key'], $data['Customer Key'])
+                'disassociate_from_category' => $disassociate_from_category
 
 
             );
