@@ -329,6 +329,45 @@ class Public_Invoice extends DBW_Table {
         return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
+    function update_payments_totals()
+    {
+        $payments = 0;
+
+        $sql = sprintf(
+            "SELECT sum(`Payment Transaction Amount`) AS amount  FROM `Order Payment Bridge` B LEFT JOIN `Payment Dimension` P  ON (B.`Payment Key`=P.`Payment Key`) WHERE `Invoice Key`=%d AND `Payment Transaction Status`='Completed'",
+            $this->id
+        );
+
+        // print $sql;
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                //print_r($row);
+
+                $payments = round($row['amount'], 2);
+            }
+        }
+
+        $to_pay = round($this->data['Invoice Total Amount'] - $payments, 2);
+
+
+        $this->fast_update(array(
+
+                               'Invoice Payments Amount' => $payments,
+                               'Invoice To Pay Amount'   => $to_pay,
+                               'Invoice Paid'            => ($to_pay <= 0 ? 'Yes' : ($payments == 0 ? 'No' : 'Partially')),
+
+                           ));
+
+        if ($to_pay == 0) {
+            if ($this->data['Invoice Paid Date'] == '') {
+                $this->update_field('Invoice Paid Date', gmdate('Y-m-d H:i:s'), 'no_history');
+            }
+        } else {
+            $this->update_field('Invoice Paid Date', '', 'no_history');
+        }
+    }
+
 
 }
 
