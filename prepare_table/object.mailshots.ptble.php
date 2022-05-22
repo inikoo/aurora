@@ -103,7 +103,7 @@ $table  = '`Email Campaign Dimension` left join `Store Dimension` on (`Store Key
 $fields = "`Email Campaign Email Template Type Key`,`Email Campaign Key`,`Email Campaign Name`,`Email Campaign Store Key`,`Email Campaign Last Updated Date`,`Email Campaign State`,`Email Campaign Number Estimated Emails`,
 `Email Campaign Type`,`Store Key`,`Store Name`,`Email Campaign Email Template Type Key`,`Store Code`,`Email Template Subject`,
 `Email Campaign Sent`,`Email Campaign Delivered`,`Email Campaign Hard Bounces`,`Email Campaign Soft Bounces`,(`Email Campaign Hard Bounces`+`Email Campaign Soft Bounces`) as `Email Campaign Bounces`,`Email Campaign Open`,`Email Campaign Clicked`,`Email Campaign Spams`,`Email Campaign Unsubscribed`,
-`Email Campaign Wave Type`
+`Email Campaign Wave Type`,`Email Campaign State`,`Email Campaign Scheduled Date`,`Store Timezone`
 
 ";
 

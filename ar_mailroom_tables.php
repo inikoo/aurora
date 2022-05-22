@@ -1335,13 +1335,37 @@ function mailshots($_data, $db, $user) {
                 $name .= ' <span style="font-size: x-small">2nd <i class="fal fa-water"></i></span>';
             }
 
+
+
+
+
+
+
+            $_date=$data['Email Campaign Last Updated Date'];
+            if($data['Email Campaign State']=='Scheduled'){
+                $_date=$data['Email Campaign Scheduled Date'];
+            }
+
+
+
+            $__date = new DateTime($_date);
+
+
+            $__date->setTimezone(new DateTimeZone($data['Store Timezone']));
+
+
+            $date= sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'],
+                           strftime('%a, %e %b %Y %R', strtotime($__date->format('Y-m-d H:i:s')))
+            );
+
+
             $adata[] = array(
                 'id' => (integer)$data['Email Campaign Key'],
 
                 'name'  => sprintf('<span class="name_%d">%s</span>', $data['Email Campaign Key'], $name),
                 'state' => sprintf('<span class="state_%d">%s</span>', $data['Email Campaign Key'], $state),
 
-                'date' => sprintf('<span class="date_%d">%s</span>', $data['Email Campaign Key'], strftime("%a, %e %b %Y %R", strtotime($data['Email Campaign Last Updated Date'].' +0:00'))),
+                'date' =>$date,
                 'sent' => sprintf('<span class="sent_%d">%s</span>', $data['Email Campaign Key'], number($data['Email Campaign Sent'])),
 
 
