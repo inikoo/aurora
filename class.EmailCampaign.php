@@ -1,4 +1,5 @@
 <?php
+
 /*
  About:
  Author: Raul Perusquia <raul@inikoo.com>
@@ -12,12 +13,12 @@
 */
 include_once 'class.DB_Table.php';
 
-class EmailCampaign extends DB_Table {
+class EmailCampaign extends DB_Table
+{
 
 
-    function __construct($arg1 = false, $arg2 = false) {
-
-
+    function __construct($arg1 = false, $arg2 = false)
+    {
         global $db;
         $this->db = $db;
 
@@ -44,30 +45,25 @@ class EmailCampaign extends DB_Table {
         }
 
         $this->get_data($arg1, $arg2);
-
     }
 
-    function get_data($tipo, $tag) {
-
-
+    function get_data($tipo, $tag)
+    {
         $sql = sprintf(
-            "SELECT * FROM `Email Campaign Dimension` WHERE  `Email Campaign Key`=%d", $tag
+            "SELECT * FROM `Email Campaign Dimension` WHERE  `Email Campaign Key`=%d",
+            $tag
         );
 
 
         if ($this->data = $this->db->query($sql)->fetch()) {
-
             $this->id       = $this->data['Email Campaign Key'];
             $this->metadata = ($this->data['Email Campaign Metadata'] == '' ? array() : json_decode($this->data['Email Campaign Metadata'], true));
-
+            $this->store=get_object('Store',$this->data['Email Campaign Store Key']);
         }
-
-
     }
 
-    function find($raw_data, $options) {
-
-
+    function find($raw_data, $options)
+    {
         if (isset($raw_data['editor'])) {
             foreach ($raw_data['editor'] as $key => $value) {
                 if (array_key_exists($key, $this->editor)) {
@@ -79,42 +75,32 @@ class EmailCampaign extends DB_Table {
         $this->found     = false;
         $this->found_key = false;
 
-
         $create = '';
         if (preg_match('/create/i', $options)) {
             $create = 'create';
         }
 
-
         if ($create and !$this->found) {
             $this->create($raw_data);
         }
-
     }
 
-    function create($raw_data) {
-
+    function create($raw_data)
+    {
         $data = $this->base_data();
-
-
         $this->editor = $raw_data['editor'];
-
         unset($raw_data['editor']);
 
 
         foreach ($raw_data as $key => $value) {
             if (array_key_exists($key, $data)) {
-
                 $data[$key] = _trim($value);
-
             }
         }
-
 
         if ($data['Email Campaign Name'] == '') {
             $this->error;
             $this->msg = 'no name';
-
             return;
         }
 
@@ -123,13 +109,13 @@ class EmailCampaign extends DB_Table {
             $data['Email Campaign Metadata'] = '{}';
         }
 
-
         $data['Email Campaign Creation Date']     = gmdate('Y-m-d H:i:s');
         $data['Email Campaign Last Updated Date'] = gmdate('Y-m-d H:i:s');
 
-
         $sql = sprintf(
-            "INSERT INTO `Email Campaign Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($data)).'`', join(',', array_fill(0, count($data), '?'))
+            "INSERT INTO `Email Campaign Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($data)).'`',
+            join(',', array_fill(0, count($data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
@@ -177,49 +163,40 @@ class EmailCampaign extends DB_Table {
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                $history_data,
+                true,
+                'No',
+                'Changes',
+                $this->get_object_name(),
+                $this->id
             );
-
-
         } else {
             $this->error = true;
             $this->msg   = "Can not insert Email Campaign Dimension";
-            // exit("$sql\n");
+
         }
-
-
     }
 
-    function get($key) {
-
+    function get($key)
+    {
         if (!$this->id) {
             return false;
         }
 
         switch ($key) {
-
             case 'Subject':
-
 
                 if ($this->data['Email Campaign Wave Type'] == 'Wave' and $this->metadata('subject') != '') {
                     $subject = $this->metadata('subject');
                 } else {
-
                     $email_template = get_object('Email Template', $this->data['Email Campaign Email Template Key']);
-
                     $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
-
                     if ($published_email_template->id) {
                         $subject = $published_email_template->get('Subject');
-
                     } else {
                         $subject = $email_template->get('Subject');
-
                     }
-
-
                 }
-
                 if ($subject == '') {
                     $subject = $this->get('Name');
                 }
@@ -233,11 +210,9 @@ class EmailCampaign extends DB_Table {
                 return $this->metadata('second_wave_subject');
 
             case 'Second Wave Formatted Date':
-
                 if ($this->data['Email Campaign Second Wave Date'] == '') {
                     return '';
                 }
-
                 return '<i class="fal fa-stopwatch"></i> '.strftime("%a %e %b %H:%M %Z", strtotime($this->data['Email Campaign Second Wave Date'].' +0:00'));
 
 
@@ -248,11 +223,10 @@ class EmailCampaign extends DB_Table {
                 } else {
                     $content_data = json_decode($this->data['Email Campaign '.$key], true);
                 }
-
                 return $content_data;
 
 
-            case ('State Index'):
+            case 'State Index':
 
                 switch ($this->data['Email Campaign State']) {
                     case 'InProcess':
@@ -266,23 +240,17 @@ class EmailCampaign extends DB_Table {
 
                     case 'Scheduled':
                         return 40;
-
                     case 'Sending':
                         return 50;
-
                     case 'Stopped':
                         return 60;
-
                     case 'Cancelled':
                         return 70;
-
                     case 'Sent':
                         return 100;
-
-
                     default:
                         return 0;
-                        break;
+
                 }
 
 
@@ -291,33 +259,33 @@ class EmailCampaign extends DB_Table {
                 switch ($this->data['Email Campaign State']) {
                     case 'InProcess':
                         return 'fal fa-drafting-compass';
-                        break;
+
                     case 'ComposingEmail':
                         return 'fal fa-pen-nib';
-                        break;
+
                     case 'Ready':
                         return 'fal fa-clock';
-                        break;
+
                     case 'Scheduled':
                         return 'far fa-clock';
-                        break;
+
                     case 'Sending':
                         return 'fal fa-paper-plane very_discreet';
-                        break;
+
                     case 'Stopped':
                         return 'fa-pause';
-                        break;
+
                     case 'Cancelled':
                         return 'fa red fa-octagon';
-                        break;
+
                     case 'Sent':
                         return 'fal fa-paper-plane';
-                        break;
+
 
 
                     default:
                         return '';
-                        break;
+
                 }
 
                 break;
@@ -327,45 +295,38 @@ class EmailCampaign extends DB_Table {
                     case 'InProcess':
                         if ($this->data['Email Campaign Type'] == 'Newsletter') {
                             return _('Setting up newsletter');
-
                         } else {
                             return _('Setting up mailing list');
-
                         }
-                        break;
                     case 'ComposingEmail':
                         if ($this->get('Email Campaign Selecting Blueprints') == 'No') {
                             return _('Composing email');
-
                         } else {
                             return _('Changing template');
-
                         }
 
-
-                        break;
                     case 'Ready':
                         return _('Ready to send');
-                        break;
+
                     case 'Scheduled':
                         return _('Scheduled to be send');
-                        break;
+
 
                     case 'Sending':
                         return _('Sending');
 
-                        break;
+
                     case 'Cancelled':
                         return _('Cancelled');
-                        break;
+
                     case 'Sent':
                         return _('Sent');
-                        break;
+
 
 
                     default:
                         return $this->data['Email Campaign State'];
-                        break;
+
                 }
 
 
@@ -376,7 +337,7 @@ class EmailCampaign extends DB_Table {
                 $metadata = $this->get('Metadata');
 
                 return $metadata['Type'];
-                break;
+
             case 'Abandoned Cart Type':
                 $metadata = $this->get('Metadata');
 
@@ -392,7 +353,7 @@ class EmailCampaign extends DB_Table {
                 }
 
                 return $formatted_value;
-                break;
+
             case 'Email Campaign Cool Down Days':
                 return ($this->metadata('Cool_Down_Days') == '' ? 180 : $this->metadata('Cool_Down_Days'));
             case 'Cool Down Days':
@@ -421,23 +382,20 @@ class EmailCampaign extends DB_Table {
                 $metadata = $this->get('Metadata');
 
                 return number(isset($metadata['Days Last Updated']) ? $metadata['Days Last Updated'] : 0);
-                break;
+
             case 'Number Estimated Emails':
                 return number($this->data['Email Campaign '.$key]);
-                break;
+
 
             case  'Sent Emails Info':
 
 
                 if (!$this->data['Email Campaign Number Estimated Emails'] > 0) {
-
-
                     if ($this->data['Email Campaign State'] == 'Sending') {
                         return '<span class="very_discreet"><i class="fa fa-spin fa-spinner"></i> '._('Initializing launch').'</span>';
                     } else {
                         return '';
                     }
-
                 }
 
 
@@ -449,7 +407,6 @@ class EmailCampaign extends DB_Table {
 
 
                     if ($this->data['Email Campaign State'] == 'Sending') {
-
                         if (isset($this->start_send)) {
                             $start_datetime = $this->start_send;
                         } else {
@@ -462,24 +419,30 @@ class EmailCampaign extends DB_Table {
 
                         if ($this->data['Email Campaign Sent'] - $offset > 5) {
                             $sent_emails_info .= ' <span class="discreet padding_left_5">'.eta($this->data['Email Campaign Sent'] - $offset, $this->data['Email Campaign Number Estimated Emails'] - $offset, $start_datetime).'</span>';
-
                         }
-
                     }
                 }
 
 
                 return $sent_emails_info;
-                break;
+
 
 
             case 'Creation Date':
             case 'Setup Date':
+            case 'Scheduled Date':
             case 'Composed Date':
             case 'Start Send Date':
             case 'End Send Date':
                 if ($this->data['Email Campaign '.$key] != '') {
-                    return strftime('%e %b %y %k:%M', strtotime($this->data['Email Campaign '.$key]));
+
+                    $date = new DateTime($this->data['Email Campaign '.$key]);
+
+
+                    $date->setTimezone(new DateTimeZone($this->store->get('Store Timezone')));
+                    return strftime('%e %b %y %k:%M', strtotime($date->format('Y-m-d H:i:s')));
+
+                   // return strftime('%e %b %y %k:%M', strtotime($this->data['Email Campaign '.$key]));
                 } else {
                     return '';
                 }
@@ -563,16 +526,14 @@ class EmailCampaign extends DB_Table {
         return false;
     }
 
-    function metadata($key) {
+    function metadata($key)
+    {
         return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
-    function update_estimated_recipients() {
-
-
+    function update_estimated_recipients()
+    {
         if ($this->get('State Index') < 40) {
-
-
             $estimated_recipients = 0;
 
             switch ($this->get('Email Campaign Type')) {
@@ -584,12 +545,14 @@ class EmailCampaign extends DB_Table {
                     if ($metadata['Type'] == 'Inactive') {
                         $sql = sprintf(
                             'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated by Customer`<= CURRENT_DATE - INTERVAL %d DAY',
-                            $this->data['Email Campaign Store Key'], (empty($metadata['Days Inactive in Basket']) ? 0 : $metadata['Days Inactive in Basket'])
+                            $this->data['Email Campaign Store Key'],
+                            (empty($metadata['Days Inactive in Basket']) ? 0 : $metadata['Days Inactive in Basket'])
                         );
                     } else {
                         $sql = sprintf(
                             'SELECT count(DISTINCT O.`Order Key`) AS num FROM `Order Dimension` O LEFT JOIN `Customer Dimension` ON (`Order Customer Key`=`Customer Key`) WHERE `Order State`="InBasket" AND `Customer Main Plain Email`!="" AND `Customer Send Email Marketing`="Yes" AND `Order Store Key`=%d AND `Order Last Updated by Customer`>= CURRENT_DATE - INTERVAL %d DAY',
-                            $this->data['Email Campaign Store Key'], (empty($metadata['Days Last Updated']) ? 0 : $metadata['Days Last Updated'])
+                            $this->data['Email Campaign Store Key'],
+                            (empty($metadata['Days Last Updated']) ? 0 : $metadata['Days Last Updated'])
                         );
                     }
 
@@ -617,9 +580,7 @@ class EmailCampaign extends DB_Table {
                         if ($row = $stmt->fetch()) {
                             $estimated_recipients = $row['num'];
                         }
-
                     } else {
-
                         $sql = "select count(*)  as num from `Customer Dimension` where `Customer Store Key`=? and `Customer Main Plain Email`!='' and `Customer Send Newsletter`='Yes' and  `Customer Type by Activity` not in ('Rejected', 'ToApprove')";
 
 
@@ -630,20 +591,16 @@ class EmailCampaign extends DB_Table {
                             )
                         );
                         if ($row = $stmt->fetch()) {
-
-
                             $estimated_recipients = $row['num'];
                         }
-
-
-
                     }
 
 
                     break;
                 case 'OOS Notification':
                     $sql = sprintf(
-                        'select count(*)  as num from `Back in Stock Reminder Fact` where `Back in Stock Reminder Store Key`=%d and `Back in Stock Reminder State`="Ready" ', $this->get('Store Key')
+                        'select count(*)  as num from `Back in Stock Reminder Fact` where `Back in Stock Reminder Store Key`=%d and `Back in Stock Reminder State`="Ready" ',
+                        $this->get('Store Key')
                     );
 
 
@@ -671,7 +628,8 @@ class EmailCampaign extends DB_Table {
 
                     $sql = sprintf(
                         'select count(*)  as num  from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and  `Customer Last Dispatched Order Date`=%s ',
-                        $this->data['Email Campaign Store Key'], prepare_mysql($date)
+                        $this->data['Email Campaign Store Key'],
+                        prepare_mysql($date)
                     );
 
 
@@ -703,9 +661,7 @@ class EmailCampaign extends DB_Table {
                         if ($row = $stmt->fetch()) {
                             $estimated_recipients = $row['num'];
                         }
-
                     } else {
-
                         include_once 'utils/asset_marketing_customers.php';
 
 
@@ -736,7 +692,7 @@ class EmailCampaign extends DB_Table {
 
                                 break;
                             case 'Product Donut':
-                                /** @var Product  $product */
+                                /** @var Product $product */
                                 $product = get_object('Product', $this->data['Email Campaign Scope Key']);
                                 if ($product->properties('donut_marketing_customers') == '' or $product->properties('donut_marketing_customers_last_updated') < (gmdate('U') - 3600)) {
                                     $product->update_product_donut_marketing_customers();
@@ -773,7 +729,6 @@ class EmailCampaign extends DB_Table {
 
                                 break;
                         }
-
                     }
                     break;
 
@@ -798,26 +753,20 @@ class EmailCampaign extends DB_Table {
                         if (is_numeric($this->metadata('Max_Number_Emails')) and $this->metadata('Max_Number_Emails') >= 0) {
                             $estimated_recipients = min($estimated_recipients, $this->metadata('Max_Number_Emails'));
                         }
-
-
                     }
 
 
                     break;
 
                 default:
-
             }
 
             $this->fast_update(array('Email Campaign Number Estimated Emails' => $estimated_recipients));
-
         }
-
     }
 
-    function delete() {
-
-
+    function delete()
+    {
         if (in_array(
             $this->data['Email Campaign State'], array(
                                                    'InProcess',
@@ -825,7 +774,6 @@ class EmailCampaign extends DB_Table {
                                                    'Ready'
                                                )
         )) {
-
             /** @var $store \Store */
             $store               = get_object('Store', $this->data['Email Campaign Store Key']);
             $email_template_type = get_object('Email_Template_Type', $this->data['Email Campaign Email Template Type Key']);
@@ -848,7 +796,8 @@ class EmailCampaign extends DB_Table {
 
 
             $sql = sprintf(
-                "DELETE FROM `Email Campaign Dimension` WHERE `Email Campaign Key`=%d", $this->id
+                "DELETE FROM `Email Campaign Dimension` WHERE `Email Campaign Key`=%d",
+                $this->id
             );
 
             $this->db->exec($sql);
@@ -864,10 +813,8 @@ class EmailCampaign extends DB_Table {
 
                     if ($this->web_state['module'] == 'customers') {
                         return sprintf('email_campaign_type/%d/%d', $store->id, $email_template_type->id);
-
                     } else {
                         return sprintf('orders/%d/dashboard/website/mailshots', $store->id);
-
                     }
 
 
@@ -885,23 +832,16 @@ class EmailCampaign extends DB_Table {
 
                     break;
                 default:
-
             }
-
-
         } else {
             $this->error = true;
             $this->msg   = 'Email Campaign can not be deleted';
         }
-
     }
 
-    function update_field_switcher($field, $value, $options = '', $metadata = '') {
-
-
+    function update_field_switcher($field, $value, $options = '', $metadata = '')
+    {
         switch ($field) {
-
-
             case 'Email Campaign Second Wave Subject':
 
                 $this->fast_update_json_field('Email Campaign Metadata', 'second_wave_subject', $value);
@@ -1043,21 +983,55 @@ class EmailCampaign extends DB_Table {
                 $base_data = $this->base_data();
                 if (array_key_exists($field, $base_data)) {
                     if ($value != $this->data[$field]) {
-
                         $this->update_field($field, $value, $options);
                     }
                 }
-
         }
     }
 
-    function update_state($value) {
-
+    function update_state($value, $extra_data = [])
+    {
         $operations = array();
 
         $old_state = $this->data['Email Campaign State'];
 
         switch ($value) {
+            case 'Scheduled':
+
+                if ($this->data['Email Campaign State'] == 'Sending') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already sending emails');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Sent') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign already send');
+
+                    return;
+                }
+                if ($this->data['Email Campaign State'] == 'Cancelled') {
+                    $this->error = true;
+                    $this->msg   = _('Campaign cancelled');
+
+                    return;
+                }
+
+
+                $this->fast_update(
+                    array(
+                        'Email Campaign State'             => $value,
+                        'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                        'Email Campaign Scheduled Date'    => $extra_data['Email Campaign Scheduled Date']
+                    )
+                );
+
+                $operations = array(
+                    'delete_operations',
+                    'stop_schedule_operations',
+
+                );
+                break;
 
             case 'InProcess':
 
@@ -1155,8 +1129,7 @@ class EmailCampaign extends DB_Table {
                 }
 
 
-                if ($this->data['Email Campaign State'] == 'Scheduled' or $this->data['Email Campaign State'] == 'Cancelled') {
-
+                if ($this->data['Email Campaign State'] == 'Cancelled') {
                     $this->fast_update(
                         array(
                             'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s')
@@ -1167,7 +1140,8 @@ class EmailCampaign extends DB_Table {
                         array(
                             'Email Campaign State'             => $value,
                             'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
-                            'Email Campaign Composed Date'     => gmdate('Y-m-d H:i:s')
+                            'Email Campaign Composed Date'     => gmdate('Y-m-d H:i:s'),
+                            'Email Campaign Scheduled Date'    => ''
 
                         )
                     );
@@ -1175,7 +1149,7 @@ class EmailCampaign extends DB_Table {
 
                 $operations = array(
                     'delete_operations',
-                    //  'schedule_mailshot_operations',
+                    'schedule_mailshot_operations',
                     'send_mailshot_operations',
                     'undo_set_as_ready_operations'
                 );
@@ -1208,6 +1182,7 @@ class EmailCampaign extends DB_Table {
                     array(
                         'Email Campaign State'             => $value,
                         'Email Campaign Last Updated Date' => gmdate('Y-m-d H:i:s'),
+                        'Email Campaign Scheduled Date'    => ''
                     )
                 );
 
@@ -1262,12 +1237,12 @@ class EmailCampaign extends DB_Table {
                     if ($row = $result->fetch()) {
                         if ($row['num'] > 0 and $row['max_thread'] > 0) {
                             $sql = sprintf(
-                                'update `Email Tracking Dimension` set `Email Tracking Thread`=`Email Tracking Thread`+%d where=`Email Tracking Email Mailshot Key`=%d  where `Email Tracking State`="Ready"   ', $row['max_thread'] + 1, $this->id
+                                'update `Email Tracking Dimension` set `Email Tracking Thread`=`Email Tracking Thread`+%d where=`Email Tracking Email Mailshot Key`=%d  where `Email Tracking State`="Ready"   ',
+                                $row['max_thread'] + 1,
+                                $this->id
                             );
                             $this->db->exec($sql);
                         }
-
-
                     }
                 } else {
                     print_r($error_info = $this->db->errorInfo());
@@ -1306,8 +1281,6 @@ class EmailCampaign extends DB_Table {
                 $operations = array();
 
                 break;
-
-
         }
 
 
@@ -1316,6 +1289,7 @@ class EmailCampaign extends DB_Table {
                 'Email_Campaign_Name'            => $this->get('Name'),
                 'Email_Campaign_State'           => $this->get('State'),
                 'Email_Campaign_Setup_Date'      => '&nbsp;'.$this->get('Setup Date'),
+                'Email_Campaign_Scheduled_Date'      => '&nbsp;'.$this->get('Scheduled Date'),
                 'Email_Campaign_Composed_Date'   => '&nbsp;'.$this->get('Composed Date'),
                 'Email_Campaign_Start_Send_Date' => '&nbsp;'.$this->get('Start Send Date'),
                 'Email_Campaign_End_Send_Date'   => '&nbsp;'.$this->get('End Send Date'),
@@ -1329,7 +1303,6 @@ class EmailCampaign extends DB_Table {
 
 
         switch ($this->data['Email Campaign State']) {
-
             case 'InProcess':
 
                 if ($this->get('Email Campaign Type') == 'Marketing' and $this->get('Email Campaign Scope') == '') {
@@ -1354,16 +1327,12 @@ class EmailCampaign extends DB_Table {
             case 'Sent':
                 $this->update_metadata['add_class'] = array('sent_node' => 'complete');
                 break;
-
         }
-
-
     }
 
 
-    function get_second_wave_date() {
-
-
+    function get_second_wave_date()
+    {
         $store = get_object('Store', $this->data['Email Campaign Store Key']);
 
         if (in_array(
@@ -1382,18 +1351,15 @@ class EmailCampaign extends DB_Table {
 
         if ($this->data['Email Campaign State'] == 'Sent' and ($second_wave_date < strtotime('now'))) {
             $second_wave_date = strtotime('+1 hour');
-
         }
 
 
         return gmdate('Y-m-d H:i:s', $second_wave_date);
-
     }
 
-    function get_field_label($field) {
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Email Campaign Name':
                 $label = _('name');
                 break;
@@ -1411,15 +1377,13 @@ class EmailCampaign extends DB_Table {
                 break;
             default:
                 $label = $field;
-
         }
 
         return $label;
-
     }
 
-    function send_mailshot($first_thread = 1) {
-
+    function send_mailshot($first_thread = 1)
+    {
         include_once 'class.Email_Tracking.php';
         $account = get_object('Account', 1);
         $store   = get_object('Store', $this->get('Store Key'));
@@ -1429,19 +1393,13 @@ class EmailCampaign extends DB_Table {
 
 
         if ($this->get('Email Campaign Wave Type') == 'Yes') {
-
-
             $this->fast_update(['Email Campaign Second Wave Date' => $this->get_second_wave_date()]);
-
-
         };
 
         if ($this->data['Email Campaign Type'] == 'Invite Full Mailshot') {
             $recipient_type = 'Prospect';
-
         } else {
             $recipient_type = 'Customer';
-
         }
 
         $thread      = $first_thread;
@@ -1450,8 +1408,6 @@ class EmailCampaign extends DB_Table {
 
 
         if ($this->data['Email Campaign Type'] == 'Marketing') {
-
-
             include_once 'utils/asset_marketing_customers.php';
 
 
@@ -1492,12 +1448,10 @@ class EmailCampaign extends DB_Table {
                     if ($list->get('List Type') == 'Static') {
                         $table = '`List Customer Bridge` CB left join `Customer Dimension` C  on (CB.`Customer Key`=C.`Customer Key`)';
                         $where = sprintf(
-                            ' where `List Key`=%d ', $list->id
+                            ' where `List Key`=%d ',
+                            $list->id
                         );
-
                     } else {
-
-
                         include_once 'utils/parse_customer_list.php';
 
                         $_data              = json_decode($list->get('List Metadata'), true);
@@ -1505,19 +1459,17 @@ class EmailCampaign extends DB_Table {
 
                         list($table, $where, $group_by) = parse_customer_list($_data, $this->db);
                         $where = sprintf(' where `Customer Store Key`=%d ', $list->get('List Parent Key')).$where;
-
                     }
 
                     $sql       = sprintf(
-                        'select C.`Customer Key` ,C.`Customer Main Plain Email` from  %s %s  and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!=""  ', $table, $where
+                        'select C.`Customer Key` ,C.`Customer Main Plain Email` from  %s %s  and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!=""  ',
+                        $table,
+                        $where
                     );
                     $customers = array();
                     if ($result = $this->db->query($sql)) {
                         foreach ($result as $row) {
-
-
                             $customers[$row['Customer Key']] = $row['Customer Main Plain Email'];
-
                         }
                     }
 
@@ -1527,20 +1479,14 @@ class EmailCampaign extends DB_Table {
 
 
             foreach ($customers as $customer_key => $email) {
-
                 list($contador, $thread_size, $thread) = $this->create_email_tracking($customer_key, $email, $recipient_type, $account, $email_template_type, $email_template, $contador, $thread_size, $thread);
-
-
             }
         } else {
             $sql = $this->get_recipients_sql();
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
-
                     list($contador, $thread_size, $thread) = $this->create_email_tracking($row[$recipient_type.' Key'], $row[$recipient_type.' Main Plain Email'], $recipient_type, $account, $email_template_type, $email_template, $contador, $thread_size, $thread);
-
-
                 }
             }
         }
@@ -1573,23 +1519,20 @@ class EmailCampaign extends DB_Table {
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $this->fast_update(array('Email Campaign Number Estimated Emails' => $row['num']));
-
             }
         }
-
-
     }
 
-    function create_email_tracking($customer_key, $email, $recipient_type, $account, $email_template_type, $email_template, $contador, $thread_size, $thread) {
-
-
+    function create_email_tracking($customer_key, $email, $recipient_type, $account, $email_template_type, $email_template, $contador, $thread_size, $thread)
+    {
         $sql_find = sprintf(
-            'select `Email Tracking Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%s and `Email Tracking Email`=%s ', $this->id, prepare_mysql($email)
+            'select `Email Tracking Key` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%s and `Email Tracking Email`=%s ',
+            $this->id,
+            prepare_mysql($email)
         );
 
         if ($result_find = $this->db->query($sql_find)) {
             if ($row_find = $result_find->fetch()) {
-
             } else {
                 $email_tracking_data = array(
                     'Email Tracking Email' => $email,
@@ -1609,8 +1552,6 @@ class EmailCampaign extends DB_Table {
 
                 $contador++;
                 if ($contador > $thread_size) {
-
-
                     $client        = new GearmanClient();
                     $fork_metadata = json_encode(
                         array(
@@ -1636,11 +1577,7 @@ class EmailCampaign extends DB_Table {
                     }
 
                     $contador = 0;
-
-
                 }
-
-
             }
         }
 
@@ -1649,13 +1586,11 @@ class EmailCampaign extends DB_Table {
             $thread_size,
             $thread
         );
-
     }
 
-    function get_recipients_sql() {
-
+    function get_recipients_sql()
+    {
         switch ($this->data['Email Campaign Type']) {
-
             case 'Newsletter':
 
                 if ($this->data['Email Campaign Wave Type'] == 'Wave') {
@@ -1664,10 +1599,7 @@ class EmailCampaign extends DB_Table {
 
                         $this->get('Email Campaign First Wave Key')
                     );
-
-
                 } else {
-
                     $sql = sprintf(
                         'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove") ',
                         $this->data['Email Campaign Store Key']
@@ -1685,12 +1617,14 @@ class EmailCampaign extends DB_Table {
                 if ($metadata['Type'] == 'Inactive') {
                     $sql = sprintf(
                         'select `Customer Key` ,`Customer Main Plain Email` from `Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) where `Order State`="InBasket" and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" and `Order Store Key`=%d  and `Order Last Updated by Customer`<= CURRENT_DATE - INTERVAL %d DAY ',
-                        $this->data['Email Campaign Store Key'], $metadata['Days Inactive in Basket']
+                        $this->data['Email Campaign Store Key'],
+                        $metadata['Days Inactive in Basket']
                     );
                 } else {
                     $sql = sprintf(
                         'select `Customer Key` ,`Customer Main Plain Email` from `Order Dimension` O  left join `Customer Dimension` on (`Order Customer Key`=`Customer Key`) where `Order State`="InBasket"  and `Customer Send Email Marketing`="Yes" and `Customer Main Plain Email`!="" and `Order Store Key`=%d  and `Order Last Updated by Customer`>= CURRENT_DATE - INTERVAL %d DAY ',
-                        $this->data['Email Campaign Store Key'], $metadata['Days Last Updated']
+                        $this->data['Email Campaign Store Key'],
+                        $metadata['Days Last Updated']
                     );
                 }
 
@@ -1720,7 +1654,8 @@ class EmailCampaign extends DB_Table {
 
                 $sql = sprintf(
                     'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension`    left join `Order Dimension` on (`Customer Last Dispatched Order Key`=`Order Key`) where `Customer Store Key`=%d and  `Customer Send Email Marketing`=\'Yes\' and   `Customer Last Dispatched Order Date`=%s ',
-                    $this->data['Email Campaign Store Key'], prepare_mysql($date)
+                    $this->data['Email Campaign Store Key'],
+                    prepare_mysql($date)
                 );
 
                 return $sql;
@@ -1732,7 +1667,8 @@ class EmailCampaign extends DB_Table {
 
                 $sql = sprintf(
                     "select `Prospect Key`,`Prospect Main Plain Email` from `Prospect Dimension` where `Prospect Store Key`=%d and `Prospect Main Plain Email`!='' and  ( `Prospect Status`='NoContacted'  or  ( `Prospect Status`='Contacted' and  `Prospect Last Contacted Date`<= CURRENT_DATE - INTERVAL %d DAY   )  )  ",
-                    $this->data['Email Campaign Store Key'], (empty($metadata['Cool_Down_Days']) ? 180 : $metadata['Cool_Down_Days'])
+                    $this->data['Email Campaign Store Key'],
+                    (empty($metadata['Cool_Down_Days']) ? 180 : $metadata['Cool_Down_Days'])
                 );
 
                 if (is_numeric($this->metadata('Max_Number_Emails')) and $this->metadata('Max_Number_Emails') >= 0) {
@@ -1751,10 +1687,7 @@ class EmailCampaign extends DB_Table {
                     );
 
                     return $sql;
-
                 } else {
-
-
                     $metadata = $this->get('Metadata');
 
 
@@ -1777,17 +1710,13 @@ class EmailCampaign extends DB_Table {
                                 break;
                         }
                     }
-
                 }
                 break;
-
-
         }
     }
 
-    function update_sent_emails_totals() {
-
-
+    function update_sent_emails_totals()
+    {
         $unsubscribed = 0;
         $sent         = 0;
         $open         = 0;
@@ -1802,8 +1731,6 @@ class EmailCampaign extends DB_Table {
         $sql = sprintf('select count(*) as num ,`Email Tracking State` from `Email Tracking Dimension` where `Email Tracking Email Mailshot Key`=%d group by `Email Tracking State` ', $this->id);
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-
-
                 if (in_array(
                     $row['Email Tracking State'], array(
                                                     'Sent',
@@ -1817,7 +1744,6 @@ class EmailCampaign extends DB_Table {
                                                 )
                 )) {
                     $sent += $row['num'];
-
                 }
                 /*
                                 if (in_array(
@@ -1853,8 +1779,6 @@ class EmailCampaign extends DB_Table {
                 if ($row['Email Tracking State'] == 'Soft Bounce') {
                     $soft_bounces = $row['num'];
                 }
-
-
             }
         }
 
@@ -1900,13 +1824,10 @@ class EmailCampaign extends DB_Table {
             )
 
         );
-
-
     }
 
-    function create_second_wave() {
-
-
+    function create_second_wave()
+    {
         if ($this->data['Email Campaign Wave Type'] == 'Wave' or $this->data['Email Campaign Wave Type'] == 'Sent') {
             return;
         }
@@ -1953,43 +1874,37 @@ class EmailCampaign extends DB_Table {
 
 
         new_housekeeping_fork(
-            'au_send_mailshots', array(
-            'type'         => 'send_mailshot',
-            'mailshot_key' => $second_wave_mailshot->id,
-            'editor'       => $this->editor
+            'au_send_mailshots',
+            array(
+                'type'         => 'send_mailshot',
+                'mailshot_key' => $second_wave_mailshot->id,
+                'editor'       => $this->editor
 
-        ), DNS_ACCOUNT_CODE
+            ),
+            DNS_ACCOUNT_CODE
         );
-
-
     }
 
-    function can_create_second_wave() {
+    function can_create_second_wave()
+    {
         $can_create_second_wave = false;
 
         // This is restricted as well in send_mailshots.fork.php line 86
         if (in_array(
                 $this->get('Email Campaign Type'), [
                                                      'Newsletter',
-                                                    // 'Marketing'
+                                                     // 'Marketing'
                                                  ]
             ) and $this->data['Email Campaign Wave Type'] != 'Wave') {
-
-
             $can_create_second_wave = true;
 
             if ($this->data['Email Campaign State'] == 'Sent' and (strtotime($this->data['Email Campaign End Send Date']) < strtotime('now -4 days'))) {
                 $can_create_second_wave = false;
-
             }
-
-
         }
 
 
         return $can_create_second_wave;
-
-
     }
 
 

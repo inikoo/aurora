@@ -21,6 +21,7 @@ $time = gmdate('H:i');
 real_time_users_operations($db, $redis, $account);
 send_periodic_email_mailshots($time, $db, $account);
 send_second_wave_mailshots( $db, $account);
+send_scheduled_mailshots( $db, $account);
 
 switch ($time) {
     case '00:00':
@@ -625,5 +626,44 @@ function send_second_wave_mailshots( $db, $account) {
 
     }
 
+
+}
+
+function send_scheduled_mailshots( $db, $account) {
+
+    $editor = array(
+        'Author Type'  => '',
+        'Author Key'   => '',
+        'User Key'     => 0,
+        'Date'         => gmdate('Y-m-d H:i:s'),
+        'Subject'      => 'System',
+        'Subject Key'  => 0,
+        'Author Name'  => 'System (Scheduled mailshot)',
+        'Author Alias' => 'System (Scheduled mailshot)',
+        'v'            => 3
+
+
+    );
+
+
+    $sql  = "select `Email Campaign Key` from `Email Campaign Dimension` where `Email Campaign State`='Scheduled' and `Email Campaign Scheduled Date`<=NOW()  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array()
+    );
+    while ($row = $stmt->fetch()) {
+
+        $mailshot = get_object('Email_Campaign', $row['Email Campaign Key']);
+        $mailshot->update_state('Sending');
+
+        new_housekeeping_fork(
+            'au_send_mailshots', array(
+            'type'         => 'send_mailshot',
+            'mailshot_key' => $mailshot->id,
+            'editor'      => $editor
+
+        ), $account->get('Account Code')
+        );
+    }
 
 }

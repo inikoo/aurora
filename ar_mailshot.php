@@ -37,6 +37,16 @@ switch ($tipo) {
         );
         send_mailshot($data, $account, $editor, $db);
         break;
+    case 'set_schedule_mailshot':
+        $data = prepare_values(
+            $_REQUEST, array(
+                         'key' => array('type' => 'key'),
+                         'date' => array('type' => 'string'),
+                         'time' => array('type' => 'string')
+                     )
+        );
+        set_schedule_mailshot($data, $account, $editor, $db);
+        break;
     case 'resume_mailshot':
         $data = prepare_values(
             $_REQUEST, array(
@@ -60,9 +70,56 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-        break;
+
 }
 
+
+function set_schedule_mailshot($data, $account, $editor, $db) {
+
+
+    $mailshot = get_object('Email_Campaign', $data['key']);
+
+    $store=get_object('Store',$mailshot->get('Email Campaign Store Key'));
+
+
+    if ($mailshot->get('Email Campaign State') == 'Ready') {
+
+        $_scheduled_date=$data['date'].' '.$data['time'].':00';
+
+
+        $given = new DateTime($_scheduled_date, new DateTimeZone($store->get('Store Timezone')));
+        $given->setTimezone(new DateTimeZone("UTC"));
+        $scheduled_date = $given->format("Y-m-d H:i:s");
+
+
+
+
+
+        $mailshot->update_state('Scheduled',['Email Campaign Scheduled Date'=>$scheduled_date]);
+
+
+
+
+
+
+
+
+        $response = array(
+            'state'           => 200,
+            'update_metadata' => $mailshot->get_update_metadata()
+
+
+        );
+    } else {
+
+        $response = array(
+            'state' => 400,
+            'msg'   => 'Email Campaign State: '.$mailshot->get('Email Campaign State')
+        );
+    }
+    echo json_encode($response);
+    exit;
+}
 
 function send_mailshot($data, $account, $editor, $db) {
 
@@ -92,7 +149,6 @@ function send_mailshot($data, $account, $editor, $db) {
 
         $response = array(
             'state'           => 200,
-            // 'msg'=> $msg,
             'update_metadata' => $mailshot->get_update_metadata()
 
 
@@ -164,7 +220,15 @@ function stop_mailshot($data, $account, $editor, $db) {
 
     $mailshot = get_object('Email_Campaign', $data['key']);
 
-    $mailshot->update_state('Stopped');
+
+    if($mailshot->get('Email Campaign State')=='Scheduled'){
+        $mailshot->update_state('Ready');
+
+    }else{
+        $mailshot->update_state('Stopped');
+
+    }
+
     $response = array(
         'state'           => 200,
         // 'msg'=> $msg,

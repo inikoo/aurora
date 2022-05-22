@@ -40,17 +40,18 @@
 
 
             {if $email_campaign->get('Email Campaign Type')=='Newsletter'}
-                <li id="composed_email_node" class="li {if $email_campaign->get('State Index')>=30}complete{/if}">
+                <li id="composed_email_node"  style="width: 150px" class="li {if $email_campaign->get('State Index')>=30}complete{/if}">
                     <div class="label     ">
                         <span class="state ">{t}Compose newsletter{/t}</span>
                     </div>
                     <div class="timestamp">
-                        <span class="Email_Campaign_Composed_Date">{$email_campaign->get('Composed Date')} &nbsp;</span> <span class="start_date">{$email_campaign->get('Creation Date')}</span>
+                        <span class="Email_Campaign_Composed_Date">{$email_campaign->get('Composed Date')} &nbsp;</span>
+                        <span class="start_date">{$email_campaign->get('Creation Date')}</span>
                     </div>
                     <div class="dot"></div>
                 </li>
             {else}
-                <li id="setup_mail_list_node" class="li {if $email_campaign->get('State Index')>=20}complete{/if}">
+                <li id="setup_mail_list_node" style="width: 150px" class="li {if $email_campaign->get('State Index')>=20}complete{/if}">
                     <div class="label     ">
                         <span class="state ">{t}Setup mail list{/t}</span>
                     </div>
@@ -59,7 +60,7 @@
                     </div>
                     <div class="dot"></div>
                 </li>
-                <li id="composed_email_node" class="li  {if $email_campaign->get('State Index')>=30}complete{/if} ">
+                <li id="composed_email_node" style="width: 150px" class="li  {if $email_campaign->get('State Index')>=30}complete{/if} ">
                     <div class="label">
                         <span class="state">&nbsp;{t}Compose email{/t}&nbsp;<span></i></span></span>
                     </div>
@@ -71,7 +72,8 @@
             {/if}
 
 
-            <li id="scheduled_node" class="hide li {if $email_campaign->get('State Index')>=40}complete{/if} ">
+
+            <li id="scheduled_node" style="width: 150px" class=" li {if $email_campaign->get('State Index')!=40}hide{/if} ">
                 <div class="label">
                     <span class="state">{t}Schedule send{/t}</span>
                 </div>
@@ -81,7 +83,7 @@
                 <div class="dot"></div>
             </li>
 
-            <li id="sending_node" class="li {if $email_campaign->get('State Index')>=50}complete{/if} ">
+            <li id="sending_node" style="width: 150px" class="li {if $email_campaign->get('State Index')>=50}complete{/if} ">
                 <div class="label">
                     <span class="state">{t}Start send{/t}</span>
                 </div>
@@ -91,7 +93,7 @@
                 <div class="dot"></div>
             </li>
 
-            <li id="stopped_node" class="li stopped_node cancelled {if $email_campaign->get('State Index')==60}complete{else}hide{/if} ">
+            <li id="stopped_node" style="width: 150px" class="li stopped_node cancelled {if $email_campaign->get('State Index')==60}complete{else}hide{/if} ">
                 <div class="label">
                     <span class="state">{t}Stopped{/t}</span>
                 </div>
@@ -102,7 +104,7 @@
             </li>
 
 
-            <li id="sent_node" class="li sent_node {if $email_campaign->get('State Index')>=100}complete{/if}">
+            <li id="sent_node" style="width: 150px" class="li sent_node {if $email_campaign->get('State Index')>=100}complete{/if}">
                 <div class="label">
                     <span class="state">{t}Sent{/t}</span>
                 </div>
@@ -198,7 +200,6 @@
                         </div>
                     </div>
 
-
                     <div id="stop_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=50   }hide{/if}">
                         <div class="square_button left  " title="{t}Stop sending emails{/t}">
                             <i class="fa  fa-stop button error" id="stop_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "Stopped","dialog_name":"stop"}'
@@ -206,6 +207,16 @@
 
                         </div>
                     </div>
+
+                    <div id="stop_schedule_operations" class="email_campaign_operation {if $email_campaign->get('State Index')!=40   }hide{/if}">
+                        <div class="square_button left  " title="{t}Stop schedule{/t}">
+                            <i class="fa  fa-clock button error" id="stop_save_buttons" aria-hidden="true" data-data='{  "field": "Email Campaign State","value": "Ready","dialog_name":"stop_schedule"}'
+                               onclick="stop_scheduled_mailshot(this)"></i>
+
+                        </div>
+                    </div>
+
+
 
                     <div id="set_mail_list_operations"
                          class="email_campaign_operation  {if $email_campaign->get('State Index')!=20 or $email_campaign->get('Email Campaign Type')=='Newsletter' or $email_campaign->get('Email Campaign Type')=='AbandonedCart'
@@ -258,7 +269,7 @@
 
                     </div>
 
-                    <div id="schedule_mailshot_operations" class="hide email_campaign_operation {if {$email_campaign->get('State Index')}!=30  }hide{/if}">
+                    <div id="schedule_mailshot_operations" class=" email_campaign_operation {if {$email_campaign->get('State Index')}!=30  }hide{/if}">
                         <div class="square_button right  " title="{t}Schedule mailshot{/t}">
                             <i class="far fa-clock  " aria-hidden="true" onclick="toggle_order_operation_dialog('schedule_mailshot')"></i>
 
@@ -269,24 +280,12 @@
                                                                      onclick="close_dialog('schedule_mailshot')"></i>{t}Schedule mailshot{/t}</td>
                                 </tr>
 
-                                <tr style="height: 50px">
-                                    <td style="text-align: center">
-                                    <span onclick="send_mailshot_now(this)" class="square_button" style="border:1px solid #ccc;padding:5px">{t}Send now{/t} <i class="fa fa-fw fa-paper-plane"></i>
-                                    <span class="square_button hide " style="border:1px solid #ccc;padding:5px;margin-right: 10px;margin-left: 10px">{t}Send in <em>n</em> hours{/t}</span>
-                                    <span class="square_button hide" style="border:1px solid #ccc;padding:5px">{t}Choose time{/t}</span>
-
-                                    </td>
-                                </tr>
 
 
-                                <tr class="changed buttons hide">
-
-                                    <td style="text-align: center">{t}Send in{/t} <input type="number" style="width:3em"> {t}hours{/t} <span class="save "><i class="fa fa-cloud fa-fw  " aria-hidden="true"></i></span>
-                                    </td>
-                                </tr>
 
 
-                                <tr class="changed buttons hide">
+
+                                <tr class="changed buttons xhide">
 
                                     <td style="text-align: center">
 
@@ -295,19 +294,16 @@
                                             <div class="date_chooser_form">
 
                                                 <table>
-                                                    <tr style="height: 20px">
-                                                        <td style="text-align: left;line-height:20px" class="small">{t}Date{/t}</td>
+
+
+                                                    <tr style="height: 20px" colspan="2">
+                                                        <input id="schedule_mailshot_date" type="hidden" value="{"+1 days"|strtotime|date_format:"Y-m-d"}"/>
+
+                                                        <td style="padding-top:5px;text-align: left;line-height:20px;" >{t}time{/t} <span style="font-size: x-small">({$store->get('Store Timezone')})</span></td>
                                                     </tr>
                                                     <tr>
-                                                        <td><input id="select_date_formatted" style="width: 7em" value=""/></td>
-                                                        <td></td>
-                                                    </tr>
-                                                    <tr style="height: 20px">
-                                                        <td style="text-align: left;line-height:20px" class="small">{t}time{/t}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="text-align: left"><input id="select_time_formatted" style="width: 5em" value=""/></td>
-                                                        <td><i onclick="submit_date()" id="select_date_save" class="fa button fa-play save padding_left_20"></i></td>
+                                                        <td style="text-align: left"><input id="schedule_mailshot_time"  type="time"  style="width: 5em" value="07:00"/></td>
+                                                        <td><span onclick="set_schedule_mailshot(this)" id="select_date_save" class=" save button valid changed" >  {t}Save{/t}  <i   class="fa button fa-cloud  "></i></span></td>
                                                     </tr>
                                                 </table>
 
@@ -489,26 +485,95 @@
 
 <script>
 
+    const today = new Date()
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
     $("#select_date_datepicker").datepicker({
-        showOtherMonths: true, selectOtherMonths: true, defaultDate: new Date(""), altField: "#select_date", altFormat: "yy-mm-dd", minDate: 0, onSelect: function () {
+        showOtherMonths: true, selectOtherMonths: true, defaultDate: tomorrow, altField: "#select_date", altFormat: "yy-mm-dd", minDate: 0, onSelect: function () {
             $('#select_date').change();
-            $('#select_date_formatted').val($.datepicker.formatDate("dd-mm-yy", $(this).datepicker("getDate")))
-            validate_date()
+            $('#schedule_mailshot_date').val($.datepicker.formatDate("yy-mm-dd", $(this).datepicker("getDate")))
+
         }
     });
 
-    function validate_date() {
-        $('#select_date_save').removeClass('possible_valid valid invalid')
 
-        if ($("#select_date_formatted").val() == '') {
-            validation = 'possible_valid';
-        } else {
-            validation = 'valid';
+    function set_schedule_mailshot(element){
 
+        if($(element).hasClass('wait')){
+            return;
         }
-        $('#select_date_save').addClass(validation)
+        let icon=$(element).find('i');
+
+        $(element).addClass('wait')
+        icon.removeClass('fa-cloud').addClass('fa-spin fa-spinner')
+
+
+
+        var ajaxData = new FormData();
+
+        ajaxData.append("tipo", 'set_schedule_mailshot')
+        ajaxData.append("key", $('#email_campaign').data('email_campaign_key'))
+        ajaxData.append("date",$('#schedule_mailshot_date').val() )
+        ajaxData.append("time", $('#schedule_mailshot_time').val())
+
+
+        $.ajax({
+            url: "/ar_mailshot.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
+            }, success: function (data) {
+
+
+                $(element).removeClass('wait')
+                icon.addClass('fa-cloud').removeClass('fa-spin fa-spinner')
+
+                if (data.state == '200') {
+
+                    $('#schedule_mailshot_dialog').addClass('hide')
+
+
+                    $('#mailshot\\.published_email').removeClass('hide')
+                    change_tab('mailshot.published_email')
+
+
+                    for (var key in data.update_metadata.class_html) {
+                        $('.' + key).html(data.update_metadata.class_html[key])
+                    }
+
+
+                    $('.email_campaign_operation').addClass('hide')
+                    $('.estimated_recipients_pre_sent').addClass('hide')
+                    $('.estimated_recipients_post_sent').removeClass('hide')
+
+
+                    for (var key in data.update_metadata.operations) {
+                        $('#' + data.update_metadata.operations[key]).removeClass('hide')
+                    }
+
+
+                    $('.timeline .li').removeClass('complete')
+
+                    $('#setup_mail_list_node').addClass('complete')
+                    $('#composed_email_node').addClass('complete')
+
+                    $('#scheduled_node').removeClass('hide')
+
+
+                } else if (data.state == '400') {
+                    swal({
+                        title: data.title, text: data.msg, confirmButtonText: "OK"
+                    });
+                }
+
+
+            }, error: function () {
+
+            }
+        });
+
+
 
     }
+
 
     /*
         function set_up_mailing_list(){
