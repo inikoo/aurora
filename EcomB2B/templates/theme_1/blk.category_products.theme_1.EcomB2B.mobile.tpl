@@ -34,8 +34,9 @@
             <div style=" display: flex;margin-bottom:20px" class="product_block product_container"
                  data-product_id="{$item.product_id}">
 
-                {include file="theme_1/_variants.category_products.theme_1.EcomB2B.tpl" variants=$item.variants master_id={$item.product_id} }
-
+            {if isset($item.number_visible_variants)  and $item.number_visible_variants>0}
+            {include file="theme_1/_variants.category_products.theme_1.EcomB2B.tpl" variants=$item.variants master_id={$item.product_id} }
+            {/if}
 
                 <div class="product_image" style="flex-basis:50%;margin-left:4px">
                     <a href="{$item.link}"
@@ -78,7 +79,8 @@
                         <div style="margin-top: 3px;font-size: medium">
                             {t}Price{/t}: <span class="Mobil_Product_Price">{$item.price}</span> {if isset($item.price_unit)}{$item.price_unit}{/if}
                         </div>
-                        {if  $item.number_visible_variants==0}
+
+                            {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
 
 
                             {if $store->get('Store Type')=='Dropshipping'}
@@ -126,11 +128,8 @@
                                     </div>
                                 {/if}
                             {/if}
-                        {else}
-
-
-
-                            {foreach from=$item.variants item=variant name=variant}
+                            {else}
+                                {foreach from=$item.variants item=variant name=variant}
                                 <div id="ordering_variant_{$variant.id}"
                          class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
 
@@ -191,23 +190,20 @@
 
                     </div>
                             {/foreach}
+                            {/if}
 
-
-                        {/if}
-
-
-                    {else}
-                        <div class="log_out_prod_info">
+                            {else}
+                                <div class="log_out_prod_info">
                             {if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}
                         </div>
-                        <div class="log_out_prod_links">
+                                <div class="log_out_prod_links">
                             <div onclick='window.location.href = "/login.sys"'>
                                 <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
                             <div onclick='window.location.href = "/register.sys"'>
                                 <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span>
                             </div>
                         </div>
-                    {/if}
+                        {/if}
                 </div>
             </div>
         {/if}

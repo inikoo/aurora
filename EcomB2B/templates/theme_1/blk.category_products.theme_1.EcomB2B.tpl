@@ -71,7 +71,7 @@
 
 
 
-                            {if $item.number_visible_variants==0}
+                            {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
                                 <div class="name item_name {if $item.name|strlen > 40}small{elseif $item.name|strlen > 60} very_small{/if} ">{$item.name}</div>
                                 <span class="code"><small>{$item.code}</small></span>
                             {else}
@@ -95,7 +95,7 @@
                         </div>
                         {if $logged_in}
 
-                            {if  $item.number_visible_variants==0}
+                            {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
                                 <div class="product_prices  ">
                                     <div class="product_price">
                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
