@@ -15,8 +15,8 @@
         <tr>
             <th></th>
             <th style="text-align: right">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</th>
-            <th style="text-align: right">{if empty($labels._product_price)}{t}Units{/t}{else}{$labels._unit}{/if}</th>
-            <th style="text-align: right"> {if empty($labels._product_price)}{t}Price/Unit{/t}{else}{$labels._per_unit}{/if}</th>
+            <th style="text-align: right">{if empty($labels._unit)}{t}Units{/t}{else}{$labels._unit}{/if}</th>
+            <th style="text-align: right"> {if empty($labels._per_unit)}{t}Price/Unit{/t}{else}{$labels._per_unit}{/if}</th>
         </tr>
         {foreach from=$variants item=$variant  name=variant}
             <tr class="variant_option {if $master_id==$variant->id}current{/if}   "
