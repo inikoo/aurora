@@ -485,8 +485,8 @@
 
 <script>
 
-    const today = new Date()
-    const tomorrow = new Date(today)
+
+     tomorrow = new Date(new Date())
     tomorrow.setDate(tomorrow.getDate() + 1)
 
     $("#select_date_datepicker").datepicker({
