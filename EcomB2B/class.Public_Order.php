@@ -588,14 +588,14 @@ class Public_Order extends DBW_Table {
             case 'Order Charges Net Amount':
                 return 0;
             case 'Total':
-                return money(0, $this->currency_code);
+                return 0;
             default:
                 if (preg_match(
                     '/^(Balance (Total|Net|Tax)|Invoiced Total Net Adjust|Invoiced Total Tax Adjust|Invoiced Refund Net|Invoiced Refund Tax|Total|Items|Invoiced Items|Invoiced Tax|Invoiced Net|Invoiced Charges|Payments|To Pay|Invoiced Shipping|Invoiced Insurance |(Shipping |Charges |Insurance )?Net).*(Amount)$/',
                     $key
                 )) {
 
-                    return money(0, $this->currency_code);
+                    return 0;
                 }
         }
 
