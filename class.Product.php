@@ -3285,13 +3285,13 @@ class Product extends Asset
                     $this->update_updated_markers('Price');
 
 
-                    require_once 'utils/new_fork.php';
+
 
                     $id = $this->id;
                     if ($this->data['is_variant'] == 'Yes') {
                         $id = $this->data['variant_parent_id'];
                     }
-
+                    require_once 'utils/new_fork.php';
                     new_housekeeping_fork(
                         'au_housekeeping',
                         array(

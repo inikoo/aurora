@@ -2885,7 +2885,7 @@ from
 
     function get_formatted_payment_state()
     {
-        return get_order_formatted_payment_state($this->data);
+        return get_order_formatted_payment_state($this->data,$this->db);
     }
 
     function get_date($field)
