@@ -2274,21 +2274,22 @@ class Order extends DB_Table
                         $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
 
-                        if ($row['Delivery Note Quantity'] == 0) {
-                            $unit_price = $item['unit_price'];
-                        } else {
-                            $unit_price = floor($item_total / $row['Delivery Note Quantity']);
-                        }
+                        $qty = round($row['Delivery Note Quantity'], 3);
 
-                        $items[]                                        = [
-                            "item_id"      => $row['Order Transaction Fact Key'],
-                            "description"  => $row['Product Code'].' '.$row['Product Name'],
-                            "quantity"     => round($row['Delivery Note Quantity'], 3),
-                            "unit_price"   => $unit_price,
-                            "total_amount" => $item_total,
-                            "tax_amount"   => $item_tax,
-                        ];
-                        $items_keys[$row['Order Transaction Fact Key']] = $row['Order Transaction Fact Key'];
+                        if ($qty > 0) {
+                            $unit_price = floor($item_total / $row['Delivery Note Quantity']);
+
+
+                            $items[]                                        = [
+                                "item_id"      => $row['Order Transaction Fact Key'],
+                                "description"  => $row['Product Code'].' '.$row['Product Name'],
+                                "quantity"     => $qty,
+                                "unit_price"   => $unit_price,
+                                "total_amount" => $item_total,
+                                "tax_amount"   => $item_tax,
+                            ];
+                            $items_keys[$row['Order Transaction Fact Key']] = $row['Order Transaction Fact Key'];
+                        }
                     }
                 } else {
                     $id = str_replace("np-", "", $item['item_id']);
