@@ -193,8 +193,8 @@ class Store extends DB_Table
             $this->get_data('id', $this->id);
             $this->new = true;
 
-            $this->fast_update_json_field('Store Settings', 'tax_authority', $account->settings('tax_authority'));
-            $this->fast_update_json_field('Store Settings', 'tax_country_code', $account->settings('tax_country_code'));
+            $this->fast_update_json_field('Store Settings', 'tax_authority', $account->properties('tax_authority'));
+            $this->fast_update_json_field('Store Settings', 'tax_country_code', $account->properties('tax_country_code'));
 
             if (is_numeric($this->editor['User Key']) and $this->editor['User Key'] > 1) {
                 $sql = sprintf(
