@@ -283,6 +283,11 @@ $language = set_locate($website_locale);
 $smarty->assign('language', $language);
 
 
+
+$smarty->assign('loqate', $store->settings('loqate'));
+
+
+
 if ($website->get('Website Status') == 'InProcess') {
     $webpage_key = $website->get_system_webpage_key('launching.sys');
     $webpage     = get_object('Webpage', $webpage_key);

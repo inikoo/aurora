@@ -206,6 +206,15 @@
             }
         }
     </script>
+    {if !empty($loqate)}
+        <script>(function(n,t,i,r){
+                var u,f;n[i]=n[i]||{
+
+                },n[i].initial={
+                    accountCode:"{$loqate}",host:"{$loqate}.pcapredict.com"},n[i].on=n[i].on||function(){
+                    (n[i].onq=n[i].onq||[]).push(arguments)},u=t.createElement("script"),u.async=!0,u.src=r,f=t.getElementsByTagName("script")[0],f.parentNode.insertBefore(u,f)})(window,document,"pca","//{$loqate}.pcapredict.com/js/sensor.js")</script>
+    {/if}
+
 
     <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
     {assign "with_forms" false}
