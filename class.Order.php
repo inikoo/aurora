@@ -2273,11 +2273,18 @@ class Order extends DB_Table
                         $item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
                         $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
+
+                        if ($row['Delivery Note Quantity'] == 0) {
+                            $unit_price = $item['unit_price'];
+                        } else {
+                            $unit_price = floor($item_total / $row['Delivery Note Quantity']);
+                        }
+
                         $items[]                                        = [
                             "item_id"      => $row['Order Transaction Fact Key'],
                             "description"  => $row['Product Code'].' '.$row['Product Name'],
-                            "quantity"     => round($row['Delivery Note Quantity'],3),
-                            "unit_price"   => floor($item_total / $row['Delivery Note Quantity']),
+                            "quantity"     => round($row['Delivery Note Quantity'], 3),
+                            "unit_price"   => $unit_price,
                             "total_amount" => $item_total,
                             "tax_amount"   => $item_tax,
                         ];
@@ -2427,7 +2434,6 @@ from
 
             foreach ($reported_items as $key => $reported_item) {
                 if ($reported_item['type'] == 'fee') {
-
                     foreach ($new_charges_items as $new_charges_item_key => $value) {
                         if ($value == $reported_item['unit_price']) {
                             unset($new_charges_items[$new_charges_item_key]);
@@ -2446,7 +2452,6 @@ from
                             unset($reported_items[$key]);
 
                             break;
-
                         }
                     }
                 }
@@ -2456,13 +2461,12 @@ from
             //print_r($items);
 
 
-          //  if(count($reported_items)>0){
-           //     print_r($reported_items);
-           // }
+            //  if(count($reported_items)>0){
+            //     print_r($reported_items);
+            // }
 
-           // print_r($items);
+            // print_r($items);
             //exit;
-
 
 
             include_once 'EcomB2B/hokodo/api_call.php';
@@ -2474,8 +2478,7 @@ from
                 'PUT',
                 $this->db
             );
-
-           // print_r($res);
+            // print_r($res);
 
         }
     }
@@ -2519,12 +2522,10 @@ from
                     $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
 
-
-
                     if ($item_total < $item['total_amount'] or $item_tax < $item['tax_amount']) {
                         $new_items[] = [
                             'item_id'      => $item['item_id'],
-                            'quantity'     =>  round($item['quantity'] - $row['Delivery Note Quantity'], 3),
+                            'quantity'     => round($item['quantity'] - $row['Delivery Note Quantity'], 3),
                             'total_amount' => $item['total_amount'] - $item_total,
                             'tax_amount'   => $item['tax_amount'] - $item_tax,
                         ];
@@ -2564,8 +2565,6 @@ from
         $api_key = $website->get_api_key('Hokodo');
 
         include_once 'EcomB2B/hokodo/api_call.php';
-
-
 
 
         if (count($new_items) > 0) {
@@ -2885,7 +2884,7 @@ from
 
     function get_formatted_payment_state()
     {
-        return get_order_formatted_payment_state($this->data,$this->db);
+        return get_order_formatted_payment_state($this->data, $this->db);
     }
 
     function get_date($field)
