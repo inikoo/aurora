@@ -47,13 +47,37 @@ function create_email_templates($db, $store) {
 
     include_once 'class.Email_Template.php';
 
-
     $email_campaign_types_data = array(
 
         array(
-            'Email Campaign Type Status' => 'Active',
-            'Email Campaign Type Scope'  => 'User Notification',
-            'Email Campaign Type Code'   => 'Delivery Note Dispatched',
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Basket Reminder 1',
+            'Email Campaign Type Metadata'=>json_encode(
+                [
+                    'Send After Hours'=>'24'
+                ]
+            )
+        ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Basket Reminder 2',
+            'Email Campaign Type Metadata'=>json_encode(
+                [
+                    'Send After Hours'=>'24'
+                ]
+            )
+        ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Basket Reminder 3',
+            'Email Campaign Type Metadata'=>json_encode(
+                [
+                    'Send After Hours'=>'24'
+                ]
+            )
         ),
         array(
             'Email Campaign Type Status' => 'InProcess',

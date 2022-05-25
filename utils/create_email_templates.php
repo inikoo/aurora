@@ -10,8 +10,8 @@
 */
 
 
-function create_email_templates($db, $store) {
-
+function create_email_templates($db, $store)
+{
     include_once 'class.Email_Template.php';
 
 
@@ -113,17 +113,32 @@ function create_email_templates($db, $store) {
             'Email Campaign Type Scope'  => 'Customer Notification',
             'Email Campaign Type Code'   => 'Registration Rejected',
         ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Basket Reminder 1',
+        ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Basket Reminder 2',
+        ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Basket Reminder 3',
+        ),
 
     );
 
     foreach ($email_campaign_types_data as $email_campaign_type_data) {
-
-
         $email_campaign_type_data['Email Campaign Type Store Key'] = $store->id;
 
 
         $sql = sprintf(
-            "INSERT INTO `Email Campaign Type Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($email_campaign_type_data)).'`', join(',', array_fill(0, count($email_campaign_type_data), '?'))
+            "INSERT INTO `Email Campaign Type Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($email_campaign_type_data)).'`',
+            join(',', array_fill(0, count($email_campaign_type_data), '?'))
         );
 
 
@@ -139,7 +154,6 @@ function create_email_templates($db, $store) {
         if ($stmt->execute()) {
             $email_campaign_type_key = $db->lastInsertId();
             $email_campaign_type     = get_object('email_campaign_type', $email_campaign_type_key);
-
 
 
             switch ($email_campaign_type->get('Email Campaign Type Code')) {
@@ -216,7 +230,9 @@ function create_email_templates($db, $store) {
 
 
                     $sql = sprintf(
-                        'update `Email Template Dimension` set `Email Template Email Campaign Type Key`=%d where `Email Template Key`=%d  ', $email_campaign_type->id, $scope_metadata['emails']['welcome']['key']
+                        'update `Email Template Dimension` set `Email Template Email Campaign Type Key`=%d where `Email Template Key`=%d  ',
+                        $email_campaign_type->id,
+                        $scope_metadata['emails']['welcome']['key']
 
                     );
                     $db->exec($sql);
@@ -235,7 +251,9 @@ function create_email_templates($db, $store) {
                     $email_campaign_type->fast_update(array('Email Campaign Type Email Template Key' => $scope_metadata['emails']['reset_password']['key']));
 
                     $sql = sprintf(
-                        'update `Email Template Dimension` set `Email Template Email Campaign Type Key`=%d where `Email Template Key`=%d  ', $email_campaign_type->id, $scope_metadata['emails']['reset_password']['key']
+                        'update `Email Template Dimension` set `Email Template Email Campaign Type Key`=%d where `Email Template Key`=%d  ',
+                        $email_campaign_type->id,
+                        $scope_metadata['emails']['reset_password']['key']
 
                     );
                     $db->exec($sql);
@@ -250,7 +268,9 @@ function create_email_templates($db, $store) {
                     $email_campaign_type->fast_update(array('Email Campaign Type Email Template Key' => $scope_metadata['emails']['order_confirmation']['key']));
 
                     $sql = sprintf(
-                        'update `Email Template Dimension` set `Email Template Email Campaign Type Key`=%d where `Email Template Key`=%d  ', $email_campaign_type->id, $scope_metadata['emails']['order_confirmation']['key']
+                        'update `Email Template Dimension` set `Email Template Email Campaign Type Key`=%d where `Email Template Key`=%d  ',
+                        $email_campaign_type->id,
+                        $scope_metadata['emails']['order_confirmation']['key']
 
                     );
                     $db->exec($sql);
@@ -309,17 +329,9 @@ function create_email_templates($db, $store) {
                     $email_campaign_type->fast_update(array('Email Campaign Type Metadata' => json_encode($_metadata)));
 
                     break;
-
-
             }
-
-
         } else {
-
         }
-
-
     }
-
 }
 
