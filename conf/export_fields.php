@@ -133,6 +133,21 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'label'   => _('Account balance'),
                 'checked' => 0
             ),
+            array(
+                'name'    => '`Customer Orders Invoiced`',
+                'label'   => _('Number invoiced'),
+                'checked' => 0
+            ),
+
+            array(
+                'name'    => '`Customer Net Balance`',
+                'label'   => _('Total sales'),
+                'checked' => 0
+            ),
+
+
+
+
 
         ),
         'customers_dropshipping' => array(
