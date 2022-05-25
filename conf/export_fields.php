@@ -134,13 +134,13 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'checked' => 0
             ),
             array(
-                'name'    => '`Customer Orders Invoiced`',
+                'name'    => '`Customer Number Invoices`',
                 'label'   => _('Number invoiced'),
                 'checked' => 0
             ),
 
             array(
-                'name'    => '`Customer Net Balance`',
+                'name'    => '`Customer Sales Amount`',
                 'label'   => _('Total sales'),
                 'checked' => 0
             ),

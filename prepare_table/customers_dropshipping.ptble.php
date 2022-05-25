@@ -141,9 +141,9 @@ if (($parameters['f_field'] == 'name') and $f_value != '') {
 } elseif ($parameters['f_field'] == 'min' and is_numeric($f_value)) {
     $wheref .= " and  `Customer Orders`>=".$f_value."    ";
 } elseif ($parameters['f_field'] == 'maxvalue' and is_numeric($f_value)) {
-    $wheref .= " and  `Customer Net Balance`<=".$f_value."    ";
+    $wheref .= " and  `Customer Sales Amount`<=".$f_value."    ";
 } elseif ($parameters['f_field'] == 'minvalue' and is_numeric($f_value)) {
-    $wheref .= " and  `Customer Net Balance`>=".$f_value."    ";
+    $wheref .= " and  `Customer Sales Amount`>=".$f_value."    ";
 }
 
 $_order = $order;

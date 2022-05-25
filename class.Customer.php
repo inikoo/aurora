@@ -35,8 +35,6 @@ class Customer extends Subject
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false)
     {
-
-
         if (!$_db) {
             global $db;
             $this->db = $db;
@@ -1061,13 +1059,10 @@ class Customer extends Subject
         $order_data['Order External Invoicer Key'] = $store->get('Store External Invoicer Key');
 
 
-        $order_data['Order Source Key']                = 2;
+        $order_data['Order Source Key'] = 2;
 
 
-
-
-
-        $sql="select `Order Source Key`,`Order Source Option Key` from `Order Source Dimension`  where `Order Source Option Key`>0 and   `Order Source Type`='marketplace' and  `Order Source Store Key`=? ";
+        $sql  = "select `Order Source Key`,`Order Source Option Key` from `Order Source Dimension`  where `Order Source Option Key`>0 and   `Order Source Type`='marketplace' and  `Order Source Store Key`=? ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             [
@@ -1075,9 +1070,7 @@ class Customer extends Subject
             ]
         );
         while ($row = $stmt->fetch()) {
-
-
-            $sql="select `Customer Poll Key` from `Customer Poll Fact` where `Customer Poll Customer Key`=? and `Customer Poll Query Option Key`=? ";
+            $sql   = "select `Customer Poll Key` from `Customer Poll Fact` where `Customer Poll Customer Key`=? and `Customer Poll Query Option Key`=? ";
             $stmt2 = $this->db->prepare($sql);
             $stmt2->execute(
                 [
@@ -1086,14 +1079,9 @@ class Customer extends Subject
                 ]
             );
             while ($row2 = $stmt2->fetch()) {
-                $order_data['Order Source Key']=$row['Order Source Key'];
+                $order_data['Order Source Key'] = $row['Order Source Key'];
             }
         }
-
-
-
-
-
 
 
         $order = new Order('new', $order_data);
@@ -2559,10 +2547,6 @@ class Customer extends Subject
             if ($row = $result->fetch()) {
                 $orders_cancelled = $row['orders'];
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
@@ -2666,7 +2650,6 @@ class Customer extends Subject
             $this->id
         );
 
-
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
                 $sales_amount    = $row['amount'];
@@ -2678,16 +2661,12 @@ class Customer extends Subject
         $update_data = array(
             'Customer First Invoiced Order Date' => $first_invoiced_date,
             'Customer Last Invoiced Order Date'  => $last_invoiced_date,
-
-            'Customer Sales Amount'    => $sales_amount,
-            'Customer Sales DC Amount' => $sales_dc_amount,
-
-
-            'Customer Invoiced Net Amount' => $invoiced_net_amount,
-            'Customer Refunded Net Amount' => $refunded_net_amount,
-
-            'Customer Number Invoices' => $customer_invoices,
-            'Customer Number Refunds'  => $customer_refunds,
+            'Customer Sales Amount'              => $sales_amount,
+            'Customer Sales DC Amount'           => $sales_dc_amount,
+            'Customer Invoiced Net Amount'       => $invoiced_net_amount,
+            'Customer Refunded Net Amount'       => $refunded_net_amount,
+            'Customer Number Invoices'           => $customer_invoices,
+            'Customer Number Refunds'            => $customer_refunds,
 
         );
 
@@ -2835,16 +2814,12 @@ class Customer extends Subject
             if ($orders > 20) {
                 $sigma_factor = 3.2906;//99.9% value assuming normal distribution
 
-                $losing_interval = (3 * $this->data['Customer Order Interval'] + $sigma_factor * $this->data['Customer Order Interval STD'])+30;
-                $lost_interval   = $losing_interval * 4.0 ;
-
-
-
+                $losing_interval = (3 * $this->data['Customer Order Interval'] + $sigma_factor * $this->data['Customer Order Interval STD']) + 30;
+                $lost_interval   = $losing_interval * 4.0;
             }
 
             $lost_interval   = ceil($lost_interval);
             $losing_interval = ceil($losing_interval);
-
 
 
             $type_by_activity   = 'Active';
