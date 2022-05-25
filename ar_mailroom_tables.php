@@ -732,6 +732,18 @@ function customer_notifications($_data, $db, $user) {
                 $_type  = _('Invitation (Personalized)');
                 $status = '';
                 break;
+            case 'Basket Low Stock':
+                $_type  = _('Out of stock in basket');
+                break;
+            case 'Basket Reminder 1':
+                $_type  = _('1st Basket push');
+                break;
+            case 'Basket Reminder 2':
+                $_type  = _('2nd Basket push');
+                break;
+            case 'Basket Reminder 3':
+                $_type  = _('3rd Basket push');
+                break;
             default:
                 $_type = $data['Email Campaign Type Code'];
 

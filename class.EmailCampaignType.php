@@ -101,10 +101,43 @@ class EmailCampaignType extends DB_Table {
 
 
         switch ($field) {
+            case 'Email Campaign Type Include Critical':
+
+                $metadata               = $this->get('Metadata');
+                $metadata['Include Critical'] = $value;
+                $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
+
+                break;
             case 'Email Campaign Type Send After':
 
                 $metadata               = $this->get('Metadata');
                 $metadata['Send After'] = $value;
+                $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
+
+                break;
+            case 'Email Campaign Type Send After Hours':
+                if($value<1){
+                    $this->error=true;
+                    $this->msg='Minimum value is 1 hour';
+                    return;
+                }
+
+                $metadata               = $this->get('Metadata');
+                $metadata['Send After Hours'] = $value;
+
+
+                $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
+
+                break;
+            case 'Email Campaign Type Cool Down Hours':
+                if($value<1){
+                    $this->error=true;
+                    $this->msg='Minimum value is 1 hour';
+                    return;
+                }
+
+                $metadata               = $this->get('Metadata');
+                $metadata['Cool Down Hours'] = $value;
 
 
                 $this->update_field('Email Campaign Type Metadata', json_encode($metadata), 'no_history');
@@ -169,14 +202,24 @@ class EmailCampaignType extends DB_Table {
                 }
 
                 return $content_data;
-                break;
-
+            case 'Email Campaign Type Include Critical':
+                $_metadata = $this->get('Metadata');
+                return $_metadata['Include Critical'];
+            case 'Include Critical':
+                $_metadata = $this->get('Metadata');
+                return $_metadata['Include Critical']=='Yes'?_('Yes'):_('No');
 
             case 'Send After':
                 $_metadata = $this->get('Metadata');
 
                 return sprintf(ngettext('%s day', '%s days', $_metadata['Send After']), number($_metadata['Send After']));
+            case 'Send After Hours':
+                $_metadata = $this->get('Metadata');
+                return sprintf(ngettext('%s hour', '%s hours', $_metadata['Send After Hours']), number($_metadata['Send After Hours']));
+            case 'Cool Down Hours':
+                $_metadata = $this->get('Metadata');
 
+                return sprintf(ngettext('%s hour', '%s hours', $_metadata['Cool Down Hours']), number($_metadata['Cool Down Hours']));
             case 'Schedule Time':
                 $_metadata = $this->get('Metadata');
 
@@ -185,7 +228,6 @@ class EmailCampaignType extends DB_Table {
 
                 return strftime('%R %Z', strtotime('2018-01-01 '.$_metadata['Schedule']['Time'].' '.$_metadata['Schedule']['Timezone']));
 
-                break;
 
             case 'Send Email Address':
                 $store = get_object('store', $this->get('Store Key'));

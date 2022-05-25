@@ -103,7 +103,47 @@ $email_templates_data = array(
         'name'    => _('Invitation'),
         'subject' => _('Hello'),
         'sender'  => 'Store'
-
+    ),
+    array(
+        'Email Campaign Type Status' => 'InProcess',
+        'Email Campaign Type Scope'  => 'Customer Notification',
+        'Email Campaign Type Code'   => 'Basket Reminder 1',
+        'Email Campaign Type Metadata'=>json_encode(
+            [
+                'Send After Hours'=>'24'
+            ]
+        )
+    ),
+    array(
+        'Email Campaign Type Status' => 'InProcess',
+        'Email Campaign Type Scope'  => 'Customer Notification',
+        'Email Campaign Type Code'   => 'Basket Reminder 2',
+        'Email Campaign Type Metadata'=>json_encode(
+            [
+                'Send After Hours'=>'24'
+            ]
+        )
+    ),
+    array(
+        'Email Campaign Type Status' => 'InProcess',
+        'Email Campaign Type Scope'  => 'Customer Notification',
+        'Email Campaign Type Code'   => 'Basket Reminder 3',
+        'Email Campaign Type Metadata'=>json_encode(
+            [
+                'Send After Hours'=>'24'
+            ]
+        )
+    ),
+    array(
+        'Email Campaign Type Status' => 'InProcess',
+        'Email Campaign Type Scope'  => 'Customer Notification',
+        'Email Campaign Type Code'   => 'Basket Low Stock',
+        'Email Campaign Type Metadata'=>json_encode(
+            [
+                'Cool Down Hours'=>'24',
+                'Include Critical'=>'No',
+            ]
+        )
     ),
 
 

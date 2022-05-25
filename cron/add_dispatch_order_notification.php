@@ -55,6 +55,17 @@ function create_email_templates($db, $store) {
             'Email Campaign Type Scope'  => 'User Notification',
             'Email Campaign Type Code'   => 'Delivery Note Dispatched',
         ),
+        array(
+            'Email Campaign Type Status' => 'InProcess',
+            'Email Campaign Type Scope'  => 'Customer Notification',
+            'Email Campaign Type Code'   => 'Basket Low Stock',
+            'Email Campaign Type Metadata'=>json_encode(
+                [
+                    'Cool Down Hours'=>'24',
+                    'Include Critical'=>'No',
+                ]
+            )
+        ),
 
 
     );
@@ -69,6 +80,9 @@ function create_email_templates($db, $store) {
             "INSERT INTO `Email Campaign Type Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($email_campaign_type_data)).'`', join(',', array_fill(0, count($email_campaign_type_data), '?'))
         );
 
+
+        print "$sql\n";
+        print_r($email_campaign_type_data);
 
         $stmt = $db->prepare($sql);
 
@@ -155,7 +169,7 @@ function create_email_templates($db, $store) {
 
 
         } else {
-
+            print_r($stmt->errorInfo());
         }
 
 

@@ -1,14 +1,10 @@
 <?php
 /*
-
- About:
- Author: Raul Perusquia <raul@inikoo.com>
- Created: 14 June 2018 at 02:12:56 GMT+8, Kuala Lumpur, Malaysia
-
- Copyright (c) 2018, Inikoo
-
- Version 3.0
-*/
+ *  Author: Raul Perusquia <raul@inikoo.com>
+ *  Created: Wed, 25 May 2022 13:36:37 Tranava Slovakia
+ *  Copyright (c) 2022, Inikoo
+ *  Version 3.0
+ */
 
 include_once 'utils/static_data.php';
 
@@ -25,6 +21,7 @@ $metadata = $object->get('Metadata');
 $smarty->assign('email_template', $object);
 
 
+
 $object_fields = array(
 
     array(
@@ -33,12 +30,12 @@ $object_fields = array(
         'fields'     => array(
 
             array(
-                'id'     => 'Email_Campaign_Type_Send_After',
+                'id'     => 'Email_Campaign_Type_Send_After_Hours',
 
                 'edit'            => 'smallint_unsigned',
-                'value'           => $metadata['Send After'],
-                'formatted_value' => sprintf(ngettext('%s day', '%s days', $metadata['Send After']), number($metadata['Send After'])),
-                'label'           => _('Days after last order dispatched'),
+                'value'           => $metadata['Send After Hours'],
+                'formatted_value' => sprintf(ngettext('%s hour', '%s hours', $metadata['Send After Hours']), number($metadata['Send After Hours'])),
+                'label'           => _('Send after 2nd reminder send and inactive for'),
                 'required'        => true,
                 'type'            => 'value'
             ),
@@ -49,30 +46,7 @@ $object_fields = array(
     ),
 
 
-    array(
-        'label'      => _('Mailshot schedule'),
-        'show_title' => true,
-        'fields'     => array(
 
-
-
-            array(
-                'id'      => 'Email_Campaign_Type_Schedule_Time',
-                'edit'    => 'option',
-                'options' => $options_time,
-
-                'value'           => $object->get('Email Campaign Type Schedule Time'),
-                'formatted_value' => $object->get('Schedule Time'),
-                'label'           => _('Time'),
-                'required'        => true,
-
-
-                'type' => 'value'
-            ),
-
-
-        )
-    )
 
 
 );

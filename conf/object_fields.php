@@ -766,6 +766,19 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
                 case 'Newsletter':
                     $object_fields = array();
                     break;
+
+                case 'Basket Reminder 1':
+                    include 'fields/email_campaign_type.basket_reminder_1.fld.php';
+                    break;
+                case 'Basket Reminder 2':
+                    include 'fields/email_campaign_type.basket_reminder_2.fld.php';
+                    break;
+                case 'Basket Reminder 3':
+                    include 'fields/email_campaign_type.basket_reminder_3.fld.php';
+                    break;
+                case 'Basket Low Stock':
+                    include 'fields/email_campaign_type.basket_low_stock.fld.php';
+                    break;
                 default:
                     print 'todo  Email Campaign Type -->> '.$object->get('Email Campaign Type Code');
                     exit;
