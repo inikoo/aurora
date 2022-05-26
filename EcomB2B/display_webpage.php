@@ -379,7 +379,18 @@ if ($webpage->get('Webpage Code') == 'register.sys') {
     $smarty->assign('settings', $website->settings);
 
     $smarty->assign('countries', $countries);
-    $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
+
+
+    if(empty( $_SERVER["HTTP_CF_IPCOUNTRY"])  or $_SERVER["HTTP_CF_IPCOUNTRY"]=='XX' or  $_SERVER["HTTP_CF_IPCOUNTRY"]=='T1' ){
+        $country_code=$store->get('Store Home Country Code 2 Alpha');
+    }else{
+        $country_code = $_SERVER["HTTP_CF_IPCOUNTRY"];
+
+    }
+
+
+
+    $smarty->assign('selected_country', $country_code);
 
 
 } elseif ($webpage->get('Webpage Code') == 'clients.sys' or $webpage->get('Webpage Code') == 'client_order_new.sys') {
