@@ -105,10 +105,6 @@ function estimate_number_list_items($data, $db, $user, $smarty) {
                 if ($row = $result->fetch()) {
                     $number_items = $row['num'];
                 }
-            } else {
-                print_r($error_info = $db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
             $text=sprintf(

@@ -122,6 +122,12 @@ function parse_customer_list($data, $db) {
         $where .= sprintf(' and `Customer Main Plain Mobile` !="Yes" ');
     }
 
+    if ($data['With Credits'] == 'Yes') {
+        $where .= ' and `Customer Account Balance` >0    ';
+    } elseif ($data['With Credits'] == 'No') {
+        $where .= ' and `Customer Main Plain Mobile`<=0';
+    }
+
 
     if ($data['Assets'] != '') {
 

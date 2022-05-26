@@ -141,6 +141,11 @@ $object_fields[] = array(
 <span id="With_Telephone_field" onclick="toggle_list_with(this)"  field_type="with_field"  field="With_Telephone" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-random" aria-hidden="true"></i> <span class="unselectable">'._('Telephone')
                 .'</span></span>'.'
 <span id="With_Tax_Number_field" onclick="toggle_list_with(this)"  field_type="with_field"  field="With_Tax_Number" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-random" aria-hidden="true"></i> <span class="unselectable">'._('Tax Number')
+                .'</span></span>'.'
+<span id="With_Credits_field" onclick="toggle_list_with(this)"  field_type="with_field"  field="With_Credits" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-random" aria-hidden="true"></i> <span class="unselectable">'._('Credits')
+
+
+
                 .'</span></span>',
 
 
