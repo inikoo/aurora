@@ -12,13 +12,82 @@
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "0"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
+{if empty($data.registration_type) }{assign type 'simple'}{else}{assign type $data.registration_type}{/if}
+
+
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
 
     <div class="reg_form" >
-        <form id="registration_form" class="sky-form">
+
+
+        <form id="select_main_country" class="sky-form  {if $type!='company_fork'}hide{/if}  ">
             <header id="_title">{$data.labels._title}</header>
+
+            <fieldset class="">
+
+
+                <div style="margin:0px 15px 15px 15px">Select country</div>
+
+
+
+                <section class="col col-6">
+
+                    <label class="select">
+                        <select id="main_country_select" name="country">
+                            <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
+
+                            {foreach from=$countries item=country}
+                                <option value="{$country.2alpha}" {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
+                            {/foreach}
+
+
+                            <select><i></i>
+                    </label>
+                </section>
+
+                <section class="col col-6">
+                    <button id="company_fork_step_2" style="position: relative;top:-12px;float: none" class="button">Continue <i style="margin-left: 10px" class="fa fa-arrow-right"></i></button>
+
+                </section>
+
+            </fieldset>
+
+        </form>
+
+        <form id="select_type_company" class="sky-form hide">
+            <header id="_title">{$data.labels._title}</header>
+
+            <fieldset class="">
+
+
+                <div style="margin:0px 15px 15px 15px">Select company type</div>
+
+
+
+                <section class="col col-6">
+                    <button style="float: none" class="button">Company</button>
+
+                </section>
+
+                <section class="col col-6">
+                    <button style="float: none" class="button">Sole trader</button>
+
+                </section>
+
+
+
+            </fieldset>
+
+        </form>
+
+
+
+        <form id="registration_form" class="sky-form  {if $type=='company_fork'}hide{/if}  ">
+            <header id="_title">{$data.labels._title}</header>
+
+
 
             <fieldset>
 
@@ -263,3 +332,28 @@
 
 
 </div>
+
+<script>
+    $.getJSON( "ar_web_country.php", function( data ) {
+
+        if(data.country!==''){
+            $('#main_country_select').val(data.country)
+            $('#country_select').val(data.country).trigger('change')
+            console.log(data.country)
+        }
+
+
+    });
+</script>
+
+
+{if $type=='company_fork'}
+    <script>
+        $( "#select_main_country" ).on( "click", "#company_fork_step_2", function() {
+            $('#select_main_country').addClass('hide')
+
+        });
+
+    </script>
+
+{/if}
