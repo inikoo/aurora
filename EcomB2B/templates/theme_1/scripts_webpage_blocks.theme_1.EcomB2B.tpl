@@ -540,6 +540,17 @@
 
                 });
 
+                $.getJSON( "ar_web_country.php", function( data ) {
+
+                    if(data.country!==''){
+                        $('#main_country_select').val(data.country)
+                        $('#country_select').val(data.country).trigger('change')
+                        console.log(data.country)
+                    }
+
+
+                });
+
 
                 $("#registration_form").validate({
 
