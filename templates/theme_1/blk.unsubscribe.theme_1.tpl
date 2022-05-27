@@ -36,12 +36,11 @@
 
                                 <section>
                                     <label class="checkbox" style="position:relative;top:-22px;" ><input type="checkbox" name="subscription" id="subscription"><i></i> </label>
-                                    <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_newsletter"
-                                          contenteditable="true">{$data.labels._newsletter}</span>
+                                    <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_newsletter"  contenteditable="true">{$data.labels._newsletter}</span>
                                     <label class="checkbox"  style="position:relative;top:-20px;"><input type="checkbox" name="terms" id="terms"><i></i> </label>
-                                    <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_marketing_emails"
-                                          contenteditable="true">{$data.labels._marketing_emails}</span>
-
+                                    <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_marketing_emails" contenteditable="true">{$data.labels._marketing_emails}</span>
+                                    <label class="checkbox"  style="position:relative;top:-20px;"><input type="checkbox" name="terms" id="terms"><i></i> </label>
+                                    <span style="margin-left:27px;	font: 14px/1.55 'Open Sans', Helvetica, Arial, sans-serif;position:relative;top:-22px;font-size:15px;color:#404040" id="_basket_emails" contenteditable="true">{if !empty($data.labels._basket_emails)}{$data.labels._basket_emails}{else}{t}Email engagement{/t}{/if}</span>
 
                                 </section>
                             </fieldset>

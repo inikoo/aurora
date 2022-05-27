@@ -369,7 +369,7 @@ if ($validator->isValid($sns)) {
 
                             if ($bounce_type == 'Hard Bounce' or ($bounce_type == 'Soft Bounce' and $bounce_count > 100)) {
 
-                                if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes') {
+                                if ($customer->get('Customer Send Newsletter') == 'Yes' or $customer->get('Customer Send Email Marketing') == 'Yes' or $customer->get('Customer Send Basket Emails') == 'Yes') {
                                     $customer->unsubscribe(_('Unsubscribed to newsletter and marketing emails because email soft bounced several times').', '.$unsubscribe_note);
                                 }
                                 $customer->fast_update(array('Customer Email State' => 'Error'));

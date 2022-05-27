@@ -1829,6 +1829,20 @@ class Store extends DB_Table
     {
         $email_marketing_customers = 0;
         $newsletters_customers     = 0;
+        $basket_engagement_customers     = 0;
+
+
+        $sql = "SELECT count(*) AS num FROM  `Customer Dimension` WHERE `Customer Store Key`=?  and `Customer Main Plain Email`!=''  and `Customer Send Basket Emails`='Yes' ";
+
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(array($this->id));
+        while ($row = $stmt->fetch()) {
+            $basket_engagement_customers = $row['num'];
+        }
+
+        $this->fast_update_json_field('Store Properties', 'basket_engagement_customers', $basket_engagement_customers);
+
 
         $sql = "SELECT count(*) AS num FROM  `Customer Dimension` WHERE `Customer Store Key`=?  and `Customer Main Plain Email`!=''  and `Customer Send Email Marketing`='Yes' ";
 
@@ -1842,7 +1856,7 @@ class Store extends DB_Table
         $this->fast_update_json_field('Store Properties', 'email_marketing_customers', $email_marketing_customers);
 
 
-        $sql = "SELECT count(*) AS num FROM  `Customer Dimension` WHERE `Customer Store Key`=?  and `Customer Main Plain Email`!=''  and `Customer Send Email Marketing`='Yes' ";
+        $sql = "SELECT count(*) AS num FROM  `Customer Dimension` WHERE `Customer Store Key`=?  and `Customer Main Plain Email`!=''  and `Customer Send Newsletter`='Yes' ";
 
 
         $stmt = $this->db->prepare($sql);

@@ -394,6 +394,9 @@ if ($new) {
                         ._('Newsletter').'</span></span>'
                         .'<span id="Customer_Send_Email_Marketing_field" onclick="toggle_switch(this)"  field_type="subscription"  field="Customer_Send_Email_Marketing" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Marketing emails').'</span></span>'
+                        .'<span id="Customer_Send_Basket_Emails_field" onclick="toggle_switch(this)"  field_type="subscription"  field="Customer_Send_Basket_Emails" class="button value valid" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
+                        ._('Basket engagement').'</span></span>'
+                        
                         .'<span id="Customer_Send_Postal_Marketing_field" onclick="toggle_switch(this)"  field_type="subscription"  field="Customer_Send_Postal_Marketing" class="value valid button" style="margin-right:40px"><i class=" fa fa-fw fa-toggle-on" aria-hidden="true"></i> <span >'
                         ._('Postal marketing').'</span></span>',
                     'label'           => _('Subscriptions'),
@@ -834,6 +837,10 @@ if ($new) {
                     .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Newsletter') == 'No' ? 'discreet' : '').'">'._('Newsletter').'</span></span>'
                     .'<span onclick="save_toggle_switch(this)"  field="Customer_Send_Email_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Email Marketing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
                     .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Email Marketing') == 'No' ? 'discreet' : '').'">'._('Marketing emails').'</span></span>'
+                    .'<span onclick="save_toggle_switch(this)"  field="Customer_Send_Basket_Emails" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Basket Emails') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                    .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Basket Emails') == 'No' ? 'discreet' : '').'">'._('Basket engagement').'</span></span>'
+
+
                     .'<span onclick="save_toggle_switch(this)"  field="Customer_Send_Postal_Marketing" class="button" style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Customer Send Postal Marketing') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
                     .'" aria-hidden="true"></i> <span class="'.($object->get('Customer Send Postal Marketing') == 'No' ? 'discreet' : '').'">'._('Postal marketing').'</span></span>',
                 'label'           => _('Subscriptions'),

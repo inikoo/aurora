@@ -139,14 +139,15 @@
 
             <fieldset>
 
-                <section>
-                    <label class="label">{t}Subscriptions{/t}</label>
-                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{t}Newsletter{/t}</label>
-                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{t}Email marketing{/t}</label>
-                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Postal Marketing')=='Yes'}checked{/if} name="postal_marketing"><i></i>{t}Postal marketing{/t}
-                    </label>
-                </section>
 
+
+                <section>
+                    <label class="label">{if isset($labels._subscriptions) and $labels._subscriptions!=''}{$labels._subscriptions}{else}{t}Subscriptions{/t}{/if}</label>
+                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{if isset($labels._subscription_newsletter) and $labels._subscription_newsletter!=''}{$labels._subscription_newsletter}{else}{t}Newsletter{/t}{/if}</label>
+                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{if isset($labels._subscription_marketing) and $labels._subscription_marketing!=''}{$labels._subscription_marketing}{else}{t}Email marketing{/t}{/if}</label>
+                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Basket Emails')=='Yes'}checked{/if} name="basket_emails"><i></i>{if isset($labels._subscription_basket_emails) and $labels._subscription_basket_emails!=''}{$labels._subscription_basket_emails}{else}{t}Basket engagement{/t}{/if}</label>
+                    <label style="border:none" class="toggle "><input type="checkbox" {if $customer->get('Customer Send Postal Marketing')=='Yes'}checked{/if} name="postal_marketing"><i></i>{if isset($labels._subscription_postal) and $labels._subscription_postal!=''}{$labels._subscription_postal}{else}{t}Postal marketing{/t}{/if}</label>
+                </section>
 
             </fieldset>
 

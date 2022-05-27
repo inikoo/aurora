@@ -165,11 +165,13 @@ function register($db, $website, $data, $editor) {
         if (isset($raw_data['subscription']) and $raw_data['subscription'] == 'on') {
             $customer_data['Customer Send Newsletter']       = 'Yes';
             $customer_data['Customer Send Email Marketing']  = 'Yes';
+            $customer_data['Customer Send Basket Emails']    = 'Yes';
             $customer_data['Customer Send Postal Marketing'] = 'Yes';
 
         } else {
             $customer_data['Customer Send Newsletter']       = 'No';
             $customer_data['Customer Send Email Marketing']  = 'No';
+            $customer_data['Customer Send Basket Emails']    = 'No';
             $customer_data['Customer Send Postal Marketing'] = 'No';
         }
 

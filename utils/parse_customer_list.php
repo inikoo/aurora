@@ -96,6 +96,10 @@ function parse_customer_list($data, $db) {
     if (isset($data['Customer Send Email Marketing'])) {
         $where .= sprintf(' and `Customer Send Email Marketing` =%s ', prepare_mysql($data['Customer Send Email Marketing']));
     }
+    if (isset($data['Customer Send Basket Emails'])) {
+        $where .= sprintf(' and `Customer Send Basket Emails` =%s ', prepare_mysql($data['Customer Send Basket Emails']));
+    }
+
     if (isset($data['Customer Send Postal Marketing'])) {
         $where .= sprintf(' and `Customer Send Postal Marketing` =%s ', prepare_mysql($data['Customer Send Postal Marketing']));
     }

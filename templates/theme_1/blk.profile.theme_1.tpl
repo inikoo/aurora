@@ -406,6 +406,32 @@
                         </section>
 
 
+
+                            <section>
+                                <label id="_subscriptions" contenteditable="true"  class="label">{if isset($labels._subscriptions) and $labels._subscriptions!=''}{$labels._subscriptions}{else}{t}Subscriptions{/t}{/if}</label>
+
+
+                                <div style="margin:10px 0px">
+                                    <i class="fal fa-check-square" style="margin-right: 20px"></i> <span  id="_subscription_newsletter" contenteditable="true" >{if isset($labels._subscription_newsletter) and $labels._subscription_newsletter!=''}{$labels._subscription_newsletter}{else}{t}Newsletter{/t}{/if}</span>
+                                </div>
+                                <div style="margin:10px 0px">
+                                    <i class="fal fa-check-square" style="margin-right: 20px"></i>  <span  id="_subscription_marketing" contenteditable="true" >{if isset($labels._subscription_marketing) and $labels._subscription_marketing!=''}{$labels._subscription_marketing}{else}{t}Email marketing{/t}{/if}</span>
+                                </div>
+                                <div style="margin:10px 0px">
+                                    <i class="fal fa-check-square" style="margin-right: 20px"></i>  <span  id="_subscription_basket_emails" contenteditable="true" >{if isset($labels._subscription_basket_emails) and $labels._subscription_basket_emails!=''}{$labels._subscription_basket_emails}{else}{t}Basket engagement{/t}{/if}</span>
+                                </div>
+                                <div style="margin:10px 0px">
+                                    <i class="fal fa-check-square" style="margin-right: 20px"></i> <span  id="_subscription_postal" contenteditable="true" >{if isset($labels._subscription_postal) and $labels._subscription_postal!=''}{$labels._subscription_postal}{else}{t}Postal marketing{/t}{/if}</span>
+                                </div>
+
+
+
+                            </section>
+
+
+
+
+
                     </fieldset>
 
 

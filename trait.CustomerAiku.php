@@ -66,6 +66,7 @@ trait CustomerAiku {
                             [
                                 'newsletter'       => strtolower($this->data['Customer Send Newsletter']),
                                 'email_marketing'  => strtolower($this->data['Customer Send Email Marketing']),
+                                'basket_engagement'  => strtolower($this->data['Customer Send Basket Emails']),
                                 'postal_marketing' => strtolower($this->data['Customer Send Postal Marketing']),
 
 

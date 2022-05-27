@@ -43,8 +43,8 @@
 
                 <section>
                     <label style="border:none" class="checkbox "><input type="checkbox" {if $unsubscribe_customer->get('Customer Send Newsletter')=='Yes'}checked{/if} name="newsletter"><i></i>{$data.labels._newsletter}</label>
-                    <label style="border:none" class="checkbox "><input type="checkbox" {if $unsubscribe_customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{$data.labels._marketing_emails}
-                    </label>
+                    <label style="border:none" class="checkbox "><input type="checkbox" {if $unsubscribe_customer->get('Customer Send Email Marketing')=='Yes'}checked{/if} name="email_marketing"><i></i>{$data.labels._marketing_emails}</label>
+                    <label style="border:none" class="checkbox "><input type="checkbox" {if $unsubscribe_customer->get('Customer Send Basket Emails')=='Yes'}checked{/if} name="basket_emails"><i></i>{if !empty($data.labels._basket_emails)}{$data.labels._basket_emails}{else}{t}Email engagement{/t}{/if}</label>
 
                 </section>
             </fieldset>

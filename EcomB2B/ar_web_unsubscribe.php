@@ -137,6 +137,9 @@ function unsubscribe($db, $data, $editor,$account) {
         } elseif ($key == 'email_marketing') {
             $key   = 'Customer Send Email Marketing';
             $value = ($value ? 'Yes' : 'No');
+        } elseif ($key == 'basket_emails') {
+            $key   = 'Customer Send Basket Emails';
+            $value = ($value ? 'Yes' : 'No');
         } elseif ($key == 'postal_marketing') {
             $key   = 'Customer Send Postal Marketing';
             $value = ($value ? 'Yes' : 'No');
@@ -146,6 +149,7 @@ function unsubscribe($db, $data, $editor,$account) {
     }
 
     $old_email_marketing = $unsubscribe_customer->get('Customer Send Email Marketing');
+    $old_basket_emails = $unsubscribe_customer->get('Customer Send Basket Emails');
     $old_newsletters     = $unsubscribe_customer->get('Customer Send Newsletter');
 
 
@@ -153,7 +157,10 @@ function unsubscribe($db, $data, $editor,$account) {
     $unsubscribe_customer->update($update_data);
 
 
-    if (($old_email_marketing == 'Yes' and $unsubscribe_customer->get('Customer Send Email Marketing') == 'No') or ($old_newsletters == 'Yes' and $unsubscribe_customer->get('Customer Send Newsletter') == 'No')) {
+    if (  ($old_email_marketing == 'Yes' and $unsubscribe_customer->get('Customer Send Email Marketing') == 'No')
+           or ($old_newsletters == 'Yes' and $unsubscribe_customer->get('Customer Send Newsletter') == 'No')
+           or ($old_basket_emails == 'Yes' and $unsubscribe_customer->get('Customer Send Basket Emails') == 'No')
+    ) {
         $email_tracking = get_object('Email_Tracking', $data['selector']);
         $email_tracking->fast_update(
             array(

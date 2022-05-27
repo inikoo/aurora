@@ -932,6 +932,7 @@ class Public_Customer extends DBW_Table {
             case 'Customer Invoice Address Organization':
             case 'Customer Send Newsletter':
             case 'Customer Send Email Marketing':
+            case 'Customer Send Basket Emails':
             case 'Customer Send Postal Marketing':
                 $this->update_field($field, $value, $options);
 

@@ -1606,7 +1606,9 @@ class Customer extends Subject
 
             case('Customer Send Newsletter'):
             case('Customer Send Email Marketing'):
-                $this->update_field($field, $value, $options);
+            case('Customer Send Basket Emails'):
+
+            $this->update_field($field, $value, $options);
                 /** @var \Store $store */
                 $store = get_object('Store', $this->data['Customer Store Key']);
                 $store->update_customers_email_marketing_data();
@@ -2130,6 +2132,9 @@ class Customer extends Subject
                 break;
             case 'Customer Send Email Marketing':
                 $label = _('subscription to email marketing');
+                break;
+            case 'Customer Send Basket Emails':
+                $label = _('subscription to basket engagement emails');
                 break;
             case 'Customer Send Postal Marketing':
                 $label = _('subscription postal marketing');
@@ -3736,7 +3741,8 @@ class Customer extends Subject
     {
         $this->fast_update(array(
                                'Customer Send Newsletter'      => 'No',
-                               'Customer Send Email Marketing' => 'No'
+                               'Customer Send Email Marketing' => 'No',
+                               'Customer Send Basket Emails' => 'No'
                            ));
 
         /** @var $store \Store */

@@ -769,6 +769,15 @@ $object_fields = array(
                 'type'       => 'value'
             ),
             array(
+                'id'         => 'Localised_Labels_unsubscribe_basket_emails_text',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_unsubscribe_basket_emails_text']) ? _('If you do not wish to receive more basket engagement emails from us') : $labels['_unsubscribe_basket_emails_text']),
+                'label'      => _('Unsubscribe basket emails text'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
                 'id'         => 'Localised_Labels_unsubscribe_link',
                 'edit'       => ($supervisor_edit ? 'string' : ''),
                 'right_code' => 'WS-'.$store_key,
@@ -781,7 +790,7 @@ $object_fields = array(
                 'id'         => 'Localised_Labels_remove_from_junk_text',
                 'edit'       => ($supervisor_edit ? 'string' : ''),
                 'right_code' => 'WS-'.$store_key,
-                'value'      => (empty($labels['_unsubscribe_text']) ? _('You want to be removed from this mailing list?') : $labels['_remove_from_junk_text']),
+                'value'      => (empty($labels['_remove_from_junk_text']) ? _('You want to be removed from this mailing list?') : $labels['_remove_from_junk_text']),
                 'label'      => _('Stop junk mail text'),
                 'required'   => true,
                 'type'       => 'value'
@@ -795,6 +804,8 @@ $object_fields = array(
                 'required'   => true,
                 'type'       => 'value'
             ),
+
+
             array(
                 'id'         => 'Localised_Labels_removed_from_mailing_list',
                 'edit'       => ($supervisor_edit ? 'string' : ''),

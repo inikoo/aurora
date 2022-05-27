@@ -264,6 +264,9 @@ function contact_details($db, $data, $customer, $editor) {
         } elseif ($key == 'email_marketing') {
             $key   = 'Customer Send Email Marketing';
             $value = ($value ? 'Yes' : 'No');
+        } elseif ($key == 'basket_emails') {
+            $key   = 'Customer Send Basket Emails';
+            $value = ($value ? 'Yes' : 'No');
         } elseif ($key == 'postal_marketing') {
             $key   = 'Customer Send Postal Marketing';
             $value = ($value ? 'Yes' : 'No');
@@ -498,6 +501,9 @@ function unsubscribe($db, $data, $editor) {
             $value = ($value ? 'Yes' : 'No');
         } elseif ($key == 'email_marketing') {
             $key   = 'Customer Send Email Marketing';
+            $value = ($value ? 'Yes' : 'No');
+        }elseif ($key == 'basket_emails') {
+            $key   = 'Customer Send Basket Emails';
             $value = ($value ? 'Yes' : 'No');
         } elseif ($key == 'postal_marketing') {
             $key   = 'Customer Send Postal Marketing';
