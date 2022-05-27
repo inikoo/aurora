@@ -13,28 +13,28 @@
 $email_templates_data = array(
 
 
-    'Registration'               => array(
+    'Registration'          => array(
         'key'     => 'Registration',
         'name'    => _('Welcome'),
         'subject' => _('Welcome'),
         'sender'  => 'Store'
 
     ),
-    'Registration Approved'               => array(
+    'Registration Approved' => array(
         'key'     => 'Registration',
         'name'    => _('Registration approved'),
         'subject' => _('Registration approved'),
         'sender'  => 'Store'
 
     ),
-    'Registration Rejected'               => array(
+    'Registration Rejected' => array(
         'key'     => 'Registration',
         'name'    => _('Registration rejected'),
         'subject' => _('Registration rejected'),
         'sender'  => 'Store'
 
     ),
-    'Password Reminder'        => array(
+    'Password Reminder'     => array(
         'key'     => 'Password Reminder',
         'name'    => _('Password reset'),
         'subject' => _('Password reset'),
@@ -70,7 +70,7 @@ $email_templates_data = array(
         'sender'  => 'Store'
 
     ),
-    'Marketing'            => array(
+    'Marketing'             => array(
         'key'     => 'Marketing',
         'name'    => _('Marketing mailshot'),
         'subject' => _('Hello'),
@@ -84,68 +84,54 @@ $email_templates_data = array(
         'sender'  => 'Store'
 
     ),
-    'GR Reminder'      => array(
+    'GR Reminder'           => array(
         'key'     => 'GR Reminder',
         'name'    => _('Reorder reminder'),
         'subject' => _('Reorder reminder'),
         'sender'  => 'Store'
 
     ),
-    'Invite Mailshot'      => array(
+    'Invite Mailshot'       => array(
         'key'     => 'Invitation',
         'name'    => _('Invitation'),
         'subject' => _('Hello'),
         'sender'  => 'Store'
 
     ),
-    'Invite Full Mailshot'      => array(
+    'Invite Full Mailshot'  => array(
         'key'     => 'Invitation',
         'name'    => _('Invitation'),
         'subject' => _('Hello'),
         'sender'  => 'Store'
     ),
-    array(
-        'Email Campaign Type Status' => 'InProcess',
-        'Email Campaign Type Scope'  => 'Customer Notification',
-        'Email Campaign Type Code'   => 'Basket Reminder 1',
-        'Email Campaign Type Metadata'=>json_encode(
-            [
-                'Send After Hours'=>'24'
-            ]
-        )
-    ),
-    array(
-        'Email Campaign Type Status' => 'InProcess',
-        'Email Campaign Type Scope'  => 'Customer Notification',
-        'Email Campaign Type Code'   => 'Basket Reminder 2',
-        'Email Campaign Type Metadata'=>json_encode(
-            [
-                'Send After Hours'=>'24'
-            ]
-        )
-    ),
-    array(
-        'Email Campaign Type Status' => 'InProcess',
-        'Email Campaign Type Scope'  => 'Customer Notification',
-        'Email Campaign Type Code'   => 'Basket Reminder 3',
-        'Email Campaign Type Metadata'=>json_encode(
-            [
-                'Send After Hours'=>'24'
-            ]
-        )
-    ),
-    array(
-        'Email Campaign Type Status' => 'InProcess',
-        'Email Campaign Type Scope'  => 'Customer Notification',
-        'Email Campaign Type Code'   => 'Basket Low Stock',
-        'Email Campaign Type Metadata'=>json_encode(
-            [
-                'Cool Down Hours'=>'24',
-                'Include Critical'=>'No',
-            ]
-        )
-    ),
 
+
+    'Basket Reminder 1' => array(
+        'key'=>'Basket Reminder',
+        'name'=>_('1st basket engagement'),
+        'subject' => _('Hello'),
+        'sender'  => 'Store'
+
+    ),
+    'Basket Reminder 2' => array(
+        'key'=>'Basket Reminder',
+        'name'=>_('2nd basket engagement'),
+        'subject' => _('Hello again'),
+        'sender'  => 'Store'
+    ),
+    'Basket Reminder 3' => array(
+        'key'=>'Basket Reminder',
+        'name'=>_('3rd basket engagement'),
+        'subject' => _('Hello again'),
+        'sender'  => 'Store'
+    ),
+    'Basket Low Stock'  => array(
+        'key'=>'Basket Out of Stock',
+        'name'=>_('Out of stock in basket'),
+        'subject' => _('Hello'),
+        'sender'  => 'Store'
+
+    ),
 
 
 );

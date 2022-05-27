@@ -41,7 +41,6 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
 
 
     //print_r($email_template);
-
     //exit;
     $smarty->assign('email_template', $email_template);
 
@@ -52,6 +51,7 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
     $merge_tags     = '';
     $merge_contents = '';
     $special_links  = '';
+
 
     if ($email_template->get('Email Template Role') == 'Password Reminder') {
         $merge_tags = ",{ name: '"._('Reset password URL')."',value: '[Reset_Password_URL]'}";
@@ -79,7 +79,15 @@ if ($email_template->id and !($email_template->get('Email Template Type') == 'HT
 
         $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe]'}";
 
+    }elseif ( in_array($email_template->get('Email Template Role'),['Basket Reminder 1','Basket Reminder 2','Basket Reminder 3'])     ) {
 
+
+        $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe basket emails]'}";
+
+    } elseif ( $email_template->get('Email Template Role')=='Basket Low Stock'     ) {
+
+
+        $merge_contents = "{ name: '"._('Unsubscribe')."',value: '[Unsubscribe basket emails]'},{ name: '"._('Low/out of stock stock items')."',value: '[Low Stock Items in Basket]'}";
 
     }
 
