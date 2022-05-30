@@ -132,10 +132,7 @@ if ($redis->exists($url_cache_key)) {
 
 
 if (is_numeric($webpage_id)) {
-
     $webpage_key = $webpage_id;
-
-
     include 'display_webpage.php';
 } else {
 
@@ -200,7 +197,7 @@ function get_url($db, $website_key, $url) {
         return $row['Webpage Alias Webpage Key'];
 
     } else {
-        return "/404.php?url=$url&original_url=$original_url";
+        return "/404.php?url=$url&original_url=$original_url&w=".$website_key;
 
     }
 
