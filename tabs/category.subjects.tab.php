@@ -75,6 +75,13 @@ if ($category->get('Category Scope') == 'Product') {
                 'object'     => 'product',
                 'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
             ),
+            'variants'=>array(
+                'tipo'       => 'edit_variants',
+                'parent'     => $state['object'],
+                'parent_key' => $state['key'],
+                'object'     => 'product',
+                'parent_code' => preg_replace("/[^A-Za-z0-9 ]/", '', $state['_object']->get('Code')),
+            )
 
         );
         $smarty->assign('edit_table_dialog', $edit_table_dialog);

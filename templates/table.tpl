@@ -51,18 +51,17 @@
             {if isset($edit_table_dialog.spreadsheet_edit)}
             <td><i class="fa  fa-fw fa-table" aria-hidden="true"></i> {t}by{/t} <span onclick="show_download_edit_items_dialog(this)" class="marked_link">{t}spreadsheet{/t}</span></td>
             <td>
-
                 <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
-
                     <input style="display:none" type="file" name="upload" id="table_edit_items_file_upload" class="table_input_file"
                            data-data='{ "tipo":"{$edit_table_dialog.spreadsheet_edit.tipo}","parent":"{$edit_table_dialog.spreadsheet_edit.parent}","parent_key":"{$edit_table_dialog.spreadsheet_edit.parent_key}", "object":"{$edit_table_dialog.spreadsheet_edit.object}","upload_type":"NewObjects"  }'
                     />
                     <label for="table_edit_items_file_upload"> <i class="fa fa-upload button" aria-hidden="true"></i></label>
                 </form>
-
-
-
             </td>
+
+
+
+
             {else}
                 <td></td> <td></td>
             {/if}
@@ -70,6 +69,31 @@
 
         </tr>
          {/if}
+            {if isset($edit_table_dialog.variants) }
+
+                <tr>
+                    <td>
+                        {t}Variants{/t}
+                    </td>
+                    <td></td>
+                    <td><i class="fa  fa-fw fa-table" aria-hidden="true"></i> {t}by{/t} <a class="marked_link" href="/edit_variants.xls.php?id={$edit_table_dialog.variants.parent_key}">{t}spreadsheet{/t}</a></td>
+
+                    <td>
+                        <form method="post" action="/ar_edit.php" enctype="multipart/form-data" novalidate>
+
+                            <input style="display:none" type="file" name="upload" id="table_edit_items_file_upload" class="table_input_file"
+                                   data-data='{ "tipo":"{$edit_table_dialog.variants.tipo}","parent":"{$edit_table_dialog.variants.parent}","parent_key":"{$edit_table_dialog.variants.parent_key}", "object":"{$edit_table_dialog.variants.object}","upload_type":"NewObjects"  }'
+                            />
+                            <label for="table_edit_items_file_upload"> <i class="fa fa-upload button" aria-hidden="true"></i></label>
+                        </form>
+
+                    </td>
+                </tr>
+
+            {/if}
+
+
+
 
         {if isset($edit_table_dialog.new_item) or isset($edit_table_dialog.upload_items)}
         <tr>
