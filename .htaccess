@@ -16,6 +16,7 @@ Options -Indexes
 
 
 RewriteRule ^api/ api.php [L]
+RewriteRule ^picking/ apps/picking/app.php [L]
 
 
 RewriteRule ^$ /app.php [L]

@@ -703,6 +703,9 @@
                         <a title="{t}Picking sheet with address labels{/t}" class="pdf_link {if $dn->get('State Index')!=10 }hide{/if}" target="_blank" href="/pdf/order_pick_aid.pdf.php?with_labels&id={$dn->id}"> <i
                                     class="fal fw fa-pager " style="font-size: larger"></i></a>
 
+                         <a title="{t}Real time picking{/t}" class=" {if $dn->get('State Index')!=10 }hide{/if}" target="_blank" href="/rt/pick.php?id={$dn->id}"> <i
+                                     class="fal fw fa-scanner-touchscreen " style="font-size: larger"></i></a>
+
                         <a class="pdf_link {if $dn->get('State Index')<90 }hide{/if}" target='_blank' href="/pdf/dn.pdf.php?id={$dn->id}"> <img style="width: 50px;height:16px;position: relative;top:2px"
 
                                                                                                                                             src="/art/pdf.gif"></a>
@@ -735,9 +738,11 @@
                     </div>
                     <div class="delivery_note_operation data_entry_delivery_note   {if $dn->get('State Index')>=80 or $dn->get('State Index')<0  or $store->settings('data_entry_picking_aid')!='Yes' }hide{/if}">
 
+
                         <div class="square_button right" title="{t}Input picking sheet data{/t}">
                             <i class="fa fa-keyboard"  onclick="data_entry_delivery_note({$dn->id})"></i>
                         </div>
+
                         <div class="square_button right" title="{t}Update picking locations{/t}">
                             <i class="fal fa-sync"  onclick="update_delivery_note_picking_locations(this,{$dn->id})"></i>
                         </div>
