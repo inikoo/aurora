@@ -529,9 +529,14 @@ function edit_part_stock_check($data, $editor, $smarty) {
             $note = $stock_to_update_data['note'];
 
 
+            $stock=$stock_to_update_data['stock'];
+            if($stock==''){
+                $stock=0;
+            }
+
             if ($part_location->ok) {
                 $part_location->editor = $editor;
-                $part_location->audit($stock_to_update_data['stock'], $note);
+                $part_location->audit($stock, $note);
 
             }
 
