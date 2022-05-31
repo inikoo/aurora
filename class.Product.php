@@ -129,6 +129,10 @@ class Product extends Asset
 
         switch ($key) {
 
+            case 'Units Per Case':
+
+                return number($this->data['Product Units Per Case']);
+
             case 'Units And Name':
 
                 if ($this->data['Product Units Per Case'] > 1) {
