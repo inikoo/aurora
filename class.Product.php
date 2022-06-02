@@ -3201,9 +3201,15 @@ class Product extends Asset
             case 'Product Show Variant':
                 $this->update_field($field, $value, $options);
 
+                $this->update_variants_stats();
+
                 $id = $this->id;
                 if ($this->data['is_variant'] == 'Yes') {
                     $id = $this->data['variant_parent_id'];
+                    $parent=get_object('Product',$id);
+                    $parent->update_variants_stats();
+
+
                 }
                 include_once 'utils/new_fork.php';
                 new_housekeeping_fork(

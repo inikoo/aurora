@@ -26,7 +26,7 @@ function get_product_showcase($data, $smarty, $db) {
     $product->load_acc_data();
     $product->get_webpage();
 
-    $product->update_variants_stats();
+   // $product->update_variants_stats();
    // $product->reindex_variants_positions();
 
   //  $product->updating_packing_data();
