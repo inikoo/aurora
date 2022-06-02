@@ -154,7 +154,7 @@ class Public_Product
             return $variants;
         }
 
-        $sql  = "select `Product ID` from `Product Dimension` where `variant_parent_id`=?  order by  `Product Variant Position`,`Product ID` ";
+        $sql  = "select `Product ID` from `Product Dimension` where `variant_parent_id`=?  and `Product Show Variant`='Yes'  order by  `Product Variant Position`,`Product ID` ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
             [
