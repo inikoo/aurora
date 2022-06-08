@@ -780,6 +780,8 @@ class DealComponent extends DB_Table {
                 $value = floatval($value) / 100;
 
                 $this->update(array('Deal Component Allowance' => $value), $options);
+
+                $this->update_deal_component_term_allowances();
                 break;
             case 'Deal Component Status':
 
@@ -792,6 +794,8 @@ class DealComponent extends DB_Table {
 
 
                 $deal->update(array('Deal Terms' => $value));
+
+                $this->update_deal_component_term_allowances();
 
 
                 break;
@@ -810,6 +814,8 @@ class DealComponent extends DB_Table {
                 $deal->editor = $this->editor;
 
                 $deal->update_allowance_label();
+                $this->update_deal_component_term_allowances();
+
 
                 break;
             case 'Deal Component Expiration Date':
@@ -822,6 +828,13 @@ class DealComponent extends DB_Table {
                 $deal         = get_object('Deal', $this->data['Deal Component Deal Key']);
                 $deal->editor = $this->editor;
                 $deal->update_deal_term_allowances();
+                $this->update_deal_component_term_allowances();
+
+                break;
+            case 'Deal Component Terms':
+
+                $this->update_field($field, $value, $options);
+                $this->update_deal_component_term_allowances();
 
                 break;
 
@@ -1019,17 +1032,13 @@ class DealComponent extends DB_Table {
 
 
         if (count($families) > 0) {
-            $sql = sprintf('select group_concat(`Subject Key`) as products from `Category Bridge` where `Category Key` in (%s) ', join($families, ','));
+            $sql = sprintf('select group_concat(`Subject Key`) as products from `Category Bridge` where `Category Key` in (%s) ', join(',', $families));
 
             //  print $sql;
             if ($result = $this->db->query($sql)) {
                 if ($row = $result->fetch()) {
                     $products = preg_split('/,/', $row['products']);
                 }
-            } else {
-                print_r($error_info = $this->db->errorInfo());
-                print "$sql\n";
-                exit;
             }
 
         }
@@ -1130,7 +1139,7 @@ class DealComponent extends DB_Table {
 
 
             $sql = sprintf(
-                "INSERT INTO `Deal Target Bridge` VALUES (%d,%s,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql($this->data['Deal Component Allowance Target']), $this->data['Deal Component Allowance Target Key']
+                "INSERT INTO `Deal Target Bridge` (`Deal Key`,`Deal Component Key`,`Subject`,`Subject Key`)  VALUES (%d,%s,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql($this->data['Deal Component Allowance Target']), $this->data['Deal Component Allowance Target Key']
 
             );
             $this->db->exec($sql);
@@ -1145,15 +1154,11 @@ class DealComponent extends DB_Table {
                 if ($result2 = $this->db->query($sql)) {
                     foreach ($result2 as $row2) {
                         $sql = sprintf(
-                            "INSERT INTO `Deal Target Bridge` VALUES (%d,%d,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql('Product'), $row2['Subject Key']
+                            "INSERT INTO `Deal Target Bridge`  (`Deal Key`,`Deal Component Key`,`Subject`,`Subject Key`) VALUES (%d,%d,%s,%d) ", $this->data['Deal Component Deal Key'], $this->id, prepare_mysql('Product'), $row2['Subject Key']
 
                         );
                         $this->db->exec($sql);
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    print "$sql\n";
-                    exit;
                 }
 
 
