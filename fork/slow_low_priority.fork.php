@@ -115,10 +115,13 @@ function fork_update_part_products_availability($job) {
 
     global $account, $db;// remove the global $db and $account is removed
 
+    print "test\n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
+
+    print "start\n";
 
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
@@ -153,6 +156,7 @@ function fork_update_part_products_availability($job) {
         $product->update_availability(false);
     }
 
+    print "Done\n";
 
 }
 
