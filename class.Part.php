@@ -3479,6 +3479,7 @@ class Part extends Asset
 
 
             include_once 'utils/new_fork.php';
+            /*
             new_housekeeping_fork(
                 'au_housekeeping',
                 array(
@@ -3489,6 +3490,16 @@ class Part extends Asset
                 DNS_ACCOUNT_CODE,
                 'Low'
             );
+            */
+            new_housekeeping_fork(
+                'au_update_part_products_availability',
+                array(
+                    'part_sku' => $this->id,
+                    'editor'   => $this->editor
+                ),
+                DNS_ACCOUNT_CODE
+            );
+
         }
     }
 
