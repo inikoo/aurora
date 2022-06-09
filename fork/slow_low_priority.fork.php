@@ -115,13 +115,11 @@ function fork_update_part_products_availability($job) {
 
     global $account, $db;// remove the global $db and $account is removed
 
-    print "test\n";
 
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
-    print "start\n";
 
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
@@ -130,7 +128,7 @@ function fork_update_part_products_availability($job) {
      */
 
     $part = get_object('Part', $data['part_sku']);
-    print $part->get('Reference')."\n";
+    //print $part->get('Reference')."\n";
 
     if (isset($data['editor'])) {
         $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
@@ -156,7 +154,6 @@ function fork_update_part_products_availability($job) {
         $product->update_availability(false);
     }
 
-    print "Done\n";
 
 }
 
