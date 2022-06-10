@@ -1,0 +1,1 @@
+ALTER TABLE `Order Sent Email Bridge` CHANGE `Order Sent Email Type` `Order Sent Email Type` enum('Order Notification','Dispatch Notification','Replacement Dispatch Notification','Basket Reminder 1','Basket Reminder 2','Basket Reminder 3') NULL COMMENT '';
