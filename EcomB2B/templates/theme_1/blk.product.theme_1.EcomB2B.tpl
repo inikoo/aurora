@@ -109,7 +109,7 @@
                             <div class="order_row empty  order_row_{$product->id} ">
                                 <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
                                 <span class="order_button label sim_button">
-                                    <i class="fa fa-hand-pointer  fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
+                                    <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
                                 </span>
                             </div>
                         </div>
@@ -171,7 +171,13 @@
                                     <div class="order_row empty  order_row_{$variant->id} ">
                                         <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
                                         <span class="order_button label sim_button">
-                                    <i class="fa fa-hand-pointer  fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
+                                    <i class="fa fa-hand-pointer  fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}
+
+                                                {if ($labels._ordering_order_now|count_characters)>10}
+                                                    <span style="font-size: smaller">{$labels._ordering_order_now}</span>{else}{$labels._ordering_order_now}{/if}
+
+
+                                                {/if}
                                 </span>
                                     </div>
                                 </div>
