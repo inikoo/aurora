@@ -342,7 +342,15 @@ $object_fields = array(
                 'required'   => true,
                 'type'       => 'value'
             ),
-
+            array(
+                'id'         => 'Localised_Labels_variant_options',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_variant_options']) ? _('More buying options') : $labels['_variant_options']),
+                'label'      => _('More buying options (variants)'),
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
         )
     ),

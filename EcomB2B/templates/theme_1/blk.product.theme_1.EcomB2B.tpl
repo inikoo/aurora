@@ -200,7 +200,7 @@
                                   style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 130px;display: inline-block;">
                                 {$variant->get('Product Variant Short Name')}
                                 <div style="font-size: x-small;position: absolute;bottom: -24px;text-align: right;width: 130px;" >
-                                    <span style="padding-right: 10px">{t}More buying options{/t} ☝</span>
+                                    <span style="padding-right: 10px">{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span>
                                 </div>
                                 <i style="position:absolute;right:12px;top:7px" class="fas fa-angle-down"></i>
                             </span>
