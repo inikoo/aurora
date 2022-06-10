@@ -3320,7 +3320,7 @@ class PurchaseOrder extends DB_Table {
                     );
 
 
-                    if ($delivery->new) {
+                    if ($delivery && $delivery->new) {
 
 
                         $this->fast_update(
