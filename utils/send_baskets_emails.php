@@ -11,8 +11,8 @@ function send_basket_first_email($db)
 {
     $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
-    $base                 = '';
-    $smarty->setTemplateDir($base.'templates');
+    $base                 = 'cron/';
+    $smarty->setTemplateDir('templates');
     $smarty->setCompileDir($base.'server_files/smarty/templates_c');
     $smarty->setCacheDir($base.'server_files/smarty/cache');
     $smarty->setConfigDir($base.'server_files/smarty/configs');
@@ -74,12 +74,13 @@ function send_basket_first_email($db)
         while ($row2 = $stmt2->fetch()) {
             $order = get_object('Order', $row2['Order Key']);
 
-            print "send 1st basket email to order ".$order->get('Public ID')."  ".$order->id." \n";
 
             $customer = get_object('Customer', $order->get('Order Customer Key'));
 
             $published_email_template->send($customer, $send_data, $smarty);
             if ($published_email_template->sent) {
+                print "send 1st basket email to order ".$order->get('Public ID')."  ".$order->id." \n";
+
                 $sql = sprintf(
                     'insert into `Order Sent Email Bridge` (`Order Sent Email Order Key`,`Order Sent Email Email Tracking Key`,`Order Sent Email Type`) values (%d,%d,%s)',
                     $order->id,
@@ -93,6 +94,15 @@ function send_basket_first_email($db)
                         'Order First Basket Email' => gmdate('Y-m-d H:i:s')
                     ]
                 );
+            }else{
+                print $published_email_template->msg."\n";
+                $customer->fast_update(
+                    [
+                        'Customer Send Basket Emails'=>'No'
+                    ]
+                );
+
+
             }
 
 
@@ -105,8 +115,8 @@ function send_basket_second_email($db)
 {
     $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
-    $base                 = '';
-    $smarty->setTemplateDir($base.'templates');
+    $base                 = 'cron/';
+    $smarty->setTemplateDir('templates');
     $smarty->setCompileDir($base.'server_files/smarty/templates_c');
     $smarty->setCacheDir($base.'server_files/smarty/cache');
     $smarty->setConfigDir($base.'server_files/smarty/configs');
@@ -200,8 +210,8 @@ function send_basket_third_email($db)
 {
     $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
-    $base                 = '';
-    $smarty->setTemplateDir($base.'templates');
+    $base                 = 'cron/';
+    $smarty->setTemplateDir('templates');
     $smarty->setCompileDir($base.'server_files/smarty/templates_c');
     $smarty->setCacheDir($base.'server_files/smarty/cache');
     $smarty->setConfigDir($base.'server_files/smarty/configs');
