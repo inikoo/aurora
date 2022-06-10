@@ -167,14 +167,20 @@
 
                                 </div>
                             {else}
+
+
+
                                 <div style="margin-left:10px;">
                                     <div class="order_row empty  order_row_{$variant->id} ">
                                         <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
                                         <span class="order_button label sim_button">
-                                    <i class="fa fa-hand-pointer  fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}
+                                    <i class="fa fa-hand-pointer  fa-fw xx" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}Order now{else}
 
                                                 {if ($labels._ordering_order_now|count_characters)>10}
-                                                    <span style="font-size: smaller">{$labels._ordering_order_now}</span>{else}{$labels._ordering_order_now}{/if}
+                                                    <span style="font-size: smaller">{$labels._ordering_order_now}</span>
+                                                {else}{$labels._ordering_order_now}
+
+                                                {/if}
 
 
                                                 {/if}
