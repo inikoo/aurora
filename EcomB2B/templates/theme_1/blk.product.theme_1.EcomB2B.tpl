@@ -174,7 +174,13 @@
                                     <div class="order_row empty  order_row_{$variant->id} ">
                                         <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
                                         <span class="order_button label sim_button">
-                                    <i class="fa fa-hand-pointer  fa-fw xx" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}Order now{else}
+                                    <i class="fa fa-hand-pointer  fa-fw   " aria-hidden="true"></i> {if empty($labels._ordering_order_now)}Order now{else}
+
+
+
+                                                {assign _ordering_order_now $labels._ordering_order_now}
+
+                                                .{$_ordering_order_now|count_characters:true}
 
                                                 {if ($labels._ordering_order_now|count_characters)>10}
                                                     <span style="font-size: smaller">{$labels._ordering_order_now}</span>
