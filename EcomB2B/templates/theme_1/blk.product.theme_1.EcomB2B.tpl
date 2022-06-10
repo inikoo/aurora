@@ -180,9 +180,8 @@
 
                                                 {assign _ordering_order_now $labels._ordering_order_now}
 
-                                                .{$_ordering_order_now|count_characters:true}
 
-                                                {if ($labels._ordering_order_now|count_characters)>10}
+                                                {if ($_ordering_order_now|count_characters:true)>10}
                                                     <span style="font-size: smaller">{$labels._ordering_order_now}</span>
                                                 {else}{$labels._ordering_order_now}
 
