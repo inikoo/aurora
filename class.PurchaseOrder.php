@@ -1749,7 +1749,9 @@ class PurchaseOrder extends DB_Table {
 
         }
 
-        $this->update_purchase_order_item_state($transaction_key, false);
+        if($transaction_key!=''){
+            $this->update_purchase_order_item_state($transaction_key, false);
+        }
         $supplier_part->part->update_next_deliveries_data();
         $this->update_totals();
         $operations = array();
