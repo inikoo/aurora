@@ -1092,6 +1092,10 @@ function get_elements_option($option) {
             'status' => array(
                 'label' => _('Status'),
                 'items' => array(
+                    'Waiting'   => array(
+                        'label'    => _('Waiting'),
+                        'selected' => true
+                    ),
                     'Active' => array(
                         'label'    => _('Active'),
                         'selected' => true
@@ -1099,7 +1103,7 @@ function get_elements_option($option) {
 
                     'Suspended' => array(
                         'label'    => _('Suspended'),
-                        'selected' => true
+                        'selected' => false
                     ),
 
                     'Finish' => array(
@@ -1177,17 +1181,18 @@ function get_elements_option($option) {
             'status' => array(
                 'label' => _('Status'),
                 'items' => array(
-                    'Active'    => array(
-                        'label'    => _('Active'),
-                        'selected' => true
-                    ),
+
                     'Waiting'   => array(
                         'label'    => _('Waiting'),
                         'selected' => true
                     ),
+                    'Active'    => array(
+                        'label'    => _('Active'),
+                        'selected' => true
+                    ),
                     'Suspended' => array(
                         'label'    => _('Suspended'),
-                        'selected' => true
+                        'selected' => false
                     ),
                     'Finish'    => array(
                         'label'    => _('Finish'),

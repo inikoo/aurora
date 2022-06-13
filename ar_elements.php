@@ -463,6 +463,13 @@ switch ($tab) {
         );
         get_category_deal_components_element_numbers($db, $data['parameters'], $user);
         break;
+    case 'campaign_order_recursion.components':
+        $data = prepare_values(
+            $_REQUEST, array('parameters' => array('type' => 'json array'))
+        );
+        get_campaign_order_recursion_element_numbers($db, $data['parameters'], $user);
+        break;
+
     case 'inventory.parts_weight_errors.wget':
         $data = prepare_values(
             $_REQUEST, array('parameters' => array('type' => 'json array'))
@@ -4328,6 +4335,40 @@ function get_category_deal_components_element_numbers($db, $data, $user)
     echo json_encode($response);
 }
 
+function get_campaign_order_recursion_element_numbers($db, $data, $user)
+{
+    $elements_numbers = array(
+        'status' => array(
+            'Active'    => 0,
+            'Waiting'   => 0,
+            'Suspended' => 0,
+            'Finish'    => 0
+        )
+
+    );
+
+
+
+    $sql = "select count(*) as number,`Deal Component Status` as element from `Deal Component Dimension` D where  `Deal Component Campaign Key`=? group by `Deal Component Status` ";
+
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute(
+        array(
+            $data['parent_key']
+        )
+    )) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['status'][$row['element']] = number($row['number']);
+        }
+    }
+
+
+    $response = array(
+        'state'            => 200,
+        'elements_numbers' => $elements_numbers
+    );
+    echo json_encode($response);
+}
 
 function get_websites_elements($db, $data, $account, $user)
 {

@@ -4793,7 +4793,7 @@ function get_tab_defaults_data(): array {
             'rpp'           => 100,
             'rpp_options'   => $default_rrp_options,
             'f_field'       => 'target',
-            'elements_type' => array_keys(get_elements_option('deals'))[0],
+            'elements_type' => array_keys(get_elements_option('fixed_deals'))[0],
             'elements'      => get_elements_option('fixed_deals'),
 
         ),
@@ -4847,6 +4847,8 @@ function get_tab_defaults_data(): array {
             'rpp'         => 100,
             'rpp_options' => $default_rrp_options,
             'f_field'     => 'target',
+            'elements_type' => array_keys(get_elements_option('deal_components'))[0],
+            'elements'      => get_elements_option('deal_components'),
 
         ),
         'deal.orders'                         => array(

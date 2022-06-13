@@ -39,6 +39,43 @@ if ($parameters['f_field'] == 'target' and $f_value != '') {
     );
 }
 
+if (isset($parameters['elements_type'])) {
+    switch ($parameters['elements_type']) {
+        case 'status':
+
+            $_elements      = '';
+            $count_elements = 0;
+            foreach (
+                $parameters['elements'][$parameters['elements_type']]['items'] as $_key => $_value
+            ) {
+                if ($_value['selected']) {
+                    $count_elements++;
+
+
+                    $_elements .= ",'".addslashes($_key)."'";
+
+
+
+
+
+                }
+            }
+
+            $_elements = preg_replace('/^\,/', '', $_elements);
+            if ($_elements == '') {
+                $where .= ' and false';
+            } elseif ($count_elements < 4) {
+                $where .= ' and `Deal Component Status` in ('.$_elements.')';
+
+
+            }
+
+            break;
+
+
+    }
+}
+
 $_order = $order;
 $_dir   = $order_direction;
 
