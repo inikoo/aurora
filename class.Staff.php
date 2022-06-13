@@ -1166,6 +1166,43 @@ class Staff extends DB_Table
 
 
         switch ($field) {
+
+            case 'Staff Clocking PIN':
+
+                if(strlen($value)!=4 or !is_numeric($value)){
+                    $this->error=true;
+                    $this->msg='PIN must be 4 digits';
+                    return;
+                }
+
+
+                $sql='select count(*) as num from `Staff Dimension`  where `Staff Clocking PIN`=? ';
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $value
+                    ]
+                );
+                if ($row = $stmt->fetch()  and $row['num']>0 ) {
+                    $this->error=true;
+                    $this->msg='Invalid pin try other number';
+                    return;
+                }
+
+
+                $this->update_field('Staff Clocking PIN', $value, 'no_history');
+                $this->add_changelog_record(
+                    'Staff Clocking PIN',
+                    '****',
+                    '****',
+                    '',
+                    $this->table_name,
+                    $this->id
+                );
+
+
+              break;
+
             case 'Staff Position':
 
                 include_once 'conf/roles.php';
@@ -1744,6 +1781,9 @@ class Staff extends DB_Table
     function get_field_label($field)
     {
         switch ($field) {
+            case 'Staff Clocking PIN':
+                $label = _('Clocking PIN');
+                break;
             case 'Staff Key':
                 $label = _('id');
                 break;

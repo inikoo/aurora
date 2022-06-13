@@ -56,13 +56,11 @@ $options_yn         = array(
     'No'  => _('No')
 );
 include_once 'conf/roles.php';
-$roles=get_roles();
+$roles = get_roles();
 foreach ($roles as $_key => $_data) {
     if (in_array($account->get('Setup Metadata')['size'], $_data['size'])) {
-
         foreach ($account->get('Setup Metadata')['instances'] as $instance) {
             if (in_array($instance, $_data['instances'])) {
-
                 $options_Staff_Position[$_key] = array(
                     'label'    => $_data['title'],
                     'selected' => false
@@ -94,7 +92,6 @@ while ($row = $stmt->fetch()) {
         'selected' => false
     );
 }
-
 
 
 $_options_User_Groups = array();
@@ -404,8 +401,8 @@ $object_fields = array(
 
             array(
 
-                'id'   => 'Staff_Job_Title',
-                'edit' => ($edit ? 'string' : ''),
+                'id'       => 'Staff_Job_Title',
+                'edit'     => ($edit ? 'string' : ''),
                 'value'    => $employee->get('Staff Job Title'),
                 'label'    => ucfirst($employee->get_field_label('Staff Job Title')),
                 'required' => false,
@@ -435,6 +432,18 @@ $object_fields = array(
                 'required'        => false,
                 'type'            => 'value'
 
+            ),
+            array(
+
+
+                'id'              => 'Staff_Clocking_PIN',
+                'edit'            => ($edit_users ? 'string' : ''),
+                'value'           => '',
+                'formatted_value' => $employee->get('Staff Clocking PIN') == '' ? '' : '****',
+                'label'           => ucfirst(
+                    $employee->get_field_label('Staff Clocking PIN')
+                ),
+                'invalid_msg'     => get_invalid_message('pin'),
             ),
 
         )
@@ -481,8 +490,6 @@ if (!$new) {
 
 
     if (!empty($employee->system_user->id)) {
-
-
         $object_fields[] = array(
             'label'      => _('System user').' <i  onClick="change_view(\'users/'.$employee->system_user->id.'\')" class="fa fa-terminal link"></i>',
             'show_title' => true,
@@ -555,7 +562,6 @@ if (!$new) {
 
             )
         );
-
     } else {
         if ($edit_users) {
             $object_fields[] = array(
@@ -634,12 +640,7 @@ if (!$new) {
     );
 
     $object_fields[] = $operations;
-
-
-}
-else {
-
-
+} else {
     $object_fields[] = array(
         'label'      => _('System user'),
         'show_title' => true,
@@ -744,7 +745,6 @@ else {
 
         )
     );
-
 }
 
 
