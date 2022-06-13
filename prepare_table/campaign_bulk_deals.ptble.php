@@ -39,13 +39,10 @@ if (isset($parameters['elements_type'])) {
                 if ($_value['selected']) {
                     $count_elements++;
 
-                    if($_key=='Suspended'){
-                        $_elements="'Suspended','Waiting','Finish'";
 
-                    }else{
                         $_elements .= ",'".addslashes($_key)."'";
 
-                    }
+
 
 
 
@@ -55,7 +52,7 @@ if (isset($parameters['elements_type'])) {
             $_elements = preg_replace('/^\,/', '', $_elements);
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($count_elements < 2) {
+            } elseif ($count_elements < 4) {
                 $where .= ' and `Deal Status` in ('.$_elements.')';
 
 
@@ -66,7 +63,6 @@ if (isset($parameters['elements_type'])) {
 
     }
 }
-
 
 
 
@@ -97,4 +93,4 @@ $fields = "`Deal Key`,`Deal Name`,`Deal Term Allowances Label`,`Deal Store Key`,
 $sql_totals = "select count(*) as num from $table $where ";
 
 
-?>
+//print $sql_totals;

@@ -9,7 +9,7 @@
 
 
 if(empty( $_SERVER["HTTP_CF_IPCOUNTRY"])  or $_SERVER["HTTP_CF_IPCOUNTRY"]=='XX' or  $_SERVER["HTTP_CF_IPCOUNTRY"]=='T1' ){
-    $country_code='';
+    $country_code='GB';
 }else{
     $country_code = $_SERVER["HTTP_CF_IPCOUNTRY"];
 
