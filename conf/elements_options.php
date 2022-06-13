@@ -1102,6 +1102,10 @@ function get_elements_option($option) {
                         'selected' => true
                     ),
 
+                    'Finish' => array(
+                        'label'    => _('Finished'),
+                        'selected' => false
+                    ),
 
                 ),
 

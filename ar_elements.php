@@ -1013,8 +1013,8 @@ function get_fixed_deals_element_numbers($db, $data, $user)
     $elements_numbers = array(
         'status' => array(
             'Active' => 0,
-
             'Suspended' => 0,
+            'Finish' => 0,
         ),
 
 
@@ -1049,9 +1049,7 @@ function get_fixed_deals_element_numbers($db, $data, $user)
         "select count(*) as number,`Deal Status` as element from `Deal Dimension` D $where  group by `Deal Status` "
     );
     foreach ($db->query($sql) as $row) {
-        if ($row['element'] != 'Active') {
-            $row['element'] = 'Suspended';
-        }
+
 
         $elements_numbers['status'][$row['element']] += $row['number'];
     }
