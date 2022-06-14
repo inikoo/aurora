@@ -47,7 +47,7 @@
             <div class="font-thin px-2 pb-3  text-stone-700">Enter your pin code</div>
             <div class="flex">
                 <template x-for="(l,i) in pinlength" :key="`codefield_${i}`">
-                    <input :autofocus="i == 0" :id="`codefield_${i}`" type="password"
+                    <input :autofocus="i == 0" :id="`codefield_${i}`" type="password" pattern="[0-9]*" inputmode="numeric"
                            class="h-16 w-12 border mx-2 rounded-lg flex items-center text-center font-thin text-3xl"
                            value="" maxlength="1" max="9" min="0" inputmode="decimal" @keyup="stepForward(i)"
                            @keydown.backspace="stepBack(i)" @focus="resetValue(i)"></input>
