@@ -33,7 +33,7 @@ if(!$clocking_machine_key){
     exit;
 }
 
-/*
+
 
 if (empty($_POST['pin'])) {
     echo json_encode(
@@ -45,9 +45,8 @@ if (empty($_POST['pin'])) {
     exit;
 }
 $pin=$_POST['pin'];
-*/
 
-$pin='1234';
+
 
 $sql="select `Staff Key`,`Staff Alias` from `Staff Dimension`  where `Staff Clocking PIN`=? ";
 $stmt = $db->prepare($sql);

@@ -129,6 +129,11 @@
                 const formData = new FormData();
                 formData.append('pin', code);
 
+                for (x = 0; x < this.pinlength; x++) {
+                    document.getElementById(`codefield_${x}`).value = ''
+                }
+                document.getElementById("codefield_0").focus();
+
                 fetch('clocking.php', {
                     method: "POST",
                     body:formData,
