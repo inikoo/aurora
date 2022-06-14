@@ -55,7 +55,7 @@
             </div>
 
             <div class="h-8">
-                <div  x-text="msg" :class="error ?  'text-red-600' : 'text-emerald-600' "  class="mt-5 px-2 pb-4 text-sm "></div>
+                <div  x-text="msg" :class="error ?  'text-red-600' :   clocking_status=='in' ? 'text-emerald-600' : 'text-gray-500'  "  class="mt-5 px-2 pb-4 text-sm "></div>
             </div>
 
 
@@ -77,12 +77,13 @@
             pinlength: 4,
             msg: '',
             error:true,
+            clocking_status:true,
             formLoading:false,
             resetValue(i) {
                 if(this.formLoading){
                     return;
                 }
-                this.msg = "";
+
                 for (x = 0; x < this.pinlength; x++) {
                     if (x >= i) document.getElementById(`codefield_${x}`).value = ''
                 }
@@ -129,10 +130,7 @@
                 const formData = new FormData();
                 formData.append('pin', code);
 
-                for (x = 0; x < this.pinlength; x++) {
-                    document.getElementById(`codefield_${x}`).value = ''
-                }
-                document.getElementById("codefield_0").focus();
+
 
                 fetch('clocking.php', {
                     method: "POST",
@@ -150,6 +148,7 @@
 
                     }else{
                         this.error=false;
+                        this.clocking_status=data.clocking_status
                     }
 
 
@@ -159,6 +158,14 @@
                     })
                     .finally(() => {
                         this.formLoading = false;
+
+                        for (let x = 0; x < this.pinlength; x++) {
+                            document.getElementById(`codefield_${x}`).value = ''
+                        }
+
+                        document.getElementById("codefield_0").focus();
+
+
                     });
 
 

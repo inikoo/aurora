@@ -73,10 +73,21 @@ if ($row = $stmt->fetch()) {
 
 
 
+    if($staff->get('Staff Attendance Status')=='Work'){
+        $msg='😀 Hello '.$row['Staff Alias'].', (Clocked in)';
+        $status='in';
+    }else{
+        $msg='👋 Bye '.$row['Staff Alias'].', (Clocked out)';
+        $status='out';
+
+    }
+
+
     echo json_encode(
         [
             'status' => 200,
-            'msg'    => '👋 '.$row['Staff Alias'].',  you have been clocked'
+            'msg'    => $msg,
+            'clocking_status'=>$status
         ]
     );
     exit;

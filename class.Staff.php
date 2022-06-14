@@ -937,7 +937,7 @@ class Staff extends DB_Table
                     }
                 }
 
-                break;
+
             case 'Number Attachments':
                 return number($this->data['Staff '.$key]);
 
