@@ -76,7 +76,7 @@ if ($row = $stmt->fetch()) {
     echo json_encode(
         [
             'status' => 200,
-            'msg'    => '👋 '.$row['Staff Alias'].',  you have benn clocked'
+            'msg'    => '👋 '.$row['Staff Alias'].',  you have been clocked'
         ]
     );
     exit;
