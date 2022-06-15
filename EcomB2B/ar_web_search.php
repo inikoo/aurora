@@ -156,7 +156,6 @@ function process_search($q, $db, $website, $order_key,$customer_key) {
         }
 
 
-        print $sql;
 
 
         if ($result = $db->query($sql)) {
