@@ -36,7 +36,7 @@ switch ($tipo) {
         );
 
 
-        search($db, $website, $data, $smarty, $template_suffix, $order_key);
+        search($db, $website, $data, $smarty, $template_suffix, $order_key,$customer_key);
         break;
 
 
@@ -50,11 +50,11 @@ switch ($tipo) {
         break;
 }
 
-function search($db, $website, $data, $smarty, $template_suffix, $order_key) {
+function search($db, $website, $data, $smarty, $template_suffix, $order_key,$customer_key) {
 
 
     $theme   = 'theme_1';
-    $results = process_search($data['query'], $db, $website, $order_key);
+    $results = process_search($data['query'], $db, $website, $order_key,$customer_key);
 
 
     $smarty->assign('results', $results['results']);
@@ -91,7 +91,7 @@ function get_search_results_analytics_data($results) {
     return $analytics_data;
 }
 
-function process_search($q, $db, $website, $order_key) {
+function process_search($q, $db, $website, $order_key,$customer_key) {
 
 
     $candidates  = array();
@@ -138,6 +138,8 @@ function process_search($q, $db, $website, $order_key) {
         }
 
 
+
+
         $sql = sprintf(
             'SELECT  %s `Product Currency`,`Category Code`,`Product Price`,`Product ID`,`Webpage Code`,`Page Key` ,`Product Web State`,`Product Main Image Key`,`Product Web State`,`Webpage URL`,`Webpage Name`,`Product Name`,`Product Code`,`Webpage Meta Description`,`Product Units Per Case`
             FROM  `Product Dimension` P  
@@ -147,6 +149,11 @@ function process_search($q, $db, $website, $order_key) {
 		 WHERE `Webpage Website Key`=%d AND `Product Code` LIKE %s  AND  `Webpage State`="Online" AND `Product Status` IN ("Active","Discontinuing")   ', $ordered, $website->id, prepare_mysql($code_q)
         );
 
+        if($customer_key){
+            $sql.=' and `Product Customer Key`=NULL ';
+        }else{
+            $sql.=sprintf(' and ( `Product Customer Key`=NULL  or `Product Customer Key`=%d )  ',$customer_key);
+        }
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
