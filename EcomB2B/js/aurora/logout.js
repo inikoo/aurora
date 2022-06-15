@@ -33,7 +33,7 @@ $(function() {
                     location.reload();
 
                 } else if (data.state == '400') {
-                    swal(data.msg);
+                   console.log(data.msg);
                 }
 
 

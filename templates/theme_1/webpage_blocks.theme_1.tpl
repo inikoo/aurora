@@ -1229,6 +1229,7 @@
                         top_margin: $(obj).attr('top_margin'),
                         bottom_margin: $(obj).attr('bottom_margin'),
                         labels: content_data,
+                        registration_type:$('#sky-form').data('type')
 
 
                     })

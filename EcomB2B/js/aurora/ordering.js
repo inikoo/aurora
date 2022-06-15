@@ -298,7 +298,7 @@ function save_item_qty_change(element,options) {
                 $(element).removeClass('fa-spinner fa-spin fa-disk').addClass(_icon)
                 $(element).closest('tr').find('.item_amount').html(data.to_charge)
 
-                swal(data.msg)
+               // swal(data.msg)
             }
 
 

@@ -207,9 +207,85 @@
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type} _block {if !$data.show}hide{/if}" top_margin="{$top_margin}" bottom_margin="{$bottom_margin}"
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
+
+    {if empty($data.registration_type) }{assign type 'simple'}{else}{assign type $data.registration_type}{/if}
+
+
     <div class="reg_form">
-        <form id="sky-form" class="sky-form">
+        <form id="sky-form" class="sky-form"  data-type="{$type}"  >
             <header id="_title" contenteditable="true">{$data.labels._title}</header>
+
+
+            <fieldset class="company_fork {if $type!='company_fork'}hide{/if}">
+
+
+                    <div  id="_main_select_country_title" contenteditable="true"  style="margin:15px">{if empty($data.labels._main_select_country_title)}Select country{else}{$data.labels._main_select_country_title}{/if}</div>
+
+
+
+                <section class="col col-6">
+
+                    <label class="select">
+                        <select id="main_country_select" name="country">
+                            <option value="0" selected disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
+
+                            {foreach from=$countries item=country}
+                                <option value="{$country.2alpha}" {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
+                            {/foreach}
+
+
+                            <select><i></i>
+                    </label>
+                </section>
+
+                <section class="col col-4">
+                    <button id="_main_select_country_button"  contenteditable="true"  style="position: relative;top:-12px" class="button">{if empty($data.labels._main_select_country_button)}Continue{else}{$data.labels._main_select_country_button}{/if}</button>
+
+                </section>
+
+            </fieldset>
+
+
+            <fieldset   class="company_fork {if $type!='company_fork'}hide{/if}">
+
+
+                <div id="_select_company" contenteditable="true" style="margin:15px">{if empty($data.labels._select_company)}Select trader type{else}{$data.labels._select_company}{/if}</div>
+
+                <section class="col col-6">
+                    <button id="_select_company_sole_trader" contenteditable="true" style="float: none" class="button">{if empty($data.labels._select_company_sole_trader)}Sole Trader{else}{$data.labels._select_company_sole_trader}{/if}</button>
+
+                </section>
+
+
+
+                <section class="col col-6">
+                    <button id="_select_company_company" contenteditable="true" style="float: none" class="button">{if empty($data.labels._select_company_company)}Company{else}{$data.labels._select_company_company}{/if}</button>
+
+                </section>
+
+
+
+            </fieldset>
+
+
+            <fieldset   class="company_fork {if $type!='company_fork'}hide{/if}">
+
+
+                <div id="_search_your_company" contenteditable="true" style="margin:15px">{if empty($data.labels._search_your_company)}Search for your company{else}{$data.labels._search_your_company}{/if}</div>
+
+
+                    <label id="_search_company_form" class="input" style="cursor:pointer" ">
+                        <input class="register_field" id="_search_company_form" type="text">
+                      
+                    </label>
+
+                    <div style="margin-top:20px;margin-bottom:20px;margin-left: 15px;font-size: small">
+                        <span id="_continue_no_search" contenteditable="true">{if empty($data.labels._continue_no_search)}If you can not find your company click{else}{$data.labels._continue_no_search}{/if}</span> <span id="_continue_no_search_click_here" contenteditable="true" style="font-weight: 800;cursor: pointer;text-decoration: underline">{if empty($data.labels._continue_no_search_click_here)}here{else}{$data.labels._continue_no_search_click_here}{/if}</span>
+                    </div>
+
+
+
+            </fieldset>
 
             <fieldset>
 
@@ -459,6 +535,17 @@
 
 <script>
 
+    function update_toggle_form_type(type){
+
+        $('#sky-form').data('type',type)
+        if(type=='company_fork'){
+            $('.company_fork').removeClass('hide')
+        }else{
+            $('.company_fork').addClass('hide')
+
+        }
+
+    }
 
     function show_edit_input(element) {
         offset = $(element).closest('section').offset();

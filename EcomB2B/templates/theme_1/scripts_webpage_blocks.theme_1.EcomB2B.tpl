@@ -552,6 +552,12 @@
                 });
 
 
+
+
+
+
+
+
                 $("#registration_form").validate({
 
                     submitHandler: function (form) {
