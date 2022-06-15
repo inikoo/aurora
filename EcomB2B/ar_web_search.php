@@ -150,10 +150,14 @@ function process_search($q, $db, $website, $order_key,$customer_key) {
         );
 
         if($customer_key){
-            $sql.=' and `Product Customer Key`=NULL ';
+            $sql.=' and `Product Customer Key` is NULL ';
         }else{
-            $sql.=sprintf(' and ( `Product Customer Key`=NULL  or `Product Customer Key`=%d )  ',$customer_key);
+            $sql.=sprintf(' and ( `Product Customer Key` is NULL  or `Product Customer Key`=%d )  ',$customer_key);
         }
+
+
+        print $sql;
+
 
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
@@ -285,9 +289,9 @@ function process_search($q, $db, $website, $order_key,$customer_key) {
             );
 
             if($customer_key){
-                $sql.=' and `Product Customer Key`=NULL ';
+                $sql.=' and `Product Customer Key` is NULL ';
             }else{
-                $sql.=sprintf(' and ( `Product Customer Key`=NULL  or `Product Customer Key`=%d )  ',$customer_key);
+                $sql.=sprintf(' and ( `Product Customer Key` is NULL  or `Product Customer Key`=%d )  ',$customer_key);
             }
 
 
