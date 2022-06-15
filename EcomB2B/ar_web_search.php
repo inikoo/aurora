@@ -284,7 +284,11 @@ function process_search($q, $db, $website, $order_key,$customer_key) {
 		 WHERE `Webpage Website Key`=? AND `Product Name`  REGEXP ?   AND  `Webpage State`='Online'   AND `Product Status` IN ('Active','Discontinuing')  ", $ordered
             );
 
-
+            if($customer_key){
+                $sql.=' and `Product Customer Key`=NULL ';
+            }else{
+                $sql.=sprintf(' and ( `Product Customer Key`=NULL  or `Product Customer Key`=%d )  ',$customer_key);
+            }
 
 
             $stmt = $db->prepare($sql);
