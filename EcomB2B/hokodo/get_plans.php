@@ -29,8 +29,8 @@ function get_plans($db, $order, $customer, $website)
         ]
     );
     while ($row = $stmt->fetch()) {
-        $item_total  = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
-        $item_tax    = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
+        $item_total  = round(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
+        $item_tax    = round(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
         $items_total += $item_total;
         $items_tax   += $item_tax;
 
@@ -39,7 +39,7 @@ function get_plans($db, $order, $customer, $website)
             "type"               => "product",
             "description"        => $row['Product Code'].' '.$row['Product Name'],
             "quantity"           => $row['Order Quantity'],
-            "unit_price"         => floor($item_total / $row['Order Quantity']),
+            "unit_price"         => round($item_total / $row['Order Quantity']),
             "tax_rate"           => 100 * $row['Transaction Tax Rate'],
             "total_amount"       => $item_total,
             "tax_amount"         => $item_tax,
@@ -80,8 +80,8 @@ function get_plans($db, $order, $customer, $website)
         while ($row2 = $stmt2->fetch()) {
             $tax_rate = $row2['Tax Category Rate'] * 100;
         }
-        $item_total  = floor(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
-        $item_tax    = floor(100 * $row['Transaction Tax Amount']);
+        $item_total  = round(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
+        $item_tax    = round(100 * $row['Transaction Tax Amount']);
         $items_total += $item_total;
         $items_tax   += $item_tax;
 
@@ -129,12 +129,16 @@ function get_plans($db, $order, $customer, $website)
         ],
         "status"       => "draft",
         "currency"     => $order->get('Order Currency'),
-        "total_amount" => floor($order->get('Order Total Amount') * 100),
-        "tax_amount"   => floor($order->get('Order Total Tax Amount') * 100),
+        "total_amount" => round($order->get('Order Total Amount') * 100),
+        "tax_amount"   => round($order->get('Order Total Tax Amount') * 100),
         "order_date"   => date('Y-m-d'),
         'items'        => $items
 
     );
+
+    //print round($order->get('Order Total Amount') * 100). ' '.$items_total."\n";
+    //exit;
+
 
     // print $api_key.' || ';
     //print_r($data);

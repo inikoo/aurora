@@ -2274,20 +2274,54 @@ class Order extends DB_Table
                         $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
 
-                        $qty = round($row['Delivery Note Quantity'], 3);
+
+
+
+                        $qty=number($item_total/$item['unit_price'],3);
+
+
+
+
+
+                        //print_r($item);
+                        //exit;
+
+
+                       // $qty = round($row['Delivery Note Quantity'], 3);
 
                         if ($qty > 0) {
-                            $unit_price = floor($item_total / $row['Delivery Note Quantity']);
+                          //  $unit_price = number($item_total / $row['Delivery Note Quantity'],2);
 
+
+                            if($qty>$item['quantity'] or $item_total>$item['total_amount']  ){
+                                $qty=$item['quantity'];
+                                $item_total=$item['total_amount'];
+                                $item_tax=$item['tax_amount'];
+                            }
 
                             $items[]                                        = [
                                 "item_id"      => $row['Order Transaction Fact Key'],
-                                "description"  => $row['Product Code'].' '.$row['Product Name'],
+                             //   "description"  => $row['Product Code'].' '.$row['Product Name'],
                                 "quantity"     => $qty,
-                                "unit_price"   => $unit_price,
+                            //    "unit_price"   => $unit_price,
                                 "total_amount" => $item_total,
                                 "tax_amount"   => $item_tax,
                             ];
+
+/*
+                            print_r(
+                                [
+                                    "item_id"      => $row['Order Transaction Fact Key'],
+                                    "description"  => $row['Product Code'].' '.$row['Product Name'],
+                                    "quantity"     => $qty,
+                                    "unit_price"   => $unit_price,
+                                    "total_amount" => $item_total,
+                                    "tax_amount"   => $item_tax,
+                                ]
+                            );
+                            exit;
+*/
+
                             $items_keys[$row['Order Transaction Fact Key']] = $row['Order Transaction Fact Key'];
                         }
                     }
@@ -2311,7 +2345,7 @@ class Order extends DB_Table
                             "item_id"     => 'np-'.$row['Order No Product Transaction Fact Key'],
                             "description" => $row['Transaction Type'],
                             "quantity"    => 1,
-                            "unit_price"  => $item_total,
+                          //  "unit_price"  => $item_total,
 
                             "total_amount" => $item_total,
                             "tax_amount"   => $item_tax,
@@ -2322,74 +2356,7 @@ class Order extends DB_Table
                 }
             }
 
-            /*
 
-            $sql = "select * 
-from 
- `Order Transaction Fact` OTF  LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
-
- WHERE `Order Key`=?  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0) ";
-
-            $stmt = $db->prepare($sql);
-            $stmt->execute(
-                [
-                    $this->id
-                ]
-            );
-            while ($row = $stmt->fetch()) {
-                $item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
-                $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
-
-
-                $items[] = [
-                    "item_id"      => $row['Order Transaction Fact Key'],
-                    "description"  => $row['Product Code'].' '.$row['Product Name'],
-                    "quantity"     => $row['Delivery Note Quantity'],
-                    "unit_price"   => floor($item_total / $row['Delivery Note Quantity']),
-                    "total_amount" => $item_total,
-                    "tax_amount"   => $item_tax,
-                ];
-            }
-
-
-            $sql  = "select * from `Order No Product Transaction Fact` OTF  where `Order Key`=? and (`Transaction Net Amount`+`Transaction Tax Amount`)>0
-                                                                                                                   ";
-            $stmt = $db->prepare($sql);
-            $stmt->execute(
-                [
-                    $this->id
-                ]
-            );
-            while ($row = $stmt->fetch()) {
-                $tax_rate = 0;
-                $sql      = "select `Tax Category Rate` from kbase.`Tax Category Dimension` where `Tax Category Key`=? ";
-                $stmt2    = $db->prepare($sql);
-                $stmt2->execute(
-                    [
-                        $row['Order No Product Transaction Tax Category Key']
-                    ]
-                );
-                while ($row2 = $stmt2->fetch()) {
-                    $tax_rate = $row2['Tax Category Rate'] * 100;
-                }
-                $item_total = floor(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
-                $item_tax   = floor(100 * $row['Transaction Tax Amount']);
-
-
-
-
-                $items[] = [
-                    "item_id"     => 'np-'.$row['Order No Product Transaction Fact Key'],
-                    "description" => $row['Transaction Type'],
-                    "quantity"    => 1,
-                    "unit_price"  => $item_total,
-
-                    "total_amount" => $item_total,
-                    "tax_amount"   => $item_tax,
-
-                ];
-            }
-*/
 
             $new_charges_items = [];
 
@@ -2443,7 +2410,7 @@ from
                                 "item_id"     => $reported_item['item_id'],
                                 "description" => $reported_item['description'],
                                 "quantity"    => 1,
-                                "unit_price"  => $reported_item['unit_price'],
+                              //  "unit_price"  => $reported_item['unit_price'],
 
                                 "total_amount" => $reported_item['total_amount'],
                                 "tax_amount"   => $reported_item['tax_amount'],
@@ -2459,8 +2426,8 @@ from
             }
 
 
-            //print_r($items);
-
+           // print_r($items);
+           // exit;
 
             //  if(count($reported_items)>0){
             //     print_r($reported_items);
@@ -2590,57 +2557,63 @@ from
         //print_r($res);
 
 
-        $smarty = new Smarty();
-        //$smarty->caching_type = 'redis';
-        $smarty->setTemplateDir('templates');
-        $smarty->setCompileDir('server_files/smarty/templates_c');
-        $smarty->setCacheDir('server_files/smarty/cache');
-        $smarty->setConfigDir('server_files/smarty/configs');
-        $smarty->addPluginsDir('./smarty_plugins');
-        $db      = $this->db;
-        $account = get_object('Account', 1);
+        try {
+            $smarty = new Smarty();
+            //$smarty->caching_type = 'redis';
+            $smarty->setTemplateDir('templates');
+            $smarty->setCompileDir('server_files/smarty/templates_c');
+            $smarty->setCacheDir('server_files/smarty/cache');
+            $smarty->setConfigDir('server_files/smarty/configs');
+            $smarty->addPluginsDir('./smarty_plugins');
+            $db      = $this->db;
+            $account = get_object('Account', 1);
 
-        $_REQUEST['id'] = $invoice_key;
-        $save_to_file   = 'server_files/tmp/'.$this->data['hokodo_order_id'].'.pdf';
-        require_once 'invoice.pdf.common.php';
-        $store     = get_object('Store', $this->get('Order Store Key'));
-        $website   = get_object('Website', $store->get('Store Website Key'));
-        $api_key   = $website->get_api_key('Hokodo');
-        $_base_url = 'https://api.hokodo.co/v1';
-        if (ENVIRONMENT == 'DEVEL') {
-            $_base_url = 'https://api-sandbox.hokodo.co/v1';
-        }
+            $_REQUEST['id'] = $invoice_key;
+            $save_to_file   = 'server_files/tmp/'.$this->data['hokodo_order_id'].'.pdf';
+            require_once 'invoice.pdf.common.php';
+            $store     = get_object('Store', $this->get('Order Store Key'));
+            $website   = get_object('Website', $store->get('Store Website Key'));
+            $api_key   = $website->get_api_key('Hokodo');
+            $_base_url = 'https://api.hokodo.co/v1';
+            if (ENVIRONMENT == 'DEVEL') {
+                $_base_url = 'https://api-sandbox.hokodo.co/v1';
+            }
 
-        $hokodo_order_id = $this->data['hokodo_order_id'];
-        $invoice         = get_object('Invoice', $invoice_key);
-        $amount          = floor($invoice->get('Invoice Total Amount') * 100);
+            $hokodo_order_id = $this->data['hokodo_order_id'];
+            $invoice         = get_object('Invoice', $invoice_key);
+            $amount          = floor($invoice->get('Invoice Total Amount') * 100);
 
-        $url = $_base_url.'/payment/orders/'.$hokodo_order_id.'/documents';
+            $url = $_base_url.'/payment/orders/'.$hokodo_order_id.'/documents';
 
-        $cmd    = "curl --request POST \
+            $cmd    = "curl --request POST \
   --url $url \
   --header 'Authorization: Token $api_key' \
   --form doc_type=invoice \
   --form description=invoice_description \
   --form amount=$amount \
   --form file=@$save_to_file";
-        $output = shell_exec($cmd);
+            $output = shell_exec($cmd);
 
-        $sql = "insert into hokodo_debug (`request`,`data`,`response`,`date`,`status`) values (?,?,?,?,?) ";
-        $db->prepare($sql)->execute(
-            [
-                $url,
-                json_encode([
-                                'amount' => $amount
-                            ]),
-                $output,
-                gmdate('Y-m-d H:i:s'),
-                'ok-v2'
+            $sql = "insert into hokodo_debug (`request`,`data`,`response`,`date`,`status`) values (?,?,?,?,?) ";
+            $db->prepare($sql)->execute(
+                [
+                    $url,
+                    json_encode([
+                                    'amount' => $amount
+                                ]),
+                    $output,
+                    gmdate('Y-m-d H:i:s'),
+                    'ok-v2'
 
-            ]
-        );
-        // print_r(json_decode($output,true));
+                ]
+            );
+            // print_r(json_decode($output,true));
 
+        }
+
+        catch(Exception $e) {
+            //
+        }
 
     }
 
