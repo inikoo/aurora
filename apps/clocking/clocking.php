@@ -9,6 +9,7 @@
 /** @var integer $clocking_machine_key */
 /** @var PDO $db */
 
+
 $editor = array(
     'Author Name'  => '',
     'Author Alias' => '',
@@ -22,6 +23,7 @@ $editor = array(
 );
 
 require_once 'common.php';
+include_once 'class.Timesheet.php';
 
 if(!$clocking_machine_key){
     echo json_encode(
@@ -61,14 +63,33 @@ if ($row = $stmt->fetch()) {
     $source        = 'ClockingMachine';
 
 
+    $timesheet_data = array(
+        'Timesheet Date'      => gmdate("Y-m-d",),
+        'Timesheet Staff Key' => $staff->id,
+        'editor'              =>$editor
+    );
+    $timesheet      = new Timesheet('find', $timesheet_data, 'create');
+
+
+
+
+
+    $UTC = new DateTimeZone("UTC");
+    $newTZ = new DateTimeZone($timesheet->get('Timesheet Timezone'));
+    $date = new DateTime( gmdate('Y-m-d H:i:s'), $UTC );
+    $date->setTimezone( $newTZ );
+
 
     $data = array(
-        'Timesheet Record Date'       => gmdate('Y-m-d H:i:s'),
+        'Timesheet Record Date'       => $date->format('Y-m-d H:i:s'),
         'Timesheet Record Source'     => $source,
         'Timesheet Record Source Key' => $clocking_machine_key,
         'Timesheet Record Type'       => 'ClockingRecord',
         'editor'                      => $editor
     );
+
+
+
     $staff->create_timesheet_record($data);
 
 
