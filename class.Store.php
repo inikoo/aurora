@@ -425,6 +425,14 @@ class Store extends DB_Table
             create_email_templates($this->db, $this);
 
 
+            $sql = "insert into `Store Emails Data`  (`Store Emails Store Key`)  values (?) ";
+            $this->db->prepare($sql)->execute(
+                [
+                    $this->id
+                ]
+            );
+
+
             $history_data = array(
                 'History Abstract' => sprintf(_('Store %s (%s) created'), $this->data['Store Name'], $this->data['Store Code']),
                 'History Details'  => '',
@@ -1523,8 +1531,7 @@ class Store extends DB_Table
         $recipients_data = $this->get('Store Notification '.$type.' Recipients');
 
 
-        if(is_array($recipients_data)) {
-
+        if (is_array($recipients_data)) {
             foreach ($recipients_data['external_emails'] as $external_email) {
                 $recipients[$external_email] = new email_recipient(
 
@@ -1552,7 +1559,7 @@ class Store extends DB_Table
             }
 
             return array_values($recipients);
-        }else{
+        } else {
             return [];
         }
     }
@@ -1827,9 +1834,9 @@ class Store extends DB_Table
 
     function update_customers_email_marketing_data()
     {
-        $email_marketing_customers = 0;
-        $newsletters_customers     = 0;
-        $basket_engagement_customers     = 0;
+        $email_marketing_customers   = 0;
+        $newsletters_customers       = 0;
+        $basket_engagement_customers = 0;
 
 
         $sql = "SELECT count(*) AS num FROM  `Customer Dimension` WHERE `Customer Store Key`=?  and `Customer Main Plain Email`!=''  and `Customer Send Basket Emails`='Yes' ";
@@ -2738,6 +2745,134 @@ class Store extends DB_Table
         $this->fast_update(['Store Acc Previous Intervals Updated' => gmdate('Y-m-d H:i:s')]);
     }
 
+
+    function get_emails_data($type, $from_date, $to_date)
+    {
+        $mailshots    = 0;
+        $emails       = 0;
+        $open         = 0;
+        $unsubscribed = 0;
+        $clicked      = 0;
+
+
+        $args = [
+            $type,
+            $this->id
+        ];
+
+        $placeholder  = '?';
+        $extra_fields = '';
+
+        if ($type == 'All') {
+            $args         = [
+                'Newsletter',
+                'Marketing',
+                'AbandonedCart',
+                $this->id
+            ];
+            $placeholder  = '?,?,?';
+            $extra_fields = ' , sum(`Email Campaign Open`) as open, sum(`Email Campaign Unsubscribed`) as  unsubscribed , sum(`Email Campaign Clicked`) as clicked ';
+        }
+
+
+        //enum('InProcess','SetRecipients','ComposingEmail','Ready','Scheduled','Sending','Sent','Cancelled','Stopped')
+
+        $sql  = sprintf(
+            "select count(*) as num from `Email Campaign Dimension` where `Email Campaign Type` in ($placeholder)  and `Email Campaign Store Key`=?  and `Email Campaign State` in ('Sending','Sent','Stopped') %s %s ",
+            ($from_date ? sprintf('and `Email Campaign Start Send Date`>%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Email Campaign Start Send Date`<%s', prepare_mysql($to_date)) : '')
+
+        );
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            $args
+        );
+        while ($row = $stmt->fetch()) {
+            $mailshots = $row['num'];
+        }
+
+        $sql = sprintf(
+            "select sum(`Email Campaign Sent`) as emails $extra_fields from `Email Campaign Dimension` where `Email Campaign Type` in ($placeholder)  and `Email Campaign Store Key` in (?)  and `Email Campaign State` in ('Sending','Sent','Cancelled','Stopped')  %s %s ",
+            ($from_date ? sprintf('and `Email Campaign Start Send Date`>%s', prepare_mysql($from_date)) : ''),
+            ($to_date ? sprintf('and `Email Campaign Start Send Date`<%s', prepare_mysql($to_date)) : '')
+
+        );
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            $args
+        );
+        while ($row = $stmt->fetch()) {
+            $emails = $row['emails'];
+            if ($type == 'All') {
+                $open         = $row['open'];
+                $unsubscribed = $row['unsubscribed'];
+                $clicked      = $row['clicked'];
+            }
+        }
+
+        //print $this->code." $mailshots $emails\n ";
+
+
+        return array(
+            'mailshots'    => $mailshots,
+            'emails'       => $emails,
+            'open'         => $open,
+            'unsubscribed' => $unsubscribed,
+            'clicked'      => $clicked
+        );
+    }
+
+
+    function update_emails_data($type, $interval, $this_year = true, $last_year = true)
+    {
+        include_once 'utils/date_functions.php';
+        list($db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb) = calculate_interval_dates($this->db, $interval);
+
+
+        //  print "$interval $db_interval, $from_date, $to_date, $from_date_1yb, $to_date_1yb \n";
+
+
+        if ($this_year) {
+            $emails_data = $this->get_emails_data($type, $from_date, $to_date);
+            if ($type == 'All') {
+                $data_to_update = array(
+                    "Store $db_interval Acc Mailshots"           => $emails_data['mailshots'],
+                    "Store $db_interval Acc Emails"              => $emails_data['emails'],
+                    "Store $db_interval Acc Emails Open"         => $emails_data['open'],
+                    "Store $db_interval Acc Emails Unsubscribed" => $emails_data['unsubscribed'],
+                    "Store $db_interval Acc Emails Clicked"      => $emails_data['clicked'],
+                );
+            } else {
+                $data_to_update = array(
+                    "Store $db_interval Acc $type Mailshots" => $emails_data['mailshots'],
+                    "Store $db_interval Acc $type Emails"    => $emails_data['emails'],
+                );
+            }
+            $this->fast_update($data_to_update, 'Store Emails Data');
+        }
+
+        if ($from_date_1yb and $last_year) {
+            $emails_data = $this->get_emails_data($type, $from_date, $to_date);
+            if ($type == 'All') {
+                $data_to_update = array(
+                    "Store $db_interval Acc 1YB Mailshots"           => $emails_data['mailshots'],
+                    "Store $db_interval Acc 1YB Emails"              => $emails_data['emails'],
+                    "Store $db_interval Acc 1YB Emails Open"         => $emails_data['open'],
+                    "Store $db_interval Acc 1YB Emails Unsubscribed" => $emails_data['unsubscribed'],
+                    "Store $db_interval Acc 1YB Emails Clicked"      => $emails_data['clicked'],
+                );
+            } else {
+                $data_to_update = array(
+                    "Store $db_interval Acc 1YB $type Mailshots" => $emails_data['mailshots'],
+                    "Store $db_interval Acc 1YB $type Emails"    => $emails_data['emails'],
+                );
+            }
+            $this->fast_update($data_to_update, 'Store Emails Data');
+            
+        }
+    }
+
     function update_sales_from_invoices($interval, $this_year = true, $last_year = true)
     {
         include_once 'utils/date_functions.php';
@@ -3587,7 +3722,7 @@ class Store extends DB_Table
 
 
                 foreach ($this->get_websites('objects') as $website) {
-                    if($product->data['is_variant']=='No'){
+                    if ($product->data['is_variant'] == 'No') {
                         $website->create_product_webpage($product->id);
                     }
                 }
@@ -4465,11 +4600,10 @@ class Store extends DB_Table
             ]
         );
         while ($row = $stmt->fetch()) {
-            $sources[$row['Order Source Key']]=$row;
+            $sources[$row['Order Source Key']] = $row;
         }
 
         return $sources;
-
     }
 
     function get_aiku_params($field, $value = '')

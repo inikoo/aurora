@@ -653,6 +653,8 @@ abstract class DB_Table extends stdClass
             $key_field = 'Customer Fulfilment Customer Key';
         } elseif ($table_full_name == 'Page Store Dimension') {
             $key_field = 'Page Key';
+        }elseif ($table_full_name == 'Store Emails Data') {
+            $key_field = 'Store Emails Store Key';
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
         } elseif ($table_full_name == 'Part Category Data' or $table_full_name == 'Part Category Dimension') {
