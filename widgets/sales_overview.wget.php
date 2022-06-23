@@ -11,8 +11,8 @@
 */
 
 
-function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, $period, $currency, $orders_view_type) {
-
+function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, $period, $currency, $orders_view_type)
+{
     include_once 'utils/date_functions.php';
 
 
@@ -63,24 +63,20 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 	`Store Code`,S.`Store Key`,`Store Name`, `Store Currency Code` currency, `Store $period_tag Acc Invoices` as invoices,`Store $period_tag Acc Refunds` as refunds,`Store $period_tag Acc Delivery Notes` delivery_notes,`Store $period_tag Acc Replacements` replacements,`Store $period_tag Acc Invoiced Amount` as sales,`Store DC $period_tag Acc Invoiced Amount` as dc_sales,";
     if (!($period_tag == '3 Year' or $period_tag == 'Total')) {
         $fields .= "`Store $period_tag Acc 1YB Refunds` as refunds_1yb,`Store $period_tag Acc 1YB Delivery Notes` delivery_notes_1yb,`Store $period_tag Acc 1YB Replacements` replacements_1yb, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,`Store DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb";
-
     } else {
         $fields .= '0 as refunds_1yb, 0 as replacements_1yb,0 as delivery_notes_1yb, 0 as invoices_1yb, 0 as sales_1yb, 0 as dc_sales_1yb';
     }
 
     $sql = sprintf(
-        "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`) LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`) where `Store Status` in ('Normal','ClosingDown') and `Store Hide Dashboard`='No'  ", $fields
+        "SELECT  %s FROM `Store Dimension` S 
+    LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`) 
+    LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`) where `Store Status` in ('Normal','ClosingDown') and `Store Hide Dashboard`='No'  ",
+        $fields
     );
 
 
-
-
     if ($result = $db->query($sql)) {
-
         foreach ($result as $row) {
-
-
-
             if ($type != 'invoice_categories') {
                 $sum_invoices       += $row['invoices'];
                 $sum_delivery_notes += $row['delivery_notes'];
@@ -108,13 +104,11 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 $sum_in_warehouse_amount        += $row['Store Orders Packed Amount'];
                 $sum_in_dispatch_area           += $row['Store Orders Dispatch Approved Number'];
                 $sum_in_dispatch_area_amount    += $row['Store Orders Dispatch Approved Amount'];
-
-
             }
 
 
             $sales_overview[] = array(
-                'class' => 'record store '.($type == 'invoice_categories' ? 'hide' : ''),
+                'class' => 'record store '.(($type == 'invoice_categories' or $type == 'mailshots_sent') ? 'hide' : ''),
                 'id'    => $row['Store Key'],
                 'label' => array(
                     'label'       => $row['Store Name'].($row['Store Status'] == 'ClosingDown' ? '<i class="padding_left_5 discontinuing fa fa-skull"></i>' : ''),
@@ -133,10 +127,12 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 'in_basket_amount'           => array(
                     'value' => ($currency == 'store'
                         ? money(
-                            $row['Store Orders In Basket Amount'], $row['currency']
+                            $row['Store Orders In Basket Amount'],
+                            $row['currency']
                         )
                         : money(
-                            $row['Store DC Orders In Basket Amount'], $account->get('Account Currency')
+                            $row['Store DC Orders In Basket Amount'],
+                            $account->get('Account Currency')
                         ))
                 ),
                 'in_process_paid'            => array(
@@ -149,10 +145,12 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 'in_process_amount_paid'     => array(
                     'value' => ($currency == 'store'
                         ? money(
-                            $row['Store Orders In Process Paid Amount'], $row['currency']
+                            $row['Store Orders In Process Paid Amount'],
+                            $row['currency']
                         )
                         : money(
-                            $row['Store DC Orders In Process Paid Amount'], $account->get('Account Currency')
+                            $row['Store DC Orders In Process Paid Amount'],
+                            $account->get('Account Currency')
                         ))
                 ),
                 'in_process_not_paid'        => array(
@@ -165,10 +163,12 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 'in_process_amount_not_paid' => array(
                     'value' => ($currency == 'store'
                         ? money(
-                            $row['Store Orders In Process Not Paid Amount'], $row['currency']
+                            $row['Store Orders In Process Not Paid Amount'],
+                            $row['currency']
                         )
                         : money(
-                            $row['Store DC Orders In Process Not Paid Amount'], $account->get('Account Currency')
+                            $row['Store DC Orders In Process Not Paid Amount'],
+                            $account->get('Account Currency')
                         ))
                 ),
                 'in_warehouse'               => array(
@@ -181,10 +181,12 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 'in_warehouse_amount'        => array(
                     'value' => ($currency == 'store'
                         ? money(
-                            $row['Store Orders In Warehouse Amount'], $row['currency']
+                            $row['Store Orders In Warehouse Amount'],
+                            $row['currency']
                         )
                         : money(
-                            $row['Store DC Orders In Warehouse Amount'], $account->get('Account Currency')
+                            $row['Store DC Orders In Warehouse Amount'],
+                            $account->get('Account Currency')
                         ))
                 ),
                 'packed'                     => array(
@@ -197,10 +199,12 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 'packed_amount'              => array(
                     'value' => ($currency == 'store'
                         ? money(
-                            $row['Store Orders Packed Amount'], $row['currency']
+                            $row['Store Orders Packed Amount'],
+                            $row['currency']
                         )
                         : money(
-                            $row['Store DC Orders Packed Amount'], $account->get('Account Currency')
+                            $row['Store DC Orders Packed Amount'],
+                            $account->get('Account Currency')
                         ))
                 ),
                 'in_dispatch_area'           => array(
@@ -213,10 +217,12 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 'in_dispatch_area_amount'    => array(
                     'value' => ($currency == 'store'
                         ? money(
-                            $row['Store Orders Dispatch Approved Amount'], $row['currency']
+                            $row['Store Orders Dispatch Approved Amount'],
+                            $row['currency']
                         )
                         : money(
-                            $row['Store DC Orders Dispatch Approved Amount'], $account->get('Account Currency')
+                            $row['Store DC Orders Dispatch Approved Amount'],
+                            $account->get('Account Currency')
                         ))
                 ),
 
@@ -226,15 +232,18 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 ),
                 'invoices_1yb'   => number($row['invoices_1yb']),
                 'invoices_delta' => delta(
-                        $row['invoices'], $row['invoices_1yb']
+                        $row['invoices'],
+                        $row['invoices_1yb']
                     ).' '.delta_icon($row['invoices'], $row['invoices_1yb']),
 
                 'delivery_notes'       => number($row['delivery_notes']),
                 'delivery_notes_1yb'   => number($row['delivery_notes_1yb']),
                 'delivery_notes_delta' => delta(
-                        $row['delivery_notes'], $row['delivery_notes_1yb']
+                        $row['delivery_notes'],
+                        $row['delivery_notes_1yb']
                     ).' '.delta_icon(
-                        $row['delivery_notes'], $row['delivery_notes_1yb']
+                        $row['delivery_notes'],
+                        $row['delivery_notes_1yb']
                     ),
 
                 'refunds' => array(
@@ -247,15 +256,19 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
                 'replacements'                => number($row['replacements']),
                 'replacements_percentage'     => percentage(
-                    $row['replacements'], $row['delivery_notes']
+                    $row['replacements'],
+                    $row['delivery_notes']
                 ),
                 'replacements_delta'          => delta(
-                        $row['replacements'], $row['replacements_1yb']
+                        $row['replacements'],
+                        $row['replacements_1yb']
                     ).' '.delta_icon(
-                        $row['replacements'], $row['replacements_1yb']
+                        $row['replacements'],
+                        $row['replacements_1yb']
                     ),
                 'replacements_percentage_1yb' => percentage(
-                    $row['replacements_1yb'], $row['delivery_notes_1yb']
+                    $row['replacements_1yb'],
+                    $row['delivery_notes_1yb']
                 ),
                 'replacements_1yb'            => number(
                     $row['delivery_notes_1yb']
@@ -263,14 +276,17 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
 
                 'sales'       => ($currency == 'store' ? money(
-                    $row['sales'], $row['currency']
+                    $row['sales'],
+                    $row['currency']
                 ) : money($row['dc_sales'], $account->get('Account Currency'))),
                 'sales_1yb'   => ($currency == 'store'
                     ? money(
-                        $row['sales_1yb'], $row['currency']
+                        $row['sales_1yb'],
+                        $row['currency']
                     )
                     : money(
-                        $row['dc_sales_1yb'], $account->get('Account Currency')
+                        $row['dc_sales_1yb'],
+                        $account->get('Account Currency')
                     )),
                 'sales_delta' => delta($row['sales'], $row['sales_1yb']).' '.delta_icon($row['sales'], $row['sales_1yb'])
 
@@ -279,14 +295,14 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
             //print_r($row);
 
         }
-
     }
 
 
     /*-------- Invoice Categories*/
 
 
-    $fields = "`Invoice Category $period_tag Acc Refunds` as refunds,`Invoice Category $period_tag Acc Invoices` as invoices,`Invoice Category $period_tag Acc Amount` as sales,`Invoice Category DC $period_tag Acc Amount` as dc_sales, 0 delivery_notes,
+    $fields = "`Invoice Category $period_tag Acc Refunds` as refunds,`Invoice Category $period_tag Acc Invoices` as invoices,`Invoice Category $period_tag Acc Amount` as sales,`Invoice Category DC $period_tag Acc Amount` as dc_sales,
+        0 delivery_notes,
         0 delivery_notes_1yb,
         0 replacements,
         0 replacements_1yb,
@@ -294,7 +310,6 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
 
     if ($period_tag == '3 Year' or $period_tag == 'Total') {
-
         $fields .= "
 	    0 as refunds_1yb,
 
@@ -308,7 +323,6 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 	    `Invoice Category $period_tag Acc 1YB Invoices` as invoices_1yb,
 	    `Invoice Category $period_tag Acc 1YB Amount` as sales_1yb,
         `Invoice Category DC $period_tag Acc 1YB Amount` as dc_sales_1yb";
-
     }
 
 
@@ -316,9 +330,7 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
         "select  C.`Category Code`,C.`Category Key`,`Category Label`, `Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC  left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)   left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`='Head'  and `Invoice Category Status` in ('Normal','ClosingDown')  and `Invoice Category Hide Dashboard`!='Yes' order by C.`Category Store Key` ,`Category Function Order`";
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $row) {
-
             if ($type == 'invoice_categories') {
                 $sum_invoices       += $row['invoices'];
                 $sum_delivery_notes += $row['delivery_notes'];
@@ -357,15 +369,18 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
                 'invoices_1yb'   => number($row['invoices_1yb']),
                 'invoices_delta' => delta(
-                        $row['invoices'], $row['invoices_1yb']
+                        $row['invoices'],
+                        $row['invoices_1yb']
                     ).' '.delta_icon($row['invoices'], $row['invoices_1yb']),
 
                 'delivery_notes'       => number($row['delivery_notes']),
                 'delivery_notes_1yb'   => number($row['delivery_notes_1yb']),
                 'delivery_notes_delta' => delta(
-                        $row['delivery_notes'], $row['delivery_notes_1yb']
+                        $row['delivery_notes'],
+                        $row['delivery_notes_1yb']
                     ).' '.delta_icon(
-                        $row['delivery_notes'], $row['delivery_notes_1yb']
+                        $row['delivery_notes'],
+                        $row['delivery_notes_1yb']
                     ),
 
                 'refunds' => array(
@@ -380,7 +395,8 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
                 'replacements_percentage'     => percentage($row['replacements'], $row['delivery_notes']),
                 'replacements_delta'          => delta($row['replacements'], $row['replacements_1yb']).' '.delta_icon($row['replacements'], $row['replacements_1yb'], true),
                 'replacements_percentage_1yb' => percentage(
-                    $row['replacements_1yb'], $row['delivery_notes_1yb']
+                    $row['replacements_1yb'],
+                    $row['delivery_notes_1yb']
                 ),
                 'replacements_1yb'            => number(
                     $row['delivery_notes_1yb']
@@ -388,23 +404,127 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
 
                 'sales'       => ($currency == 'store' ? money(
-                    $row['sales'], $row['currency']
+                    $row['sales'],
+                    $row['currency']
                 ) : money($row['dc_sales'], $account->get('Account Currency'))),
                 'sales_1yb'   => ($currency == 'store'
                     ? money(
-                        $row['sales_1yb'], $row['currency']
+                        $row['sales_1yb'],
+                        $row['currency']
                     )
                     : money(
-                        $row['dc_sales_1yb'], $account->get('Account Currency')
+                        $row['dc_sales_1yb'],
+                        $account->get('Account Currency')
                     )),
                 'sales_delta' => delta($row['sales'], $row['sales_1yb']).' '.delta_icon($row['sales'], $row['sales_1yb'])
 
 
             );
-
         }
-
     }
+
+    /****/
+
+    $fields = "
+    `Store Code`,S.`Store Key` record_key ,`Store Name`,
+    `Store $period_tag Acc Newsletter Mailshots` as newsletters,
+    `Store $period_tag Acc Newsletter Emails` as newsletters_emails ,
+     `Store $period_tag Acc Marketing Mailshots` as marketing,
+    `Store $period_tag Acc Marketing Emails` as marketing_emails ,
+     `Store $period_tag Acc AbandonedCart Mailshots` as abandonedCart,
+    `Store $period_tag Acc AbandonedCart Emails` as abandonedCart_emails,
+      `Store $period_tag Acc Mailshots` as mailshots,
+            `Store $period_tag Acc Emails` as emails,
+
+    `Store $period_tag Acc Emails` as emails ,`Store Key`,`Store Name`,`Store Status`
+    
+    ";
+
+
+    $sql = sprintf(
+        "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Emails Data` SD ON (S.`Store Key`=SD.`Store Emails Store Key`)  where `Store Status` in ('Normal','ClosingDown') and `Store Type` in ('B2B','Dropshipping') ",
+        $fields
+    );
+
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute([]);
+    while ($row = $stmt->fetch()) {
+        $sales_overview[] = [
+            'id'                 => 'email_'.$row['Store Key'],
+            'class'              => 'record mailshots_sent '.($type != 'mailshots_sent' ? 'hide' : ''),
+            'label'              => array(
+                'label'       => $row['Store Name'].($row['Store Status'] == 'ClosingDown' ? '<i class="padding_left_5 discontinuing fa fa-skull"></i>' : ''),
+                'title'       => $row['Store Name'],
+                'short_label' => $row['Store Code'],
+                'view'        => 'store/'.$row['Store Key']
+            ),
+            'newsletters'        => array(
+                'value' => number(
+                    $row['newsletters']
+                ),
+                'title' => '',
+                'view'  => '',
+
+            ),
+            'marketing'        => array(
+                'value' => number(
+                    $row['marketing']
+                ),
+                'title' => '',
+                'view'  => '',
+
+            ),
+            'abandoned_carts'        => array(
+                'value' => number(
+                    $row['abandonedCart']
+                ),
+                'title' => '',
+                'view'  => '',
+
+            ),
+            'total_mailshots'        => array(
+                'value' => number(
+                    $row['mailshots']
+                ),
+                'title' => '',
+                'view'  => '',
+
+            ),
+            'total_emails'        => array(
+                'value' => number(
+                    $row['emails']
+                ),
+                'title' => '',
+                'view'  => '',
+
+            ),
+            'delivery_notes'     => 0,
+            'delivery_notes_1yb' => 0,
+            'replacements'       => 0,
+            'replacements_1yb'   => 0,
+            'delivery_notes_delta'=>0,
+            'replacements_delta'=>0,
+            'replacements_percentage'=>0,
+            'replacements_percentage_1yb'=>0,
+            'invoices'       => array('value' => 0),
+            'invoices_1yb'   =>0,
+            'invoices_delta' => 0,
+
+
+            'refunds' => array('value' => 0),
+
+            'refunds_1yb'   => 0,
+            'refunds_delta' => 0,
+            'sales'       => 0,
+            'sales_1yb'  =>0,
+            'sales_delta' =>0
+
+
+
+        ];
+    }
+
 
     /*---------*/
 
@@ -430,7 +550,8 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
             'value' => ($currency == 'store'
                 ? ''
                 : money(
-                    $sum_in_process_amount_paid, $account->get('Account Currency')
+                    $sum_in_process_amount_paid,
+                    $account->get('Account Currency')
                 ))
         ),
         'in_process_not_paid'        => array(
@@ -442,7 +563,8 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
             'value' => ($currency == 'store'
                 ? ''
                 : money(
-                    $sum_in_process_amount_not_paid, $account->get('Account Currency')
+                    $sum_in_process_amount_not_paid,
+                    $account->get('Account Currency')
                 ))
         ),
 
@@ -451,7 +573,8 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
             'value' => ($currency == 'store'
                 ? ''
                 : money(
-                    $sum_in_warehouse_amount, $account->get('Account Currency')
+                    $sum_in_warehouse_amount,
+                    $account->get('Account Currency')
                 ))
         ),
         'packed'              => array('value' => number($sum_packed)),
@@ -469,7 +592,8 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
             'value' => ($currency == 'store'
                 ? ''
                 : money(
-                    $sum_in_dispatch_area_amount, $account->get('Account Currency')
+                    $sum_in_dispatch_area_amount,
+                    $account->get('Account Currency')
                 ))
         ),
 
@@ -480,7 +604,8 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
         'delivery_notes'       => number($sum_delivery_notes),
         'delivery_notes_1yb'   => number($sum_delivery_notes_1yb),
         'delivery_notes_delta' => delta(
-                $sum_delivery_notes, $sum_delivery_notes_1yb
+                $sum_delivery_notes,
+                $sum_delivery_notes_1yb
             ).' '.delta_icon($sum_delivery_notes, $sum_delivery_notes_1yb),
 
         'refunds' => array('value' => number($sum_refunds)),
@@ -490,30 +615,36 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
         'replacements'                => number($sum_replacements),
         'replacements_percentage'     => percentage(
-            $sum_replacements, $sum_delivery_notes
+            $sum_replacements,
+            $sum_delivery_notes
         ),
         'replacements_delta'          => delta(
-                $sum_replacements, $sum_replacements_1yb
+                $sum_replacements,
+                $sum_replacements_1yb
             ).' '.delta_icon($sum_replacements, $sum_replacements_1yb, true),
         'replacements_percentage_1yb' => percentage(
-            $sum_replacements_1yb, $sum_delivery_notes_1yb
+            $sum_replacements_1yb,
+            $sum_delivery_notes_1yb
         ),
         'replacements_1yb'            => number($sum_replacements_1yb),
 
         'sales'       => ($currency == 'store'
             ? ''
             : money(
-                $sum_dc_sales, $account->get('Account Currency')
+                $sum_dc_sales,
+                $account->get('Account Currency')
             )),
         'sales_1yb'   => ($currency == 'store'
             ? ''
             : money(
-                $sum_dc_sales_1yb, $account->get('Account Currency')
+                $sum_dc_sales_1yb,
+                $account->get('Account Currency')
             )),
         'sales_delta' => ($currency == 'store'
                 ? ''
                 : delta(
-                    $sum_dc_sales, $sum_dc_sales_1yb
+                    $sum_dc_sales,
+                    $sum_dc_sales_1yb
                 )).' '.delta_icon($sum_dc_sales, $sum_dc_sales_1yb)
 
     );
@@ -540,8 +671,7 @@ function get_dashboard_sales_overview($db, $account, $smarty, $type, $sub_type, 
 
     $smarty->assign('report_title', $report_title);
 
-        return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
-
+    return $smarty->fetch('dashboard/sales_overview.dbard.tpl');
 }
 
 

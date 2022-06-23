@@ -156,6 +156,7 @@ function change_sales_overview_type(type) {
 
     $('#sales_overview_orders_view_type_container').addClass('hide')
 
+    $('.mailshots_sent').addClass('hide')
 
     if (type == 'invoices') {
 
@@ -215,9 +216,24 @@ function change_sales_overview_type(type) {
         // $('#sales_overview_currency_container').removeClass('hide')
         $('.go_to_sales_report').addClass('invisible')
 
+    }else if (type == 'mailshots_sent') {
+
+        $('.mailshots_sent').removeClass('hide')
+        $('.category').addClass('hide')
+        $('.store').addClass('hide')
+        $('.orders').addClass('hide')
+        $('#sales_overview_currency_container').addClass('hide')
+
+        $('.refunds,.invoices,.sales,.orders ,.orders_amount').addClass('hide')
+
+        $('.replacements ,.delivery_notes').addClass('hide')
+
+
+        $('.go_to_sales_report').addClass('invisible')
+
     }
 
-    console.log('caca')
+
     get_order_overview_data(type, $('#order_overview_period').val(), $('#order_overview_currency').val(), $('#order_overview_orders_view_type').val())
 
 
@@ -286,7 +302,7 @@ function change_sales_overview_period(period) {
     console.log($('#order_overview_type').val() + ' ' + period)
 
 
-    var metadata = $('.go_to_sales_report').data('metadata')
+    let metadata = $('.go_to_sales_report').data('metadata')
     metadata.parameters.period = period;
 
     $('.go_to_sales_report').data('metadata', metadata)
@@ -302,9 +318,11 @@ function get_order_overview_data(type, period, currency, orders_view_type) {
 
 
         $('#order_overview_type').val(type)
+        console.log(r.data)
+        for (let record in r.data) {
 
-        for (var record in r.data) {
-
+            console.log('#' + record)
+            console.log(r.data[record].value)
             $('#' + record).html(r.data[record].value)
 
             if (r.data[record].request != undefined) {
@@ -330,4 +348,3 @@ function get_order_overview_data(type, period, currency, orders_view_type) {
     });
 
 }
-

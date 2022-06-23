@@ -97,9 +97,8 @@ switch ($tipo) {
 }
 
 
-function pending_orders($data) {
-
-
+function pending_orders($data)
+{
     $_SESSION['dashboard_state']['pending_orders'] = array(
         'parent'   => $data['parent'],
         'currency' => $data['currency'],
@@ -114,7 +113,6 @@ function pending_orders($data) {
         $object->load_acc_data();
 
         $title = $object->get('Code');
-
     } else {
         $object = new Account();
         $object->load_acc_data();
@@ -183,13 +181,11 @@ function pending_orders($data) {
     );
 
     echo json_encode($response);
-
 }
 
 
-function customers($data) {
-
-
+function customers($data)
+{
     $_SESSION['dashboard_state']['customers'] = array(
         'parent'   => $data['parent'],
         'currency' => $data['currency'],
@@ -198,14 +194,12 @@ function customers($data) {
 
 
     if ($data['parent'] != '') {
-
-        $object = get_object('Store',$data['parent']);
+        $object = get_object('Store', $data['parent']);
         $object->load_acc_data();
 
         $title = $object->get('Code');
-
     } else {
-        $object = get_object('Account',1);
+        $object = get_object('Account', 1);
         $object->load_acc_data();
         $title = $object->get('Code');
     }
@@ -235,11 +229,76 @@ function customers($data) {
     );
 
     echo json_encode($response);
-
 }
 
 
-function sales_overview($_data, $db, $user, $account) {
+function mailshots_sent($_data, $db, $user, $account)
+{
+    $data = [];
+
+    $_SESSION['dashboard_state']['sales_overview'] = array(
+        'type'             => $_data['type'],
+        'subtype'          => $_data['subtype'],
+        'period'           => $_data['period'],
+        'currency'         => $_data['currency'],
+        'orders_view_type' => $_data['orders_view_type'],
+
+    );
+    $period_tag                                    = get_interval_db_name($_data['period']);
+
+    $fields = "
+    `Store Code`,S.`Store Key` record_key ,`Store Name`,
+    `Store $period_tag Acc Newsletter Mailshots` as newsletters,
+    `Store $period_tag Acc Newsletter Emails` as newsletters_emails ,
+     `Store $period_tag Acc Marketing Mailshots` as marketing,
+    `Store $period_tag Acc Marketing Emails` as marketing_emails ,
+     `Store $period_tag Acc AbandonedCart Mailshots` as abandonedCart,
+    `Store $period_tag Acc AbandonedCart Emails` as abandonedCart_emails,
+      `Store $period_tag Acc Mailshots` as mailshots,
+    `Store $period_tag Acc Emails` as emails ,`Store Key`
+    ";
+
+    $sql = sprintf(
+        "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Emails Data` SD ON (S.`Store Key`=SD.`Store Emails Store Key`)  where `Store Status` in ('Normal','ClosingDown') and `Store Type` in ('B2B','Dropshipping') ",
+        $fields
+    );
+    // print "$sql\n";
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+            $data['mailshots_sent_newsletters_email_'.$row['Store Key']] =
+                [
+                    'value' => number($row['newsletters'])
+                ];
+
+            $data['mailshots_sent_marketing_email_'.$row['Store Key']]       = [
+                'value' => number($row['marketing'])
+            ];
+            $data['mailshots_sent_abandoned_carts_email_'.$row['Store Key']] = [
+                'value' => number($row['abandonedCart'])
+            ];
+
+            $data['mailshots_sent_total_mailshots_email_'.$row['Store Key']] =
+                ['value' => number($row['mailshots'])];
+            $data['mailshots_sent_total_emails_email_'.$row['Store Key']]    =
+                ['value' => number($row['emails'])];
+        }
+    }
+
+    $response = array(
+        'state'        => 200,
+        'period_label' => get_interval_label($_data['period']),
+        'data'         => $data,
+    );
+
+    echo json_encode($response);
+}
+
+
+function sales_overview($_data, $db, $user, $account)
+{
+    if ($_data['type'] == 'mailshots_sent') {
+        return mailshots_sent($_data, $db, $user, $account);
+    }
 
 
     $_SESSION['dashboard_state']['sales_overview'] = array(
@@ -258,7 +317,6 @@ function sales_overview($_data, $db, $user, $account) {
     $data = array();
 
     if ($_data['type'] == 'invoice_categories') {
-
         $fields = "
 		`Invoice Category $period_tag Acc Refunds` as refunds,
 		`Invoice Category $period_tag Acc Invoices` as invoices,
@@ -299,7 +357,6 @@ function sales_overview($_data, $db, $user, $account) {
 
 
         if ($period_tag == '3 Year' or $period_tag == 'All' or $period_tag == 'Total') {
-
             $fields .= "
 	    0 as refunds_1yb,
 
@@ -315,16 +372,13 @@ function sales_overview($_data, $db, $user, $account) {
 	    `Invoice Category $period_tag Acc 1YB Amount` as sales_1yb,
         `Invoice Category DC $period_tag Acc 1YB Amount` as dc_sales_1yb
                         ";
-
         }
         $sql =
             "select concat('cat',C.`Category Key`) record_key, `Category Code`, C.`Category Key`,`Category Store Key`,`Store Currency Code` currency, $fields from `Invoice Category Dimension` IC left join `Invoice Category Data` ICD on (IC.`Invoice Category Key`=ICD.`Invoice Category Key`)  left join `Invoice Category DC Data` ICSCD on (IC.`Invoice Category Key`=ICSCD.`Invoice Category Key`)  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) 
 where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal','ClosingDown')  and `Invoice Category Hide Dashboard`!='Yes'  order by C.`Category Store Key` ,`Category Function Order`";
-
-
     } else {
-      //  $request = 'invoices';
-        $fields  = "
+        //  $request = 'invoices';
+        $fields = "
 			`Store Orders In Basket Number`,`Store Orders In Basket Amount`,`Store DC Orders In Basket Amount`,
 	`Store Orders In Process Paid Number`,`Store Orders In Process Paid Amount`,`Store DC Orders In Process Paid Amount`,
 	`Store Orders In Process Not Paid Number`,`Store Orders In Process Not Paid Amount`,`Store DC Orders In Process Not Paid Amount`,
@@ -338,18 +392,15 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
 
         if (!($period_tag == '3 Year' or $period_tag == 'Total')) {
             $fields .= "`Store $period_tag Acc 1YB Refunds` as refunds_1yb,`Store $period_tag Acc 1YB Delivery Notes` delivery_notes_1yb,`Store $period_tag Acc 1YB Replacements` replacements_1yb, `Store $period_tag Acc 1YB Invoices` as invoices_1yb,`Store $period_tag Acc 1YB Invoiced Amount` as sales_1yb,`Store DC $period_tag Acc 1YB Invoiced Amount` as dc_sales_1yb";
-
         } else {
             $fields .= '0 as refunds_1yb, 0 as replacements_1yb,0 as delivery_notes_1yb, 0 as invoices_1yb, 0 as sales_1yb, 0 as dc_sales_1yb';
         }
 
         $sql = sprintf(
-            "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`)LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`)  where `Store Status` in ('Normal','ClosingDown') and `Store Hide Dashboard`='No' ", $fields
+            "SELECT  %s FROM `Store Dimension` S LEFT JOIN `Store Data` SD ON (S.`Store Key`=SD.`Store Key`)LEFT JOIN `Store DC Data` DC ON (S.`Store Key`=DC.`Store Key`)  where `Store Status` in ('Normal','ClosingDown') and `Store Hide Dashboard`='No' ",
+            $fields
         );
-
     }
-
-
 
 
     $sum_invoices = 0;
@@ -379,10 +430,7 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
     $sum_in_dispatch_area_amount    = 0;
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $row) {
-
-
             $sum_invoices       += $row['invoices'];
             $sum_refunds        += $row['refunds'];
             $sum_replacements   += $row['replacements'];
@@ -416,72 +464,83 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
             if ($_data['currency'] == 'store') {
                 $data['orders_overview_sales_'.$row['record_key']]       = array(
                     'value' => money(
-                        $row['sales'], $row['currency']
+                        $row['sales'],
+                        $row['currency']
                     )
                 );
                 $data['orders_overview_sales_delta_'.$row['record_key']] = array(
                     'value' => delta(
-                            $row['sales'], $row['sales_1yb']
+                            $row['sales'],
+                            $row['sales_1yb']
                         ).' '.delta_icon($row['sales'], $row['sales_1yb']),
                     'title' => money(
-                        $row['sales_1yb'], $row['currency']
+                        $row['sales_1yb'],
+                        $row['currency']
                     )
                 );
 
 
                 $data['orders_overview_in_basket_amount_'.$row['record_key']]           = array(
                     'value' => money(
-                        $row['Store Orders In Basket Amount'], $row['currency']
+                        $row['Store Orders In Basket Amount'],
+                        $row['currency']
                     )
                 );
                 $data['orders_overview_in_process_paid_amount_'.$row['record_key']]     = array(
                     'value' => money(
-                        $row['Store Orders In Process Paid Amount'], $row['currency']
+                        $row['Store Orders In Process Paid Amount'],
+                        $row['currency']
                     )
                 );
                 $data['orders_overview_in_process_not_paid_amount_'.$row['record_key']] = array(
                     'value' => money(
-                        $row['Store Orders In Process Not Paid Amount'], $row['currency']
+                        $row['Store Orders In Process Not Paid Amount'],
+                        $row['currency']
                     )
                 );
                 $data['orders_overview_in_warehouse_amount_'.$row['record_key']]        = array(
                     'value' => money(
-                        $row['Store Orders In Warehouse Amount'], $row['currency']
+                        $row['Store Orders In Warehouse Amount'],
+                        $row['currency']
                     )
                 );
                 $data['orders_overview_packed_amount_'.$row['record_key']]              = array(
                     'value' => money(
-                        $row['Store Orders Packed Amount'], $row['currency']
+                        $row['Store Orders Packed Amount'],
+                        $row['currency']
                     )
                 );
                 $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]    = array(
                     'value' => money(
-                        $row['Store Orders Dispatch Approved Amount'], $row['currency']
+                        $row['Store Orders Dispatch Approved Amount'],
+                        $row['currency']
                     )
                 );
-
-
             } else {
                 $data['orders_overview_sales_'.$row['record_key']]       = array(
                     'value' => money(
-                        $row['dc_sales'], $account->get('Account Currency')
+                        $row['dc_sales'],
+                        $account->get('Account Currency')
                     )
                 );
                 $data['orders_overview_sales_delta_'.$row['record_key']] = array(
                     'value' => delta(
-                            $row['dc_sales'], $row['dc_sales_1yb']
+                            $row['dc_sales'],
+                            $row['dc_sales_1yb']
                         ).' '.delta_icon($row['dc_sales'], $row['dc_sales_1yb']),
                     'title' => money(
-                        $row['dc_sales_1yb'], $account->get(
-                        'Account Currency'
-                    )
+                        $row['dc_sales_1yb'],
+                        $account->get(
+                            'Account Currency'
+                        )
                     )
                 );
 
 
                 $data['orders_overview_in_basket_amount_'.$row['record_key']]           = array(
                     'value' => money(
-                        $row['Store DC Orders In Basket Amount'], $account->get('Account Currency')
+                        $row['Store DC Orders In Basket Amount'],
+                        $account->get('Account Currency')
                     )
                 );
                 $data['orders_overview_in_process_paid_amount_'.$row['record_key']]     = array(
@@ -492,20 +551,22 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
                 );
                 $data['orders_overview_in_warehouse_amount_'.$row['record_key']]        = array(
                     'value' => money(
-                        $row['Store DC Orders In Warehouse Amount'], $account->get('Account Currency')
+                        $row['Store DC Orders In Warehouse Amount'],
+                        $account->get('Account Currency')
                     )
                 );
                 $data['orders_overview_packed_amount_'.$row['record_key']]              = array(
                     'value' => money(
-                        $row['Store DC Orders Packed Amount'], $account->get('Account Currency')
+                        $row['Store DC Orders Packed Amount'],
+                        $account->get('Account Currency')
                     )
                 );
                 $data['orders_overview_in_dispatch_area_amount_'.$row['record_key']]    = array(
                     'value' => money(
-                        $row['Store DC Orders Dispatch Approved Amount'], $account->get('Account Currency')
+                        $row['Store DC Orders Dispatch Approved Amount'],
+                        $account->get('Account Currency')
                     )
                 );
-
             }
 
             if ($_data['type'] == 'invoice_categories') {
@@ -526,15 +587,11 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
 
 
                 if ($row['Category Code'] == 'VIPs') {
-
-
                     $data['representatives_link_'.$row['record_key']] = array(
 
                         'value' => '<i onclick="change_view(\'report/sales_representatives\', { parameters:{ period:\''.$_data['period'].'\'}} )"  class="far button fa-chart-line fa-fw"></i>',
                     );
                 }
-
-
             } else {
                 $data['orders_overview_invoices_'.$row['record_key']] = array(
                     'special_type' => 'invoice',
@@ -550,8 +607,6 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
                     ),
                     'request'      => "invoices/".$row['record_key']
                 );
-
-
             }
 
 
@@ -569,9 +624,11 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
             );
             $data['orders_overview_delivery_notes_delta_'.$row['record_key']] = array(
                 'value' => delta(
-                        $row['delivery_notes'], $row['delivery_notes_1yb']
+                        $row['delivery_notes'],
+                        $row['delivery_notes_1yb']
                     ).' '.delta_icon(
-                        $row['delivery_notes'], $row['delivery_notes_1yb']
+                        $row['delivery_notes'],
+                        $row['delivery_notes_1yb']
                     ),
                 'title' => number(
                     $row['delivery_notes_1yb']
@@ -597,12 +654,14 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
             );
             $data['orders_overview_replacements_percentage_'.$row['record_key']]     = array(
                 'value' => percentage(
-                    $row['replacements'], $row['delivery_notes']
+                    $row['replacements'],
+                    $row['delivery_notes']
                 )
             );
             $data['orders_overview_replacements_percentage_1yb_'.$row['record_key']] = array(
                 'value' => percentage(
-                    $row['replacements_1yb'], $row['delivery_notes_1yb']
+                    $row['replacements_1yb'],
+                    $row['delivery_notes_1yb']
                 ),
                 'title' => number(
                         $row['replacements_1yb']
@@ -610,7 +669,6 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
                         $row['delivery_notes_1yb']
                     )
             );
-
             /*
             'in_basket'=>array('value'=>number($row['Store Orders In Basket Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
                 'in_basket_amount'=>array('value'=>($currency=='store'?money($row['Store Orders In Basket Amount'], $row['currency']):money($row['Store DC Orders In Basket Amount'], $account->get('Account Currency'))))  ,
@@ -625,10 +683,7 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
                 'in_dispatch_area'=>array('value'=>number($row['Store Orders Dispatch Approved Number']), 'title'=>'', 'view'=>'store/'.$row['Store Key']),
                 'in_dispatch_area_amount'=>array('value'=>($currency=='store'?money($row['Store Orders Dispatch Approved Amount'], $row['currency']):money($row['Store DC Orders Dispatch Approved Amount'], $account->get('Account Currency'))))  ,
 */
-
-
         }
-
     }
 
 
@@ -636,17 +691,20 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
         ? array('value' => '')
         : array(
             'value' => money(
-                $sum_dc_sales, $account->get('Account Currency')
+                $sum_dc_sales,
+                $account->get('Account Currency')
             )
         ));
     $data['orders_overview_sales_delta_totals'] = ($currency == 'store'
         ? array('value' => '')
         : array(
             'value' => delta(
-                    $sum_dc_sales, $sum_dc_sales_1yb
+                    $sum_dc_sales,
+                    $sum_dc_sales_1yb
                 ).' '.delta_icon($sum_dc_sales, $sum_dc_sales_1yb),
             'title' => money(
-                $sum_dc_sales_1yb, $account->get('Account Currency')
+                $sum_dc_sales_1yb,
+                $account->get('Account Currency')
             )
         ));
 
@@ -658,7 +716,8 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
     );
     $data['orders_overview_invoices_delta_totals'] = array(
         'value' => delta(
-                $sum_invoices, $sum_invoices_1yb
+                $sum_invoices,
+                $sum_invoices_1yb
             ).' '.delta_icon($sum_invoices, $sum_invoices_1yb),
         'title' => number(
             $sum_invoices_1yb
@@ -684,7 +743,8 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
     );
     $data['orders_overview_delivery_notes_delta_totals'] = array(
         'value' => delta(
-                $sum_delivery_notes, $sum_delivery_notes_1yb
+                $sum_delivery_notes,
+                $sum_delivery_notes_1yb
             ).' '.delta_icon($sum_delivery_notes, $sum_delivery_notes_1yb),
         'title' => number(
             $sum_delivery_notes_1yb
@@ -704,12 +764,14 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
     );
     $data['orders_overview_replacements_percentage_totals']     = array(
         'value' => percentage(
-            $sum_replacements, $sum_delivery_notes
+            $sum_replacements,
+            $sum_delivery_notes
         )
     );
     $data['orders_overview_replacements_percentage_1yb_totals'] = array(
         'value' => percentage(
-            $sum_replacements_1yb, $sum_delivery_notes_1yb
+            $sum_replacements_1yb,
+            $sum_delivery_notes_1yb
         ),
         'title' => number(
                 $sum_replacements_1yb
@@ -723,42 +785,48 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
         ? array('value' => '')
         : array(
             'value' => money(
-                $sum_in_basket_amount, $account->get('Account Currency')
+                $sum_in_basket_amount,
+                $account->get('Account Currency')
             )
         ));
     $data['orders_overview_in_process_paid_amount_totals']     = ($currency == 'store'
         ? array('value' => '')
         : array(
             'value' => money(
-                $sum_in_process_amount_paid, $account->get('Account Currency')
+                $sum_in_process_amount_paid,
+                $account->get('Account Currency')
             )
         ));
     $data['orders_overview_in_process_not_paid_amount_totals'] = ($currency == 'store'
         ? array('value' => '')
         : array(
             'value' => money(
-                $sum_in_process_amount_not_paid, $account->get('Account Currency')
+                $sum_in_process_amount_not_paid,
+                $account->get('Account Currency')
             )
         ));
     $data['orders_overview_in_warehouse_amount_totals']        = ($currency == 'store'
         ? array('value' => '')
         : array(
             'value' => money(
-                $sum_in_warehouse_amount, $account->get('Account Currency')
+                $sum_in_warehouse_amount,
+                $account->get('Account Currency')
             )
         ));
     $data['orders_overview_packed_amount_totals']              = ($currency == 'store'
         ? array('value' => '')
         : array(
             'value' => money(
-                $sum_packed_amount, $account->get('Account Currency')
+                $sum_packed_amount,
+                $account->get('Account Currency')
             )
         ));
     $data['orders_overview_in_dispatch_area_amount_totals']    = ($currency == 'store'
         ? array('value' => '')
         : array(
             'value' => money(
-                $sum_in_dispatch_area_amount, $account->get('Account Currency')
+                $sum_in_dispatch_area_amount,
+                $account->get('Account Currency')
             )
         ));
 
@@ -773,8 +841,8 @@ where  `Category Branch Type`='Head' and `Invoice Category Status` in ('Normal',
 }
 
 
-function kpi($data) {
-
+function kpi($data)
+{
     require_once 'utils/object_functions.php';
 
 
@@ -792,14 +860,13 @@ function kpi($data) {
     );
 
     echo json_encode($response);
-
 }
 
 
-function dispatching_times($data, $account) {
-
+function dispatching_times($data, $account)
+{
     $_SESSION['dashboard_state']['dispatching_times'] = array(
-        'parent'   => $data['parent'],
+        'parent' => $data['parent'],
 
     );
 
@@ -813,7 +880,6 @@ function dispatching_times($data, $account) {
     if ($data['parent'] != '') {
         $object = get_object('Store', $data['parent']);
         $object->load_acc_data();
-
     } else {
         $object = $account;
         $object->load_acc_data();
@@ -828,17 +894,17 @@ function dispatching_times($data, $account) {
     $_data['dispatch_time_samples']['value']       = $object->get('dispatch_time_samples', '1 Month');
 
 
-    $_data['percentage_dispatch_time_day_0']['value']       = $object->get('percentage_dispatch_time_histogram',[0,'1 Month']);
-    $_data['dispatch_time_day_0']['value']       = $object->get('dispatch_time_histogram',[0,'1 Month']);
+    $_data['percentage_dispatch_time_day_0']['value'] = $object->get('percentage_dispatch_time_histogram', [0, '1 Month']);
+    $_data['dispatch_time_day_0']['value']            = $object->get('dispatch_time_histogram', [0, '1 Month']);
 
-    $_data['percentage_dispatch_time_day_1']['value']       = $object->get('percentage_dispatch_time_histogram',[1,'1 Month']);
-    $_data['dispatch_time_day_1']['value']       = $object->get('dispatch_time_histogram',[1,'1 Month']);
+    $_data['percentage_dispatch_time_day_1']['value'] = $object->get('percentage_dispatch_time_histogram', [1, '1 Month']);
+    $_data['dispatch_time_day_1']['value']            = $object->get('dispatch_time_histogram', [1, '1 Month']);
 
-    $_data['percentage_dispatch_time_day_2']['value']       = $object->get('percentage_dispatch_time_histogram',[2,'1 Month']);
-    $_data['dispatch_time_day_2']['value']       = $object->get('dispatch_time_histogram',[2,'1 Month']);
+    $_data['percentage_dispatch_time_day_2']['value'] = $object->get('percentage_dispatch_time_histogram', [2, '1 Month']);
+    $_data['dispatch_time_day_2']['value']            = $object->get('dispatch_time_histogram', [2, '1 Month']);
 
-    $_data['percentage_dispatch_time_day_3']['value']       = $object->get('percentage_dispatch_time_histogram',[3,'1 Month']);
-    $_data['dispatch_time_day_3']['value']       = $object->get('dispatch_time_histogram',[3,'1 Month']);
+    $_data['percentage_dispatch_time_day_3']['value'] = $object->get('percentage_dispatch_time_histogram', [3, '1 Month']);
+    $_data['dispatch_time_day_3']['value']            = $object->get('dispatch_time_histogram', [3, '1 Month']);
 
 
     $response = array(
@@ -847,7 +913,6 @@ function dispatching_times($data, $account) {
     );
 
     echo json_encode($response);
-
 }
 
 

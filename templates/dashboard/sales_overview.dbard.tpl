@@ -3,7 +3,7 @@
     <input type="hidden" id="order_overview_period" value="{$period}">
     <input type="hidden" id="order_overview_currency" value="{$currency}">
     <input type="hidden" id="order_overview_orders_view_type" value="{$orders_view_type}">
-    <table class="dashboard_table" style="width:100%">
+    <table class="dashboard_table"  style="width:100%">
         <tr class="main_title small_row">
             <td colspan="7">
                 <div class="widget_types">
@@ -24,6 +24,10 @@
                          class=" widget  left {if $type=='invoice_categories'}selected{/if}">
                         <i class="fa fa-sitemap"></i><span class="label"> {t}Invoices' categories{/t} </span>
                     </div>
+                    <div id="mailshots_sent" onclick="change_sales_overview_type('mailshots_sent')"
+                         class=" widget  left {if $type=='mailshots_sent'}selected{/if}">
+                        <i class="far fa-envelope"></i><span class="label"> {t}Mailshots sent{/t} </span>
+                    </div>
 
                 </div>
 
@@ -37,7 +41,7 @@
                 </div>
 
                 <div id="sales_overview_currency_container"
-                     class="button  {if $type=='delivery_notes' or ($type=='orzers' and $orders_view_type=='numbers')  }hide{/if} "
+                     class="button  {if $type=='delivery_notes' or $type=='mailshots_sent' or ($type=='orders' and $orders_view_type=='numbers')  }hide{/if} "
                      onclick="toggle_sales_overview_currency()" style="float:right;margin-right:10px">
                     <i id="sales_overview_currency"
                        class="fa {if $currency=='store'}fa-toggle-on{else}fa-toggle-off{/if}"></i> {t}Store currency{/t}
@@ -154,6 +158,13 @@
             <td class="orders aright padding_right_10 {if $type!='orders'  or $orders_view_type=='amounts'}hide{/if}">{t}In dispatch area{/t}</td>
             <td class="orders_amount aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{t}In dispatch area{/t}</td>
 
+            <td class="mailshots_sent newsletter aright {if $type!='mailshots_sent'}hide{/if}">{t}Newsletters{/t}</td>
+            <td class="mailshots_sent marketing aright {if $type!='mailshots_sent'}hide{/if}">{t}Marketing emails{/t}</td>
+            <td class="mailshots_sent abandoned_cart aright {if $type!='mailshots_sent'}hide{/if}">{t}Abandoned carts{/t}</td>
+            <td class="mailshots_sent total_mailshots aright {if $type!='mailshots_sent'}hide{/if}">{t}Total mailshots{/t}</td>
+            <td class="mailshots_sent total_emails aright {if $type!='mailshots_sent'}hide{/if}">{t}Total emails{/t}</td>
+
+
         </tr>
 
 
@@ -171,16 +182,16 @@
                     class="link refunds width_1500 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}">{$record.refunds.value}</td>
                 <td id="orders_overview_refunds_delta_{$record.id}"
                     class="refunds width_100 aright {if !($type=='invoices' or  $type=='invoice_categories')}hide{/if}"
-                    title="{$record.refunds_1yb}">{$record.refunds_delta}</td>
+                    title="{$record.refunds_1yb}">{if isset($record.refunds_delta)}{$record.refunds_delta}{/if}</td>
                 <td id="orders_overview_delivery_notes_{$record.id}"
                     onclick="change_view('delivery_notes/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:1,Sample:1,Donation:1,Replacements:'',Shortages:''}} } )"
-                    class="link delivery_notes width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.delivery_notes}</td>
+                    class="link delivery_notes width_150 aright {if $type!='delivery_notes'}hide{/if}">{if isset($record.delivery_notes)}{$record.delivery_notes}{/if}</td>
                 <td id="orders_overview_delivery_notes_delta_{$record.id}"
                     class="delivery_notes width_100 aright {if $type!='delivery_notes'}hide{/if}"
                     title="{$record.delivery_notes_1yb}">{$record.delivery_notes_delta}</td>
                 <td id="orders_overview_replacements_{$record.id}"
                     onclick="change_view('delivery_notes/{$record.id}',{ parameters: { period:'{$period}',elements_type:'type'},element:{ type:{ Order:'',Sample:'',Donation:'',Replacements:1,Shortages:1}} } )"
-                    class="link  replacements width_150 aright {if $type!='delivery_notes'}hide{/if}">{$record.replacements}</td>
+                    class="link  replacements width_150 aright {if $type!='delivery_notes'}hide{/if}">{if isset($record.replacements)}{$record.replacements}{/if}</td>
                 <td id="orders_overview_replacements_percentage_{$record.id}"
                     class="replacements width_100 aright {if $type!='delivery_notes'}hide{/if}">{$record.replacements_percentage}</td>
                 <td id="orders_overview_replacements_percentage_1yb_{$record.id}"
@@ -202,6 +213,7 @@
                 <td id="orders_overview_in_basket_{$record.id}"
                     onclick="change_view('orders/{$record.id}/dashboard/website' )"
                     class="link orders width_150 aright {if $type!='orders' or $orders_view_type=='amounts'}hide{/if}">{if isset($record.in_basket.value)}{$record.in_basket.value}{/if}</td>
+
                 <td id="orders_overview_in_basket_amount_{$record.id}"
                     class="orders_amount width_150 aright {if $type!='orders'  or $orders_view_type=='numbers'}hide{/if}">{if isset($record.in_basket_amount.value)}{$record.in_basket_amount.value}{/if}</td>
 
@@ -235,7 +247,16 @@
                 <td id="orders_overview_in_dispatch_area_amount_{$record.id}"
                     class="orders_amount width_150 aright {if $type!='orders' or $orders_view_type=='numbers'}hide{/if}">{if isset($record.in_dispatch_area_amount.value)}{$record.in_dispatch_area_amount.value}{/if}</td>
 
-
+                <td id="mailshots_sent_newsletters_{$record.id}"
+                    class="mailshots_sent newsletters width_150 aright {if $type!='mailshots_sent' }hide{/if}">{if isset($record.newsletters.value)}{$record.newsletters.value}{/if}</td>
+                <td id="mailshots_sent_marketing_{$record.id}"
+                    class="mailshots_sent marketing width_150 aright {if $type!='mailshots_sent' }hide{/if}">{if isset($record.marketing.value)}{$record.marketing.value}{/if}</td>
+                <td id="mailshots_sent_abandoned_carts_{$record.id}"
+                    class="mailshots_sent abandoned_carts width_150 aright {if $type!='mailshots_sent' }hide{/if}">{if isset($record.abandoned_carts.value)}{$record.abandoned_carts.value}{/if}</td>
+                <td id="mailshots_sent_total_mailshots_{$record.id}"
+                    class="mailshots_sent total_mailshots width_150 aright {if $type!='mailshots_sent' }hide{/if}">{if isset($record.total_mailshots.value)}{$record.total_mailshots.value}{/if}</td>
+                <td id="mailshots_sent_total_emails_{$record.id}"
+                    class="mailshots_sent total_emails width_150 aright {if $type!='mailshots_sent' }hide{/if}">{if isset($record.total_emails.value)}{$record.total_emails.value}{/if}</td>
             </tr>
             </tbody>
         {/foreach}
