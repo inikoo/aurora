@@ -398,8 +398,8 @@ trait Send_Email
             $this->email_tracking = $email_tracking;
         } catch (AwsException $e) {
 
-            \Sentry\captureException($e);
-            Sentry\captureMessage("Request -> ".json_encode($request));
+         //   \Sentry\captureException($e);
+         //   Sentry\captureMessage("Request -> ".json_encode($request));
 
             //print_r($request);
 
