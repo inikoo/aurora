@@ -584,6 +584,24 @@ class Product extends Asset
                 }
 
                 return $stock_status;
+            case 'Pricing Policy Key':
+                if(!$this->data['Product Pricing Policy Key']){
+                    return _('No policy');
+                }
+
+                $label='';
+                $sql="select `Product Pricing Policy Label` from `Product Pricing Policy Dimension` where `Product Pricing Policy Key`=? ";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $this->data['Product Pricing Policy Key']
+                    ]
+                );
+                if ($row = $stmt->fetch()) {
+                  $label=$row['Product Pricing Policy Label'];
+                }
+
+                return $label;
 
             default:
 
@@ -1301,6 +1319,9 @@ class Product extends Asset
                 break;
             case 'Product Variant Short Name':
                 $label = _('short menu name');
+                break;
+            case 'Product Pricing Policy Key':
+                $label = _('pricing policy');
                 break;
             default:
                 $label = $field;

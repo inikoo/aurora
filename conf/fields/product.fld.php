@@ -287,6 +287,25 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
         $linked_fields = array_flip($parts_data[0]['Linked Fields']);
     }
 */
+
+
+    $options_pricing_policy=[
+        0=>_('No policy')
+    ];
+
+    $sql="select `Product Pricing Policy Key`,`Product Pricing Policy Label` from `Product Pricing Policy Dimension`";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        [
+
+        ]
+    );
+    while ($row = $stmt->fetch()) {
+        $options_pricing_policy[$row['Product Pricing Policy Key']]=$row['Product Pricing Policy Label'];
+    }
+
+
+
     if (count($product->get_parts()) == 1) {
         $fields_linked = true;
     } else {
@@ -575,6 +594,18 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
                     'type'            => 'value'
                 ),
 
+                array(
+                    'render' => !$new  and count($options_pricing_policy)>1 ,
+                    'id'     => 'Product_Pricing_Policy_Key',
+                    'edit'   => ($edit ? 'option' : ''),
+
+                    'options'         => $options_pricing_policy,
+                    'value'           => htmlspecialchars($product->get('Product Pricing Policy Key')),
+                    'formatted_value' => $product->get('Pricing Policy Key'),
+                    'label'           => ucfirst($product->get_field_label('Product Pricing Policy Key')),
+                    'required'        => !$new,
+                    'type'            => 'skip'
+                ),
 
                 array(
                     'id'    => 'Product_Price',
