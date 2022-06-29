@@ -917,7 +917,24 @@ class Store extends DB_Table
                 }
 
                 return 0;
+            case 'Default Product Pricing Policy Key':
+                if (!$this->data['Store Default Product Pricing Policy Key']) {
+                    return _('No policy');
+                }
 
+                $label = '';
+                $sql   = "select `Product Pricing Policy Label` from `Product Pricing Policy Dimension` where `Product Pricing Policy Key`=? ";
+                $stmt  = $this->db->prepare($sql);
+                $stmt->execute(
+                    [
+                        $this->data['Store Default Product Pricing Policy Key']
+                    ]
+                );
+                if ($row = $stmt->fetch()) {
+                    $label = $row['Product Pricing Policy Label'];
+                }
+
+                return $label;
 
             case 'percentage_dispatch_time_histogram':
                 return percentage(
@@ -2869,7 +2886,6 @@ class Store extends DB_Table
                 );
             }
             $this->fast_update($data_to_update, 'Store Emails Data');
-            
         }
     }
 
@@ -3116,7 +3132,9 @@ class Store extends DB_Table
             case 'Store Next Refund Public ID Method':
                 $label = _("Refund number");
                 break;
-
+            case 'Store Default Product Pricing Policy Key':
+                $label = _('pricing policy');
+                break;
             default:
                 $label = $field;
         }
@@ -3469,8 +3487,9 @@ class Store extends DB_Table
         $data['Product Store Key'] = $this->id;
 
 
-        $data['Product Currency'] = $this->data['Store Currency Code'];
-        $data['Product Locale']   = $this->data['Store Locale'];
+        $data['Product Currency']           = $this->data['Store Currency Code'];
+        $data['Product Locale']             = $this->data['Store Locale'];
+        $data['Product Pricing Policy Key'] = $this->data['Store Default Product Pricing Policy Key'];
 
 
         if (array_key_exists('Family Category Code', $data)) {
@@ -4697,6 +4716,35 @@ class Store extends DB_Table
         ];
     }
 
+    function set_policy($data)
+    {
+        $policy = $data['policy'];
+        if ($policy == 'pricing') {
+            $sql = "update `Product Dimension` set `Product Pricing Policy Key`=? where `Product Store Key`=?  and `Product Status`='Discontinued'   ";
+            $this->db->prepare($sql)->execute(
+                [
+                    $this->id,
+                    $this->data['Store Default Product Pricing Policy Key'] ?: null
+                ]
+            );
+
+            include_once 'utils/new_fork.php';
+
+            new_housekeeping_fork(
+                'au_housekeeping',
+                array(
+                    'type'             => 'set_store_pricing_policy',
+                    'store_key'     => $this->id,
+                    'editor'           => $this->editor
+
+                ),
+                DNS_ACCOUNT_CODE
+            );
+
+
+
+        }
+    }
 
 }
 

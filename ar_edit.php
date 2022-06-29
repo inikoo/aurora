@@ -904,6 +904,9 @@ function object_operation($account, $db, $user, $editor, $data, $smarty)
     }
 
     switch ($data['operation']) {
+        case 'policy':
+            $request = $object->set_policy($data['metadata']);
+            break;
         case 'reset':
             $request = $object->reset_object();
             break;

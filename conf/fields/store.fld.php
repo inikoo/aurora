@@ -24,6 +24,20 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
     $countries = get_countries($db);
 
 
+    $options_pricing_policy=[
+        0=>_('No policy')
+    ];
+
+    $sql="select `Product Pricing Policy Key`,`Product Pricing Policy Label` from `Product Pricing Policy Dimension`";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        [
+
+        ]
+    );
+    while ($row = $stmt->fetch()) {
+        $options_pricing_policy[$row['Product Pricing Policy Key']]=$row['Product Pricing Policy Label'];
+    }
 
 
     $options_yes_no = array(
@@ -772,6 +786,41 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
                     'type' => ''
 
 
+                ),
+
+            )
+        ),
+
+        array(
+            'label'      => _('Policies'),
+            'show_title' => true,
+            'class'      => '',
+
+            'fields' => array(
+
+
+                array(
+                    'render' => count($options_pricing_policy)>1 ,
+                    'id'     => 'Store_Default_Product_Pricing_Policy_Key',
+                    'edit'   => ($edit ? 'option' : ''),
+
+                    'options'         => $options_pricing_policy,
+                    'value'           => htmlspecialchars($object->get('Store Default Product Pricing Policy Key')),
+                    'formatted_value' => $object->get('Default Product Pricing Policy Key'),
+                    'label'           => ucfirst($object->get_field_label('Store Default Product Pricing Policy Key')),
+                    'required'        => true,
+                    'type'            => ''
+                ),
+                array(
+                    'id'              => 'Apply_Pricing_Policy',
+                    'edit'            => 'no_icon',
+                    'value'           => $object->get('tore Default Product Pricing Policy Key'),
+                    'formatted_value' => _('Apply pricing policy to all existing products').' <span 
+ data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id.'"}\'  
+ onclick="set_object_policy(\'pricing\',this)"> <i  class="save valid changed fas fa-arrow-circle-right"></i></span>',
+                    'label'           => '',
+                    'required'        => false,
+                    'type'            => ''
                 ),
 
             )

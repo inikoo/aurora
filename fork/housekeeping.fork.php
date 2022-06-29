@@ -3088,6 +3088,25 @@ function fork_housekeeping($job)
 
 
             break;
+        case 'set_store_pricing_policy':
+            $store=get_object('Store',$data['store_key']);
+
+            $sql = "select `Product ID` from `Product Dimension`  where `Product Store Key`=?  and `Product Status`!='Discontinued'   ";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                [
+                    $store->id
+                ]
+            );
+            while ($row = $stmt->fetch()) {
+                $product=get_object('Product',$row['Product ID']);
+                print $product->get('Code')."\n";
+                $product->editor=$data['editor'];
+                $product->update(['Product Pricing Policy Key'=> $store->data['Store Default Product Pricing Policy Key']]);
+            }
+
+
+            break;
         default:
             break;
     }

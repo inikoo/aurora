@@ -2329,16 +2329,23 @@ function unlink_customer_object(element) {
     save_object_operation('unlink_customer', element)
 }
 
+function set_object_policy(type,element) {
+    save_object_operation('policy', element,{"policy":type})
+}
+
 
 function save_object_operation(type, element, metadata) {
 
+
+    console.log(type)
+    console.log(metadata)
 
     if ($(element).hasClass('disabled')) {
         return
     }
 
 
-    if (type == 'delete') var icon = 'fa-trash-alt'; else if (type == 'archive') var icon = 'fa-archive'; else if (type == 'unarchive') var icon = 'fa-folder-open';
+    if (type == 'delete') var icon = 'fa-trash-alt'; else if (type == 'policy') var icon = 'fa-arrow-circle-right'; else if (type == 'archive') var icon = 'fa-archive'; else if (type == 'unarchive') var icon = 'fa-folder-open';
 
 
     $(element).find('i').removeClass(icon).addClass('fa-spinner fa-spin')
