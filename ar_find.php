@@ -4005,12 +4005,25 @@ function find_allowance_targets($db, $data) {
 
     $where = '';
 
+
     if (isset($data['metadata']['parent'])) {
         switch ($data['metadata']['parent']) {
             case 'campaign':
 
 
                 $where = sprintf(" and `Category Store Key`=%d and  `Category Scope`='Product'  and `Category Branch Type`='Head'", $data['metadata']['store_key']);
+
+
+                $sql = sprintf(
+                    "select `Category Key`,`Category Code`,`Category Label`,`Deal Component Key` from `Category Dimension` left join `Deal Component Dimension` on (`Deal Component Allowance Target Key`=`Category Key` and `Deal Component Allowance Target`='Category' and
+                  `Deal Component Campaign Key`=%d) where   `Category Code` like '%s%%' %s   and `Deal Component Key` is null order by `Category Code` limit $max_results ",
+
+
+                    $data['metadata']['parent_key'],
+                    $q,
+                    $where
+                );
+
                 break;
             default:
 
@@ -4021,6 +4034,16 @@ function find_allowance_targets($db, $data) {
         switch ($data['parent']) {
             case 'store':
                 $where = sprintf(" and `Category Store Key`=%d   and `Category Scope`='Product'  and `Category Branch Type`='Head' ", $data['parent_key']);
+
+                $sql = sprintf(
+                    "select `Category Key`,`Category Code`,`Category Label`,`Deal Component Key` from `Category Dimension` left join `Deal Component Dimension` on (`Deal Component Allowance Target Key`=`Category Key` and `Deal Component Allowance Target`='Category' 
+                  ) where   `Category Code` like '%s%%' %s   and `Deal Component Key` is null order by `Category Code` limit $max_results ",
+
+
+                    $q,
+                    $where
+                );
+
                 break;
             default:
 
@@ -4035,14 +4058,8 @@ function find_allowance_targets($db, $data) {
     $candidates_data = array();
 
 
-    $sql = sprintf(
-        "select `Category Key`,`Category Code`,`Category Label`,`Deal Component Key` from `Category Dimension` left join `Deal Component Dimension` on (`Deal Component Allowance Target Key`=`Category Key` and `Deal Component Allowance Target`='Category' and `Deal Component Campaign Key`=%d) where   `Category Code` like '%s%%' %s   and `Deal Component Key` is null order by `Category Code` limit $max_results ",
 
 
-        $data['metadata']['store_key'], $q, $where
-    );
-
-    //print $sql;
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
