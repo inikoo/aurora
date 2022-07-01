@@ -125,7 +125,7 @@
     <table width="100%">
         <tr>
             <td width="50%" style="color:#000;font-size: 7.pt;">
-                <div style=";">{t}Order Pick Aid{/t} <b>{$delivery_note->get('Delivery Note ID')}</b> (C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')}) {$delivery_note->get('Delivery Note Customer Name')}</div>
+                <div style=";">{t}Order Pick Aid{/t} <b>{$delivery_note->get('Delivery Note ID')}</b> (C{"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')}) {$delivery_note->get('Delivery Note Customer Name')|strip_tags|escape}</div>
 
             </td>
 

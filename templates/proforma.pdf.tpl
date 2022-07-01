@@ -146,8 +146,8 @@
     <tr>
         <td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;">
 
-            <div style="text-align: right">
-                {t}Customer{/t}: <b>{$order->get('Order Customer Name')}</b> ({$order->get('Order Customer Key')})
+            <div  style="text-align: right">
+                {t}Customer{/t}: <b>{$order->get('Order Customer Name')|strip_tags|escape}</b> ({$order->get('Order Customer Key')})
             </div>
             <div style="{if $order->get('Order Tax Number')==''}display:none{/if}">
                 {t}Tax Number{/t}: <b>{$order->get('Order Tax Number')}</b>

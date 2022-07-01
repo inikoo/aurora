@@ -171,7 +171,7 @@
             <td width="34%" style="text-align: right;">
                 <small>
                     {if $purchase_order->get('Purchase Order Main Buyer Name')!=''}
-                    {t}Submitted by{/t} {$purchase_order->get('Purchase Order Main Buyer Name')}
+                    {t}Submitted by{/t} {$purchase_order->get('Purchase Order Main Buyer Name')|strip_tags|escape}
                         <br>
                     {/if}
                     {if $purchase_order->get('Warehouse Telephone')!=''}{$purchase_order->get('Warehouse Telephone')}

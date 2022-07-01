@@ -116,7 +116,7 @@ div.inline { float:left; }
 		<tr>
 			<td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;"> 
 			<div style="text-align: right">
-				{t}Customer{/t}:<b> {$delivery_note->get('Delivery Note Customer Name')}</b> ({"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')})
+				{t}Customer{/t}:<b> {$delivery_note->get('Delivery Note Customer Name')|strip_tags|escape}</b> ({"%05d"|sprintf:$delivery_note->get('Delivery Note Customer Key')})
 			</div>
 			</td>
 

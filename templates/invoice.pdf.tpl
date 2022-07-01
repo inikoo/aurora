@@ -171,7 +171,7 @@
             </div>
             {/if}
             <div style="text-align: right">
-                {t}Customer{/t}: <b>{$invoice->get('Invoice Customer Name')}</b> ({$invoice->get('Invoice Customer Key')})
+                {t}Customer{/t}: <b>{$invoice->get('Invoice Customer Name')|strip_tags|escape}</b> ({$invoice->get('Invoice Customer Key')})
             </div>
             <div >
                 {if $customer->get('Customer Preferred Contact Number')=='Mobile'}
