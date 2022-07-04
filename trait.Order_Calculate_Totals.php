@@ -131,11 +131,22 @@ trait Order_Calculate_Totals
                 $this->id
             )
         );
+
+        $process_amount_off=false;
+        $amount_off_processed=false;
+
+        if ($this->data['Order Deal Amount Off'] != 0 ) {
+            $process_amount_off=true;
+        }
+
+
         while ($row = $stmt->fetch()) {
+            //print_r($row);
             $data[$row['Order Transaction Tax Category Key']] = $row['net'];
 
-            if ($this->data['Order Deal Amount Off'] != 0) {
+            if ($process_amount_off  and $this->data['Order Tax Category Key']== $row['Order Transaction Tax Category Key']) {
                 $data[$row['Order Transaction Tax Category Key']] -= $this->data['Order Deal Amount Off'];
+                $amount_off_processed=true;
             }
         }
 
