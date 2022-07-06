@@ -216,7 +216,7 @@ if (!$payment_account_key) {
         <!-- add submit button -->
         <button id="pay-button" disabled>
             PAY <?php
-            echo $order->get('Order To Pay Amount') ?>
+            echo $order->get('Basket To Pay Amount') ?>
         </button>
     </div>
     <p class="processing hide" style="color: darkgray">
