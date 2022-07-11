@@ -2247,6 +2247,8 @@ class Order extends DB_Table
         $new_items      = [];
         $new_items_keys = [];
 
+        $debug_total = 0;
+
         if ($this->get('State Index') >= 100 and $this->data['hokodo_order_id']) {
             $db      = $this->db;
             $store   = get_object('Store', $this->get('Order Store Key'));
@@ -2270,57 +2272,54 @@ class Order extends DB_Table
                         ]
                     );
                     if ($row = $stmt->fetch()) {
-                        $item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
-                        $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
+                        $item_total = (int)round(100 * $row['Order Transaction Amount'] * (1 + $row['Transaction Tax Rate']));
+                        $item_tax   = (int)round(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
 
-
-
-
-                        $qty=number($item_total/$item['unit_price'],3);
-
-
-
+                        $qty = number($item_total / $item['unit_price'], 3);
 
 
                         //print_r($item);
                         //exit;
 
 
-                       // $qty = round($row['Delivery Note Quantity'], 3);
+                        // $qty = round($row['Delivery Note Quantity'], 3);
 
                         if ($qty > 0) {
-                          //  $unit_price = number($item_total / $row['Delivery Note Quantity'],2);
+                            //  $unit_price = number($item_total / $row['Delivery Note Quantity'],2);
 
 
-                            if($qty>$item['quantity'] or $item_total>$item['total_amount']  ){
-                                $qty=$item['quantity'];
-                                $item_total=$item['total_amount'];
-                                $item_tax=$item['tax_amount'];
+                            if ($qty > $item['quantity'] or $item_total > $item['total_amount']) {
+                                $qty        = $item['quantity'];
+                                $item_total = $item['total_amount'];
+                                $item_tax   = $item['tax_amount'];
                             }
 
-                            $items[]                                        = [
+                            $debug_total += $item_total;
+
+                            $items[] = [
                                 "item_id"      => $row['Order Transaction Fact Key'],
-                             //   "description"  => $row['Product Code'].' '.$row['Product Name'],
+                                //   "description"  => $row['Product Code'].' '.$row['Product Name'],
                                 "quantity"     => $qty,
-                            //    "unit_price"   => $unit_price,
+                                //    "unit_price"   => $unit_price,
                                 "total_amount" => $item_total,
+                               // 'total_amount_2'=>(100 * $row['Order Transaction Amount'] * (1 + $row['Transaction Tax Rate'])),
                                 "tax_amount"   => $item_tax,
                             ];
 
-/*
-                            print_r(
-                                [
-                                    "item_id"      => $row['Order Transaction Fact Key'],
-                                    "description"  => $row['Product Code'].' '.$row['Product Name'],
-                                    "quantity"     => $qty,
-                                    "unit_price"   => $unit_price,
-                                    "total_amount" => $item_total,
-                                    "tax_amount"   => $item_tax,
-                                ]
-                            );
-                            exit;
-*/
+                            /*
+                                                        print_r(
+                                                            [
+                                                                "item_id"      => $row['Order Transaction Fact Key'],
+                                                                "description"  => $row['Product Code'].' '.$row['Product Name'],
+                                                                "quantity"     => $qty,
+                                                                "unit_price"   => $unit_price,
+                                                                "total_amount" => $item_total,
+                                                                "tax_amount"   => $item_tax,
+                                                            ]
+                                                        );
+                                                        exit;
+                            */
 
                             $items_keys[$row['Order Transaction Fact Key']] = $row['Order Transaction Fact Key'];
                         }
@@ -2337,15 +2336,15 @@ class Order extends DB_Table
                         ]
                     );
                     if ($row = $stmt->fetch()) {
-                        $item_total = floor(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
-                        $item_tax   = floor(100 * $row['Transaction Tax Amount']);
+                        $item_total = (int)round(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
+                        $item_tax   = (int)round(100 * $row['Transaction Tax Amount']);
 
-
+                        $debug_total                                                     += $item_total;
                         $items[]                                                         = [
                             "item_id"     => 'np-'.$row['Order No Product Transaction Fact Key'],
                             "description" => $row['Transaction Type'],
                             "quantity"    => 1,
-                          //  "unit_price"  => $item_total,
+                            //  "unit_price"  => $item_total,
 
                             "total_amount" => $item_total,
                             "tax_amount"   => $item_tax,
@@ -2355,7 +2354,6 @@ class Order extends DB_Table
                     }
                 }
             }
-
 
 
             $new_charges_items = [];
@@ -2410,7 +2408,7 @@ class Order extends DB_Table
                                 "item_id"     => $reported_item['item_id'],
                                 "description" => $reported_item['description'],
                                 "quantity"    => 1,
-                              //  "unit_price"  => $reported_item['unit_price'],
+                                //  "unit_price"  => $reported_item['unit_price'],
 
                                 "total_amount" => $reported_item['total_amount'],
                                 "tax_amount"   => $reported_item['tax_amount'],
@@ -2425,6 +2423,7 @@ class Order extends DB_Table
                 }
             }
 
+          //  print "   $debug_total\n";
 
            // print_r($items);
            // exit;
@@ -2486,8 +2485,10 @@ class Order extends DB_Table
                     ]
                 );
                 while ($row = $stmt->fetch()) {
-                    $item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
-                    $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
+                    $tax_rate = $row['Transaction Tax Rate'];
+
+                    $item_total = (int)round(100 * $row['Order Transaction Amount'] * (1 + $tax_rate));
+                    $item_tax   = (int)round(100 * $row['Order Transaction Amount'] * $tax_rate);
 
 
                     if ($item_total < $item['total_amount'] or $item_tax < $item['tax_amount']) {
@@ -2511,8 +2512,8 @@ class Order extends DB_Table
                     ]
                 );
                 while ($row = $stmt->fetch()) {
-                    $item_total = floor(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
-                    $item_tax   = floor(100 * $row['Transaction Tax Amount']);
+                    $item_total = (int)round(100 * ($row['Transaction Net Amount'] + $row['Transaction Tax Amount']));
+                    $item_tax   = (int)round(100 * $row['Transaction Tax Amount']);
 
 
                     if ($item_total < $item['total_amount'] or $item_tax < $item['tax_amount']) {
@@ -2609,12 +2610,9 @@ class Order extends DB_Table
             );
             // print_r(json_decode($output,true));
 
-        }
-
-        catch(Exception $e) {
+        } catch (Exception $e) {
             //
         }
-
     }
 
     function get_invoices($scope = 'keys', $options = '')
@@ -3312,19 +3310,43 @@ WHERE `Order Transaction Fact Key`=?";
 
 
                 while ($row = $stmt->fetch()) {
-                    $item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
-                    $item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
+                    //$item_total = floor(100 * ($row['Order Transaction Amount'] + ($row['Order Transaction Amount'] * $row['Transaction Tax Rate'])));
+                    //$item_tax   = floor(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
-                    $unit_price = floor($item_total / $row['Order Quantity']);
-                    $unit_tax   = floor($item_tax / $row['Order Quantity']);
+                    //$unit_price = floor($item_total / $row['Order Quantity']);
+                    //$unit_tax   = floor($item_tax / $row['Order Quantity']);
 
+
+                    /*
+                    $net=-$row['Order Transaction Amount'];
+
+                    $tax_rate=$row['Transaction Tax Rate'];
+                    $total_tax_rate=1+$tax_rate;
+
+                    $total_with_tax=$net*$total_tax_rate;
+
+                    print "tax rate $tax_rate\n";
+                    print "amount $net  $total_with_tax   \n";
+                    print "wrong\n";
+                    print (-$transaction['amount'])."\n";
+                    print (-$transaction['amount'] * $row['Transaction Tax Rate'])."\n";
+                    print (-$transaction['amount'] * $row['Transaction Tax Rate'] * 100)."\n";
+                    print floor(-$transaction['amount'] * $row['Transaction Tax Rate'] * 100)."\n";
+*/
+
+                    $net = (int)round(-$transaction['amount'] * (1 + $row['Transaction Tax Rate']) * 100);
+
+                    $tax = (int)round(-$transaction['amount'] * $row['Transaction Tax Rate'] * 100);
+
+
+                    //   print "=== \n";
                     $items[] = [
                         "item_id"      => $row['Order Transaction Fact Key'].'-ref-'.date('U'),
                         'description'  => 'refund',
                         "quantity"     => 1,
-                        "unit_price"   => floor(-$transaction['amount'] * 100) + floor(-$transaction['amount'] * $row['Transaction Tax Rate'] * 100),
-                        "total_amount" => floor(-$transaction['amount'] * 100) + floor(-$transaction['amount'] * $row['Transaction Tax Rate'] * 100),
-                        "tax_amount"   => floor(-$transaction['amount'] * $row['Transaction Tax Rate'] * 100)
+                        "unit_price"   => $net,
+                        "total_amount" => $net,
+                        "tax_amount"   => $tax
 
                     ];
                 }
@@ -3351,20 +3373,26 @@ WHERE `Order Transaction Fact Key`=?";
                     }
 
 
+                    $net = (int)round(-$transaction['amount'] * (1 + $tax_rate) * 100);
+
+                    $tax = (int)round(-$transaction['amount'] * $tax_rate * 100);
+
+
                     $items[] = [
                         "item_id"      => 'np-'.$row['Order No Product Transaction Fact Key'].'-ref-'.date('U'),
                         'description'  => 'refund',
                         "quantity"     => 1,
-                        "unit_price"   => floor(-$transaction['amount'] * 100) + floor(-$transaction['amount'] * $tax_rate * 100),
-                        "total_amount" => floor(-$transaction['amount'] * 100) + floor(-$transaction['amount'] * $tax_rate * 100),
-                        "tax_amount"   => floor(-$transaction['amount'] * $tax_rate * 100)
+                        "unit_price"   => $net,
+                        "total_amount" => $net,
+                        "tax_amount"   => $tax
 
                     ];
                 }
             }
         }
 
-        //print_r($items);
+        // print_r($items);
+        // exit;
         include_once 'EcomB2B/hokodo/api_call.php';
 
 
