@@ -2276,14 +2276,9 @@ class Order extends DB_Table
                         $item_tax   = (int)round(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
 
-                        $qty = number($item_total / $item['unit_price'], 3);
+                       // $qty = number($item_total / $item['unit_price'], 3);
 
-
-                        //print_r($item);
-                        //exit;
-
-
-                        // $qty = round($row['Delivery Note Quantity'], 3);
+                         $qty = round($row['Delivery Note Quantity'], 3);
 
                         if ($qty > 0) {
                             //  $unit_price = number($item_total / $row['Delivery Note Quantity'],2);
