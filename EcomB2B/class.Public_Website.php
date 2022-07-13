@@ -348,8 +348,8 @@ class Public_Website
                     if (in_array($options, $payment_account->get('Valid Delivery Countries'))) {
                         $icon            = 'fa fa-money-check-alt';
                         $tab_label_index = 'Buy now Pay later';
-                        $tab_label       = 'Buy now Pay later';
-                        $short_label     = 'Buy now Pay later';
+                        $tab_label       = 'Pay later';
+                        $short_label     = 'Pay later';
                         $analytics_label = 'Hokodo';
                     } else {
                         $ok = false;
