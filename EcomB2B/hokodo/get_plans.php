@@ -145,7 +145,7 @@ function get_plans($db, $order, $customer, $website)
     //exit;
 
 
-    $raw_results = api_post_call('payment/orders', $data, $api_key);
+    $raw_results = api_post_call('payment/orders', $data, $api_key,$db);
     // print_r($raw_results);
 
     if (!empty($raw_results['id'])) {

@@ -6,13 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout Frames v2</title>
 
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
     <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+
     <script
             src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
             crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+
+    <script>
+        $( function() {
+            $( "#birth_date" ).datepicker({
+                changeMonth: true,
+                changeYear: true,
+                maxDate: "-16Y",
+                "dateFormat":"yy-mm-dd"
+
+            });
+        } );
+    </script>
+    <style>
+        .ui-datepicker {
+            width: 18em;
+
+        }
+    </style>
+
+
 </head>
 
 <body>
@@ -140,11 +163,10 @@
                   
 
                     <div>
-                        <label for="birth_date" class="block text-sm font-medium text-gray-700"> Proprietor's date of birth (e.g. 1969-12-31)  </label>
+                        <label for="birth_date" class="block text-sm font-medium text-gray-700"> Proprietor's date of birth</label>
                         <div class="mt-1">
                             {literal}
-                            <input type="text" id="birth_date"  name="birth_date"  placeholder="YYYY-MM-DD"
-                                   autofocus autocomplete="nope">
+                            <input type="text" id="birth_date"  name="birth_date" >
                             {/literal}
 
                         </div>
