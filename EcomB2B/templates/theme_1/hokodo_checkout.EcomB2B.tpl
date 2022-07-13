@@ -201,7 +201,7 @@
                     <span id="reset-search-company" class="hidden ml-3 text-blue-600 pointer">{t}reset{/t}</span>
                 </label>
                 <div class="mt-1"> 
-                    <select class="w-full search-company">
+                    <select style="width: 100%" class="w-full search-company">
                     </select>
 
                 </div>
