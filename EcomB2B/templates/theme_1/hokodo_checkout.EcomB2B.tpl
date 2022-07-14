@@ -40,6 +40,42 @@
 
 <body>
 
+<style>
+    .autocomplete-suggestions {
+        border: 1px solid #999;
+        background: #FFF;
+        overflow: auto;
+    }
+
+    .autocomplete-suggestion {
+        color:#555;
+        font-size: small;
+        padding: 5px 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        cursor: pointer
+    }
+
+    .autocomplete-selected {
+        background: #F0F0F0;
+    }
+
+    .autocomplete-suggestions strong {
+        font-weight: normal;
+        color: #3399FF;
+    }
+
+    .autocomplete-group {
+        padding: 2px 5px;
+    }
+
+    .autocomplete-group strong {
+        display: block;
+        border-bottom: 1px solid #000;
+    }
+</style>
+
+
 <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
 
@@ -95,7 +131,7 @@
 
 
             </div>
-            <div id="sole-trader-form" class="mt-5 id_from {if $company_type!='sole-trader' or  $customer->get('hokodo_type')}hidden{/if}">
+            <div id="sole-trader-form" class="mt-5 id_from {if $company_type!='sole-trader' or  $customer->get('hokodo_type')}xhidden{/if}">
 
                 <form id="sole-trader-form" class="space-y-6" action="#" method="POST">
 
@@ -106,6 +142,19 @@
                         </div>
                     </div>
 
+
+                    <div>
+                    <label for="search_lokate" class="block text-sm font-medium text-gray-700"> Trading address </label>
+                        <div class="mt-1">
+                        <input  id="search_lokate" type="text" name="search_lokate" autocomplete="off"
+                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+
+                               placeholder="{if !empty($labels.address_search) }{$labels.address_search}{else}{t}search for your trading address{/t}{/if}">
+                        </div>
+                    </div>
+
+
+
                     <div>
                         <label for="trading_address" class="block text-sm font-medium text-gray-700"> Trading address (Building and street)</label>
                         <div class="mt-1">
@@ -115,7 +164,8 @@
                     <div>
                         <label for="trading_address_city" class="block text-sm font-medium text-gray-700"> Trading address (City/Town)</label>
                         <div class="mt-1">
-                            <input id="trading_address_city" name="trading_address_city" type="text" placeholder="{t}City/Town{/t}" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <input id="trading_address_city" name="trading_address_city" type="text" placeholder="{t}City/Town{/t}" required
+                                   class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
                     </div>
 
@@ -263,7 +313,55 @@
 
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script src="js/libs/jquery.autocomplete.js"></script>
+<script>
+    $('#search_lokate').devbridgeAutocomplete({
+        serviceUrl: 'ar_web_search_address.php',
+        minChars: 2,
+        params: {
+            tipo: 'search',
+            preserveInput: true,
+            showNoSuggestionNotice: true,
+            limit: 30,
+            country: '{$customer->get("Customer Invoice Address Country 2 Alpha Code")}',
+            container: ''
+        },
+        onSearchComplete: function (suggestions) {
+            $('#search_lokate').data('container', '')
+
+        },
+
+        onSearchStart: function (params) {
+            params.container = $('#search_lokate').data('container');
+            Autocomplete = $(this).data('autocomplete');
+
+            // if (Autocomplete.suggestions.length > 0) {
+
+            $('.autocomplete-suggestions').html(' Searching...').show();
+            //  }
+        },
+
+        onSelect: function (suggestion) {
+            console.log('You selected: ' + suggestion.value);
+            console.log(suggestion.data)
+
+            if (suggestion.data.type !== 'Address') {
+                $('#search_lokate').data('container', suggestion.data.id).val(suggestion.data.value)
+
+                $('#search_lokate').devbridgeAutocomplete().onValueChange();
+
+
+            } else {
+                console.log('select address')
+            }
+
+        }
+    });
+</script>
+
 <script>
     jQuery(function() {
         $('#company-type .option').on('click', function (e) {
