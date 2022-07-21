@@ -1,0 +1,1 @@
+ALTER TABLE `Payment Account Store Bridge` ADD COLUMN `public_key` varchar(255) NULL COMMENT '';
