@@ -98,7 +98,9 @@
                     {if $payment_account.hide!='yes'}
 
 
-                    <a   data-analytics_label="{$payment_account.analytics_label}" class="but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .2"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
+                    <a
+                            id="payment_tab_header_{$payment_account.block}"
+                            data-analytics_label="{$payment_account.analytics_label}" class="{if $payment_account.block=='Hokodo' and  $payment_account.count>1}hide{/if} but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .2"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
                         <i class="{$payment_account.icon}" aria-hidden="true"></i>
                         <em>{if $payment_account.tab_label==''}{$data.labels[$payment_account.tab_label_index]}{else}{$payment_account.tab_label}{/if}</em>
                     </a>
@@ -139,18 +141,23 @@
             {foreach from=$payment_accounts item=payment_account key=key name=foo}
                 {assign "block" $payment_account.object->get("Block")  }
 
-                <div id="payment_account_item_{$payment_account.object->get('Block')}" class="payment_method_block {if !$smarty.foreach.foo.first}hide{/if}" style="margin:auto;width: 440px">
+                <div id="payment_account_item_{$payment_account.object->get('Block')}" class="payment_method_block {if !$smarty.foreach.foo.first}hide{/if}" style="margin:auto;{if {$payment_account.object->get('Block')}!='Hokodo'}width: 440px{/if}">
 
                     {if $block=='Checkout' }
                         <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width:450px;min-height:300px;border:none;"></iframe>
 
                     {elseif $block=='Hokodo' }
-                        <iframe src="ar_web_payment_account_hokodo_iframe.php?order_key={$order->id}" title="Checkout"
+                        <iframe src="ar_web_payment_account_hokodo_sdk_iframe.php?order_key={$order->id}" title="Checkout"
 
                                 onload='javascript:(function(o){
                                         o.style.height=400+o.contentWindow.document.body.scrollHeight+"px";}(this));'
                                 style="height:200px;width:100%;border:none;overflow:hidden;"  ></iframe>
 
+                        <script>
+                            function showHokodoTab(){
+                                $('#payment_tab_header_Hokodo').removeClass('hide')
+                            }
+                        </script>
 
                     {elseif $block=='BTree' }
 

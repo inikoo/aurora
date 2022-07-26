@@ -306,6 +306,7 @@ class Public_Website
 
             )
         );
+        $count = 0;
         while ($row = $stmt->fetch()) {
             $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
 
@@ -379,9 +380,11 @@ class Public_Website
                 }
             }
 
-
+            $count++;
             if ($ok) {
                 $payments_accounts[] = array(
+                    'block'           => $payment_account->get('Payment Account Block'),
+                    'count'           => $count,
                     'object'          => $payment_account,
                     'icon'            => $icon,
                     'tab_label_index' => $tab_label_index,
@@ -517,10 +520,10 @@ class Public_Website
         return $poll_queries;
     }
 
-    function get_api_key($code){
-
-        $api_key='';
-        $sql =
+    function get_api_key($code)
+    {
+        $api_key = '';
+        $sql     =
             "SELECT login 
 FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
 WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`=? ";
@@ -539,17 +542,40 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
 
         return $api_key;
-
     }
 
-    function get_payment_account__key($code){
+    function get_public_api_key($code)
+    {
+        $api_key = '';
+        $sql     =
+            "SELECT public_key 
+FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
+WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`=? ";
 
-        $payment_account__key='';
-        $sql =
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id,
+                $code
+            ]
+        );
+
+        while ($row = $stmt->fetch()) {
+            $api_key = $row['public_key'];
+        }
+
+
+        return $api_key;
+    }
+
+    function get_payment_account__key($code)
+    {
+        $payment_account__key = '';
+        $sql                  =
             "SELECT `Payment Account Store Payment Account Key`
 FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
 WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`=? ";
-        $stmt = $this->db->prepare($sql);
+        $stmt                 = $this->db->prepare($sql);
         $stmt->execute(
             [
                 $this->id,
@@ -563,7 +589,6 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
 
         return $payment_account__key;
-
     }
 
 }

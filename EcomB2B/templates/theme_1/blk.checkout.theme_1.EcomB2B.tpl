@@ -157,7 +157,7 @@
 
 
                         {if $payment_account.hide!='yes'}
-                        <li>
+                        <li id="payment_tab_header_{$payment_account.block}" class="{if $payment_account.block=='Hokodo' and  $payment_account.count>1}hide{/if}">
                             <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self" data-analytics_label="{$payment_account.analytics_label}" class="payment_option_chooser" >
 
 
@@ -206,11 +206,17 @@
                             {if $block=='Checkout' }
                                 <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;border:none;"></iframe>
                              {elseif $block=='Hokodo' }
-                                <iframe src="ar_web_payment_account_hokodo_iframe.php?order_key={$order->id}" title="Checkout"
+                                <iframe src="ar_web_payment_account_hokodo_sdk_iframe.php?order_key={$order->id}" title="Checkout"
 
-                                        onload='javascript:(function(o){
-                                        o.style.height=400+o.contentWindow.document.body.scrollHeight+"px";}(this));'
-                                        style="height:200px;width:100%;border:none;overflow:hidden;"  ></iframe>
+
+                                        style="height:1800px;width:100%;border:none;overflow:hidden;"  ></iframe>
+
+
+                                        <script>
+                                            function showHokodoTab(){
+                                                $('#payment_tab_header_Hokodo').removeClass('hide')
+                                            }
+                                        </script>
 
 
                             {elseif $block=='BTree' }

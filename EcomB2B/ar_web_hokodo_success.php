@@ -24,8 +24,6 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $account = get_object('Account', 1);
 
-//print_r($_REQUEST);
-
 $smarty               = new Smarty();
 $smarty->caching_type = 'redis';
 $smarty->setTemplateDir('templates');

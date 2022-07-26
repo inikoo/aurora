@@ -16,7 +16,6 @@
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
             crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-
     <script>
         $( function() {
             $( "#birth_date" ).datepicker({

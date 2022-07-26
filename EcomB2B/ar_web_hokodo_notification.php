@@ -62,12 +62,12 @@ if (!empty($data['data']['order']['deferred_payment'])) {
     ];
 
 
-   // $to_update['Payment Transaction Status']=$ref;
-
     if($status=='pending_review' or $status=='customer_action_required'){
         $status='Approving';
         $to_update['Payment Transaction Status']='Approving';
         $to_update['Payment Transaction Status Info']='Pending review';
+        $to_update['Payment Transaction ID']=$ref;
+
     }elseif($status=='accepted'){
 
         $to_update['Payment Transaction Status']='Completed';
