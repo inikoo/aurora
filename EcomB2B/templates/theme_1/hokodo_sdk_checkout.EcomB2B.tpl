@@ -130,7 +130,7 @@
             $('.processing').addClass('hidden')
                 if(data.status==='accepted'){
 
-
+                    parent.showHokodoTab();
 
                     hokodo_order_id = data.response.order;
 
@@ -141,16 +141,24 @@
                     checkout.mount("#hokodoCheckout");
 
 
-                    parent.showHokodoTab();
+
                     checkout.on('ready', () => {
 
                         $('#hokodoCompanySearch').addClass('hidden')
                         $('#get_plans').addClass('hidden')
+
+
+                        $('.processing').addClass('hidden')
+
+                        console.log('caca')
+
+
                     });
 
                     checkout.on('success', () => {
 
 
+                        $('.processing').addClass('hidden')
 
                         $.post("ar_web_hokodo_place_order_from_sdk.php",
                             {
@@ -175,6 +183,8 @@
 
                             $('#get_plans').addClass('hidden')
                             $('#rejected').removeClass('hidden')
+                            $('.processing').addClass('hidden')
+
 
                         });
 
@@ -185,7 +195,7 @@
 
                     checkout.on('rejected', () => {
 
-
+                        $('.processing').addClass('hidden')
                         $('#companySearch').addClass('hidden')
                         $('#hokodoCheckout').addClass('hidden')
 
@@ -200,7 +210,7 @@
 
                     checkout.on('failure', () => {
 
-
+                        $('.processing').addClass('hidden')
                         $('#companySearch').addClass('hidden')
                         $('#hokodoCheckout').addClass('hidden')
 
