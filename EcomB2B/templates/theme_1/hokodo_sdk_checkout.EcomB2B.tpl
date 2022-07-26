@@ -127,7 +127,7 @@
     $(function() {
         $.getJSON("ar_web_hokodo_get_plans_for_sdk.php", function (data) {
 
-            $('.processing').addClass('hidden')
+
                 if(data.status==='accepted'){
 
                     parent.showHokodoTab();
@@ -150,7 +150,6 @@
 
                         $('.processing').addClass('hidden')
 
-                        console.log('caca')
 
 
                     });
@@ -183,7 +182,7 @@
 
                             $('#get_plans').addClass('hidden')
                             $('#rejected').removeClass('hidden')
-                            $('.processing').addClass('hidden')
+
 
 
                         });
