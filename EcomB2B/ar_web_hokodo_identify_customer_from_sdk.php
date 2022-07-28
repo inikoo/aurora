@@ -147,7 +147,7 @@ if($company_data['type']=='registered-company'){
             'role' => 'member'
         ];
 
-        $raw_results = api_post_call('users/'.$user_id.'/organisations', $data, $api_key);
+        $raw_results = api_post_call('users/'.$user_id.'/organisations', $_data, $api_key);
 
 
         // add user to soletrader
