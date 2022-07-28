@@ -620,6 +620,10 @@ trait Send_Email
                     if ($invoice->id) {
                         $this->placeholders['[Invoice Number]'] = $invoice->get('Invoice Public ID');
 
+
+                        $website=get_object('Website',$this->store->get('Store Website Key'));
+                        $this->placeholders['[InvoiceLink]'] = 'https://'.$website->get('Website URL').'/ar_web_invoice.pdf.php?id='.$invoice->id;
+
                         $auth_data = json_encode(
                             array(
                                 'auth_token' => array(
