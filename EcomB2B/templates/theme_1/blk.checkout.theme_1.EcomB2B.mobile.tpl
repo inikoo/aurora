@@ -83,7 +83,7 @@
                     {if $payment_account.hide!='yes'}
 
 
-                    <a id="payment_tab_header_{$payment_account.block}"    data-analytics_label="{$payment_account.analytics_label}" class="{if $payment_account.block=='Hokodo' and  $payment_account.count>1}hide{/if} but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}" {if !$smarty.foreach.foo.first} style="opacity: .4"{/if}  data-tab="payment_account_item_{$payment_account.object->get('Block')}">
+                    <a id="payment_tab_header_{$payment_account.block}"    data-analytics_label="{$payment_account.analytics_label}" class="{if $payment_account.block=='Hokodo' and  $payment_account.count>1}hide{/if} but like_button payment_method_button no-smoothState {if $smarty.foreach.foo.first}bg-blue-light border-blue-dark{else}bg-black border-gray-dark{/if}"   data-tab="payment_account_item_{$payment_account.object->get('Block')}">
 
 
 
@@ -1675,9 +1675,10 @@
     $(document).on('click', '.payment_method_button', function (evt) {
 
 
-        $('.payment_method_button').addClass('discreet bg-gray-light border-gray-dark').removeClass('bg-blue-light border-blue-dark')
+        $('.payment_method_button').addClass(' bg-black border-gray-dark').removeClass('bg-blue-light border-blue-dark').css({
+            'opacity':1})
 
-        $(this).removeClass('discreet bg-gray-light border-gray-dark').addClass('bg-blue-light border-blue-dark')
+        $(this).removeClass('bg-black border-gray-dark').addClass('bg-blue-light border-blue-dark')
 
         $('.payment_method_block').addClass('hide')
         $('#'+$(this).data('tab')).removeClass('hide')
