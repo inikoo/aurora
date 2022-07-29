@@ -223,6 +223,7 @@ class Public_Store {
             case 'Store Type':
             case 'Store External Invoicer Key':
             case 'Store Shopify API Key':
+            case 'Store Locale':
                 return $this->data[$key];
 
 

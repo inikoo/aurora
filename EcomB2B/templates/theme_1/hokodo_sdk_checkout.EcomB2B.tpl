@@ -107,7 +107,9 @@
     let hokodo_order_id = '';
 
     //console.log(public_api_key);
-    const hokodo = Hokodo(public_api_key);
+    const hokodo = Hokodo(public_api_key, {
+        locale: "{$locale}"
+    });
     const elements = hokodo.elements();
 
 

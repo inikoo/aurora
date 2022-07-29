@@ -133,7 +133,7 @@
             <li><a href="#example-3-tab-2" target="_self"><i class="fab fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
             <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{if empty($data.labels._bank_label) }{t}Bank{/t}{else}{$data.labels._bank_label}{/if}</span></a></li>
             <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if empty($data.labels._cash_on_delivery_label) }{t}Cash on delivery{/t}{else}{$data.labels._cash_on_delivery_label}{/if}</span></a></li>
-            <li ><a href="#example-3-tab-5" target="_self"><i class="fa fa-hand-peace" aria-hidden="true"></i> <span >Sofort</span></a></li>
+            <li ><a href="#example-3-tab-5" target="_self"><i class="fa fa-clock" aria-hidden="true"></i> <span  contenteditable="true" id="_pay_later_label">{if empty($data.labels._pay_later_label) }{t}Pay later{/t}{else}{$data.labels._pay_later_label}{/if}</span></a></li>
 
         </ul>
 

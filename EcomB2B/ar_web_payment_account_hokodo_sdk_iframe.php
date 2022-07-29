@@ -106,7 +106,10 @@ $smarty->assign('devel',$devel);
 $smarty->assign('public_api_key',$website->get_public_api_key('Hokodo'));
 $smarty->assign('order_id',$order->id);
 
+$store=get_object('Store',$order->get('Order Store Key'));
 
+$locale=substr($store->get('Store Locale'),0,2);
+$smarty->assign('locale',$locale);
 
 
 $smarty->display('theme_1/hokodo_sdk_checkout.EcomB2B.tpl');

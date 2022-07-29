@@ -346,11 +346,12 @@ class Public_Website
                     $analytics_label = 'Bank';
                     break;
                 case 'Hokodo':
+
                     if (in_array($options, $payment_account->get('Valid Delivery Countries'))) {
                         $icon            = 'fa fa-money-check-alt';
-                        $tab_label_index = 'Buy now Pay later';
-                        $tab_label       = 'Pay later';
-                        $short_label     = 'Pay later';
+                        $tab_label_index = '_pay_later_label';
+                        $tab_label       = '';
+                        $short_label     = _('Pay later');
                         $analytics_label = 'Hokodo';
                     } else {
                         $ok = false;
