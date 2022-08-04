@@ -9,6 +9,7 @@
  Version 3.0
 
 */
+use Aurora\Models\Utils\TaxCategory;
 
 trait OrderOperations
 {
@@ -576,14 +577,65 @@ trait OrderOperations
 
             $items[] = [
                 "item_id"            => 'np-'.$row['Order No Product Transaction Fact Key'],
-
                 "quantity"           => 1,
-
                 "total_amount"       => $item_total,
                 "tax_amount"         => $item_tax,
 
             ];
         }
+        // add discounts
+
+        if ($this->get('Order Deal Amount Off') != '' and $this->get('Order Deal Amount Off') > 0) {
+
+
+            $discount_net = -$this->get('Order Deal Amount Off');
+
+            $tax_category = new TaxCategory($db);
+            $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
+            if ($tax_category->id) {
+                $tax_rate = $tax_category->get('Tax Category Rate');
+            } else {
+                $tax_rate = 0;
+            }
+
+
+            $discount_tax = $discount_net * $tax_rate;
+            $discount_total = $discount_net + $discount_tax;
+            $sql = "SELECT  `Order Transaction Tax Category Key`  FROM `Order Transaction Fact` WHERE `Order Key`=?  AND `Order Transaction Type`='Order' GROUP BY  `Order Transaction Tax Category Key`";
+
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                array(
+                    $this->id
+                )
+            );
+
+            $amount_off_processed = false;
+
+
+            while ($row = $stmt->fetch()) {
+
+
+                if ($this->data['Order Tax Category Key'] == $row['Order Transaction Tax Category Key']) {
+                    $amount_off_processed = true;
+                }
+            }
+
+
+
+            if ($amount_off_processed) {
+                $items[] = [
+                    "item_id"            => 'discount-'.$this->id,
+                    "quantity"           => 1,
+                    "total_amount"       => round($discount_total * 100),
+                    "tax_amount"         => round($discount_tax * 100),
+                ];
+            }
+        }
+
+
 
         include_once 'EcomB2B/hokodo/api_call.php';
 
@@ -591,7 +643,7 @@ trait OrderOperations
                            ['items'=>$items],$api_key,'PUT',$this->db
         );
 
-       //  print_r($res);
+        // print_r($res);
 
 
          $payment=get_object('Payment',$order->data['pending_hokodo_payment_id']);

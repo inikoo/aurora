@@ -11,6 +11,7 @@
 /** @var PDO $db */
 include_once 'ar_web_common_logged_in.php';
 include_once 'hokodo/api_call.php';
+use Aurora\Models\Utils\TaxCategory;
 
 
 /** @var Public_Customer $customer */
@@ -115,6 +116,67 @@ while ($row = $stmt->fetch()) {
     ];
 }
 
+
+if ($order->get('Order Deal Amount Off') != '' and $order->get('Order Deal Amount Off') > 0) {
+
+
+    $discount_net = -$order->get('Order Deal Amount Off');
+
+    $tax_category = new TaxCategory($db);
+    $tax_category->loadWithKey($order->data['Order Tax Category Key']);
+
+    if ($tax_category->id) {
+        $tax_rate = $tax_category->get('Tax Category Rate');
+    } else {
+        $tax_rate = 0;
+    }
+
+
+    $discount_tax = $discount_net * $tax_rate;
+    $discount_total = $discount_net + $discount_tax;
+    $sql = "SELECT  `Order Transaction Tax Category Key`  FROM `Order Transaction Fact` WHERE `Order Key`=?  AND `Order Transaction Type`='Order' GROUP BY  `Order Transaction Tax Category Key`";
+
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array(
+            $order->id
+        )
+    );
+
+    $amount_off_processed = false;
+
+
+    while ($row = $stmt->fetch()) {
+
+
+        if ($order->data['Order Tax Category Key'] == $row['Order Transaction Tax Category Key']) {
+            $amount_off_processed = true;
+        }
+    }
+
+
+
+    if ($amount_off_processed) {
+        $items[] = [
+            "item_id"            => 'discount-'.$order->id,
+            "type"               => 'discount',
+            "description"        => 'Discount',
+            "quantity"           => 1,
+            "unit_price"         => round($discount_total * 100),
+            "tax_rate"           => $tax_rate* 100,
+            "total_amount"       => round($discount_total * 100),
+            "tax_amount"         => round($discount_tax * 100),
+            "fulfilled_quantity" => 0,
+            "fulfillment_info"   => null,
+            "cancelled_quantity" => 0,
+            "cancelled_info"     => null,
+            "returned_quantity"  => 0,
+            "returned_info"      => null
+        ];
+    }
+}
+
 $data = array(
     "unique_id"    => $order->get('Public ID'),
     'customer'     => [
@@ -147,6 +209,9 @@ $data = array(
 
 );
 
+
+
+
 //print round($order->get('Order Total Amount') * 100). ' '.$items_total."\n";
 //exit;
 
@@ -156,10 +221,11 @@ $data = array(
 //exit;
 
 
+
 $raw_results = api_post_call('payment/orders', $data, $api_key);
 
 
-// print_r($raw_results);
+ //print_r($raw_results);
 
 if (!empty($raw_results['id'])) {
     // print_r($raw_results);
@@ -174,7 +240,7 @@ if (!empty($raw_results['id'])) {
 
     if (ENVIRONMENT == 'DEVEL') {
         $website_url      = 'http://ds.ir:88';
-        $notification_url = "https://6a98-202-187-92-228.ngrok.io/test_ar_web_hokodo_notification.php?order_id=".$order->id;
+        $notification_url = "https://b88c-202-187-92-228.ngrok.io/test_ar_web_hokodo_notification.php?order_id=".$order->id;
     }
 
 
@@ -193,11 +259,11 @@ if (!empty($raw_results['id'])) {
 
     $raw_results = api_post_call('payment/offers', $offer_data, $api_key);
 
-    $status='rejected';
+    $status = 'rejected';
     if (isset($raw_results['id'])) {
         foreach ($raw_results['offered_payment_plans'] as $plan_data) {
             if ($plan_data['status'] == 'offered') {
-                $status='accepted';
+                $status = 'accepted';
             }
         }
     }
@@ -205,8 +271,8 @@ if (!empty($raw_results['id'])) {
 
     echo json_encode(
         [
-            'status'=>$status,
-            'response'=>$raw_results,
+            'status'   => $status,
+            'response' => $raw_results,
         ]
     );
     exit;

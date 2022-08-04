@@ -38,7 +38,8 @@ $company_id = trim($company_data['id']);
 
 $email = $customer->get('Customer Main Plain Email');
 if (ENVIRONMENT == 'DEVEL') {
-    $email='rulovicoxxcaca2@gmail.com';
+    //$email='hello+paymentplan_declined@gmail.com';
+    $email='rulovico_test556@gmail.com';
 }
 
 if($company_data['type']=='registered-company'){

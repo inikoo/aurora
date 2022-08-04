@@ -11,6 +11,7 @@
 */
 
 use Aurora\Traits\ObjectTaxNumberTrait;
+use Aurora\Models\Utils\TaxCategory;
 
 include_once 'class.DB_Table.php';
 
@@ -2276,9 +2277,9 @@ class Order extends DB_Table
                         $item_tax   = (int)round(100 * $row['Order Transaction Amount'] * $row['Transaction Tax Rate']);
 
 
-                       // $qty = number($item_total / $item['unit_price'], 3);
+                        // $qty = number($item_total / $item['unit_price'], 3);
 
-                         $qty = round($row['Delivery Note Quantity'], 3);
+                        $qty = round($row['Delivery Note Quantity'], 3);
 
                         if ($qty > 0) {
                             //  $unit_price = number($item_total / $row['Delivery Note Quantity'],2);
@@ -2298,7 +2299,7 @@ class Order extends DB_Table
                                 "quantity"     => $qty,
                                 //    "unit_price"   => $unit_price,
                                 "total_amount" => $item_total,
-                               // 'total_amount_2'=>(100 * $row['Order Transaction Amount'] * (1 + $row['Transaction Tax Rate'])),
+                                // 'total_amount_2'=>(100 * $row['Order Transaction Amount'] * (1 + $row['Transaction Tax Rate'])),
                                 "tax_amount"   => $item_tax,
                             ];
 
@@ -2319,6 +2320,55 @@ class Order extends DB_Table
                             $items_keys[$row['Order Transaction Fact Key']] = $row['Order Transaction Fact Key'];
                         }
                     }
+                } elseif ($item['type'] == 'discount') {
+                    if ($this->get('Order Deal Amount Off') != '' and $this->get('Order Deal Amount Off') > 0) {
+                        $discount_net = -$this->get('Order Deal Amount Off');
+
+                        $tax_category = new TaxCategory($db);
+                        $tax_category->loadWithKey($this->data['Order Tax Category Key']);
+
+                        if ($tax_category->id) {
+                            $tax_rate = $tax_category->get('Tax Category Rate');
+                        } else {
+                            $tax_rate = 0;
+                        }
+
+
+                        $discount_tax   = $discount_net * $tax_rate;
+                        $discount_total = $discount_net + $discount_tax;
+                        $sql            = "SELECT  `Order Transaction Tax Category Key`  FROM `Order Transaction Fact` WHERE `Order Key`=?  AND `Order Transaction Type`='Order' GROUP BY  `Order Transaction Tax Category Key`";
+
+
+                        $stmt = $db->prepare($sql);
+                        $stmt->execute(
+                            array(
+                                $this->id
+                            )
+                        );
+
+                        $amount_off_processed = false;
+
+
+                        while ($row = $stmt->fetch()) {
+                            if ($this->data['Order Tax Category Key'] == $row['Order Transaction Tax Category Key']) {
+                                $amount_off_processed = true;
+                            }
+                        }
+
+
+                        if ($amount_off_processed) {
+                            $debug_total += $discount_total;
+                            $items[]     = [
+                                "item_id"      => 'discount-'.$this->id,
+                                "description"  => 'Discount',
+                                "quantity"     => 1,
+                                "total_amount" => round($discount_total * 100),
+                                "tax_amount"   => round($discount_tax * 100),
+                            ];
+                        }
+                    }
+
+                    $items_keys['discount-'.$this->id] = 'discount-'.$this->id;
                 } else {
                     $id = str_replace("np-", "", $item['item_id']);
 
@@ -2336,14 +2386,11 @@ class Order extends DB_Table
 
                         $debug_total                                                     += $item_total;
                         $items[]                                                         = [
-                            "item_id"     => 'np-'.$row['Order No Product Transaction Fact Key'],
-                            "description" => $row['Transaction Type'],
-                            "quantity"    => 1,
-                            //  "unit_price"  => $item_total,
-
+                            "item_id"      => 'np-'.$row['Order No Product Transaction Fact Key'],
+                            "description"  => $row['Transaction Type'],
+                            "quantity"     => 1,
                             "total_amount" => $item_total,
                             "tax_amount"   => $item_tax,
-
                         ];
                         $items_keys['np-'.$row['Order No Product Transaction Fact Key']] = 'np-'.$row['Order No Product Transaction Fact Key'];
                     }
@@ -2418,10 +2465,10 @@ class Order extends DB_Table
                 }
             }
 
-          //  print "   $debug_total\n";
+            //  print "   $debug_total\n";
 
-           // print_r($items);
-           // exit;
+           //  print_r($items);
+            // exit;
 
             //  if(count($reported_items)>0){
             //     print_r($reported_items);
@@ -2440,7 +2487,7 @@ class Order extends DB_Table
                 'PUT',
                 $this->db
             );
-            // print_r($res);
+           //  print_r($res);
 
         }
     }
