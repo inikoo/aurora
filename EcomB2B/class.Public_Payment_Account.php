@@ -13,15 +13,16 @@
 /**
  * Class Public_Payment_Account
  */
-class Public_Payment_Account {
+class Public_Payment_Account
+{
 
     /**
      * @var \PDO
      */
     public $db;
 
-    function __construct($arg1 = false, $arg2 = false, $_db = false) {
-
+    function __construct($arg1 = false, $arg2 = false, $_db = false)
+    {
         if (!$_db) {
             global $db;
             $this->db = $db;
@@ -42,14 +43,14 @@ class Public_Payment_Account {
         $this->get_data($arg1, $arg2);
 
         return;
-
     }
 
-    function get_data($tipo, $tag) {
-
+    function get_data($tipo, $tag)
+    {
         if ($tipo == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Payment Account Dimension` WHERE `Payment Account Key`=%d", $tag
+                "SELECT * FROM `Payment Account Dimension` WHERE `Payment Account Key`=%d",
+                $tag
             );
         } else {
             return;
@@ -61,8 +62,8 @@ class Public_Payment_Account {
     }
 
 
-    function create_payment($data) {
-
+    function create_payment($data)
+    {
         $data['Payment Account Key']          = $this->id;
         $data['Payment Account Code']         = $this->data['Payment Account Code'];
         $data['Payment Service Provider Key'] = $this->data['Payment Account Service Provider Key'];
@@ -91,51 +92,50 @@ class Public_Payment_Account {
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'        => 'payment_created',
-            'payment_key' => $payment->id,
-            'editor'      => $payment->editor
-        ), $account->get('Account Code'), $this->db
+            'au_housekeeping',
+            array(
+                'type'        => 'payment_created',
+                'payment_key' => $payment->id,
+                'editor'      => $payment->editor
+            ),
+            $account->get('Account Code'),
+            $this->db
         );
 
 
         return $payment;
-
     }
 
-    function get($key = '', $arg = '') {
-
-
+    function get($key = '', $arg = '')
+    {
         switch ($key) {
-/*
-            case 'Payment Account ID':
-                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_MERCHANT_ID : $this->data[$key]);
-            case 'Payment Account Login':
-                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PUBLIC_KEY : $this->data[$key]);
-            case 'Payment Account Password':
-                return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PRIVATE_KEY : $this->data[$key]);
-            case 'Payment Account Cart ID':
-                if (ENVIRONMENT == 'DEVEL') {
+            /*
+                        case 'Payment Account ID':
+                            return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_MERCHANT_ID : $this->data[$key]);
+                        case 'Payment Account Login':
+                            return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PUBLIC_KEY : $this->data[$key]);
+                        case 'Payment Account Password':
+                            return (ENVIRONMENT == 'DEVEL' ? BRAINTREE_SANDBOX_PRIVATE_KEY : $this->data[$key]);
+                        case 'Payment Account Cart ID':
+                            if (ENVIRONMENT == 'DEVEL') {
 
-                    if ($this->get('Payment Account Currency') == 'EUR') {
-                        return BRAINTREE_SANDBOX_CART_ID_EUR;
-                    } else {
-                        return BRAINTREE_SANDBOX_CART_ID_GBR;
+                                if ($this->get('Payment Account Currency') == 'EUR') {
+                                    return BRAINTREE_SANDBOX_CART_ID_EUR;
+                                } else {
+                                    return BRAINTREE_SANDBOX_CART_ID_GBR;
 
-                    }
+                                }
 
-                } else {
-                    return $this->data[$key];
-                }
+                            } else {
+                                return $this->data[$key];
+                            }
 
-*/
+            */
             case 'Valid Delivery Countries':
 
                 $_tmp = array();
 
                 if ($this->data['Payment Account Settings'] != '') {
-
-
                     $_tmp = preg_split('/\,/', $this->data['Payment Account Settings']);
                 }
 
@@ -146,8 +146,6 @@ class Public_Payment_Account {
 
 
                 if ($this->data['Payment Account Block'] == 'Paypal') {
-
-
                     /**
                      * @var $arg \Public_Order
                      */
@@ -169,25 +167,42 @@ class Public_Payment_Account {
                                     'currency'                 => $arg->get('Order Currency'),
                                     'Random'                   => password_hash(time(), PASSWORD_BCRYPT)
                                 )
-                            ), $key, 256
+                            ),
+                            $key,
+                            256
                         )
                     );
 
 
                     return $paypal_data;
+                }
+                elseif ($this->data['Payment Account Block'] == 'BTree') {
 
 
-                } elseif ($this->data['Payment Account Block'] == 'BTree') {
 
+                    if (BRAINTREE_ENV == 'sandbox') {
+                        $gateway = new Braintree_Gateway(
+                            [
+                                'environment' => 'sandbox',
+                                'merchantId'  => BRAINTREE_SANDBOX_MERCHANT_ID,
+                                'publicKey'   => BRAINTREE_SANDBOX_PUBLIC_KEY,
+                                'privateKey'  => BRAINTREE_SANDBOX_PRIVATE_KEY
+                            ]
+                        );
 
-                    $gateway = new Braintree_Gateway(
-                        [
-                            'environment' => BRAINTREE_ENV,
-                            'merchantId'  => $this->get('Payment Account ID'),
-                            'publicKey'   => $this->get('Payment Account Login'),
-                            'privateKey'  => $this->get('Payment Account Password')
-                        ]
-                    );
+                    } else {
+                        $gateway = new Braintree_Gateway(
+                            [
+                                'environment' => 'production',
+                                'merchantId'  => $this->get('Payment Account ID'),
+                                'publicKey'   => $this->get('Payment Account Login'),
+                                'privateKey'  => $this->get('Payment Account Password')
+                            ]
+                        );
+
+                    }
+
+                  //  print_r($gateway);
 
 
                     $credit_cards = array();
@@ -199,15 +214,15 @@ class Public_Payment_Account {
 
 
                         foreach ($braintree_customer->creditCards as $braintree_credit_card) {
-
-
                             $token = AESEncryptCtr(
                                 json_encode(
                                     array(
                                         't' => $braintree_credit_card->token,
                                         's' => mt_rand(1, 10000)
                                     )
-                                ), md5('CCToken'.CKEY), 256
+                                ),
+                                md5('CCToken'.CKEY),
+                                256
                             );
 
                             $result = $gateway->paymentMethodNonce()->create($braintree_credit_card->token);
@@ -222,10 +237,7 @@ class Public_Payment_Account {
                                 'nonce'                     => $result->paymentMethodNonce->nonce
                             );
                         }
-
-
                     } catch (Exception $e) {
-
                     }
 
 
@@ -242,12 +254,9 @@ class Public_Payment_Account {
 
 
                     return $_data;
-
-
                 }
 
                 break;
-
         }
 
 
@@ -260,20 +269,18 @@ class Public_Payment_Account {
         }
 
         return false;
-
     }
 
 
-    function get_settings() {
+    function get_settings()
+    {
         return json_decode($this->data['Payment Account Settings'], true);
-
     }
 
 
-    function get_field_label($field) {
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Payment Account Code':
                 $label = _('code');
                 break;
@@ -305,11 +312,9 @@ class Public_Payment_Account {
 
             default:
                 $label = $field;
-
         }
 
         return $label;
-
     }
 
 

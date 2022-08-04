@@ -77,8 +77,7 @@ function register($db, $website, $data, $editor) {
 
     if ($store->id) {
 
-
-        if ($website->settings('captcha_server') != '') {
+        if ($website->settings('captcha_server') != ''  and ENVIRONMENT!='DEVEL') {
 
             if (isset($raw_data['captcha']) && !empty($raw_data['captcha'])) {
 
@@ -136,6 +135,9 @@ function register($db, $website, $data, $editor) {
             'Customer Type by Activity'    => ($website->get('Website Registration Type') == 'ApprovedOnly' ? 'ToApprove' : 'Active')
 
         );
+
+
+
 
         if (array_key_exists('locality', $raw_data)) {
             $customer_data['Customer Contact Address locality'] = $raw_data['locality'];
@@ -240,6 +242,16 @@ function register($db, $website, $data, $editor) {
             }
 
 
+
+            if (array_key_exists('hokodo-company-id', $raw_data)  and  $raw_data['hokodo-company-id']!='') {
+                try {
+                    create_hokodo_organization($customer, $raw_data['hokodo-company-id']);
+                }catch(Exception $e){
+                    //
+                }
+            }
+
+
             echo json_encode(
                 array(
                     'state' => 200,
@@ -273,3 +285,59 @@ function register($db, $website, $data, $editor) {
 
 }
 
+
+function create_hokodo_organization($customer,$hokodo_company_id){
+    include_once 'hokodo/api_call.php';
+
+    $website = get_object('Website', $_SESSION['website_key']);
+    $api_key = $website->get_api_key('Hokodo');
+
+    $account = get_object('Account', 1);
+
+    $unique_id  = strtolower($account->get('Account Code')).'-'.$customer->id;
+
+    $email = $customer->get('Customer Main Plain Email');
+
+    $raw_results = api_post_call('organisations', array(
+        "unique_id"  => $unique_id,
+        "company"    => $hokodo_company_id,
+        'registered' => date('c', strtotime($customer->get('Customer First Contacted Date')))
+    ),                           $api_key);
+    $raw_results0=$raw_results;
+    //print_r($raw_results0);
+
+    if(!empty($raw_results['id'])) {
+        $org_id = $raw_results['id'];
+
+        $data    = array(
+            "name"          => $customer->get('Customer Main Contact Name'),
+            "email"         => trim($email),
+            "phone"         => trim($customer->get_telephone()),
+            'registered'    => date('c', strtotime($customer->get('Customer First Contacted Date'))),
+            'organisations' => []
+        );
+        //$user_id = false;
+
+        $raw_results  = api_post_call('users', $data, $api_key);
+        $raw_results1 = $raw_results;
+        //print_r($raw_results1);
+        $user_id     = $raw_results['id'];
+        $data        = [
+            'id'   => $org_id,
+            'role' => 'member'
+        ];
+        $raw_results = api_post_call('users/'.$user_id.'/organisations', $data, $api_key);
+
+        //print_r($raw_results);
+        $customer->fast_update(
+            [
+                'hokodo_co_id'   => $hokodo_company_id,
+                'hokodo_org_id'  => $org_id,
+                'hokodo_user_id' => $user_id,
+                'hokodo_data'    => json_encode(['name' => $customer->get('Customer Company Name')]),
+                'hokodo_type'    => 'registered-company'
+
+            ]
+        );
+    }
+}

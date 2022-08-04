@@ -265,6 +265,9 @@ if (!$webpage->id or ($webpage->get('Webpage Code') == 'reset_pwd.sys' and !isse
 $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
 $website_settings = $website->settings;
+if(ENVIRONMENT == 'DEVEL'){
+    unset($website_settings['captcha_client']);
+}
 
 
 $theme = $website->get('Website Theme');
@@ -454,8 +457,12 @@ if ($webpage->get('Webpage Scope') == 'Product') {
 
 }
 
+if ($webpage->get('Webpage Code') == 'register.sys' ) {
+    $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
+    $smarty->assign('search_company_valid_countries', json_encode($website->hokodo_search_company_valid_countries()));
 
-if ($webpage->get('Webpage Code') == 'register.sys' or $webpage->get('Webpage Code') == 'profile.sys') {
+}
+if ( $webpage->get('Webpage Code') == 'profile.sys') {
     $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
 }

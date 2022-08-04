@@ -16,6 +16,39 @@
 
 {if $type=='company_fork'}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <style>
+        .autocomplete-suggestions {
+
+            border: 1px solid #999;
+            background: #FFF;
+            overflow: auto;
+        }
+
+        .autocomplete-suggestion {
+            padding: 5px 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            cursor: pointer
+        }
+
+        .autocomplete-selected {
+            background: #F0F0F0;
+        }
+
+        .autocomplete-suggestions strong {
+            font-weight: normal;
+            color: #3399FF;
+        }
+
+        .autocomplete-group {
+            padding: 2px 5px;
+        }
+
+        .autocomplete-group strong {
+            display: block;
+            border-bottom: 1px solid #000;
+        }
+    </style>
 {/if}
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{$data.type}  {if !$data.show}hide{/if}"
@@ -24,83 +57,86 @@
 
     <div class="reg_form">
         {if $type=='company_fork'}
+            <form id="select_main_country" class="sky-form  {if $type!='company_fork'}hide{/if}  ">
+                <header id="_title">{$data.labels._title}</header>
 
-        <form id="select_main_country" class="sky-form  {if $type!='company_fork'}hide{/if}  ">
-            <header id="_title">{$data.labels._title}</header>
-
-            <fieldset class="">
-
-
-                <div style="margin:0px 15px 15px 15px">{if empty($data.labels._main_select_country_title)}Select country{else}{$data.labels._main_select_country_title}{/if}</div>
+                <fieldset class="">
 
 
-                <section class="col col-6">
-
-                    <label class="select">
-                        <select id="main_country_select" name="country">
-                            <option value="0" selected
-                                    disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
-
-                            {foreach from=$countries item=country}
-                                <option value="{$country.2alpha}"
-                                        {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
-                            {/foreach}
+                    <div style="margin:0px 15px 15px 15px">{if empty($data.labels._main_select_country_title)}Select country{else}{$data.labels._main_select_country_title}{/if}</div>
 
 
-                            <select><i></i>
-                    </label>
-                </section>
+                    <section class="col col-6">
 
-                <section class="col col-6">
-                    <button id="company_fork_step_2" style="position: relative;top:-12px;float: none" class="button">{if empty($data.labels._main_select_country_button)}Continue{else}{$data.labels._main_select_country_button}{/if} <i style="margin-left: 10px" class="fa fa-arrow-right"></i></button>
+                        <label class="select">
+                            <select id="main_country_select" name="country">
+                                <option value="0" selected
+                                        disabled>{if isset($labels.address_country) and $labels.address_country!=''}{$labels.address_country}{else}{t}Country{/t}{/if}</option>
 
-                </section>
-
-            </fieldset>
-
-        </form>
-
-        <form id="select_type_company" class="sky-form hide">
-            <header id="_title">{$data.labels._title}</header>
-
-            <fieldset class="">
-                <div style="margin:0px 15px 15px 15px">{if empty($data.labels._select_company)}Select trader type{else}{$data.labels._select_company}{/if}</div>
+                                {foreach from=$countries item=country}
+                                    <option value="{$country.2alpha}"
+                                            {if $country.2alpha==$selected_country}selected{/if} >{$country.name}</option>
+                                {/foreach}
 
 
-                <section class="col col-6">
-                    <button style="float: none" id="sole_trader_selected" class=" button">{if empty($data.labels._select_company_sole_trader)}Sole trader{else}{$data.labels._select_company_sole_trader}{/if}</button>
+                                <select><i></i>
+                        </label>
+                    </section>
 
-                </section>
-                <section class="col col-6">
-                    <button style="float: none" id="company_selected" class="button">{if empty($data.labels._select_company_company)}Company{else}{$data.labels._select_company_company}{/if}</button>
-                </section>
+                    <section class="col col-6">
+                        <button id="company_fork_step_2" style="position: relative;top:-12px;float: none"
+                                class="button">{if empty($data.labels._main_select_country_button)}Continue{else}{$data.labels._main_select_country_button}{/if}
+                            <i style="margin-left: 10px" class="fa fa-arrow-right"></i></button>
 
-            </fieldset>
+                    </section>
 
-        </form>
+                </fieldset>
 
-        <form id="select_company" class="sky-form hide">
-            <header id="_title">{$data.labels._title}</header>
+            </form>
+            <form id="select_type_company" class="sky-form hide">
+                <header id="_title">{$data.labels._title}</header>
 
-            <fieldset class="">
-                <div style="margin:0px 15px 15px 15px;">
-                    {if empty($data.labels._search_your_company)}Search for your company{else}{$data.labels._search_your_company}{/if}</div>
+                <fieldset class="">
+                    <div style="margin:0px 15px 15px 15px">{if empty($data.labels._select_company)}Select trader type{else}{$data.labels._select_company}{/if}</div>
 
-                <section class="col">
 
-                    <div style="">
-                        <select style="width:100%" class="search-company"></select>
-                    </div>
+                    <section class="col col-6">
+                        <button style="float: none" id="sole_trader_selected"
+                                class=" button">{if empty($data.labels._select_company_sole_trader)}Sole trader{else}{$data.labels._select_company_sole_trader}{/if}</button>
 
-                    <div style="margin-top:20px;font-size: small">
-                        {if empty($data.labels._continue_no_search)}If you can not find your company click{else}{$data.labels._continue_no_search}{/if} <span id="bypass_search_company" style="font-weight: 800;cursor: pointer;text-decoration: underline">{if empty($data.labels._continue_no_search_click_here)}here{else}{$data.labels._continue_no_search_click_here}{/if}</span>
-                    </div>
+                    </section>
+                    <section class="col col-6">
+                        <button style="float: none" id="company_selected"
+                                class="button">{if empty($data.labels._select_company_company)}Company{else}{$data.labels._select_company_company}{/if}</button>
+                    </section>
 
-                </section>
+                </fieldset>
 
-            </fieldset>
+            </form>
+            <form id="select_company" class="sky-form hide">
+                <header id="_title">{$data.labels._title}</header>
 
-        </form>
+                <fieldset class="">
+                    <div style="margin:0px 15px 15px 15px;">
+                        {if empty($data.labels._search_your_company)}Search for your company{else}{$data.labels._search_your_company}{/if}</div>
+
+                    <section class="col">
+
+                        <div style="">
+                            <select style="width:100%" class="search-company"></select>
+                        </div>
+
+                        <div style="margin-top:20px;font-size: small">
+                            {if empty($data.labels._continue_no_search)}If you can not find your company click{else}{$data.labels._continue_no_search}{/if}
+                            <span id="bypass_search_company"
+                                  style="font-weight: 800;cursor: pointer;text-decoration: underline">{if empty($data.labels._continue_no_search_click_here)}here{else}{$data.labels._continue_no_search_click_here}{/if}</span>
+                        </div>
+
+                    </section>
+
+                </fieldset>
+
+            </form>
         {/if}
 
         <form id="registration_form" class="sky-form  {if $type=='company_fork'}hide{/if}  ">
@@ -142,6 +178,22 @@
 
             <fieldset>
 
+
+                <section id="selected_company_data" class="hide">
+                    <input type="hidden" name="hokodo-company-id" val="">
+                    <div>
+                        <i class="far fa-store-alt"></i> <span style="font-weight: bold"
+                                                               id="selected_company_name"></span> <span
+                                style="margin-left: 5px" id="selected_company_registration_number"></span> <span
+                                style="margin-left: 5px" id="selected_company_postal_code"></span>
+                    </div>
+                    <div style="margin-top:5px;font-size: small">
+                        {if empty($data.labels._reset_selected_company)}If is not the correct company click{else}{$data.labels._reset_selected_company}{/if}
+                        <span id="reset_search_company"
+                              style="font-weight: 800;cursor: pointer;text-decoration: underline">{if empty($data.labels._reset_selected_company_click_here)}here{else}{$data.labels._reset_selected_company_click_here}{/if}</span>
+                    </div>
+
+                </section>
 
                 <section id="company_field">
                     <label class="input">
@@ -193,6 +245,21 @@
                 </div>
 
             </fieldset>
+
+            <fieldset id="search_lokate_fieldset"  class=""  style="position:relative">
+
+                <section>
+                    <div>Address Lookup</div>
+                    <label for="search_lokate" class="input">
+                        <input data-container="" id="search_lokate" type="text" name="search_lokate" autocomplete="off"
+
+                               placeholder="{if !empty($labels.address_search) }{$labels.address_search}{else}{t}Address Lookup{/t}{/if}">
+                        <b class="tooltip tooltip-bottom-right">{if !empty($labels.address_search) }{$labels.address_search}{else}{t}Address Lookup{/t}{/if}</b>
+                    </label>
+                </section>
+
+            </fieldset>
+
 
             <fieldset id="address_fields" style="position:relative">
 
@@ -386,8 +453,52 @@
 
 {if $type=='company_fork'}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="js/libs/jquery.autocomplete.js"></script>
     <script>
 
+
+        $('#search_lokate').devbridgeAutocomplete({
+            serviceUrl: 'ar_web_search_address.php',
+            minChars: 2,
+            params: {
+                tipo: 'search',
+                preserveInput: true,
+                showNoSuggestionNotice: true,
+                limit: 30,
+                country: $('#main_country_select').val(),
+                container: ''
+            },
+            onSearchComplete: function (suggestions) {
+                $('#search_lokate').data('container', '')
+
+            },
+
+            onSearchStart: function (params) {
+                params.container = $('#search_lokate').data('container');
+                Autocomplete = $(this).data('autocomplete');
+
+                // if (Autocomplete.suggestions.length > 0) {
+
+                $('.autocomplete-suggestions').html(' Searching...').show();
+                //  }
+            },
+
+            onSelect: function (suggestion) {
+                console.log('You selected: ' + suggestion.value);
+                console.log(suggestion.data)
+
+                if (suggestion.data.type !== 'Address') {
+                    $('#search_lokate').data('container', suggestion.data.id).val(suggestion.data.value)
+
+                    $('#search_lokate').devbridgeAutocomplete().onValueChange();
+
+
+                } else {
+                    console.log('select address')
+                }
+
+            }
+        });
 
 
         $('.search-company').select2({
@@ -399,7 +510,7 @@
                 allowClear: true,
                 data: function (params) {
                     let query = {
-                        tipo:'search_company',
+                        tipo: 'search_company',
                         name: params.term,
                         country: $('#main_country_select').val()
                     };
@@ -417,25 +528,40 @@
 
             console.log(data_company)
 
+
+            $('#selected_company_data').removeClass('hide')
+
+            $('#selected_company_data #selected_company_name').html(data_company.name)
+            $('#selected_company_data #selected_company_postal_code').html(data_company.postcode)
+
+
+            $('#company_field').addClass('hide')
+
+
+            $('[name="hokodo-company-id"]').val(data_company.id)
+
             $('[name="locality"]').val(data_company.city)
             $('[name="postalCode"]').val(data_company.postcode)
 
-            if(data_company.email){
+            if (data_company.email) {
                 $('[name="email"]').val(data_company.email)
             }
-            if(data_company.phone){
+            if (data_company.phone) {
                 $('[name="tel"]').val(data_company.phone)
             }
             $('[name="organization"]').val(data_company.name)
 
 
-
             for (const identifier of data_company.identifiers) {
-                if(identifier.idtype==="reg_number"){
+                if (identifier.idtype === "reg_number") {
                     $('[name="registration_number"]').val(identifier.value)
+                    $('#selected_company_data #selected_company_registration_number').html(identifier.value)
+
                 }
-                if(identifier.idtype==="vat_number"){
+                if (identifier.idtype === "vat_number") {
                     $('[name="tax_number"]').val(identifier.value)
+                    $('#selected_company_data #selected_company_registration_number').html(identifier.value)
+
                 }
             }
 
@@ -451,24 +577,28 @@
 
 
             $.ajax({
-                url: "/ar_web_parse_address.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false,
+                url: "/ar_web_parse_address.php",
+                type: 'POST',
+                data: ajaxData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
                 complete: function () {
-                }, success: function (data) {
+                },
+                success: function (data) {
 
-                   if(data.status===200){
-                       Object.keys(data['address_fields']).forEach(key => {
-                           $('[name="'+key+'"]').val(data['address_fields'][key])
+                    if (data.status === 200) {
+                        Object.keys(data['address_fields']).forEach(key => {
+                            $('[name="' + key + '"]').val(data['address_fields'][key])
 
-                       });
+                        });
 
-                   }
-
-
-
+                    }
 
 
-
-                }, error: function () {
+                },
+                error: function () {
 
 
                 }
@@ -489,47 +619,65 @@
 
         $("#select_type_company").on("click", "#company_selected", function () {
             $('#select_type_company').addClass('hide')
-
-
             const country=$('#main_country_select').val();
-
-
-
-
-
-
-
-
-
-
-            if(country=='GB' || country=='ES' || country=='FR' || country=='NL' || country=='BE'  ){
+            const valid_countries={$search_company_valid_countries};
+            if( inArray(country,valid_countries)     ){
                 $('#select_company').removeClass('hide')
             }else{
                 $('#registration_form').removeClass('hide')
             }
 
-
-
-
         });
 
+        function inArray(needle, haystack) {
+            const length = haystack.length;
+            for(let i = 0; i < length; i++) {
+                if(haystack[i] == needle) return true;
+            }
+            return false;
+        }
 
         $("#select_company").on("click", "#bypass_search_company", function () {
             $('#select_company').addClass('hide')
 
             $('#registration_form').removeClass('hide')
+            $(".search-company").val('').change();
 
 
         });
 
+        $("#selected_company_data").on("click", "#reset_search_company", function () {
+            $('#select_company').removeClass('hide')
+            $(".search-company").val('').change();
 
+
+            $('#registration_form').addClass('hide')
+
+            $('#selected_company_data').addClass('hide')
+            $('#company_field').removeClass('hide')
+
+            $('#selected_company_data #selected_company_name').html('')
+            $('#selected_company_data #selected_company_postal_code').html('')
+            $('#selected_company_data #selected_company_registration_number').html('')
+
+            $('[name="hokodo-company-id"]').val('')
+
+            $('[name="locality"]').val('')
+            $('[name="postalCode"]').val('')
+            $('[name="email"]').val('')
+            $('[name="tel"]').val('')
+            $('[name="organization"]').val('')
+            $('[name="registration_number"]').val('')
+            $('[name="tax_number"]').val('')
+
+
+        });
 
 
         $("#select_type_company").on("click", "#sole_trader_selected", function () {
 
             $('#company_field').addClass('hide')
             $('#registration_number_field').addClass('hide')
-
 
 
             $('#select_type_company').addClass('hide')

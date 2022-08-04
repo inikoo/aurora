@@ -455,29 +455,24 @@
 
         $("#select_type_company").on("click", "#company_selected", function () {
             $('#select_type_company').addClass('hide')
-
-
             const country=$('#main_country_select').val();
-
-
-
-
-
-
-
-
-
-
-            if(country=='GB' || country=='ES' || country=='FR' || country=='NL' || country=='BE'  ){
+            const valid_countries={$search_company_valid_countries};
+            if( inArray(country,valid_countries)     ){
                 $('#select_company').removeClass('hide')
             }else{
                 $('#registration_form').removeClass('hide')
             }
 
-
-
-
         });
+
+
+        function inArray(needle, haystack) {
+            const length = haystack.length;
+            for(let i = 0; i < length; i++) {
+                if(haystack[i] == needle) return true;
+            }
+            return false;
+        }
 
 
         $("#select_company").on("click", "#bypass_search_company", function () {

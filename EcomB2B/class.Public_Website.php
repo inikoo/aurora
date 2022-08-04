@@ -592,6 +592,20 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         return $payment_account__key;
     }
 
+    function hokodo_search_company_valid_countries()
+    {
+        $countries = '';
+        if ($payment_account_key = $this->get_payment_account__key('Hokodo')) {
+            $payment_account = get_object('payment_account', $payment_account_key);
+            if ($payment_account->id and $payment_account->get('Payment Account Settings')) {
+                $countries = explode(',', $payment_account->get('Payment Account Settings'));
+            }
+        }
+
+        return $countries;
+    }
+
+
 }
 
 
