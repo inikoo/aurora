@@ -52,11 +52,11 @@ if ($result = $db->query($sql)) {
         $customer = new Customer('id', $row['Customer Key']);
 
 
-        $customer->update_orders();
+      //  $customer->update_orders();
         $customer->update_activity();
 
-        $customer->update_portfolio();
-        $customer->update_invoices();
+       // $customer->update_portfolio();
+       // $customer->update_invoices();
        // $customer->update_last_dispatched_order_key();
         //$customer->update_invoices();
         //$customer->update_payments();

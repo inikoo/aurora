@@ -43,6 +43,10 @@ function get_elements_option($option) {
                         'label'    => _('Lost'),
                         'selected' => true
                     ),
+                    'NeverOrder'      => array(
+                        'label'    => _('Never ordered'),
+                        'selected' => true
+                    ),
                 )
 
 

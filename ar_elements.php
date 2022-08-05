@@ -560,8 +560,6 @@ function fulfilment_assets($db, $data, $user)
     }
 
 
-
-
     $response = array(
         'state'            => 200,
         'elements_numbers' => $elements_numbers
@@ -1019,10 +1017,10 @@ function get_fixed_deals_element_numbers($db, $data, $user)
 {
     $elements_numbers = array(
         'status' => array(
-            'Waiting' => 0,
-            'Active' => 0,
+            'Waiting'   => 0,
+            'Active'    => 0,
             'Suspended' => 0,
-            'Finish' => 0,
+            'Finish'    => 0,
         ),
 
 
@@ -1057,7 +1055,7 @@ function get_fixed_deals_element_numbers($db, $data, $user)
         "select count(*) as number,`Deal Status` as element from `Deal Dimension` D $where  group by `Deal Status` "
     );
 
-   // print $sql;
+    // print $sql;
 
     foreach ($db->query($sql) as $row) {
         $elements_numbers['status'][$row['element']] += $row['number'];
@@ -1673,11 +1671,12 @@ function get_customers_element_numbers($db, $data)
             'No'  => 0
         ),
         'activity' => array(
-            'Rejected'  => 0,
-            'ToApprove' => 0,
-            'Active'    => 0,
-            'Losing'    => 0,
-            'Lost'      => 0
+            'Rejected'   => 0,
+            'ToApprove'  => 0,
+            'Active'     => 0,
+            'Losing'     => 0,
+            'Lost'       => 0,
+            'NeverOrder' => 0
         ),
         'type'     => array(
             'Normal'  => 0,
@@ -4346,7 +4345,6 @@ function get_campaign_order_recursion_element_numbers($db, $data, $user)
         )
 
     );
-
 
 
     $sql = "select count(*) as number,`Deal Component Status` as element from `Deal Component Dimension` D where  `Deal Component Campaign Key`=? group by `Deal Component Status` ";

@@ -2807,7 +2807,7 @@ class Customer extends Subject
                 $type_by_activity = 'Losing';
             }
             if (strtotime('now') - strtotime($this->data['Customer First Contacted Date']) > $store->data['Store Lost Customer Interval']) {
-                $type_by_activity   = 'Lost';
+                $type_by_activity   = 'NeverOrder';
                 $is_customer_active = 'No';
             }
 
