@@ -1,0 +1,1 @@
+ALTER TABLE `Customer Dimension` CHANGE `Customer Type by Activity` `Customer Type by Activity` enum('Rejected','ToApprove','Active','Losing','Lost','NeverOrder') NOT NULL DEFAULT 'Active' COMMENT '';
