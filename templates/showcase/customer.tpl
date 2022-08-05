@@ -200,12 +200,13 @@
 
         {if $customer->get('Customer Orders')>0}
             <table class="overview">
+
                 {if $customer->get('Customer Type by Activity')=='Lost'}
                     <tr>
                         <td><span style="color:white;background:black;padding:1px 10px">{t}Lost Customer{/t}</span>
                         </td>
                     </tr>
-                {/if} {if $customer->get('Customer Type by Activity')=='Losing'}
+                {/if}{if $customer->get('Customer Type by Activity')=='Losing'}
                     <tr>
                         <td>
                             <span style="color:white;background:black;padding:1px 10px">{t}Warning!, loosing customer{/t}</span>
@@ -228,6 +229,16 @@
                         </p>
                     </td>
                 </tr>
+            </table>
+        {else}
+            <table class="overview">
+                {if $customer->get('Customer Type by Activity')=='NeverOrder'}
+                    <tr>
+                        <td><span style="color:white;background:black;padding:1px 10px">{t}Customer register but never ordered{/t}</span>
+                        </td>
+                    </tr>
+                {/if}
+
             </table>
         {/if}
 
