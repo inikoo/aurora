@@ -29,7 +29,7 @@ $print_est = true;
 
 print date('l jS \of F Y h:i:s A')."\n";
 
-$where ='';
+$where =' and  `Customer Type by Activity`="Lost"  ';
 
 $sql = sprintf("select count(*) as num from `Customer Dimension` left join `Store Dimension` on (`Store Key`=`Customer Store Key`) $where");
 if ($result = $db->query($sql)) {
