@@ -1,0 +1,1 @@
+ALTER TABLE `Store Dimension` ADD COLUMN `Store Lost Contacts With No Orders` int unsigned NOT NULL DEFAULT '0' COMMENT '' AFTER `Store Losing Contacts With Orders`;
