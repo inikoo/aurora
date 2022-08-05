@@ -75,6 +75,7 @@
                     {foreach from=$payment_accounts item=payment_account key=key}
 
                         {if $payment_account.object->get('Block')=='BTree' or  $payment_account.object->get('Block')=='BTreePaypal' or  $payment_account.object->get('Block')=='Checkout'  }
+                        {if $payment_account.hide!='yes'}
                         <li>
                             <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self" data-analytics_label="{$payment_account.analytics_label}" class="payment_option_chooser" >
 
@@ -83,6 +84,7 @@
                                 <span>{$payment_account.tab_label}</span>
                             </a>
                         </li>
+                        {/if}
                     {/if}
                     {/foreach}
 
