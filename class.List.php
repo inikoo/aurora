@@ -286,6 +286,10 @@ class SubjectList extends DB_Table {
 
 
 
+        if(empty($data['Customer Send Basket Emails'])){
+            $data['Customer Send Basket Emails']='';
+        }
+
 
 
         if ($data['Customer Status Active'] == 'No' or $data['Customer Status Loosing'] == 'No' or $data['Customer Status Lost'] == 'No') {
@@ -392,7 +396,7 @@ class SubjectList extends DB_Table {
 <i title="%s" class="%s fal fa-fw fa-clipboard" aria-hidden="true"></i>',
             _('Newsletters'), ($data['Customer Send Newsletter'] == 'No' ? 'discreet error' : ''),
             _('Marketing by email'), ($data['Customer Send Email Marketing'] == 'No' ? 'discreet error' : ''),
-            _('Basket engagement'), ($data['Customer Send Basket Emails'] == 'No' ? 'discreet error' : ''),
+            _('Basket engagement'), (   $data['Customer Send Basket Emails'] == 'No' ? 'discreet error' : ''),
             _('Marketing by post'), ($data['Customer Send Postal Marketing'] == 'No' ? 'discreet error' : '')
         );
 

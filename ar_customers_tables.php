@@ -204,24 +204,30 @@ function customers($_data, $db, $user) {
                 $delivery_address = $data['Customer Delivery Address Formatted'];
             }
 
+            //enum('Rejected','ToApprove','Active','Losing','Lost','NeverOrder')
             switch ($data['Customer Type by Activity']) {
                 case 'ToApprove':
                     $activity = _('To be approved');
                     break;
-                case 'Inactive':
-                    $activity = _('Lost');
+                case 'Rejected':
+                    $activity = _('Rejected');
                     break;
                 case 'Active':
                     $activity = _('Active');
                     break;
-                case 'Prospect':
-                    $activity = _('Prospect');
+                case 'Losing':
+                    $activity = _('Losing');
+                    break;
+                case 'Lost':
+                    $activity = _('Lost');
+                    break;
+                case 'NeverOrder':
+                    $activity = _('Never order');
                     break;
                 default:
                     $activity = $data['Customer Type by Activity'];
                     break;
             }
-
 
             if ($parameters['parent'] == 'store') {
                 $link_format  = '/customers/%d/%d';

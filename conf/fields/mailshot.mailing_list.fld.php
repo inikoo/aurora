@@ -72,7 +72,9 @@ $object_fields[] = array(
                 .'<span id="Customer_Status_Loosing_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Loosing" class="button value valid" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
                 ._('Loosing').'</span></span>'
                 .'<span id="Customer_Status_Lost_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_Lost" class="value valid button" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
-                ._('Lost').'</span></span>',
+                ._('Lost').'</span></span>'
+                     .'<span id="Customer_Status_NeverOrder_field" onclick="toggle_list_elements(this)"  field_type="elements"  field="Customer_Status_NeverOrder" class="value valid button" style="margin-right:40px"><i class=" far fa-fw fa-check-square" aria-hidden="true"></i> <span class="unselectable">'
+            ._('Never order').'</span></span>',
             'label'           => _('Customer status'),
             'required'        => false,
             'type'            => ''

@@ -21,7 +21,7 @@ function parse_customer_list($data, $db) {
     $with_otf = false;
 
     $where = '';
-    if ($data['Customer Status Active'] == 'No' or $data['Customer Status Loosing'] == 'No' or $data['Customer Status Lost'] == 'No') {
+    if ($data['Customer Status Active'] == 'No' or $data['Customer Status Loosing'] == 'No' or $data['Customer Status Lost'] == 'No'  or $data['Customer Status NeverOrder'] == 'No') {
         $tmp = ' and `Customer Type by Activity` in ( ';
         if ($data['Customer Status Active'] == 'Yes') {
             $tmp .= ' "Active", ';
@@ -33,11 +33,16 @@ function parse_customer_list($data, $db) {
             $tmp .= ' "Lost" ';
         }
 
+        if ($data['Customer Status NeverOrder'] == 'Yes') {
+            $tmp .= ' "NeverOrder" ';
+        }
+
         $tmp = preg_replace('/\, $/', '', $tmp);
 
         $tmp   .= ')';
         $where .= $tmp;
     }
+
 
 
     if ($data['Register Date From'] != '' or $data['Register Date To'] != '') {
@@ -324,7 +329,6 @@ function parse_customer_list($data, $db) {
 
     }
 
-    //print $where;
     return array(
         $table,
         $where,
@@ -333,5 +337,3 @@ function parse_customer_list($data, $db) {
 
 }
 
-
-?>
