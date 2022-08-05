@@ -1723,17 +1723,18 @@ class Store extends DB_Table
 
     function update_customers_data()
     {
-        $this->data['Store Contacts']                    = 0;
-        $this->data['Store New Contacts']                = 0;
-        $this->data['Store Contacts With Orders']        = 0;
-        $this->data['Store Active Contacts']             = 0;
-        $this->data['Store Losing Contacts']             = 0;
-        $this->data['Store Lost Contacts']               = 0;
-        $this->data['Store New Contacts With Orders']    = 0;
-        $this->data['Store Active Contacts With Orders'] = 0;
-        $this->data['Store Losing Contacts With Orders'] = 0;
-        $this->data['Store Lost Contacts With Orders']   = 0;
-        $this->data['Store Contacts Who Visit Website']  = 0;
+        $this->data['Store Contacts']                     = 0;
+        $this->data['Store New Contacts']                 = 0;
+        $this->data['Store Contacts With Orders']         = 0;
+        $this->data['Store Active Contacts']              = 0;
+        $this->data['Store Losing Contacts']              = 0;
+        $this->data['Store Lost Contacts']                = 0;
+        $this->data['Store New Contacts With Orders']     = 0;
+        $this->data['Store Active Contacts With Orders']  = 0;
+        $this->data['Store Losing Contacts With Orders']  = 0;
+        $this->data['Store Lost Contacts With Orders']    = 0;
+        $this->data['Store Contacts Who Visit Website']   = 0;
+        $this->data['Store Lost Contacts With No Orders'] = 0;
 
 
         $sql = sprintf(
@@ -1809,6 +1810,17 @@ class Store extends DB_Table
 
 
         $sql = sprintf(
+            "SELECT count(*) AS num   FROM   `Customer Dimension` WHERE `Customer Store Key`=%d AND `Customer With Orders`='No'  and `Customer Type by Activity`='NeverOrder' ",
+            $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store Lost Contacts With No Orders'] = $row['num'];
+            }
+        }
+
+
+        $sql = sprintf(
             "UPDATE `Store Dimension` SET
                      `Store Contacts`=%d,
                      `Store New Contacts`=%d,
@@ -1821,7 +1833,8 @@ class Store extends DB_Table
                      `Store Active Contacts With Orders`=%d,
                      `Store Losing Contacts With Orders`=%d,
                      `Store Lost Contacts With Orders`=%d,
-                     `Store Contacts Who Visit Website`=%d
+                     `Store Contacts Who Visit Website`=%d,
+                       `Store Lost Contacts With No Orders`=%d
                      WHERE `Store Key`=%d  ",
             $this->data['Store Contacts'],
             $this->data['Store New Contacts'],
@@ -1835,7 +1848,7 @@ class Store extends DB_Table
             $this->data['Store Losing Contacts With Orders'],
             $this->data['Store Lost Contacts With Orders'],
             $this->data['Store Contacts Who Visit Website'],
-
+            $this->data['Store Lost Contacts With No Orders'],
             $this->id
         );
 
@@ -4733,16 +4746,13 @@ class Store extends DB_Table
             new_housekeeping_fork(
                 'au_housekeeping',
                 array(
-                    'type'             => 'set_store_pricing_policy',
-                    'store_key'     => $this->id,
-                    'editor'           => $this->editor
+                    'type'      => 'set_store_pricing_policy',
+                    'store_key' => $this->id,
+                    'editor'    => $this->editor
 
                 ),
                 DNS_ACCOUNT_CODE
             );
-
-
-
         }
     }
 

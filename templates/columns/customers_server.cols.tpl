@@ -80,8 +80,20 @@ defaultOrder:1,
 
 cell: "integer",
 headerCell: integerHeaderCell
+}, {
+name: "never_order",
+label:"{t}Never order{/t}",
+editable: false,
+sortType: "toggle",
+defaultOrder:1,
+{if $sort_key=='never_order'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: "integer",
+headerCell: integerHeaderCell
 }
 
 
 ]
-function change_table_view(view,save_state){}
+function change_table_view(view,save_state){
+
+}

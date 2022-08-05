@@ -115,13 +115,11 @@ switch ($tipo) {
             'resp'  => 'Tipo not found '.$tipo
         );
         echo json_encode($response);
-
 }
 
 
-function customers($_data, $db, $user) {
-
-
+function customers($_data, $db, $user)
+{
     if ($_data['parameters']['parent'] == 'favourites') {
         $rtext_label = 'customer who favored';
     } else {
@@ -147,7 +145,6 @@ function customers($_data, $db, $user) {
 
     if ($_data['parameters']['parent'] == 'campaign') {
         $campaign = get_object('campaign', $_data['parameters']['parent_key']);
-
     }
 
 
@@ -157,10 +154,7 @@ function customers($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             if ($parameters['parent'] == 'category') {
                 $category_other_value = $data['Other Note'];
             } else {
@@ -172,7 +166,8 @@ function customers($_data, $db, $user) {
                 $last_order_date = '';
             } else {
                 $last_order_date = strftime(
-                    "%e %b %y", strtotime($data['Customer Last Order Date'].' +0:00')
+                    "%e %b %y",
+                    strtotime($data['Customer Last Order Date'].' +0:00')
                 );
             }
 
@@ -180,9 +175,10 @@ function customers($_data, $db, $user) {
                 $last_invoice_date = '';
             } else {
                 $last_invoice_date = strftime(
-                    "%e %b %y", strtotime(
-                                  $data['Customer Last Invoiced Order Date'].' +0:00'
-                              )
+                    "%e %b %y",
+                    strtotime(
+                        $data['Customer Last Invoiced Order Date'].' +0:00'
+                    )
                 );
             }
 
@@ -232,33 +228,27 @@ function customers($_data, $db, $user) {
             if ($parameters['parent'] == 'store') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
             } elseif ($parameters['parent'] == 'customer_poll_query_option' or $parameters['parent'] == 'customer_poll_query' or $parameters['parent'] == 'sales_representative') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $data['Customer Store Key'], $data['Customer Key'], $data['Customer Key']);
-
             } elseif ($parameters['parent'] == 'list') {
                 $link_format  = '/customers/list/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
             } elseif ($parameters['parent'] == 'campaign') {
                 $link_format  = '/customers/%d/%d';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $campaign->get('Deal Campaign Store Key'), $data['Customer Key'], $data['Customer Key']);
-
             } elseif ($parameters['parent'] == 'category') {
                 $link_format  = '/customers/%d/category/%d/%d/customer/%s';
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['store_key'], $parameters['grandparent_key'], $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
             } else {
                 $link_format = '/'.$parameters['parent'].'/%d/customer/%d';
 
                 $formatted_id = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%06d</span>', $parameters['parent_key'], $data['Customer Key'], $data['Customer Key']);
-
             }
 
-            $disassociate_from_category='';
+            $disassociate_from_category = '';
 
-            if(isset($_data['parameters']['parent_key'])) {
+            if (isset($_data['parameters']['parent_key'])) {
                 $disassociate_from_category = sprintf('<i class="fa button fa-unlink" onclick="disassociate_category_from_table(this,%d,%d)" ></i>', $_data['parameters']['parent_key'], $data['Customer Key']);
             }
             $table_data[] = array(
@@ -290,10 +280,14 @@ function customers($_data, $db, $user) {
 
 
                 'top_orders'       => percentage(
-                    $data['Customer Orders Top Percentage'], 1, 2
+                    $data['Customer Orders Top Percentage'],
+                    1,
+                    2
                 ),
                 'top_invoices'     => percentage(
-                    $data['Customer Invoices Top Percentage'], 1, 2
+                    $data['Customer Invoices Top Percentage'],
+                    1,
+                    2
                 ),
                 'top_balance'      => percentage($data['Customer Balance Top Percentage'], 1, 2),
                 'top_profits'      => percentage($data['Customer Profits Top Percentage'], 1, 2),
@@ -311,7 +305,6 @@ function customers($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -334,9 +327,8 @@ function customers($_data, $db, $user) {
 }
 
 
-function customers_dropshipping($_data, $db, $user) {
-
-
+function customers_dropshipping($_data, $db, $user)
+{
     if ($_data['parameters']['parent'] == 'favourites') {
         $rtext_label = 'customer who favored';
     } else {
@@ -366,10 +358,7 @@ function customers_dropshipping($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             if ($parameters['parent'] == 'category') {
                 $category_other_value = $data['Other Note'];
             } else {
@@ -381,7 +370,8 @@ function customers_dropshipping($_data, $db, $user) {
                 $last_order_date = '';
             } else {
                 $last_order_date = strftime(
-                    "%e %b %y", strtotime($data['Customer Last Order Date'].' +0:00')
+                    "%e %b %y",
+                    strtotime($data['Customer Last Order Date'].' +0:00')
                 );
             }
 
@@ -389,9 +379,10 @@ function customers_dropshipping($_data, $db, $user) {
                 $last_invoice_date = '';
             } else {
                 $last_invoice_date = strftime(
-                    "%e %b %y", strtotime(
-                                  $data['Customer Last Invoiced Order Date'].' +0:00'
-                              )
+                    "%e %b %y",
+                    strtotime(
+                        $data['Customer Last Invoiced Order Date'].' +0:00'
+                    )
                 );
             }
 
@@ -473,7 +464,6 @@ function customers_dropshipping($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -501,8 +491,8 @@ function customers_dropshipping($_data, $db, $user) {
  * @param $db   \PDO
  * @param $user \User
  */
-function lists($_data, $db, $user) {
-
+function lists($_data, $db, $user)
+{
     $rtext_label = 'list';
     include_once 'prepare_table/init.php';
     /**
@@ -525,7 +515,6 @@ function lists($_data, $db, $user) {
 
     $table_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
             switch ($data['List Type']) {
                 case 'Static':
@@ -546,9 +535,7 @@ function lists($_data, $db, $user) {
                 'items'         => $items,
                 'delete'        => ''
             );
-
         }
-
     }
 
 
@@ -567,8 +554,8 @@ function lists($_data, $db, $user) {
 }
 
 
-function categories($_data, $db, $user) {
-
+function categories($_data, $db, $user)
+{
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
     /**
@@ -591,9 +578,7 @@ function categories($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             switch ($data['Category Branch Type']) {
                 case 'Root':
                     $level = _('Root');
@@ -622,12 +607,11 @@ function categories($_data, $db, $user) {
                 'level'               => $level,
                 'subcategories'       => number($data['Category Children']),
                 'percentage_assigned' => percentage(
-                    $data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
+                    $data['Category Number Subjects'],
+                    ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
                 )
             );
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -648,7 +632,8 @@ function categories($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function sub_categories($_data, $db, $user) {
+function sub_categories($_data, $db, $user)
+{
     $rtext_label = 'category';
     include_once 'prepare_table/init.php';
 
@@ -658,21 +643,23 @@ function sub_categories($_data, $db, $user) {
     //print_r($_data);
 
     foreach ($db->query($sql) as $data) {
-
-
         $adata[] = array(
             'id'                  => (integer)$data['Category Key'],
             'code'                => sprintf(
-                '<span class="link" onClick="change_view(\'customers/%d/category/%d/%d\')">%s</span>', $data['Category Store Key'], $data['Category Parent Key'], $data['Category Key'], $data['Category Code']
+                '<span class="link" onClick="change_view(\'customers/%d/category/%d/%d\')">%s</span>',
+                $data['Category Store Key'],
+                $data['Category Parent Key'],
+                $data['Category Key'],
+                $data['Category Code']
             ),
             'label'               => $data['Category Label'],
             'customers'           => number($data['Category Number Subjects']),
             'subcategories'       => number($data['Category Children']),
             'percentage_assigned' => percentage(
-                $data['Category Number Subjects'], ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
+                $data['Category Number Subjects'],
+                ($data['Category Number Subjects'] + $data['Category Subjects Not Assigned'])
             )
         );
-
     }
 
     $response = array(
@@ -689,9 +676,8 @@ function sub_categories($_data, $db, $user) {
     echo json_encode($response);
 }
 
-function customers_server($_data, $db, $user) {
-
-
+function customers_server($_data, $db, $user)
+{
     //print_r($_data);
 
     $rtext_label = 'store';
@@ -726,12 +712,10 @@ function customers_server($_data, $db, $user) {
     $total_lost_contacts_with_orders   = 0;
     $total_losing_contacts_with_orders = 0;
     $total_users                       = 0;
-
+    $total_contacts_never_order        = 0;
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             $total_contacts += $data['Store Contacts'];
 
             $total_active_contacts             += $data['active'];
@@ -743,8 +727,10 @@ function customers_server($_data, $db, $user) {
             $total_new_contacts_with_orders    += $data['Store New Contacts With Orders'];
             $total_lost_contacts_with_orders   += $data['Store Lost Contacts With Orders'];
             $total_losing_contacts_with_orders += $data['Store Losing Contacts With Orders'];
+            $total_contacts_never_order        += $data['Store Lost Contacts With No Orders'];
 
 
+            $contacts_never_order        = number($data['Store Lost Contacts With No Orders']);
             $contacts                    = number($data['Store Contacts']);
             $new_contacts                = number($data['Store New Contacts']);
             $active_contacts             = number($data['active']);
@@ -807,16 +793,13 @@ function customers_server($_data, $db, $user) {
                 'new_contacts_with_orders'    => $new_contacts_with_orders,
                 'lost_contacts_with_orders'   => $lost_contacts_with_orders,
                 'losing_contacts_with_orders' => $losing_contacts_with_orders,
-                'users'                       => $total_users
+                'users'                       => $total_users,
+                'losing_contacts'             => (integer)$data['Store Losing Contacts'],
+                'never_order'                 => $data['Store Lost Contacts With No Orders']
 
 
             );
-
         }
-
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
 
 
@@ -862,8 +845,8 @@ function customers_server($_data, $db, $user) {
         'new_contacts_with_orders'    => (integer)$total_new_contacts_with_orders,
         'lost_contacts_with_orders'   => (integer)$total_lost_contacts_with_orders,
         'losing_contacts_with_orders' => (integer)$total_losing_contacts_with_orders,
-        'users'                       => (integer)$total_users
-
+        'users'                       => (integer)$total_users,
+        'never_order'                 => (integer)$total_contacts_never_order
 
     );
 
@@ -882,16 +865,16 @@ function customers_server($_data, $db, $user) {
 }
 
 
-function customers_geographic_distribution($_data, $db, $user, $account) {
+function customers_geographic_distribution($_data, $db, $user, $account)
+{
     include_once 'prepare_table/customers_geographic_distribution.ptc.php';
     $table = new prepare_table_customers_geographic_distribution($db, $account, $user);
     echo $table->fetch($_data);
 }
 
 
-function abandoned_cart_mail_list($_data, $db, $user) {
-
-
+function abandoned_cart_mail_list($_data, $db, $user)
+{
     $rtext_label = 'recipient';
 
 
@@ -918,10 +901,7 @@ function abandoned_cart_mail_list($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             $inactive_since = strftime("%e %b %y", strtotime($data['Order Date'].' +0:00'));
 
 
@@ -946,7 +926,6 @@ function abandoned_cart_mail_list($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -968,9 +947,8 @@ function abandoned_cart_mail_list($_data, $db, $user) {
 }
 
 
-function newsletter_mail_list($_data, $db, $user) {
-
-
+function newsletter_mail_list($_data, $db, $user)
+{
     $rtext_label = 'recipient';
 
 
@@ -997,10 +975,7 @@ function newsletter_mail_list($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             $customer_link_format = '/customers/%d/%d';
 
 
@@ -1018,7 +993,6 @@ function newsletter_mail_list($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1040,13 +1014,11 @@ function newsletter_mail_list($_data, $db, $user) {
 }
 
 
-function poll_queries($_data, $db, $user) {
-
-
+function poll_queries($_data, $db, $user)
+{
     if ($_data['parameters']['parent'] == 'store') {
         $store           = get_object('Store', $_data['parameters']['parent_key']);
         $total_customers = $store->get('Store Contacts');
-
     } else {
         exit('ar_customers_tables, todo E:1234a');
     }
@@ -1078,10 +1050,7 @@ function poll_queries($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             switch ($data['Customer Poll Query Type']) {
                 case 'Options':
                     $type = _('Multiple choice');
@@ -1089,8 +1058,6 @@ function poll_queries($_data, $db, $user) {
                     $title_on_enough_options = _('Query will not be shown to customer until it has more than one option');
 
                     if ($data['Customer Poll Query Options'] == 0) {
-
-
                         $type            .= ' <span class="error">('._('Not options set').')</span>';
                         $in_registration = ($data['Customer Poll Query In Registration'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
                         $in_profile      = ($data['Customer Poll Query In Profile'] == 'Yes' ? '<i title="'.$title_on_enough_options.'" class="fa fa-check error discreet"></i>' : '<i class="fa fa-check discreet"></i>');
@@ -1101,13 +1068,15 @@ function poll_queries($_data, $db, $user) {
                     } else {
                         $type .= ' ('.sprintf(
                                 ngettext(
-                                    "%s option", "%s options", $data['Customer Poll Query Options']
-                                ), number($data['Customer Poll Query Options'])
+                                    "%s option",
+                                    "%s options",
+                                    $data['Customer Poll Query Options']
+                                ),
+                                number($data['Customer Poll Query Options'])
                             ).')';
 
                         $in_registration = ($data['Customer Poll Query In Registration'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
                         $in_profile      = ($data['Customer Poll Query In Profile'] == 'Yes' ? '<i class="fa fa-check success"></i>' : '<i class="fa fa-check discreet"></i>');
-
                     }
 
 
@@ -1120,7 +1089,6 @@ function poll_queries($_data, $db, $user) {
                 default:
                     exit('error not customer poll query E1');
                     break;
-
             }
 
 
@@ -1128,7 +1096,11 @@ function poll_queries($_data, $db, $user) {
                 'id'                   => (integer)$data['Customer Poll Query Key'],
                 'type'                 => $type,
                 'query'                => sprintf(
-                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d\')" title="%s">%s</span>', $data['Customer Poll Query Store Key'], $data['Customer Poll Query Key'], $data['Customer Poll Query Label'], $data['Customer Poll Query Name']
+                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d\')" title="%s">%s</span>',
+                    $data['Customer Poll Query Store Key'],
+                    $data['Customer Poll Query Key'],
+                    $data['Customer Poll Query Label'],
+                    $data['Customer Poll Query Name']
                 ),
                 'label'                => $data['Customer Poll Query Label'],
                 'in_registration'      => $in_registration,
@@ -1141,7 +1113,6 @@ function poll_queries($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1163,13 +1134,11 @@ function poll_queries($_data, $db, $user) {
 }
 
 
-function poll_query_options($_data, $db, $user) {
-
-
+function poll_query_options($_data, $db, $user)
+{
     if ($_data['parameters']['parent'] == 'Customer_Poll_Query') {
         $poll            = get_object('Customer_Poll_Query', $_data['parameters']['parent_key']);
         $total_customers = $poll->get('Customer Poll Query Customers');
-
     } else {
         exit('ar_customers_tables, todo E:1234a');
     }
@@ -1201,10 +1170,7 @@ function poll_query_options($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             if ($data['Customer Poll Query Option Last Answered'] != '') {
                 $last_chose = strftime("%e %b %y", strtotime($data['Customer Poll Query Option Last Answered'].' +0:00'));
             } else {
@@ -1215,8 +1181,12 @@ function poll_query_options($_data, $db, $user) {
             $table_data[] = array(
                 'id'    => (integer)$data['Customer Poll Query Option Key'],
                 'code'  => sprintf(
-                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d/option/%d\')" title="%s">%s</span>', $data['Customer Poll Query Option Store Key'], $data['Customer Poll Query Option Query Key'], $data['Customer Poll Query Option Key'],
-                    $data['Customer Poll Query Option Label'], $data['Customer Poll Query Option Name']
+                    '<span class="link" onclick="change_view(\'/customers/%d/poll_query/%d/option/%d\')" title="%s">%s</span>',
+                    $data['Customer Poll Query Option Store Key'],
+                    $data['Customer Poll Query Option Query Key'],
+                    $data['Customer Poll Query Option Key'],
+                    $data['Customer Poll Query Option Label'],
+                    $data['Customer Poll Query Option Name']
                 ),
                 'label' => $data['Customer Poll Query Option Label'],
 
@@ -1227,7 +1197,6 @@ function poll_query_options($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1249,9 +1218,8 @@ function poll_query_options($_data, $db, $user) {
 }
 
 
-function poll_query_answers($_data, $db, $user) {
-
-
+function poll_query_answers($_data, $db, $user)
+{
     $rtext_label = 'answer';
 
 
@@ -1278,10 +1246,7 @@ function poll_query_answers($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             $link_format = '/customers/%d/%d';
 
 
@@ -1295,7 +1260,6 @@ function poll_query_answers($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1317,9 +1281,8 @@ function poll_query_answers($_data, $db, $user) {
 }
 
 
-function asset_customers($_data, $db, $user) {
-
-
+function asset_customers($_data, $db, $user)
+{
     if ($_data['parameters']['parent'] == 'favourites') {
         $rtext_label = 'customer who favored';
     } else {
@@ -1349,18 +1312,16 @@ function asset_customers($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             if ($data['invoices'] == 0 or $data['last_invoice'] == '') {
                 $last_invoice_date = '';
                 $invoiced_amount   = '';
             } else {
                 $last_invoice_date = strftime(
-                    "%e %b %y", strtotime(
-                                  $data['last_invoice'].' +0:00'
-                              )
+                    "%e %b %y",
+                    strtotime(
+                        $data['last_invoice'].' +0:00'
+                    )
                 );
                 $invoiced_amount   = money($data['invoiced_amount'], $data['Order Currency Code']);
             }
@@ -1405,7 +1366,6 @@ function asset_customers($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -1428,9 +1388,8 @@ function asset_customers($_data, $db, $user) {
 }
 
 
-function prospects($_data, $db, $user) {
-
-
+function prospects($_data, $db, $user)
+{
     $rtext_label = 'prospect';
 
 
@@ -1458,12 +1417,10 @@ function prospects($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             $contact_since = strftime(
-                "%e %b %y", strtotime($data['Prospect First Contacted Date'].' +0:00')
+                "%e %b %y",
+                strtotime($data['Prospect First Contacted Date'].' +0:00')
             );
 
 
@@ -1519,7 +1476,6 @@ function prospects($_data, $db, $user) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -1542,9 +1498,8 @@ function prospects($_data, $db, $user) {
 }
 
 
-function prospects_email_templates($_data, $db, $user) {
-
-
+function prospects_email_templates($_data, $db, $user)
+{
     include_once 'utils/natural_language.php';
 
     $rtext_label = 'email template';
@@ -1575,10 +1530,7 @@ function prospects_email_templates($_data, $db, $user) {
 
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             if ($data['Staff Alias'] != '') {
                 $author = sprintf('<span>%s</span>', $data['Staff Alias']);
             } else {
@@ -1604,10 +1556,7 @@ function prospects_email_templates($_data, $db, $user) {
                 'date' => strftime("%a %e %b %Y", strtotime($data['Email Template Created'].' +0:00')),
 
             );
-
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         exit;
@@ -1629,9 +1578,8 @@ function prospects_email_templates($_data, $db, $user) {
 }
 
 
-function sales_history($_data, $db, $user, $account) {
-
-
+function sales_history($_data, $db, $user, $account)
+{
     $skip_get_table_totals = true;
 
 
@@ -1706,18 +1654,30 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql_totals = sprintf(
-        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
+        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ',
+        $sql_totals_fields,
+        prepare_mysql($from),
+        prepare_mysql($to)
 
     );
 
 
     list($rtext, $total, $filtered) = get_table_totals(
-        $db, $sql_totals, '', $rtext_label, false
+        $db,
+        $sql_totals,
+        '',
+        $rtext_label,
+        false
     );
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s',
+        prepare_mysql($from),
+        prepare_mysql($to),
+        $_group_by,
+        "`Date` $order_direction ",
+        "$start_from,$number_results"
     );
 
 
@@ -1726,10 +1686,7 @@ function sales_history($_data, $db, $user, $account) {
     $from_date = '';
     $to_date   = '';
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
             if ($to_date == '') {
                 $to_date = $data['Date'];
             }
@@ -1743,14 +1700,12 @@ function sales_history($_data, $db, $user, $account) {
                 $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-
-
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
+                    "(%e %b) %Y %W ",
+                    strtotime($data['Date'].' +0:00')
                 );
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
@@ -1773,9 +1728,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
             );
-
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql";
@@ -1784,7 +1737,6 @@ function sales_history($_data, $db, $user, $account) {
 
 
     switch ($_data['parameters']['parent']) {
-
         case 'customer':
         case 'category':
             if ($_data['parameters']['frequency'] == 'annually') {
@@ -1814,7 +1766,12 @@ function sales_history($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ",
+        $date_field,
+        prepare_mysql($from_date),
+        $date_field,
+        prepare_mysql($to_date),
+        " $group_by "
     );
 
     $last_year_data = array();
@@ -1822,11 +1779,7 @@ function sales_history($_data, $db, $user, $account) {
 
     //print $sql;
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
-
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year +0:00'));
@@ -1853,8 +1806,6 @@ function sales_history($_data, $db, $user, $account) {
 
 
             if (array_key_exists($_date, $record_data)) {
-
-
                 if (in_array(
                         $_data['parameters']['frequency'], array(
                                                              'annually',
@@ -1862,33 +1813,39 @@ function sales_history($_data, $db, $user, $account) {
                                                              'monthly'
                                                          )
                     ) and $_data['parameters']['parent'] == 'customer' and false) {
-
-
                     $invoices = sprintf(
-                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'],
+                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>',
+                        $_data['parameters']['parent'],
+                        $_data['parameters']['parent_key'],
+                        $data['Timeseries Record Timeseries Key'],
 
-                        $data['Timeseries Record Key'], number($data['invoices'])
+                        $data['Timeseries Record Key'],
+                        number($data['invoices'])
                     );
 
                     $refunds = sprintf(
-                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'], $data['Timeseries Record Key'],
+                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>',
+                        $_data['parameters']['parent'],
+                        $_data['parameters']['parent_key'],
+                        $data['Timeseries Record Timeseries Key'],
+                        $data['Timeseries Record Key'],
                         number($data['refunds'])
                     );
 
                     $sales = sprintf(
-                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>', $_data['parameters']['parent'], $_data['parameters']['parent_key'], $data['Timeseries Record Timeseries Key'], $data['Timeseries Record Key'],
+                        '<span class="link" onclick="change_view(\'%s/%d/timeseries/%d/%d\')">%s</span>',
+                        $_data['parameters']['parent'],
+                        $_data['parameters']['parent_key'],
+                        $data['Timeseries Record Timeseries Key'],
+                        $data['Timeseries Record Key'],
                         money($data['sales'], $currency)
                     );
-
-
                 } else {
                     $invoices        = number($data['invoices']);
                     $refunds         = number($data['refunds']);
                     $sales           = money($data['sales'], $currency);
                     $invoiced_amount = money($data['invoiced_amount'], $currency);
                     $refunded_amount = money($data['refunded_amount'], $currency);
-
-
                 }
 
 
@@ -1909,10 +1866,8 @@ function sales_history($_data, $db, $user, $account) {
                 $record_data[$_date]['delta_sales_1yb'] =
                     '<span title="'.money($last_year_data[$_date_last_year]['_sales'], $currency).'">'.delta($data['sales'], $last_year_data[$_date_last_year]['_sales']).' '.delta_icon($data['sales'], $last_year_data[$_date_last_year]['_sales']).'</span>';
             }
-
             //    print_r($record_data);
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql";
@@ -1934,9 +1889,8 @@ function sales_history($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function products($_data, $db, $user, $account) {
-
-
+function products($_data, $db, $user, $account)
+{
     include_once 'utils/currency_functions.php';
 
     $rtext_label = 'product';
@@ -1964,10 +1918,7 @@ function products($_data, $db, $user, $account) {
 
     $record_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             switch ($data['Product Status']) {
                 case 'Active':
                     $status = sprintf('<i class="fa fa-cube" aria-hidden="true" title="%s"></i>', _('Active'));
@@ -2003,16 +1954,17 @@ function products($_data, $db, $user, $account) {
                 'status'   => $status,
                 'amount'   => sprintf('<span>%s</span>', money($data['amount'], $data['Store Currency Code'])),
                 'invoices' => sprintf(
-                    '<span class="link" onclick="change_view(\'customers/%d/%d/product/%d\',{ })">%s</span>', $data['Store Key'], $data['Customer Key'], $data['Product ID'], number($data['invoices'])
+                    '<span class="link" onclick="change_view(\'customers/%d/%d/product/%d\',{ })">%s</span>',
+                    $data['Store Key'],
+                    $data['Customer Key'],
+                    $data['Product ID'],
+                    number($data['invoices'])
                 ),
                 'qty'      => sprintf('<span>%s</span>', number($data['qty']))
 
 
             );
-
-
         }
-
     } else {
         print "$sql\n";
         print_r($error_info = $db->errorInfo());
@@ -2034,9 +1986,8 @@ function products($_data, $db, $user, $account) {
     echo json_encode($response);
 }
 
-function families($_data, $db, $user, $account) {
-
-
+function families($_data, $db, $user, $account)
+{
     include_once 'utils/currency_functions.php';
 
     $rtext_label = 'family';
@@ -2064,10 +2015,7 @@ function families($_data, $db, $user, $account) {
 
     $record_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             $label = $data['Category Label'];
 
             $code = sprintf('<span class="link" onClick="change_view(\'category/%d/\')" >%s</span>', $data['Category Key'], $data['Category Code']);
@@ -2084,10 +2032,7 @@ function families($_data, $db, $user, $account) {
 
 
             );
-
-
         }
-
     } else {
         print "$sql\n";
         print_r($error_info = $db->errorInfo());
@@ -2110,9 +2055,8 @@ function families($_data, $db, $user, $account) {
 }
 
 
-function credit_blockchain($_data, $db, $user, $account) {
-
-
+function credit_blockchain($_data, $db, $user, $account)
+{
     //'Payment','Adjust','Cancel','Return','PayReturn','AddFunds'
 
     $rtext_label = 'transaction';
@@ -2141,9 +2085,7 @@ function credit_blockchain($_data, $db, $user, $account) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             $note = '';
             switch ($data['Credit Transaction Type']) {
                 case 'Payment':
@@ -2151,7 +2093,6 @@ function credit_blockchain($_data, $db, $user, $account) {
                     if ($data['Credit Transaction Amount'] < 0) {
                         $type = _('Used');
                         $note = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']);
-
                     } else {
                         $note = sprintf('<span class="link" onclick="change_view(\'orders/%d/%d\')" >%s</span>', $data['Order Store Key'], $data['Order Key'], $data['Order Public ID']);
 
@@ -2160,22 +2101,23 @@ function credit_blockchain($_data, $db, $user, $account) {
                             $type = _('Credited from refund');
 
                             $note .= sprintf(
-                                ' <span class="error padding_left_10"> <i class="fal fa-file-invoice-dollar error"></i> <span class="link error" onclick="change_view(\'invoices/%d/%d\')" >%s</span></span>', $data['Order Store Key'], $data['Invoice Key'],
+                                ' <span class="error padding_left_10"> <i class="fal fa-file-invoice-dollar error"></i> <span class="link error" onclick="change_view(\'invoices/%d/%d\')" >%s</span></span>',
+                                $data['Order Store Key'],
+                                $data['Invoice Key'],
                                 $data['Invoice Public ID']
                             );
-
                         } else {
-
                             $icon = 'fa-sack-dollar';
 
                             $type = _('Credited from payment');
                             $note .= sprintf(
-                                ' <span class=" padding_left_10"> <i class="fal %s "></i> <span class="link discreet" onclick="change_view(\'payments/%d/%d\')" >%s</span></span>', $icon, $data['Order Store Key'], $data['Payment Related Payment Key'],
+                                ' <span class=" padding_left_10"> <i class="fal %s "></i> <span class="link discreet" onclick="change_view(\'payments/%d/%d\')" >%s</span></span>',
+                                $icon,
+                                $data['Order Store Key'],
+                                $data['Payment Related Payment Key'],
                                 $data['Payment Related Payment Transaction ID']
                             );
-
                         }
-
                     }
 
 
@@ -2220,13 +2162,13 @@ function credit_blockchain($_data, $db, $user, $account) {
                     break;
                 default:
                     $type = $data['Credit Transaction Type'];
-
             }
 
 
             $amount_ac = $data['Credit Transaction Amount'] * $data['Credit Transaction Currency Exchange Rate'];
             $date      = strftime(
-                "%a %e %b %y %T %Z", strtotime($data['Credit Transaction Date'].' +0:00')
+                "%a %e %b %y %T %Z",
+                strtotime($data['Credit Transaction Date'].' +0:00')
             );
 
             $table_data[] = array(
@@ -2244,7 +2186,6 @@ function credit_blockchain($_data, $db, $user, $account) {
 
             );
         }
-
     } else {
         print_r($error_info = $db->errorInfo());
         print "$sql\n";
@@ -2271,8 +2212,8 @@ function credit_blockchain($_data, $db, $user, $account) {
  * @param $db \PDO
  * @param $user
  */
-function customer_clients($_data, $db, $user) {
-
+function customer_clients($_data, $db, $user)
+{
     $rtext_label = 'customer clients';
 
     include_once 'prepare_table/init.php';
@@ -2298,10 +2239,7 @@ function customer_clients($_data, $db, $user) {
     $table_data = array();
 
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
-
             if ($data['Customer Client Code'] == '') {
                 $code = sprintf('<span class="italic">%05d</span>', $data['Customer Client Key']);
             } else {
@@ -2334,7 +2272,6 @@ function customer_clients($_data, $db, $user) {
 
             );
         }
-
     }
 
 
@@ -2353,9 +2290,8 @@ function customer_clients($_data, $db, $user) {
 }
 
 
-function customer_portfolio($_data, $db, $user) {
-
-
+function customer_portfolio($_data, $db, $user)
+{
     include_once 'utils/currency_functions.php';
 
     $rtext_label = 'product';
@@ -2383,9 +2319,7 @@ function customer_portfolio($_data, $db, $user) {
 
     $record_data = array();
     if ($result = $db->query($sql)) {
-
         foreach ($result as $data) {
-
             //'Excess','Normal','Low','VeryLow','OutofStock','Error','OnDemand'
             switch ($data['Product Availability State']) {
                 case 'Excess':
@@ -2416,7 +2350,6 @@ function customer_portfolio($_data, $db, $user) {
 
             if ($data['Product Availability State'] == 'Discontinued') {
                 $status_icon = ' <i class="fa fa-skull" title="'._('Discontinued').'"></i>';
-
             } elseif ($data['Product Availability State'] == 'Discontinuing') {
                 $status_icon = ' <i class="fa fa-skull" title="'._('Discontinuing').'"></i>';
             } else {
@@ -2438,13 +2371,17 @@ function customer_portfolio($_data, $db, $user) {
                 'created'      => ($data['Customer Portfolio Creation Date'] == ''
                     ? ''
                     : sprintf(
-                        '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Customer Portfolio Creation Date'].' +0:00')), strftime("%e %b %Y", strtotime($data['Customer Portfolio Creation Date'].' +0:00'))
+                        '<span title="%s">%s</span>',
+                        strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Customer Portfolio Creation Date'].' +0:00')),
+                        strftime("%e %b %Y", strtotime($data['Customer Portfolio Creation Date'].' +0:00'))
 
                     )),
                 'until'        => ($data['Customer Portfolio Removed Date'] == ''
                     ? ''
                     : sprintf(
-                        '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Customer Portfolio Removed Date'].' +0:00')), strftime("%e %b %Y", strtotime($data['Customer Portfolio Removed Date'].' +0:00'))
+                        '<span title="%s">%s</span>',
+                        strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Customer Portfolio Removed Date'].' +0:00')),
+                        strftime("%e %b %Y", strtotime($data['Customer Portfolio Removed Date'].' +0:00'))
 
                     )),
                 'last_order'   => ($data['Customer Portfolio Last Ordered'] == '' ? '' : strftime("%a %e %b %Y", strtotime($data['Customer Portfolio Last Ordered'].' +0:00'))),
@@ -2457,10 +2394,7 @@ function customer_portfolio($_data, $db, $user) {
                 'operations' => sprintf('<i class="far button fa-trash-alt" onclick="remove_item_from_portfolio(this,%d,%s)" ></i>', $data['Customer Portfolio Customer Key'], $data['Product ID'])
 
             );
-
-
         }
-
     } else {
         print "$sql\n";
         print_r($error_info = $db->errorInfo());
@@ -2483,9 +2417,8 @@ function customer_portfolio($_data, $db, $user) {
 }
 
 
-function customers_registrations($_data, $db, $user, $account) {
-
-
+function customers_registrations($_data, $db, $user, $account)
+{
     $skip_get_table_totals = true;
 
     include_once 'prepare_table/init.php';
@@ -2517,7 +2450,6 @@ function customers_registrations($_data, $db, $user, $account) {
 
 
     switch ($_data['parameters']['parent']) {
-
         case 'store':
             $store = get_object('Store', $_data['parameters']['parent_key']);
 
@@ -2539,19 +2471,26 @@ function customers_registrations($_data, $db, $user, $account) {
         default:
             print_r($_data);
             exit('parent not configured');
-
     }
 
 
     $sql_totals = sprintf(
-        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ', $sql_totals_fields, prepare_mysql($from), prepare_mysql($to)
+        'SELECT count(DISTINCT %s) AS num FROM kbase.`Date Dimension` WHERE `Date`>=DATE(%s) AND `Date`<=DATE(%s) ',
+        $sql_totals_fields,
+        prepare_mysql($from),
+        prepare_mysql($to)
 
     );
     list($rtext, $total, $filtered) = get_table_totals($db, $sql_totals, '', $rtext_label, false);
 
 
     $sql = sprintf(
-        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s', prepare_mysql($from), prepare_mysql($to), $_group_by, "`Date` $order_direction ", "$start_from,$number_results"
+        'SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=date(%s) AND `Date`<=DATE(%s) %s ORDER BY %s  LIMIT %s',
+        prepare_mysql($from),
+        prepare_mysql($to),
+        $_group_by,
+        "`Date` $order_direction ",
+        "$start_from,$number_results"
     );
 
 
@@ -2560,11 +2499,7 @@ function customers_registrations($_data, $db, $user, $account) {
     $from_date = '';
     $to_date   = '';
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
-
             if ($to_date == '') {
                 $to_date = $data['Date'];
             }
@@ -2577,14 +2512,12 @@ function customers_registrations($_data, $db, $user, $account) {
                 $date  = 'Q'.ceil(date('n', strtotime($data['Date'].' +0:00')) / 3).' '.strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date = $date;
             } elseif ($_data['parameters']['frequency'] == 'monthly') {
-
-
                 $date  = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
                 $_date = strftime("%b %Y", strtotime($data['Date'].' +0:00'));
-
             } elseif ($_data['parameters']['frequency'] == 'weekly') {
                 $date  = strftime(
-                    "(%e %b) %Y %W ", strtotime($data['Date'].' +0:00')
+                    "(%e %b) %Y %W ",
+                    strtotime($data['Date'].' +0:00')
                 );
                 $_date = strftime("%Y%W ", strtotime($data['Date'].' +0:00'));
             } elseif ($_data['parameters']['frequency'] == 'daily') {
@@ -2600,10 +2533,7 @@ function customers_registrations($_data, $db, $user, $account) {
 
 
             );
-
-
         }
-
     }
 
 
@@ -2652,7 +2582,12 @@ function customers_registrations($_data, $db, $user, $account) {
 
 
     $sql = sprintf(
-        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ", $date_field, prepare_mysql($from_date), $date_field, prepare_mysql($to_date), " $group_by "
+        "select $fields from $table $where $wheref and %s>=%s and  %s<=%s %s order by $date_field    ",
+        $date_field,
+        prepare_mysql($from_date),
+        $date_field,
+        prepare_mysql($to_date),
+        " $group_by "
     );
 
 
@@ -2660,10 +2595,7 @@ function customers_registrations($_data, $db, $user, $account) {
 
 
     if ($result = $db->query($sql)) {
-
-
         foreach ($result as $data) {
-
             if ($_data['parameters']['frequency'] == 'annually') {
                 $_date           = strftime("%Y", strtotime($data['Date'].' +0:00'));
                 $_date_last_year = strftime("%Y", strtotime($data['Date'].' - 1 year'));
@@ -2688,15 +2620,13 @@ function customers_registrations($_data, $db, $user, $account) {
 
             $last_year_data[$_date] =
                 array(
-                    '_new_customers' => $data['new_customers'],
+                    '_new_customers'         => $data['new_customers'],
                     '_customers_with_orders' => $data['customers_with_orders']
 
                 );
 
 
             if (array_key_exists($_date, $record_data)) {
-
-
                 $record_data[$_date] = array(
                     //   'sales'     => money($data['sales'], $currency),
                     'new_customers'         => number($data['new_customers']),
@@ -2710,17 +2640,17 @@ function customers_registrations($_data, $db, $user, $account) {
 
                 if (isset($last_year_data[$_date_last_year])) {
                     $record_data[$_date]['delta_new_customers_1yb']         = '<span title="'.number($last_year_data[$_date_last_year]['_new_customers']).'">'.delta($data['new_customers'], $last_year_data[$_date_last_year]['_new_customers']).' '.delta_icon(
-                            $data['new_customers'], $last_year_data[$_date_last_year]['_new_customers']
+                            $data['new_customers'],
+                            $last_year_data[$_date_last_year]['_new_customers']
                         ).'</span>';
                     $record_data[$_date]['delta_customers_with_orders_1yb'] =
                         '<span title="'.number($last_year_data[$_date_last_year]['_customers_with_orders']).'">'.delta($data['customers_with_orders'], $last_year_data[$_date_last_year]['_customers_with_orders']).' '.delta_icon(
-                            $data['customers_with_orders'], $last_year_data[$_date_last_year]['_customers_with_orders']
+                            $data['customers_with_orders'],
+                            $last_year_data[$_date_last_year]['_customers_with_orders']
                         ).'</span>';
                 }
-
             }
         }
-
     }
 
 
