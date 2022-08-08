@@ -595,7 +595,7 @@
 
                         });
 
-                        {if $website->settings('captcha_client') and !is_devel}
+                        {if $website->settings('captcha_client') }
                             register_data['captcha']= grecaptcha.getResponse();
                         {/if}
 

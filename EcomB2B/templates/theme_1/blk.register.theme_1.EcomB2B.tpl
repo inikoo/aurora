@@ -441,8 +441,9 @@
                 </footer>
             {/if}
             <footer>
-                <button id="register_button" type="submit" class="button"
-                ">{$data.labels._submit_label} <i class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
+                <button id="register_button" type="submit" class="button">
+                    {$data.labels._submit_label} <i class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i>
+                </button>
             </footer>
         </form>
     </div>

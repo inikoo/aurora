@@ -265,9 +265,9 @@ if (!$webpage->id or ($webpage->get('Webpage Code') == 'reset_pwd.sys' and !isse
 $website = get_object('Website', $webpage->get('Webpage Website Key'));
 
 $website_settings = $website->settings;
-if(ENVIRONMENT == 'DEVEL'){
-    unset($website_settings['captcha_client']);
-}
+//if(ENVIRONMENT == 'DEVEL'){
+//    unset($website_settings['captcha_client']);
+//}
 
 
 $theme = $website->get('Website Theme');
