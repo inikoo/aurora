@@ -28,6 +28,7 @@ function fork_send_mailshots($job) {
 
             $email_campaign         = get_object('email_campaign', $data['mailshot_key']);
             $email_campaign->editor = $data['editor'];
+            print "Email campaign: ".$email_campaign->id."\n";
 
             if ($email_campaign->id) {
 
@@ -43,7 +44,7 @@ function fork_send_mailshots($job) {
 
 
             if ($mailshot->id) {
-
+                print "Email campaign: ".$email_campaign->id."\n";
 
                 $max_thread = 1;
 
