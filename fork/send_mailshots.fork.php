@@ -44,7 +44,7 @@ function fork_send_mailshots($job) {
 
 
             if ($mailshot->id) {
-                print "Email campaign: ".$email_campaign->id."\n";
+                print "Email campaign: ".$mailshot->id."\n";
 
                 $max_thread = 1;
 
