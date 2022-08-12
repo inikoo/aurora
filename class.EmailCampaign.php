@@ -1481,7 +1481,8 @@ class EmailCampaign extends DB_Table
             foreach ($customers as $customer_key => $email) {
                 list($contador, $thread_size, $thread) = $this->create_email_tracking($customer_key, $email, $recipient_type, $account, $email_template_type, $email_template, $contador, $thread_size, $thread);
             }
-        } else {
+        }
+        else {
             $sql = $this->get_recipients_sql();
 
             if ($result = $this->db->query($sql)) {
@@ -1601,7 +1602,7 @@ class EmailCampaign extends DB_Table
                     );
                 } else {
                     $sql = sprintf(
-                        'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove") ',
+                        'select `Customer Key` ,`Customer Main Plain Email` from `Customer Dimension` where `Customer Store Key`=%d and `Customer Main Plain Email`!="" and `Customer Send Newsletter`="Yes" and  `Customer Type by Activity` not in ("Rejected", "ToApprove") order by `Customer Key` desc ',
                         $this->data['Email Campaign Store Key']
                     );
                 }
