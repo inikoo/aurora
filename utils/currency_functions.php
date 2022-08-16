@@ -31,9 +31,8 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
 
 
     $sql = sprintf(
-        "SELECT * FROM kbase.`Currency Exchange Dimension` WHERE `Currency Pair`=%s", prepare_mysql($currency_from.$currency_to)
+        "SELECT * FROM kbase.`Currency Exchange Dimension` WHERE `Currency Pair`=%s  and `Currency Exchange Source`!='FailOver' ", prepare_mysql($currency_from.$currency_to)
     );
-
     if ($result = $db->query($sql)) {
         if ($row = $result->fetch()) {
 
@@ -48,16 +47,11 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
             //$reload = true;
             //$in_db  = false;
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit;
     }
-
 
     $api_keys = $currency_exhange_api_keys['apilayer'];
     shuffle($api_keys);
     $api_key = reset($api_keys);
-
 
 
     set_error_handler(
@@ -75,7 +69,6 @@ function currency_conversion($db, $currency_from, $currency_to, $update_interval
     catch (Exception $e) {
         $contents=array();
     }
-
 
 
 
