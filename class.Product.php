@@ -1430,6 +1430,17 @@ class Product extends Asset
             return;
         }
 
+        if($this->data['Product Web Configuration']=='Online Force Out of Stock' or  $this->data['Product Web Configuration']=='Offline'){
+            $this->fast_update(array(
+                                   'Product Availability'       => 0,
+                                   'Product Availability State' => 'OutofStock',
+
+                               ));
+            return;
+        }
+
+
+
         $use_pipelines = true;
 
         $old_availability_state = $this->get('Product Availability State');
