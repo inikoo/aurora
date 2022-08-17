@@ -25,7 +25,7 @@ class google_drive {
 
                 return;
             } catch (Exception $e) {
-                $account_folder_key = $this->create_folder('aurora', '', ['au_location' => 'root']);
+                $account_folder_key = $this->create_folder('aurora-'.$account->get('Account Code'), '', ['au_location' => 'root']);
                 $this->aurora_folder_key=$account_folder_key;
                 $account->fast_update_json_field('Account Properties', 'google_drive_folder_key', $this->aurora_folder_key, 'Account Data');
 
@@ -34,9 +34,9 @@ class google_drive {
 
         } else {
 
-            $account_folder_key = $this->find_file('', 'aurora', 'folder', ['au_location' => 'root']);
+            $account_folder_key = $this->find_file('', 'aurora-'.$account->get('Account Code'), 'folder', ['au_location' => 'root']);
             if (!$account_folder_key) {
-                $account_folder_key = $this->create_folder('aurora', '', ['au_location' => 'root']);
+                $account_folder_key = $this->create_folder('aurora-'.$account->get('Account Code'), '', ['au_location' => 'root']);
             }
 
             $this->aurora_folder_key=$account_folder_key;
@@ -155,7 +155,7 @@ class google_drive {
 
     function create_root($account) {
 
-        $file_id                 = $this->create_folder('aurora', '', ['au_location' => 'root']);
+        $file_id                 = $this->create_folder('aurora-'.$account->get('Account Code'), '', ['au_location' => 'root']);
         $this->aurora_folder_key = $file_id;
         $account->fast_update_json_field('Account Properties', 'google_drive_folder_key', $this->aurora_folder_key, 'Account Data');
 
