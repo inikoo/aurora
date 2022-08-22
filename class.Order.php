@@ -3878,9 +3878,9 @@ WHERE `Order Transaction Fact Key`=?";
         }
 
 
-        if ($this->data['hokodo_order_id']) {
-            $this->hokado_submit_return($transactions);
-        }
+       // if ($this->data['hokodo_order_id']) {
+       //     $this->hokado_submit_return($transactions);
+       // }
 
         return $delivery;
     }
@@ -3888,6 +3888,8 @@ WHERE `Order Transaction Fact Key`=?";
 
     function hokado_submit_return($transactions)
     {
+        return false;
+        // removing this because the followinf refund will refund twice
         $store   = get_object('Store', $this->get('Order Store Key'));
         $website = get_object('Website', $store->get('Store Website Key'));
         $api_key = $website->get_api_key('Hokodo');
