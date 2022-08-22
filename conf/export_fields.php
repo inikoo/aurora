@@ -419,6 +419,11 @@ function get_export_fields($element, $account_currency_code = ''): array
 
                 )
             ),
+            array(
+                'name'    => '`Order Customer Purchase Order ID`',
+                'label'   => _('Customer purchase number'),
+                'checked' => 0
+            ),
 
         ),
         'delivery_notes' => array(
