@@ -128,7 +128,7 @@ function fork_update_part_products_availability($job) {
      */
 
     $part = get_object('Part', $data['part_sku']);
-    print 'update_part_products_availability '.$part->get('Reference')."\n";
+    print 'update_part_products_availability  '.$account->get('Code').'  '.$part->get('Reference')."\n";
 
     if (isset($data['editor'])) {
         $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
