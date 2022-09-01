@@ -170,6 +170,7 @@ trait OrderItems
                 $tax_category->loadWithKey($this->data['Order Tax Category Key']);
 
 
+
                 $gross = round($quantity * $product->data['Product History Price'], 2);
 
                 $product_cost = (is_numeric($product->get('Product Cost')) ? $product->get('Product Cost') : 0);
@@ -194,8 +195,8 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
                                                       $bonus_quantity,
                                                       $order_type,
                                                       $tax_category->id,
-                                                      $tax_category->get('Transaction Tax Rate'),
-                                                      $tax_category->get('Transaction Tax Code'),
+                                                      $tax_category->get('Tax Category Rate'),
+                                                      $tax_category->get('Tax Category Code'),
 
                                                       $this->data['Order Currency'],
 
