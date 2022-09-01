@@ -1219,15 +1219,18 @@ function get_product_navigation($data, $smarty, $user, $db, $account)
         $sections[$_section]['selected'] = true;
     }
 
+    $overlay_title=_('Product');
     $icon = 'fa-cube';
     if ($object->get('Product Type') == 'Service') {
         $icon = 'fa-spa';
+        $overlay_title=_('Service');
+
     }
 
 
 
 
-    $title = '<i class="fa '.$icon.'" aria-hidden="true" title="'._('Product').'"></i> <span class="id Product_Code Service_Code">'.$object->get('Code').'</span>';
+    $title = '<i class="fa '.$icon.'" aria-hidden="true" title="'.$overlay_title.'"></i> <span class="id Product_Code Service_Code">'.$object->get('Code').'</span>';
 
 
 
