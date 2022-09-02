@@ -1722,7 +1722,7 @@ function fork_housekeeping($job)
 
 
         case 'update_sent_emails_data':
-            break;
+
             if (!empty($data['email_mailshot_key'])) {
                 $email_campaign = get_object('email_campaign', $data['email_mailshot_key']);
                 $email_campaign->update_sent_emails_totals();
