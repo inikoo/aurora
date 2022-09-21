@@ -46,7 +46,7 @@ $db = new PDO(
 );
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-$use_cache = true;
+$use_cache = false;
 
 if (empty($_SESSION['website_key'])) {
     include_once('utils/find_website_key.include.php');
