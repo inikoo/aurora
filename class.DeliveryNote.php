@@ -2926,6 +2926,7 @@ class DeliveryNote extends DB_Table
         $order = get_object('Order', $this->get('Delivery Note Order Key'));
 
 
+        $post['note']='';
         if ($order->get('Order Customer Message') != '') {
             $post['note'] = $order->get('Order Customer Message');
         }
@@ -2941,6 +2942,9 @@ class DeliveryNote extends DB_Table
 
 
         $post['note'].=$packer_id;
+
+
+
 
 
         $cod_amount = $order->get('Cash on Delivery Expected Payment Amount');
