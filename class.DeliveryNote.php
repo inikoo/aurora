@@ -2931,6 +2931,18 @@ class DeliveryNote extends DB_Table
         }
 
 
+        $packer_id='';
+
+
+        $staff=get_object('Staff',$this->data['Delivery Note Assigned Packer Key']);
+        if($staff->id and $staff->get('Staff ID')!=''){
+            $packer_id=' '.$staff->get('Staff ID');
+        }
+
+
+        $post['note'].=$packer_id;
+
+
         $cod_amount = $order->get('Cash on Delivery Expected Payment Amount');
 
         if ($cod_amount > 0) {
