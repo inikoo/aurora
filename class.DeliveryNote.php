@@ -2936,7 +2936,7 @@ class DeliveryNote extends DB_Table
 
         $staff=get_object('Staff',$this->data['Delivery Note Assigned Packer Key']);
         if($staff->id and $staff->get('Staff ID')!=''){
-            $packer_id=' '.$staff->get('Staff ID');
+            $packer_id=' ('.$staff->get('Staff ID').')';
         }
 
 
