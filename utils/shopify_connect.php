@@ -9,7 +9,12 @@
 function shopify_connect($store, $params, $path,$method='POST') {
 
 
-    if ($store->get('Store Shopify API Key') == '' or !defined('SHOPIFY_URL')) {
+    return array(
+        'success' => false,
+        'msg'     => 'Closing down this feature'
+    );
+
+    if ($store->get('Store Shopify API Key') == '' or !defined('SHOPIFY_URL')  ) {
         return array(
             'success' => false,
             'msg'     => 'Shopify integration not set up'
