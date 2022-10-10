@@ -9,7 +9,7 @@
 function pika_api($path, $params)
 {
 
-    return;
+
 
     $method = 'POST';
     $account = get_object('Account',1);
