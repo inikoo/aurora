@@ -229,6 +229,7 @@ abstract class DB_Table extends stdClass
 
             //$this->update_aiku($table_full_name, $field, $value);
 
+            include_once 'utils/pika_api.php';
             switch ($table_full_name) {
                 case 'Customer Dimension':
                     pika_api('customer',$table_key);
