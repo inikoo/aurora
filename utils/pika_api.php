@@ -18,20 +18,13 @@ function pika_api($path, $id, $method = 'POST')
         );
     }
 
-
-    $url = PIKA_URL.'/'.$account->get('pika_url').'/'.$path;
-
-    $params = [
-        'id' => $id
-
-    ];
-
+    $url = PIKA_URL.'/'.$account->get('pika_url').'/'.$path."?id=$id";
 
     $curl = curl_init();
 
     curl_setopt_array(
         $curl, array(
-                 CURLOPT_URL            => $url."?".http_build_query($params),
+                 CURLOPT_URL            => $url,
                  CURLOPT_RETURNTRANSFER => true,
                  CURLOPT_ENCODING       => "",
                  CURLOPT_MAXREDIRS      => 10,
@@ -51,8 +44,6 @@ function pika_api($path, $id, $method = 'POST')
 
     curl_close($curl);
 
-    //echo "Params:\n".print_r($params)." <<==\n";
-    //echo "Response:".$response.' <<';
     return $response;
 
 }
