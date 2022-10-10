@@ -20,7 +20,7 @@ abstract class DB_Table extends stdClass
      */
     public $id = 0;
 
-    public bool $fork=false;
+    public bool $fork = false;
 
     public $warning = false;
     public $deleted = false;
@@ -229,19 +229,7 @@ abstract class DB_Table extends stdClass
 
             //$this->update_aiku($table_full_name, $field, $value);
 
-            include_once 'utils/pika_api.php';
-            switch ($table_full_name) {
-                case 'Customer Dimension':
-                    pika_api('customer',$table_key);
-                    break;
-
-                default:
-                    return 0;
-            }
-
-
-
-
+            $this->update_pika($table_full_name, $table_key);
         }
     }
 
@@ -667,7 +655,7 @@ abstract class DB_Table extends stdClass
             $key_field = 'Customer Fulfilment Customer Key';
         } elseif ($table_full_name == 'Page Store Dimension') {
             $key_field = 'Page Key';
-        }elseif ($table_full_name == 'Store Emails Data') {
+        } elseif ($table_full_name == 'Store Emails Data') {
             $key_field = 'Store Emails Store Key';
         } elseif ($table_full_name == 'Product Category Data' or $table_full_name == 'Product Category DC Data' or $table_full_name == 'Product Category Dimension') {
             $key_field = 'Product Category Key';
@@ -689,7 +677,7 @@ abstract class DB_Table extends stdClass
             );
 
 
-           // print 'UPDATE '.$sql." $value $this->id  \n";
+            // print 'UPDATE '.$sql." $value $this->id  \n";
             $stmt = $this->db->prepare('UPDATE '.$sql);
 
 
@@ -709,10 +697,12 @@ abstract class DB_Table extends stdClass
 
             $affected = $stmt->rowCount();
             if ($affected > 0) {
-                $this->update_aiku($table_full_name, $field, $value);
+                //$this->update_aiku($table_full_name, $field, $value);
+                $this->update_pika($table_full_name, $key_field);
             }
         }
     }
+
 
     /**
      * @param        $user \User
@@ -764,7 +754,7 @@ abstract class DB_Table extends stdClass
         }
 
 
-        $sql  = sprintf(
+        $sql = sprintf(
             " `%s` SET `%s`= JSON_SET(`%s`,'$.%s',?) WHERE `%s`=?",
             addslashes($table_full_name),
             addslashes($field),
@@ -978,6 +968,38 @@ abstract class DB_Table extends stdClass
         $redis->set($redis_key, $data_to_cache);
 
         return $data_to_cache;
+    }
+
+    function update_pika($table_full_name, $key_field)
+    {
+        include_once 'utils/pika_api.php';
+        switch ($table_full_name) {
+            case 'Store Dimension':
+                pika_api('shop', $key_field);
+                break;
+            case 'Customer Dimension':
+                pika_api('customer', $key_field);
+                break;
+            case 'Order Dimension':
+                pika_api('order', $key_field);
+                break;
+            case 'Warehouse Dimension':
+                pika_api('warehouse', $key_field);
+                break;
+            case 'Warehouse Area Dimension':
+                pika_api('warehouse_area', $key_field);
+                break;
+            case 'Location Dimension':
+                pika_api('location', $key_field);
+                break;
+            case 'Part Dimension':
+                pika_api('stock', $key_field);
+                break;
+            case 'Employee Dimension':
+                pika_api('employee', $key_field);
+                break;
+            default:
+        }
     }
 
 
