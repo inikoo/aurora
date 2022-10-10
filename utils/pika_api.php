@@ -9,6 +9,8 @@
 function pika_api($path, $params)
 {
 
+    return;
+
     $method = 'POST';
     $account = get_object('Account',1);
     $account->load_acc_data();
