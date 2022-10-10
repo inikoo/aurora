@@ -1285,7 +1285,13 @@ function fork_housekeeping($job)
             }
 
             include_once 'utils/pika_api.php';
-            pika_api('customer',$customer->id);
+            pika_api('customer',
+            [
+                'id'=>$customer->id,
+                'field'=>'New',
+                'source'=>'HF'
+            ]
+            );
 
 
             break;

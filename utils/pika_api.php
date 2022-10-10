@@ -6,8 +6,10 @@
  *  Version 3.0
  */
 
-function pika_api($path, $id, $method = 'POST')
+function pika_api($path, $params)
 {
+
+    $method = 'POST';
     $account = get_object('Account',1);
     $account->load_acc_data();
 
@@ -18,7 +20,7 @@ function pika_api($path, $id, $method = 'POST')
         );
     }
 
-    $url = PIKA_URL.'/'.$account->get('pika_url').'/'.$path."?id=$id";
+    $url = PIKA_URL.'/'.$account->get('pika_url').'/'.$path."?".http_build_query($params);
 
     $curl = curl_init();
 

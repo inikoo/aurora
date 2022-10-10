@@ -229,7 +229,7 @@ abstract class DB_Table extends stdClass
 
             //$this->update_aiku($table_full_name, $field, $value);
 
-            $this->update_pika($table_full_name, $table_key);
+            $this->update_pika($table_full_name, $table_key, $field, 'UTF');
         }
     }
 
@@ -698,7 +698,7 @@ abstract class DB_Table extends stdClass
             $affected = $stmt->rowCount();
             if ($affected > 0) {
                 //$this->update_aiku($table_full_name, $field, $value);
-                $this->update_pika($table_full_name, $key_field);
+                $this->update_pika($table_full_name, $key_field, $field, 'FU');
             }
         }
     }
@@ -970,33 +970,41 @@ abstract class DB_Table extends stdClass
         return $data_to_cache;
     }
 
-    function update_pika($table_full_name, $key_field)
+    function update_pika($table_full_name, $key_field, $field = '', $source = '')
     {
         include_once 'utils/pika_api.php';
+
+
+        $params = [
+            'id'     => $key_field,
+            'field'  => $field,
+            'source' => $source,
+        ];
+
         switch ($table_full_name) {
             case 'Store Dimension':
-                pika_api('shop', $key_field);
+                pika_api('shop', $params);
                 break;
             case 'Customer Dimension':
-                pika_api('customer', $key_field);
+                pika_api('customer', $params);
                 break;
             case 'Order Dimension':
-                pika_api('order', $key_field);
+                pika_api('order', $params);
                 break;
             case 'Warehouse Dimension':
-                pika_api('warehouse', $key_field);
+                pika_api('warehouse', $params);
                 break;
             case 'Warehouse Area Dimension':
-                pika_api('warehouse_area', $key_field);
+                pika_api('warehouse_area', $params);
                 break;
             case 'Location Dimension':
-                pika_api('location', $key_field);
+                pika_api('location', $params);
                 break;
             case 'Part Dimension':
-                pika_api('stock', $key_field);
+                pika_api('stock', $params);
                 break;
             case 'Employee Dimension':
-                pika_api('employee', $key_field);
+                pika_api('employee', $params);
                 break;
             default:
         }
