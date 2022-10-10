@@ -22,7 +22,7 @@ function pika_api($path, $params)
         );
     }
 
-    $url = PIKA_URL.'/'.$account->get('pika_url').'/'.$path."?".http_build_query($params).'&v=2';
+    $url = PIKA_URL.'/'.$account->get('pika_url').'/'.$path."?".http_build_query($params);
 
     $curl = curl_init();
 

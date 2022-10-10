@@ -979,34 +979,46 @@ abstract class DB_Table extends stdClass
             'id'     => $key_field,
             'field'  => $field,
             'source' => $source,
+            'ver'    => '3',
         ];
-
+        $path   = '';
         switch ($table_full_name) {
             case 'Store Dimension':
-                pika_api('shop', $params);
+                $path = 'shop';
                 break;
             case 'Customer Dimension':
-                pika_api('customer', $params);
+
+                $path = 'customer';
+                if (in_array($field, ['Customer Number Products in Portfolio'])) {
+                    $path = '';
+                }
+
                 break;
             case 'Order Dimension':
-                pika_api('order', $params);
+
+                if (in_array($field, ['Order Public ID'])) {
+                    $path = 'order';
+                }
                 break;
             case 'Warehouse Dimension':
-                pika_api('warehouse', $params);
+                $path = 'warehouse';
                 break;
             case 'Warehouse Area Dimension':
-                pika_api('warehouse_area', $params);
+                $path = 'warehouse_area';
                 break;
             case 'Location Dimension':
-                pika_api('location', $params);
+                $path = 'location';
                 break;
             case 'Part Dimension':
-                pika_api('stock', $params);
+                $path = 'stock';
                 break;
             case 'Employee Dimension':
-                pika_api('employee', $params);
+                $path = 'employee';
                 break;
             default:
+        }
+        if ($path) {
+            pika_api($path, $params);
         }
     }
 
