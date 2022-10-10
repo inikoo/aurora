@@ -1011,6 +1011,9 @@ abstract class DB_Table extends stdClass
                 break;
             case 'Part Dimension':
                 $path = 'stock';
+                if (in_array($field, ['Part Margin','Part Commercial Value'])) {
+                    $path = '';
+                }
                 break;
             case 'Employee Dimension':
                 $path = 'employee';
