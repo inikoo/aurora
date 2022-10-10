@@ -1284,6 +1284,9 @@ function fork_housekeeping($job)
                 }
             }
 
+            include_once 'utils/pika_api.php';
+            pika_api('customer',$customer->id);
+
 
             break;
         case 'customer_client_created':
