@@ -53,7 +53,7 @@ function pika_api($path, $id, $method = 'POST')
 
     //echo "Params:\n".print_r($params)." <<==\n";
     //echo "Response:".$response.' <<';
-
+    return $response;
 
 }
 
