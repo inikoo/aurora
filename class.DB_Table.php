@@ -698,7 +698,7 @@ abstract class DB_Table extends stdClass
             $affected = $stmt->rowCount();
             if ($affected > 0) {
                 //$this->update_aiku($table_full_name, $field, $value);
-                $this->update_pika($table_full_name, $key_field, $field, 'FU');
+                $this->update_pika($table_full_name, $this->id, $field, 'FU');
             }
         }
     }
