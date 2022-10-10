@@ -970,7 +970,7 @@ abstract class DB_Table extends stdClass
         return $data_to_cache;
     }
 
-    function update_pika($table_full_name, $key_field, $field = '', $source = '')
+    function update_pika($table_full_name, $key_field, $field = 'error', $source = 'unk')
     {
         include_once 'utils/pika_api.php';
 
