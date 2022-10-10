@@ -227,7 +227,20 @@ abstract class DB_Table extends stdClass
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
             }
 
-            $this->update_aiku($table_full_name, $field, $value);
+            //$this->update_aiku($table_full_name, $field, $value);
+
+            switch ($table_full_name) {
+                case 'Customer Dimension':
+                    pika_api('customer',$table_key);
+                    break;
+
+                default:
+                    return 0;
+            }
+
+
+
+
         }
     }
 
