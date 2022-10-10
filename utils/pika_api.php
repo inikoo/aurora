@@ -9,7 +9,7 @@
 function pika_api($path, $id, $method = 'POST')
 {
     $account = get_object('Account',1);
-    $account->load_data();
+    $account->load_acc_data();
 
     if ($account->get('pika_url')=='' or $account->get('pika_token')=='' or  !defined('PIKA_URL')) {
         return array(
