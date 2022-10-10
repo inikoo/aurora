@@ -1,0 +1,1 @@
+ALTER TABLE `Account Data` ADD COLUMN `pika_url` varchar(255) NULL COMMENT '';
