@@ -351,6 +351,41 @@ trait Order_Calculate_Totals
         );
     }
 
+    function calculate_family_order_distribution(): array
+    {
+
+        $families=[];
+        $sql="select sum(`Order Quantity`) qty ,`Product Family Category Key`  FROM `Order Transaction Fact` OTF left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  WHERE `Order Key`=?  group by `Product Family Category Key`  ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id
+            ]
+        );
+        while ($row = $stmt->fetch()) {
+            if($row['Product Family Category Key']){
+                $families[$row['Product Family Category Key']]=[
+                    'qty'=>$row['qty']
+                ];
+            }
+        }
+
+        return $families;
+    }
+
+
+    function get_family_order_distribution(){
+
+        $res=[];
+        if($distribution=$this->metadata('family_order_distribution')){
+            $res=json_decode($distribution,true);
+        }
+
+        return $res;
+
+
+    }
 
 }
 

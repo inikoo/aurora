@@ -544,6 +544,11 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
             ).'</span> <span class="'.($gross_discounts == 0 ? 'hide' : '').'">'.money($gross_discounts, $this->data['Order Currency']).'</span></span>';
 
 
+
+        $this->fast_update_json_field('Order Metadata', 'family_order_distribution', json_encode($this->calculate_family_order_distribution()));
+
+
+
         return array(
             'updated'        => true,
             'otf_key'        => $otf_key,
