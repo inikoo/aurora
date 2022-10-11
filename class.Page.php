@@ -973,6 +973,7 @@ class Page extends DB_Table
                                 $content_data['blocks'][$block_key]['items'][$item_key]['category']                = $product->get('Family Code');
                                 $content_data['blocks'][$block_key]['items'][$item_key]['raw_price']               = $product->get('Product Price');
                                 $content_data['blocks'][$block_key]['items'][$item_key]['number_visible_variants'] = $product->get('number_visible_variants');
+                                $content_data['blocks'][$block_key]['items'][$item_key]['family_key']              = $product->get('Product Family Category Key');
                                 // print_r($content_data['blocks'][$block_key]['items'][$item_key]);
 
                             } else {
@@ -1023,7 +1024,6 @@ class Page extends DB_Table
                     'number_visible_variants' => $product->get('number_visible_variants'),
 
 
-
                 );
 
 
@@ -1032,7 +1032,6 @@ class Page extends DB_Table
         }
 
         //$items_out_of_stock = array_reverse($items_out_of_stock);
-
 
 
         foreach ($items_out_of_stock as $product_id => $item_data) {
@@ -1109,8 +1108,6 @@ class Page extends DB_Table
                 $index++;
             }
         }
-
-
     }
 
     function update_field_switcher($field, $value, $options = '', $metadata = '')
@@ -3095,6 +3092,7 @@ class Page extends DB_Table
                         $content_data['blocks'][$block_key]['items'][$item_key]['category']                = $product->get('Family Code');
                         $content_data['blocks'][$block_key]['items'][$item_key]['raw_price']               = $product->get('Product Price');
                         $content_data['blocks'][$block_key]['items'][$item_key]['number_visible_variants'] = $product->get('number_visible_variants');
+                        $content_data['blocks'][$block_key]['items'][$item_key]['family_key']              = $product->get('Product Family Category Key');
                     } else {
                         unset($content_data['blocks'][$block_key]['items'][$item_key]);
                     }
