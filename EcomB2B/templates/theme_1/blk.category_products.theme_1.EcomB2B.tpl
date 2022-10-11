@@ -96,14 +96,14 @@
                         {if $logged_in}
 
                             {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
-                                <div class="product_prices  ">
+                                <div class="product_prices">
                                     <div style="display:none" class="product_price">
                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
                                         : {$item.price} {if isset($item.price_unit)}
                                             <small>{$item.price_unit}</small>{/if}
                                     </div>
 
-                                    <table>
+                                    <table id="price_block_{$item.product_id}" class="price_block price_block_category_{$item.family_key}" >
                                         <tr class="product_price">
                                             <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td>{$item.price}</td>
