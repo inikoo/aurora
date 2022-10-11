@@ -97,12 +97,35 @@
 
                             {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
                                 <div class="product_prices  ">
-                                    <div class="product_price">
+                                    <div style="display:none" class="product_price">
                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
                                         : {$item.price} {if isset($item.price_unit)}
                                             <small>{$item.price_unit}</small>{/if}
                                     </div>
-                                    {if !empty($item.rrp)  }
+
+                                    <table>
+                                        <tr class="product_price">
+                                            <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
+                                            <td>{$item.price}</td>
+                                            <td><small>{$item.price_unit_bis}</small></td>
+                                        </tr>
+                                        <tr class="product_discounted_price">
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr class="product_rrp" style="font-size: smaller;{if empty($item.rrp)  }display:none{/if}">
+                                            <td>{if empty($labels._product_rrp)} {t}RRP{/t} {else}{$labels._product_rrp}{/if}</td>
+                                            <td></td>
+                                            <td>{$item.rrp}</td>
+
+                                        </tr>
+
+                                    </table>
+
+
+                                    {if !empty($item.rrp) and false }
                                         <div>
                                         <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
                                             : {$item.rrp}</small></div>{/if}

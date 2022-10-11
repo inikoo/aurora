@@ -48,10 +48,8 @@ switch ($tipo) {
                      )
         );
 
-        category_products($data, $db, $customer->id, $order??false);
+        category_products($data, $db, $customer->id, $order ?? false);
         break;
-
-
 
 
     default:
@@ -61,13 +59,11 @@ switch ($tipo) {
         );
         echo json_encode($response);
         exit;
-
 }
 
 
-function category_products($data, $db, $customer_key, $order) {
-
-
+function category_products($data, $db, $customer_key, $order)
+{
     $website = get_object('Website', $_SESSION['website_key']);
 
 
@@ -78,10 +74,12 @@ function category_products($data, $db, $customer_key, $order) {
     $out_of_stock_reminders = array();
     $ordered_products       = array();
     $stock                  = array();
+    $prices                 = array();
 
 
     $sql = sprintf(
-        'SELECT `Customer Favourite Product Product ID`,`Customer Favourite Product Key` FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Customer Key`=%d ', $customer_key
+        'SELECT `Customer Favourite Product Product ID`,`Customer Favourite Product Key` FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Customer Key`=%d ',
+        $customer_key
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -91,7 +89,8 @@ function category_products($data, $db, $customer_key, $order) {
 
 
     $sql = sprintf(
-        'SELECT `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` FROM `Back in Stock Reminder Fact` WHERE `Back in Stock Reminder Customer Key`=%d ', $customer_key
+        'SELECT `Back in Stock Reminder Product ID`,`Back in Stock Reminder Key` FROM `Back in Stock Reminder Fact` WHERE `Back in Stock Reminder Customer Key`=%d ',
+        $customer_key
     );
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
@@ -99,9 +98,10 @@ function category_products($data, $db, $customer_key, $order) {
         }
     }
 
-    if($order) {
+    if ($order) {
         $sql = sprintf(
-            'SELECT `Product ID`,`Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d ', $order->id
+            'SELECT `Product ID`,`Order Quantity` FROM `Order Transaction Fact` WHERE `Order Key`=%d ',
+            $order->id
         );
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
@@ -123,7 +123,6 @@ function category_products($data, $db, $customer_key, $order) {
     }
 
     if ($with_favourites_products and ($website->settings('Display Stock Levels in Category') == 'Hint_Bar' or $website->settings('Display Stock Levels in Category') == 'Dot')) {
-
         $show_stock_value = $website->settings('Display Stock Quantity');
         if ($show_stock_value == '') {
             $show_stock_value = 'No';
@@ -138,59 +137,116 @@ function category_products($data, $db, $customer_key, $order) {
             array($customer_key)
         );
         while ($row = $stmt->fetch()) {
-
-
             //'For Sale','Out of Stock','Discontinued','Offline'
 
             if ($row['Product Web State'] == 'For Sale') {
-
-
                 $stock[$row['Product ID']] = array(
                     $row['Product Availability State'],
-                    get_stock_label($labels,$show_stock_value,$row['Product Availability State'],$row['Product Availability'])
+                    get_stock_label($labels, $show_stock_value, $row['Product Availability State'], $row['Product Availability'])
                 );
-
-
-
             } else {
                 $stock_label               = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Out of stock'));
                 $stock[$row['Product ID']] = array(
                     'OutofStock',
                     $stock_label
                 );
-
             }
+        }
+    }
+
+    $do_stock = false;
+    if (($with_category_products and ($website->settings('Display Stock Levels in Category') == 'Hint_Bar' or $website->settings('Display Stock Levels in Category') == 'Dot')) or (!$with_category_products and $website->settings('Display Stock Levels in Product')
+            == 'Yes')) {
+        $do_stock = true;
+    }
+
+    $show_stock_value = $website->settings('Display Stock Quantity');
+    if ($show_stock_value == '') {
+        $show_stock_value = 'No';
+    }
 
 
+    $family_data = [];
+    $families    = [];
+
+    $family_discounts = [];
+
+
+    $sql  =
+        "select `Product Family Category Key` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        [
+            $data['webpage_key']
+        ]
+    );
+    while ($row = $stmt->fetch()) {
+        if ($row['Product Family Category Key']) {
+            $families[$row['Product Family Category Key']]    = $row['Product Family Category Key'];
+            $family_data[$row['Product Family Category Key']] = [
+                'category_key'                => $row['Product Family Category Key'],
+                'discount_min_quantity_order' => null,
+
+            ];
+        }
+    }
+
+    $order_family_data = $order->get_family_order_distribution();
+
+    // print_r($order->get_family_order_distribution());
+    // print_r(join(',', $families));
+
+    if (count($families) > 0) {
+        $sql  = "select `Deal Component Allowance`,`Deal Component Terms Type`,`Deal Component Trigger Key`,`Deal Component Terms` from `Deal Component Dimension` where `Deal Component Status` = 'Active' and `Deal Component Trigger`='Category' and  `Deal Component Allowance Type`='Percentage Off' and `Deal Component Allowance Target`='Category'  and   `Deal Component Trigger Key` in (".join(
+                ',',
+                $families
+            ).")";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            if ($row['Deal Component Terms Type'] == 'Category Quantity Ordered') {
+                if (is_null($family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'])) {
+                    $family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'] = $row['Deal Component Terms'];
+                } elseif ($family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'] > $row['Deal Component Terms']) {
+                    $family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'] = $row['Deal Component Terms'];
+                }
+                $family_data[$row['Deal Component Trigger Key']]['percentage'] = $row['Deal Component Allowance'];
+            }
         }
     }
 
 
-    if (($with_category_products and ($website->settings('Display Stock Levels in Category') == 'Hint_Bar' or $website->settings('Display Stock Levels in Category') == 'Dot')) or (!$with_category_products and $website->settings('Display Stock Levels in Product')
-            == 'Yes')) {
+    //print_r($family_data);
 
-        $show_stock_value = $website->settings('Display Stock Quantity');
-        if ($show_stock_value == '') {
-            $show_stock_value = 'No';
+    //print_r($order_family_data);
+
+    foreach ($family_data as $family_key => $_data) {
+        if (isset($order_family_data[$family_key]) and $order_family_data[$family_key]['qty'] > $_data['discount_min_quantity_order']) {
+            $family_discounts[$family_key] = $_data['percentage'];
         }
-
-        $sql  =
-            "select `Product Availability State`,`Product Availability`,`Product ID` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array($data['webpage_key'])
-        );
-        while ($row = $stmt->fetch()) {
+    }
 
 
+    //print_r($family_discounts);
 
 
+    $sql  =
+        "select `Product Availability State`,`Product Availability`,`Product ID` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($data['webpage_key'])
+    );
+    while ($row = $stmt->fetch()) {
+        if ($do_stock) {
             $stock[$row['Product ID']] = array(
                 $row['Product Availability State'],
-                get_stock_label($labels,$show_stock_value,$row['Product Availability State'],$row['Product Availability'])
+                get_stock_label($labels, $show_stock_value, $row['Product Availability State'], $row['Product Availability'])
             );
-
         }
+
+        $prices[$row['Product ID']] = [
+
+        ];
     }
 
 
@@ -201,16 +257,16 @@ function category_products($data, $db, $customer_key, $order) {
             'out_of_stock_reminders' => $out_of_stock_reminders,
             'ordered_products'       => $ordered_products,
             'stock'                  => $stock,
+            'family_discounts'       => $family_discounts
 
         )
     );
     exit;
-
-
 }
 
 
-function get_stock_label($labels,$show_stock_value,$stock_state,$availability){
+function get_stock_label($labels, $show_stock_value, $stock_state, $availability)
+{
     switch ($stock_state) {
         case 'OnDemand':
             $stock_label = (!empty($labels['_stock_OnDemand']) ? $labels['_stock_OnDemand'] : _('Product made on demand'));
@@ -250,6 +306,5 @@ function get_stock_label($labels,$show_stock_value,$stock_state,$availability){
     }
 
 
-    return  $stock_label;
-
+    return $stock_label;
 }
