@@ -103,7 +103,7 @@
                                             <small>{$item.price_unit}</small>{/if}
                                     </div>
 
-                                    <table id="price_block_{$item.product_id}" class="price_block price_block_category_{$item.family_key}" >
+                                    <table id="price_block_{$item.product_id}" class="price_block" >
                                         <tr class="product_price">
                                             <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td>{$item.price}</td>
