@@ -264,13 +264,13 @@ function category_products($data, $db, $customer_key, $order)
 
 
                 if ($row['Product Units Per Case'] != 1) {
-                    $price_unit = ''.preg_replace('/PLN/', 'zł ', money($row['Product Price'] / $row['Product Units Per Case'], $order->get('Order Currency'))).'/'.$row['Product Unit Label'];
+                    $price_unit = ''.preg_replace('/PLN/', 'zł ', money($family_discounts[$row['Product Family Category Key']] * $row['Product Price'] / $row['Product Units Per Case'], $order->get('Order Currency'))).'/'.$row['Product Unit Label'];
                 } else {
                     $price_unit = '';
                 }
 
                 $discounts[$row['Product ID']] = [
-                    'percentage'     => percentage($family_discounts[$row['Product Family Category Key']], 1),
+                    'percentage'     => percentage($family_discounts[$row['Product Family Category Key']], 1,0),
                     'price'          => $price,
                     'price_per_unit' => $price_unit
                 ];

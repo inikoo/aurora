@@ -1,6 +1,33 @@
 <script>
 
 
+    function show_discounts(discounts){
+
+        $('.product_discounted_price').addClass('hide')
+        $('.original_price').removeClass('strikethrough').css('opacity', '1');
+
+        $.each(discounts, function (index, value) {
+
+            console.log(index)
+            console.log(value)
+
+
+
+            let block=$('#price_block_'+index)
+
+            console.log(block)
+            block.find('.product_discounted_price').removeClass('hide')
+            block.find('.original_price').addClass('strikethrough discrete').css('opacity', '0.6');
+
+            block.find('._percentage').html(value.percentage)
+            block.find('._price').html(value.price)
+            block.find('._unit_price').html(value.price_per_unit)
+
+        });
+
+    }
+
+
     var pinned=false;
     var menu_open = false;
     var mouse_over_menu=false;
@@ -1632,6 +1659,11 @@
                                     }
                                 });
 
+                                console.log('A1')
+
+                                show_discounts(data.discounts)
+
+
                             });
 
                             {/if}
@@ -1661,6 +1693,10 @@
                                     $('.product_stock_label_'+ index).html(value[1])
                                 }
                             });
+
+                            console.log('A2')
+                            show_discounts(data.discounts)
+
                             $('#header_order_totals').find('.ordered_products_number').html(data.items)
                             $('#header_order_totals').find('.order_amount').html(data.total)
                             $('#header_order_totals').find('i').attr('title',data.label)
@@ -1702,6 +1738,9 @@
                                             $('.product_stock_label_'+ index).html(value[1])
                                         }
                                     });
+
+                                    console.log('A3')
+                                    show_discounts(data.discounts)
                                     $('#header_order_totals').find('.ordered_products_number').html(data.items)
                                     $('#header_order_totals').find('.order_amount').html(data.total)
                                     $('#header_order_totals').find('i').attr('title',data.label)
@@ -1734,6 +1773,11 @@
                                             $('.product_stock_label_'+ index).html(value[1])
                                         }
                                     });
+
+
+                                    console.log('A4')
+                                    show_discounts(data.discounts)
+
                                     $('#header_order_totals').find('.ordered_products_number').html(data.items)
                                     $('#header_order_totals').find('.order_amount').html(data.total)
                                     $('#header_order_totals').find('i').attr('title',data.label)
@@ -1836,5 +1880,9 @@
         firebase.initializeApp(firebaseConfig);
         firebase.analytics();
 
+
+
+
     </script>
 {/if}
+

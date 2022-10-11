@@ -106,13 +106,13 @@
                                     <table id="price_block_{$item.product_id}" class="price_block" >
                                         <tr class="product_price">
                                             <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
-                                            <td>{$item.price}</td>
-                                            <td><small>{$item.price_unit_bis}</small></td>
+                                            <td class="original_price ">{$item.price}</td>
+                                            <td class="original_price">{$item.price_unit_bis}</td>
                                         </tr>
-                                        <tr class="product_discounted_price">
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                        <tr class="product_discounted_price hide product_price"   >
+                                            <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
+                                            <td class="_price"></td>
+                                            <td ><span class="_unit_price"></span></td>
                                         </tr>
 
                                         <tr class="product_rrp" style="font-size: smaller;{if empty($item.rrp)  }display:none{/if}">
