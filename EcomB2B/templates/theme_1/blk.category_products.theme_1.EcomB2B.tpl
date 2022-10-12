@@ -107,7 +107,7 @@
                                         <tr class="product_price">
                                             <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td class="original_price ">{$item.price}</td>
-                                            <td class="original_price">{$item.price_unit}</td>
+                                            <td class="original_price">{if isset($item.price_unit)}{$item.price_unit}{/if}</td>
                                         </tr>
                                         <tr class="product_discounted_price hide product_price"   >
                                             <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
