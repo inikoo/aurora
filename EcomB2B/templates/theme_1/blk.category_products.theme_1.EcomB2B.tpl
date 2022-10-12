@@ -117,8 +117,8 @@
 
                                         <tr class="product_rrp" style="font-size: smaller;{if empty($item.rrp)  }display:none{/if}">
                                             <td>{if empty($labels._product_rrp)} {t}RRP{/t} {else}{$labels._product_rrp}{/if}</td>
-                                            <td></td>
-                                            <td>{$item.rrp}</td>
+                                            <td colspan="2">{$item.rrp}</td>
+
 
                                         </tr>
 
