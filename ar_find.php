@@ -3038,26 +3038,21 @@ function find_product_webpages($db, $data) {
 
     }
 
+    $already_in_parent = array();
+    /*
     if (isset($data['metadata']['parent_category_key'])) {
         $parent_category_key = $data['metadata']['parent_category_key'];
         $sql                 = sprintf("SELECT `Subject Key`   FROM `Category Bridge` WHERE `Category Key`=%d ", $parent_category_key);
-        //  print $sql;
-
-        $already_in_parent = array();
         if ($result = $db->query($sql)) {
             foreach ($result as $row) {
                 $already_in_parent[] = $row['Subject Key'];
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
-    } else {
-        $already_in_parent = array();
     }
+    */
 
-
+    
     $candidates      = array();
     $candidates_data = array();
 
