@@ -263,7 +263,7 @@
                         {t}Current cost{/t}:
                     </td>
                     <td colspan=2 style="text-align: right">
-                        <span title="{t}Future delivered cost{/t}"> <span class="SKO_Delivered_Cost">{$main_supplier_part->get('SKO Delivered Cost')}</span><span>/SKO</span></span>
+                        <span title="{t}Future delivered cost{/t}"> <span class="Unit_Delivered_Cost">{$main_supplier_part->get('Unit Delivered Cost')}</span><span>/Unit</span></span>
                     </td>
 
                 </tr>

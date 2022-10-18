@@ -1637,7 +1637,7 @@ class SupplierPart extends DB_Table {
                 return $cost;
                 break;
 
-            case 'SKO Delivered Cost':
+            case 'Unit Delivered Cost':
 
                 include_once 'utils/currency_functions.php';
 
@@ -1664,7 +1664,7 @@ class SupplierPart extends DB_Table {
                 );
 
                 return $cost;
-                break;
+
 
 
             case 'Supplier Part Unit Extra Cost Fraction':

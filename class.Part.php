@@ -2036,7 +2036,7 @@ class Part extends Asset
                         'Carton_Cost'        => $main_supplier_part->get('Carton Cost'),
                         'SKO_Cost'           => $main_supplier_part->get('SKO Cost'),
                         'Unit_Cost_Amount'   => $main_supplier_part->get('Unit Cost Amount'),
-                        'SKO_Delivered_Cost' => $main_supplier_part->get('SKO Delivered Cost'),
+                        'Unit_Delivered_Cost' => $main_supplier_part->get('Unit Delivered Cost'),
 
                     )
                 );
@@ -2086,7 +2086,7 @@ class Part extends Asset
                         'Carton_Cost'        => $main_supplier_part->get('Carton Cost'),
                         'SKO_Cost'           => $main_supplier_part->get('SKO Cost'),
                         'Unit_Cost_Amount'   => $main_supplier_part->get('Unit Cost Amount'),
-                        'SKO_Delivered_Cost' => $main_supplier_part->get('SKO Delivered Cost'),
+                        'Unit_Delivered_Cost' => $main_supplier_part->get('Unit Delivered Cost'),
 
                     )
                 );

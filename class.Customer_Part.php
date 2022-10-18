@@ -977,7 +977,7 @@ class Customer_Part extends DB_Table {
                 return $cost;
                 break;
 
-            case 'SKO Delivered Cost':
+            case 'Unit Delivered Cost':
 
                 include_once 'utils/currency_functions.php';
 
