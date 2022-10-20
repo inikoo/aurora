@@ -41,7 +41,7 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         ]
     );
     while ($row = $stmt->fetch()) {
-        $number_staff = $row['num'];
+        $number_staff = $row['num']+1; // this 1 represent the extra admin contractors
     }
 
     $sales_per_staff_title = money($account->get('Account Last Month Acc Invoiced Amount')).' sales / '.$number_staff.' staff'.' / 19.24 days';
@@ -58,7 +58,7 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         'Artisan' => 0,
         'Sales'   => 0,
         'Support' => 0,
-        'Admin'   => 0,
+        'Admin'   => 1,
     ];
 
     $sql  = "select count(*) as num , `Staff Team` from `Staff Dimension` where `Staff Currently Working`='Yes' and `Staff Type`!='Contractor' group by `Staff Team`  ";
@@ -69,7 +69,8 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         ]
     );
     while ($row = $stmt->fetch()) {
-        $teams[$row['Staff Team']] = $row['num'];
+        $teams[$row['Staff Team']] += $row['num'];
+
     }
 
 
