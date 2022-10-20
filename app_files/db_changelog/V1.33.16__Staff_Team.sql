@@ -1,0 +1,1 @@
+ALTER TABLE `Staff Dimension` ADD COLUMN `Staff Team` varchar(255) NULL COMMENT '';
