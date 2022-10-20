@@ -89,6 +89,8 @@ if ($order == 'name') {
     $order = '`Staff ID`';
 } elseif ($order == 'type') {
     $order = '`Staff Type`';
+}  elseif ($order == 'team') {
+    $order = '`Staff Team`';
 } elseif ($order == 'id') {
     $order = '`Staff Key`';
 } else {
@@ -105,7 +107,7 @@ $sql_totals
 
 $fields
     = "`Staff ID`,`Staff Job Title`,`Staff Birthday`,`Staff Official ID`,`Staff Email`,`Staff Telephone Formatted`,`Staff Telephone`,`Staff Next of Kind`,
-`Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,
+`Staff Alias`,SD.`Staff Key`,`Staff Name`,`Staff Type`,`Staff Team`,
 `Staff Valid To`,`Staff Valid From`,`User Login Count`,
 `User Handle`,`User Active`,`User Last Login`,`User Key`,
 (select GROUP_CONCAT(`Role Code` ) from `Staff Role Bridge` B  where  B.`Staff Key`=SD.`Staff Key` ) as roles,

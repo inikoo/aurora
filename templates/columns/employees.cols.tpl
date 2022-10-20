@@ -107,6 +107,16 @@ sortType: "toggle",
 cell: "string"
 },
 {
+name: "team",
+label: "{t}Team{/t}",
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({
+events: {
+
+}
+})
+},
+{
 name: "job_title",
 label: "{t}Job title{/t}",
 sortType: "toggle",
@@ -116,7 +126,6 @@ events: {
 }
 })
 },
-
 
 {
 name: "user_name_bis",
@@ -227,6 +236,7 @@ grid.columns.findWhere({ name: 'next_of_kind'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'type'} ).set("renderable", false)
 
+grid.columns.findWhere({ name: 'team'} ).set("renderable", false)
 
 grid.columns.findWhere({ name: 'job_title'} ).set("renderable", false)
 grid.columns.findWhere({ name: 'roles'} ).set("renderable", false)
@@ -245,6 +255,7 @@ grid.columns.findWhere({ name: 'user_name_bis'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'code'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'name'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'team'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'job_title'} ).set("renderable", true)
 }else if(view=='personal_info'){
 grid.columns.findWhere({ name: 'code_link'} ).set("renderable", true)
@@ -260,6 +271,7 @@ grid.columns.findWhere({ name: 'next_of_kind'} ).set("renderable", true)
 
 grid.columns.findWhere({ name: 'code_link'} ).set("renderable", true)
 grid.columns.findWhere({ name: 'payroll_id'} ).set("renderable", true)
+grid.columns.findWhere({ name: 'team'} ).set("renderable", true)
 
 grid.columns.findWhere({ name: 'job_title'} ).set("renderable", true)
 

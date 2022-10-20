@@ -19,7 +19,18 @@ $account->load_acc_data();
 $html = '';
 foreach ($user->get_dashboard_items() as $item) {
 
-    if ($item == 'sales_overview') {
+
+    if ($item == 'sales_per_staff') {
+        $period = '1m';
+        $currency = 'account';
+
+        include_once 'widgets/sales_per_staff.wget.php';
+
+
+        $html .= get_dashboard_sales_per_staff($db, $account, $smarty,$currency,$period);
+
+
+    }elseif ($item == 'sales_overview') {
 
         $period = '1y';
 

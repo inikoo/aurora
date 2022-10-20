@@ -203,6 +203,7 @@ function employees($_data, $db, $user, $type = '') {
 
 
                 'supervisors' => $data['supervisors'],
+                'team'  => $data['Staff Team'],
 
                 'job_title'  => $data['Staff Job Title'],
                 'user_login' => $data['User Handle'],
