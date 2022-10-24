@@ -60,7 +60,7 @@ if ($object->get('Customer Sales Representative Key')) {
     );
 }
 $sql =
-    "SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ('Staff','Contractor')  and `User Group Key`=2     and `User Active`='Yes'  group by U.`User Key`  ";
+    "SELECT `User Alias`,U.`User Key`,`User Handle` from `User Dimension` U LEFT JOIN `User Group User Bridge` B ON (U.`User Key`=B.`User Key`) WHERE  `User Type` in  ('Staff','Contractor')  and `User Group Key` in (16,2)     and `User Active`='Yes'  group by U.`User Key`  ";
 
 
 foreach ($db->query($sql) as $row) {
