@@ -39,24 +39,35 @@
 
     <li class="flex-item">
 
-        <span>Sales</span>
+        <span>Sales/all</span>
 
         <div class="title " ><span class="formatted_sitting_time_avg " title="{$sales_per_staff_title}">
                 {$sales_per_staff}</span></div>
-        <div style="visibility: hidden"  ><span class="sitting_time_samples" title="{t}Orders sitting in the warehouse{/t}">{$account->get('sitting_time_samples')}</span> <i
-                    class="fal fa-truck"></i></div>
+        <div   ><span class="" ></span> {$number_staff}</div>
 
     </li>
 
     <li class="flex-item">
-        <span style="color:purple">Produced</span>
+        <span style="color:purple">Sales/Warehouse</span>
+
+        <div class="title"><span class="formatted_dispatch_time_avg " style="color:purple"
+                                 title="{$sales_per_warehouse_title}">
+                {$sales_per_warehouse}</span></div>
+
+
+        <div ><span class="dispatch_time_samples" title="">{$number_warehouse_staff}</span> </div>
+
+    </li>
+
+    <li class="flex-item">
+        <span style="color:purple">Sales/Artisan & S. </span>
 
         <div class="title"><span class="formatted_dispatch_time_avg " style="color:purple"
                                  title="{$produced_per_staff_title}">
                 {$produced_per_staff}</span></div>
 
 
-        <div style="visibility: hidden"><span class="dispatch_time_samples" title="{t}Order dispatched (last 30 days){/t}">{$account->get('dispatch_time_samples','1 Month')}</span> <i class="fal fa-truck"></i></div>
+        <div ><span class="dispatch_time_samples" title="">{$number_production_staff}</span> </div>
 
     </li>
 
@@ -81,6 +92,16 @@
 
 
         </div>
+
+        <div style="flex-grow:1">
+
+            <span>Warehouse</span>
+            <div class="title "><span >{$teams_data['Warehouse']['staff_percentage']}</span></div>
+            <div><span class="">{$teams_data['Warehouse']['staff']}</div>
+
+        </div>
+
+
         <div style="flex-grow:1">
 
             <span>Admin</span>
@@ -95,6 +116,8 @@
             <div><span class="">{$teams_data['Sales']['staff']}</div>
 
         </div>
+
+
 
     </li>
     <li style="visibility: hidden;width: 320px" class="flex-item">
