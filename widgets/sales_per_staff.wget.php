@@ -11,6 +11,13 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
     include_once 'utils/date_functions.php';
 
 
+    $adjust=0;
+    if (DNS_ACCOUNT_CODE == 'AROMA' ) {
+        $adjust=1;
+    }
+
+
+
     $smarty->assign('currency', $currency);
     $smarty->assign('period', $period);
 
@@ -21,7 +28,7 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         'Artisan' => 0,
         'Sales'   => 0,
         'Support' => 0,
-        'Admin'   => 1,
+        'Admin'   => $adjust,
         'Warehouse'   => 0,
     ];
 
@@ -63,7 +70,7 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         ]
     );
     while ($row = $stmt->fetch()) {
-        $number_staff = $row['num']+1; // this 1 represent the extra admin contractors
+        $number_staff = $row['num']+$adjust; // this 1 represent the extra admin contractors
     }
 
     $sales_per_staff_title = money($account->get('Account Last Month Acc Invoiced Amount')).' sales / '.$number_staff.' staff'.' / 19.24 days';
