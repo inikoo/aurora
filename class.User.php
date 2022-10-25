@@ -2085,7 +2085,7 @@ class User extends DB_Table
         $dashboard_items = array();
 
 
-        if (DNS_ACCOUNT_CODE == 'AROMA' or DNS_ACCOUNT_CODE == 'AWEU' ) {
+        if (DNS_ACCOUNT_CODE == 'AROMA' or DNS_ACCOUNT_CODE == 'AWEU' or DNS_ACCOUNT_CODE == 'ES' ) {
             $dashboard_items[] = 'sales_per_staff';
         }
 
