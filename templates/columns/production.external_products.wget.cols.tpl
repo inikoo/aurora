@@ -66,6 +66,18 @@ headerCell: integerHeaderCell
 },
 
 {
+name: "our_stock",
+label: "{t}Our stock{/t}",
+editable: false,
+sortable:false,
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+
+headerCell: integerHeaderCell
+},
+
+
+{
 name: "next_deliveries",
 label: "{t}Purchase order{/t}",
 editable: false,

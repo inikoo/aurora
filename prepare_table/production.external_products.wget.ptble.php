@@ -35,12 +35,12 @@ $table
     = " $db_name.`Part Dimension` P left join $db_name.`Supplier Part Dimension` SP on (SP.`Supplier Part Part SKU`=P.`Part SKU`) left join $db_name.`Part Data` PD on (PD.`Part SKU`=P.`Part SKU`) ";
 
 $where = sprintf(
-    "where `Supplier Part Supplier Key`=%d and `Part Status` ='In Use' and `Supplier Part Status`!='Discontinued' ",
+    "where `Supplier Part Supplier Key`=%d and `Part Status` in ('In Use','Discontinuing')  ",
     $supplier_key
 );
 
 
-$where .= "and `Part Stock Status` in ('Critical','Out_Of_Stock')   ";
+$where .= "and `Part Stock Status` in ('Low','Critical','Out_Of_Stock')   ";
 
 
 $filter_msg = '';
@@ -86,7 +86,8 @@ $fields
 `Part 1 Quarter Ago 1YB Dispatched`,`Part 2 Quarter Ago 1YB Dispatched`,`Part 3 Quarter Ago 1YB Dispatched`,`Part 4 Quarter Ago 1YB Dispatched`,
 `Part 1 Quarter Ago 1YB Invoiced Amount`,`Part 2 Quarter Ago 1YB Invoiced Amount`,`Part 3 Quarter Ago 1YB Invoiced Amount`,`Part 4 Quarter Ago 1YB Invoiced Amount`,
 `Part Quarter To Day Acc Dispatched`,`Part Stock Status`,`Part Current On Hand Stock`,`Part Reference`,`Part Total Acc Dispatched`,
-`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Part Next Deliveries Data`,`Part Current Stock In Process`,`Part Current Stock Ordered Paid`
+`Part Days Available Forecast`,`Part 1 Quarter Acc Dispatched`,`Part Next Deliveries Data`,`Part Current Stock In Process`,`Part Current Stock Ordered Paid`,
+(select CONCAT_WS(',',`Part SKU`,`Part Current On Hand Stock`) from `Part Dimension` PP where PP.`Part Reference`=P.`Part Reference`) as own_data
 
 
 

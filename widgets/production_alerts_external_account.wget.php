@@ -41,7 +41,7 @@ function get_external_production_alerts($external_account_code, $production, $db
     $all_products = 0;
 
     $sql                = "select count(*) as num from `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`)  where `Supplier Part Supplier Key`=? 
-and `Part Status`='In Use' and `Supplier Part Status`!='Discontinued'  and   `Part Stock Status` in ('Critical','Out_Of_Stock')  ";
+and `Part Status` in ('In Use','Discontinuing')    and   `Part Stock Status` in ('Low','Critical','Out_Of_Stock')  ";
     $stmt               = $db2->prepare($sql);
     $stmt->execute(
         [
@@ -53,7 +53,7 @@ and `Part Status`='In Use' and `Supplier Part Status`!='Discontinued'  and   `Pa
     }
 
 
-    $sql                = "select count(*) as num from `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`)   and `Part Status`!='Not In Use' where `Supplier Part Supplier Key`=?  ";
+    $sql                = "select count(*) as num from `Supplier Part Dimension` left join `Part Dimension` on (`Part SKU`=`Supplier Part Part SKU`)   and  `Part Status` in ('In Use','Discontinuing')  where `Supplier Part Supplier Key`=?  ";
     $stmt               = $db2->prepare($sql);
     $stmt->execute(
         [
@@ -69,8 +69,8 @@ and `Part Status`='In Use' and `Supplier Part Status`!='Discontinued'  and   `Pa
     $data = get_widget_data(
         $low_stock_products,
         $all_products,
-        .05,
-        .20
+        .02,
+        .10
 
     );
 
