@@ -505,6 +505,12 @@ function get_export_fields($element, $account_currency_code = ''): array
 
             ),
             array(
+                'name'    => '(select GROUP_CONCAT(`Commodity Name`) from kbase.`Commodity Code Dimension` where SUBSTRING(`Commodity Code`,1,8)=SUBSTRING(`Part Tariff Code`,1,8)  and `Commodity Name` IS NOT NULL ) as tc_name ',
+                'label'   => _('Tariff code description'),
+                'checked' => 1,
+
+            ),
+            array(
                 'name'    => '`Part Origin Country Code`',
                 'label'   => _('Origin'),
                 'checked' => 1
