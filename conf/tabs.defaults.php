@@ -4999,6 +4999,15 @@ function get_tab_defaults_data(): array {
             'f_field'     => 'reference',
 
         ),
+        'production.external_products.wget'               => array(
+            'view'        => 'overview',
+            'sort_key'    => 'id',
+            'sort_order'  => 1,
+            'rpp'         => 100,
+            'rpp_options' => $default_rrp_options,
+            'f_field'     => 'reference',
+
+        ),
         'production_urgent_to_do.wget'             => array(
             'view'        => 'overview',
             'sort_key'    => 'date',

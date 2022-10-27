@@ -89,6 +89,9 @@ switch ($tipo) {
 
         todo_parts(get_table_parameters(), $db, $user, $account);
         break;
+    case 'production_external_products':
+        external_products(get_table_parameters(), $db, $user, $account);
+        break;
     default:
         $response = array(
             'state' => 405,
@@ -1871,3 +1874,189 @@ function todo_parts($_data, $db, $user) {
     echo json_encode($response);
 }
 
+function external_products($_data, $db, $user) {
+
+
+    $rtext_label = 'low stock parts '.$_data['parameters']['parent_key'];
+
+
+    include_once 'prepare_table/init.php';
+
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql_totals;
+
+    $table_data = array();
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+
+            switch ($data['Supplier Part Status']) {
+                case 'Available':
+                    $status = sprintf(
+                        '<i class="fa fa-stop success" title="%s"></i>', _('Available')
+                    );
+                    break;
+                case 'NoAvailable':
+                    $status = sprintf(
+                        '<i class="fa fa-stop warning" title="%s"></i>', _('No available')
+                    );
+
+                    break;
+                case 'Discontinued':
+                    $status = sprintf(
+                        '<i class="fa fa-ban error" title="%s"></i>', _('Discontinued')
+                    );
+
+                    break;
+                default:
+                    $status = $data['Supplier Part Status'];
+                    break;
+            }
+
+            switch ($data['Part Stock Status']) {
+                case 'Surplus':
+                    $stock_status = '<i class="fa  fa-plus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Optimal':
+                    $stock_status = '<i class="fa fa-check-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Low':
+                    $stock_status = '<i class="fa fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Critical':
+                    $stock_status = '<i class="fa error fa-minus-circle fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Out_Of_Stock':
+                    $stock_status = '<i class="fa error fa-ban fa-fw" aria-hidden="true"></i>';
+                    break;
+                case 'Error':
+                    $stock_status = '<i class="fa fa-question-circle error fa-fw" aria-hidden="true"></i>';
+                    break;
+                default:
+                    $stock_status = $data['Part Stock Status'];
+                    break;
+            }
+
+
+            $description = $data['Part Package Description'];
+
+
+            $description .= '
+
+  <div class="as_table asset_sales discreet">
+
+          <div class="as_row header">
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -12 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -9 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -6 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(
+                    strtotime('now -3 months')
+                ).'</div>
+			<div class="as_cell width_75">'.get_quarter_label(strtotime('now')).'</div>
+			</div>
+		 <div class="as_row header">
+			<div class="as_cell width_75">'.number(
+                    $data['Part 4 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part 3 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part 2 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part 1 Quarter Ago Dispatched']
+                ).'</div>
+			<div class="as_cell width_75">'.number(
+                    $data['Part Quarter To Day Acc Dispatched']
+                ).'</div>
+			</div>
+			</div>
+
+
+
+			';
+
+
+            $available_forecast = seconds_to_until(
+                $data['Part Days Available Forecast'] * 86400
+            );
+
+
+            $dispatched_per_week = number(
+                $data['Part 1 Quarter Acc Dispatched'] * 4 / 52, 0
+            );
+
+
+            $next_deliveries = '';
+
+            if ($data['Part Next Deliveries Data'] != '') {
+                $next_deliveries_data = json_decode($data['Part Next Deliveries Data'], true);
+                if (count($next_deliveries_data) > 0) {
+                    foreach ($next_deliveries_data as $delivery) {
+                        $next_deliveries .= sprintf(
+                            ', '.$delivery['formatted_link']
+                        );
+                    }
+                }
+
+
+            }
+            $next_deliveries = preg_replace('/^, /', '', $next_deliveries);
+
+            $stock_available = $data['Part Current On Hand Stock'] - $data['Part Current Stock In Process'] - $data['Part Current Stock Ordered Paid'];
+
+
+            $stock = '<span class="very_discreet small padding_right_10"><i class="fal fa-inventory"></i> '.number($data['Part Current On Hand Stock']).' <i class="fal fa-shopping-cart"></i> '.number(
+                    $data['Part Current Stock In Process'] + $data['Part Current Stock Ordered Paid']
+                ).'</span>';
+
+            $stock .= '<b>'.number($stock_available).'</b>';
+
+
+            $table_data[] = array(
+                'id' => (integer)$data['Supplier Part Key'],
+
+                'reference' => sprintf('<span class="link" onclick="change_view(\'part/%d\')">%s</span>', $data['Supplier Part Part SKU'], $data['Part Reference']),
+
+                'description'         => $description,
+                'simple_description'  => $data['Part Package Description'],
+                'status'              => $status,
+                'cost'                => money($data['Supplier Part Unit Cost'], $data['Supplier Part Currency Code']),
+                'packing'             => '<div style="float:left;min-width:20px;text-align:right"><span>'.$data['Part Units Per Package']
+                    .'</span></div><div style="float:left;min-width:70px;text-align:left"> <i  class="fa fa-arrow-right very_discreet padding_right_10 padding_left_10"></i><span>['.$data['Supplier Part Packages Per Carton'].']</span></div> <span class="discreet">'
+                    .($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton'].'</span>'),
+                'stock'               => $stock,
+                'available_forecast'  => $available_forecast,
+                'dispatched_per_week' => $dispatched_per_week,
+                'next_deliveries'     => $next_deliveries
+
+
+            );
+
+
+        }
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $table_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}

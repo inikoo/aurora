@@ -54,6 +54,7 @@ function get_table_totals($db, $sql_totals, $wheref = '', $record_label = '', $m
         $total=0;
         $sql = trim($sql_totals." $wheref");
 
+
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 $total = $row['num'];

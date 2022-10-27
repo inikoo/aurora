@@ -266,7 +266,17 @@ include_once 'widgets/production_alerts.wget.php';
 
 
 
-$html .= '<div class="widget_container">'.get_production_alerts($supplier, $db, $account, $user, $smarty).'</div>';
+$html .= '<div class="widget_container">'.get_production_alerts($supplier, $db, $account, $user, $smarty);
+
+if (DNS_ACCOUNT_CODE == 'AROMA' ){
+    include_once 'widgets/production_alerts_external_account.wget.php';
+    $html.= get_external_production_alerts('sk',$supplier, $db, $account, $user, $smarty);
+    $html.= get_external_production_alerts('es',$supplier, $db, $account, $user, $smarty);
+    $html.= get_external_production_alerts('aw',$supplier, $db, $account, $user, $smarty);
+
+}
+$html.="</div>";
+
 
 $html .= '<div id="widget_details" class="hide" style="clear:both;font-size:90%;border-top:1px solid #ccc"><div>';
 
