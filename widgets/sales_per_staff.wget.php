@@ -27,6 +27,9 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
 
 
     switch ($period) {
+        case 'ytd':
+            $factor = 12 * 19.24 * (date('z')/365)  ;
+            break;
         case '1m':
         case 'last_m':
             $factor = 19.24;
@@ -44,7 +47,9 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
 
 
     }
-
+    if($factor==0){
+        $factor=1;
+    }
 
 
     $smarty->assign('currency', $currency);

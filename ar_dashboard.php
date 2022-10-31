@@ -933,8 +933,11 @@ function sales_per_staff($data, $db, $user, $account)
 
     $period = $data['period'];
 
-
+    $factor=0;
     switch ($period) {
+        case 'ytd':
+            $factor = 12 * 19.24 * (date('z')/365)  ;
+            break;
         case '1m':
         case 'last_m':
             $factor = 19.24;
@@ -954,6 +957,9 @@ function sales_per_staff($data, $db, $user, $account)
     }
 
 
+    if($factor==0){
+        $factor=1;
+    }
 
     $_SESSION['dashboard_state']['sales_per_staff']['period'] = $period;
 

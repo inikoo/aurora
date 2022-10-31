@@ -41,7 +41,7 @@
 
                    
                     <div onclick="change_sales_per_staff_period('ytd')" period="ytd" id="sales_per_staff_period_ytd"
-                         class="hide fixed_interval {if  $period=='ytd'}selected{/if}" title="{t}Year to day{/t}">
+                         class=" fixed_interval {if  $period=='ytd'}selected{/if}" title="{t}Year to day{/t}">
                         {t}YTD{/t}
                     </div>
                     <div onclick="change_sales_per_staff_period('mtd')" period="mtd" id="sales_per_staff_period_mtd"
