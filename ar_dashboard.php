@@ -52,6 +52,17 @@ switch ($tipo) {
         );
         sales_overview($data, $db, $user, $account);
         break;
+    case 'sales_per_staff':
+        $data = prepare_values(
+            $_REQUEST, array(
+
+                         'period' => array('type' => 'period'),
+
+
+                     )
+        );
+        sales_per_staff($data, $db, $user, $account);
+        break;
     case 'pending_orders':
         $data = prepare_values(
             $_REQUEST, array(
@@ -916,3 +927,124 @@ function dispatching_times($data, $account)
 }
 
 
+function sales_per_staff($data, $db, $user, $account)
+{
+    $account->load_acc_data();
+
+    $period = $data['period'];
+
+
+    switch ($period) {
+        case '1m':
+        case 'last_m':
+            $factor = 19.24;
+            break;
+        case '1y':
+            $factor = 12 * 19.24;
+            break;
+        case '1q':
+            $factor = 12 * 19.24 /4;
+            break;
+        case '1w':
+        case 'last_w':
+            $factor = 12 * 19.24/52.1429;
+            break;
+
+
+    }
+
+
+
+    $_SESSION['dashboard_state']['sales_per_staff']['period'] = $period;
+
+
+    $adjust = 0;
+    if (DNS_ACCOUNT_CODE == 'AROMA') {
+        $adjust = 1;
+    }
+
+
+    $teams = [
+        'Artisan'   => 0,
+        'Sales'     => 0,
+        'Support'   => 0,
+        'Admin'     => $adjust,
+        'Warehouse' => 0,
+    ];
+
+    $sql  = "select count(*) as num , `Staff Team` from `Staff Dimension` where `Staff Currently Working`='Yes' and `Staff Type`!='Contractor' group by `Staff Team`  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        [
+
+        ]
+    );
+    while ($row = $stmt->fetch()) {
+        $teams[$row['Staff Team']] += $row['num'];
+    }
+
+
+    $db_interval = get_interval_db_name($period);
+
+
+    $number_staff = 0;
+
+    $sql  = "select count(*) as num from `Staff Dimension` where `Staff Currently Working`='Yes' and `Staff Type`!='Contractor'   ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        [
+
+        ]
+    );
+    while ($row = $stmt->fetch()) {
+        $number_staff = $row['num'] + $adjust; // this 1 represent the extra admin contractors
+    }
+
+
+    $sales_per_staff_title = money($account->get("Account $db_interval Acc Invoiced Amount"), $account->get('Currency Code')).' sales / '.$number_staff.' staff'.' / $factor days';
+    $sales_per_staff       = money($account->get("Account $db_interval Acc Invoiced Amount") / $number_staff / $factor, $account->get('Currency Code')).'/wday';
+
+    $sales_per_staff_data['sales_per_staff']['title'] = $sales_per_staff_title;
+    $sales_per_staff_data['sales_per_staff']['value'] = $sales_per_staff;
+    $sales_per_staff_data['number_staff']['value']    = $number_staff;
+
+
+    $number_production_staff = $teams['Artisan'] + $teams['Support'];
+
+    if ($number_production_staff == 0) {
+        $produced_per_staff_title = '';
+        $produced_per_staff       = 'NaN';
+    } else {
+        $produced_per_staff_title = money($account->get("Account $db_interval Acc Invoiced Amount"), $account->get('Currency Code')).' sales / '.$number_production_staff.' staff'.' / $factor days';
+        $produced_per_staff       = money($account->get("Account $db_interval Acc Invoiced Amount") / $number_production_staff / $factor, $account->get('Currency Code')).'/wday';
+    }
+
+
+    $sales_per_staff_data['produced_per_staff']['title']      = $produced_per_staff_title;
+    $sales_per_staff_data['produced_per_staff']['value']      = $produced_per_staff;
+    $sales_per_staff_data['number_production_staff']['value'] = $number_production_staff;
+
+
+    $number_warehouse_staff = $teams['Warehouse'];
+
+
+    if ($number_warehouse_staff == 0) {
+        $warehouse_per_staff_title = '';
+        $warehouse_per_staff       = 'NaN';
+    } else {
+        $warehouse_per_staff_title = money($account->get("Account $db_interval Acc Invoiced Amount"), $account->get('Currency Code')).' sales / '.$number_warehouse_staff.' staff'.' / $factor days';
+        $warehouse_per_staff       = money($account->get("Account $db_interval Acc Invoiced Amount") / $number_warehouse_staff / $factor, $account->get('Currency Code')).'/wday';
+    }
+
+
+    $sales_per_staff_data['sales_per_warehouse']['title']    = $warehouse_per_staff_title;
+    $sales_per_staff_data['sales_per_warehouse']['value']    = $warehouse_per_staff;
+    $sales_per_staff_data['number_warehouse_staff']['value'] = $number_warehouse_staff;
+
+    $response = array(
+        'state' => 200,
+        'data'  => $sales_per_staff_data,
+    );
+
+    echo json_encode($response);
+}

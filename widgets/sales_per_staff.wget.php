@@ -11,16 +11,44 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
     include_once 'utils/date_functions.php';
 
 
+    $show_production=false;
+
     $adjust=0;
     if (DNS_ACCOUNT_CODE == 'AROMA' ) {
         $adjust=1;
+        $show_production=true;
+
+    }
+
+    $smarty->assign('show_production', $show_production);
+
+
+    $factor=0;
+
+
+    switch ($period) {
+        case '1m':
+        case 'last_m':
+            $factor = 19.24;
+            break;
+        case '1y':
+            $factor = 12 * 19.24;
+            break;
+        case '1q':
+            $factor = 12 * 19.24 /4;
+            break;
+        case '1w':
+        case 'last_w':
+            $factor = 12 * 19.24/52.1429;
+            break;
+
+
     }
 
 
 
     $smarty->assign('currency', $currency);
     $smarty->assign('period', $period);
-
     $smarty->assign('account', $account);
 
 
@@ -45,19 +73,7 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
     }
 
 
-    $produced_amount = 0;
-    $sql             = "SELECT `Timeseries Record Float B` FROM `Timeseries Record Dimension` WHERE `Timeseries Record Timeseries Key` = 18 and `Timeseries Record Date`=?  ";
-
-    $stmt = $db->prepare($sql);
-    $stmt->execute(
-        [
-            date('Y-m-d', mktime(0, 0, 0, date('m') - 1, 1, date('Y')))
-
-        ]
-    );
-    while ($row = $stmt->fetch()) {
-        $produced_amount = $row['Timeseries Record Float B'];
-    }
+    $db_interval=get_interval_db_name($period);
 
 
     $number_staff = 0;
@@ -73,8 +89,8 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         $number_staff = $row['num']+$adjust; // this 1 represent the extra admin contractors
     }
 
-    $sales_per_staff_title = money($account->get('Account Last Month Acc Invoiced Amount')).' sales / '.$number_staff.' staff'.' / 19.24 days';
-    $sales_per_staff       = money($account->get('Account Last Month Acc Invoiced Amount') / $number_staff / 19.24, $account->get('Currency Code')).'/wday';
+    $sales_per_staff_title = money($account->get("Account $db_interval Acc Invoiced Amount"),$account->get('Currency Code')).' sales / '.$number_staff.' staff'.' / $factor days';
+    $sales_per_staff       = money($account->get("Account $db_interval Acc Invoiced Amount") / $number_staff / $factor, $account->get('Currency Code')).'/wday';
 
 
 
@@ -92,8 +108,8 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         $produced_per_staff       = 'NaN';
 
     }else{
-        $produced_per_staff_title = money($account->get('Account Last Month Acc Invoiced Amount')).' sales / '.$number_production_staff.' staff'.' / 19.24 days';
-        $produced_per_staff       = money(1.375*$account->get('Account Last Month Acc Invoiced Amount') / $number_production_staff / 19.24, $account->get('Currency Code')).'/wday';
+        $produced_per_staff_title = money($account->get("Account $db_interval Acc Invoiced Amount"),$account->get('Currency Code')).' sales / '.$number_production_staff.' staff'.' / $factor days';
+        $produced_per_staff       = money($account->get("Account $db_interval Acc Invoiced Amount") / $number_production_staff / $factor, $account->get('Currency Code')).'/wday';
 
     }
 
@@ -116,8 +132,8 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         $warehouse_per_staff       = 'NaN';
 
     }else{
-        $warehouse_per_staff_title = money($account->get('Account Last Month Acc Invoiced Amount'),$account->get('Currency Code')).' sales / '.$number_warehouse_staff.' staff'.' / 19.24 days';
-        $warehouse_per_staff       = money($account->get('Account Last Month Acc Invoiced Amount') / $number_warehouse_staff / 19.24, $account->get('Currency Code')).'/wday';
+        $warehouse_per_staff_title = money($account->get("Account $db_interval Acc Invoiced Amount"),$account->get('Currency Code')).' sales / '.$number_warehouse_staff.' staff'.' / $factor days';
+        $warehouse_per_staff       = money($account->get("Account $db_interval Acc Invoiced Amount") / $number_warehouse_staff / $factor, $account->get('Currency Code')).'/wday';
 
     }
 
@@ -137,7 +153,7 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         if($value==0){
             $sales=money(0,$account->get('Currency Code')).'/wday';
         }else{
-            $sales=money($account->get('Account Last Month Acc Invoiced Amount') / ($value / $number_staff) / $number_staff / 19.24, $account->get('Currency Code')).'/wday';
+            $sales=money($account->get("Account $db_interval Acc Invoiced Amount") / ($value / $number_staff) / $number_staff / $factor, $account->get('Currency Code')).'/wday';
 
 
         }
@@ -146,9 +162,9 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
 
         $teams_data[$key] = [
             'sales'            => $sales,
-          //  'producedx'         => money($produced_amount / ($value / $number_staff) / $number_staff / 19.24, $account->get('Currency Code')).'/wday',
+          //  'producedx'         => money($produced_amount / ($value / $number_staff) / $number_staff / $factor, $account->get('Currency Code')).'/wday',
 
-          //  'produced'         => money($produced_amount  / $number_staff / 19.24, $account->get('Currency Code')).'/wday '.number($value / $number_staff,2) ,
+          //  'produced'         => money($produced_amount  / $number_staff / $factor, $account->get('Currency Code')).'/wday '.number($value / $number_staff,2) ,
 
 
             'staff'            => $value,
@@ -159,7 +175,7 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
 
     $smarty->assign('teams_data', $teams_data);
 
-    $report_title = 'Productivity '.strftime('%B %Y', strtotime('last month'));
+    $report_title = 'Productivity';
 
     $smarty->assign('report_title', $report_title);
 

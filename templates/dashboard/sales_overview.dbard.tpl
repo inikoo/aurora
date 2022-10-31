@@ -55,7 +55,7 @@
 
             <td colspan="7">
 
-                <div class="date_chooser {if $type=='orders' }invisible{/if}">
+                <div class="date_chooser  date_chooser_sales_overview  {if $type=='orders' }invisible{/if}">
                     <div  class="interval go_to_sales_report  {if $type=='orders' or  $type=='delivery_notes'}invisible{/if} "  data-type="{$type}" data-metadata='{ "parameters":{ "period":"{$period}", "currency":"{$currency}"}}' onclick="go_to_sales_report()" >
                         {t}Sales report{/t} <i class="far button fa-chart-line fa-fw"></i>
                     </div>

@@ -289,9 +289,24 @@ function toggle_sales_overview_currency() {
 
 }
 
+function change_sales_per_staff_period(period) {
+
+    $('.date_chooser_change_sales_overview_period .fixed_interval').removeClass('selected')
+    $('#sales_per_staff_period_' + period).addClass('selected')
+
+    $('#sales_per_staff_period').val(period)
+
+
+    get_sales_per_staff_data(period)
+
+
+
+
+}
+
 function change_sales_overview_period(period) {
 
-    $('.date_chooser .fixed_interval').removeClass('selected')
+    $('.date_chooser_sales_overview .fixed_interval').removeClass('selected')
     $('#' + period).addClass('selected')
 
     $('#order_overview_period').val(period)
@@ -337,6 +352,30 @@ function get_order_overview_data(type, period, currency, orders_view_type) {
                     $('#' + record).attr("onclick", "change_view('" + r.data[record].request + "',{ parameters:{ period:'" + period + "' }})")
                 }
             }
+            if (r.data[record].title != undefined) {
+                $('#' + record).attr('title', r.data[record].title)
+
+            }
+
+        }
+
+
+    });
+
+}
+
+function get_sales_per_staff_data(period) {
+
+    let request = "/ar_dashboard.php?tipo=sales_per_staff&&period=" + period
+    $.getJSON(request, function (r) {
+
+
+        for (let record in r.data) {
+
+
+            $('#' + record).html(r.data[record].value)
+
+
             if (r.data[record].title != undefined) {
                 $('#' + record).attr('title', r.data[record].title)
 

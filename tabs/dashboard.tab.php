@@ -21,10 +21,12 @@ foreach ($user->get_dashboard_items() as $item) {
 
 
     if ($item == 'sales_per_staff') {
-        $period = '1m';
         $currency = 'account';
 
         include_once 'widgets/sales_per_staff.wget.php';
+
+        $period = empty($_SESSION['dashboard_state']['sales_per_staff']['period']) ? '1m':  $_SESSION['dashboard_state']['sales_per_staff']['period'];
+
 
 
         $html .= get_dashboard_sales_per_staff($db, $account, $smarty,$currency,$period);

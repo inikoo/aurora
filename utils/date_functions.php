@@ -486,7 +486,7 @@ function prepare_mysql_datetime($datetime, $tipo = 'datetime') {
 }
 
 
-function get_interval_db_name($interval) {
+    function get_interval_db_name($interval) {
 
     switch ($interval) {
 
