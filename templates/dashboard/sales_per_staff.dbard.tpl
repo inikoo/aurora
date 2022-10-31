@@ -45,7 +45,7 @@
                         {t}YTD{/t}
                     </div>
                     <div onclick="change_sales_per_staff_period('mtd')" period="mtd" id="sales_per_staff_period_mtd"
-                         class="hide fixed_interval {if  $period=='mtd'}selected{/if}" title="{t}Month to day{/t}">
+                         class=" fixed_interval {if  $period=='mtd'}selected{/if}" title="{t}Month to day{/t}">
                         {t}MTD{/t}
                     </div>
                     <div onclick="change_sales_per_staff_period('wtd')" period="wtd" id="sales_per_staff_period_wtd"

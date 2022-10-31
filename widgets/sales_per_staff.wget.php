@@ -30,6 +30,9 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         case 'ytd':
             $factor = 12 * 19.24 * (date('z')/365)  ;
             break;
+        case 'mtd':
+            $factor =  19.24 * (date('j')/30.437)  ;
+            break;
         case '1m':
         case 'last_m':
             $factor = 19.24;
