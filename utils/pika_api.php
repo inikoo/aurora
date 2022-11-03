@@ -9,7 +9,10 @@
 function pika_api($path, $params)
 {
 
-
+    return array(
+        'success' => false,
+        'msg'     => 'Pika integration not set up'
+    );
 
     $method = 'POST';
     $account = get_object('Account',1);
