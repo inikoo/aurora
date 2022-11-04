@@ -171,7 +171,7 @@
     function save_template_email(){
 
         $('#save_email_template_dialog').addClass('hide')
-        autosave($('#template_name2').data('jsonFile'))
+       // autosave($('#template_name2').data('jsonFile'))
 
     }
 

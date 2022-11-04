@@ -145,7 +145,7 @@
     var beeConfig = {
         uid: 'CmsUserName', // [mandatory] identifies the set of resources to load
         container: 'email_template_html_container', // [mandatory] the id of div element that contains BEE Plugin
-        autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
+        //autosave: 15, // [optional, default:false] in seconds, allowed min-value: 15
         //language: 'en-US', // [optional, default:'en-US'] if language is not supported the default language is loaded (value must follow ISO 639-1  format)
         specialLinks: specialLinks, // [optional, default:[]] Array of Object to specify special links
         mergeTags: mergeTags, // [optional, default:[]] Array of Object to specify special merge Tags
