@@ -296,6 +296,12 @@ if ($website->get('Website Status') == 'InProcess') {
     $webpage     = get_object('Webpage', $webpage_key);
 }
 
+$google_ads_id=false;
+if($website->get('Website Google Tag Manager Code')=='GTM-PPPCD7L'){
+    $google_ads_id='xxx';
+}
+$smarty->assign('google_ads_id', $google_ads_id);
+
 
 $smarty->assign('client_tag_google_manager_id', $website->get('Website Google Tag Manager Code'));
 $smarty->assign('zendesk_chat_code', $website->get('Website Zendesk Chat Code'));
