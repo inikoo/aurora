@@ -76,7 +76,10 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
         ]
     );
     while ($row = $stmt->fetch()) {
-        $teams[$row['Staff Team']] += $row['num'];
+        if($row['Staff Team']!=''){
+            $teams[$row['Staff Team']] += $row['num'];
+        }
+
 
     }
 
