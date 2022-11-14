@@ -242,6 +242,14 @@ class data_entry_picking_aid {
                     }
 
 
+                    $reference2='yodel';
+                    $service    = [
+                        'ServiceId'          => '663',
+                        'ServiceProviderId'  => '10',
+                        'ServiceCustomerUID' => '301107',
+                    ];
+
+
                     $this->data['service']    = json_encode($service);
                     $this->data['reference2'] = $reference2;
 
