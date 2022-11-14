@@ -1186,7 +1186,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
                 $service    = [
                     'ServiceId'          => '663',
                     'ServiceProviderId'  => '10',
-                    'ServiceCustomerUID' => '301107',
+                    'ServiceCustomerUID' => '31107',
                 ];
                 $service    = json_encode($service);
             }

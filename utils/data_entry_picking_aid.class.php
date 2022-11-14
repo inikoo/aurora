@@ -246,7 +246,7 @@ class data_entry_picking_aid {
                     $service    = [
                         'ServiceId'          => '663',
                         'ServiceProviderId'  => '10',
-                        'ServiceCustomerUID' => '301107',
+                        'ServiceCustomerUID' => '31107',
                     ];
 
 
