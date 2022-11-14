@@ -1163,6 +1163,7 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
                 }
 
 
+
                 $service    = [
                     'ServiceId'          => '78109',
                     'ServiceProviderId'  => '77',
@@ -1181,8 +1182,13 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
                 }
 
 
+                $reference2='yodel';
+                $service    = [
+                    'ServiceId'          => '663',
+                    'ServiceProviderId'  => '10',
+                    'ServiceCustomerUID' => '301107',
+                ];
                 $service    = json_encode($service);
-                $reference2 = $reference2;
             }
 
 
