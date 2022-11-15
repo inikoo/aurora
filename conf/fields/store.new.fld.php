@@ -34,6 +34,7 @@ function get_new_store_fields(Store $object, User $user, PDO $db, $smarty): arra
         'nl_NL' => 'nl_NL '._('Dutch'),
         'pt_PT' => 'pt_PT '._('Portuguese'),
         'ro_RO' => 'ro_RO '._('Romanian'),
+        'sv_SE' => 'pl_PL '._('Swedish'),
     );
     asort($options_locale);
 

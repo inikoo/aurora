@@ -56,6 +56,7 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
         'sk_SK' => 'sk_SK '._('Slovak'),
         'pt_PT' => 'pt_PT '._('Portuguese'),
         'ro_RO' => 'ro_RO '._('Romanian'),
+        'sv_SE' => 'pl_PL '._('Swedish'),
 
     );
     asort($options_locale);
