@@ -1181,14 +1181,14 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
                     $reference2 = 'envelop';
                 }
 
-                /*
+
                 $reference2='yodel';
                 $service    = [
                     'ServiceId'          => '663',
                     'ServiceProviderId'  => '10',
                     'ServiceCustomerUID' => '31107',
                 ];
-                */
+
                 $service    = json_encode($service);
             }
 
