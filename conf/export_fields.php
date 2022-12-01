@@ -1882,6 +1882,11 @@ function get_export_fields($element, $account_currency_code = ''): array
             ),
 
             array(
+                'name'    => '`Product Cost`',
+                'label'   => _('Outer cost'),
+                'checked' => 1
+            ),
+            array(
                 'name'    => '`Product Price`/`Product Units Per Case`',
                 'label'   => _('Unit price'),
                 'checked' => 0
