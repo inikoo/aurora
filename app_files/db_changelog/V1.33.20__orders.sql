@@ -1,0 +1,1 @@
+ALTER TABLE `Order Dimension` ADD COLUMN `type` enum('b2b','b2c','dropshipping','fulfilment') NULL DEFAULT 'b2b' COMMENT '';
