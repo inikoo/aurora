@@ -1996,6 +1996,7 @@ class Account extends DB_Table {
 
         );
 
+        /*
 
         $sql = sprintf(
             " SELECT COUNT(distinct `Part SKU`) AS distinct_parts_dispatched  FROM `Inventory Transaction Fact` WHERE  `Inventory Transaction Type` = 'Sale'   %s %s ", ($from_date ? sprintf('and `Date`>%s', prepare_mysql($from_date)) : ''),
@@ -2009,6 +2010,7 @@ class Account extends DB_Table {
 
             }
         }
+        */
 
         return $inventory_dispatch_data;
 
