@@ -260,6 +260,7 @@ class Sales_Representative extends DB_Table {
 
     function update_customers_data() {
 
+        return;
         $unsubscribed = 0;
         $open         = 0;
         $scheduled    = 0;
