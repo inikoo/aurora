@@ -3770,7 +3770,7 @@ class Customer extends Subject
      *
      * @return bool|\Customer_Client
      */
-    public function create_client($data)
+    public function create_client($data,$can_insert_with_no_code=false)
     {
         global $account;
 
@@ -3780,7 +3780,8 @@ class Customer extends Subject
 
         $data['editor'] = $this->editor;
 
-        if (empty($data['Customer Client Code'])) {
+
+        if (!$can_insert_with_no_code and empty($data['Customer Client Code'])) {
             $this->error      = true;
             $this->msg        = _("Code missing");
             $this->error_code = 'client_code_missing';
@@ -3788,6 +3789,7 @@ class Customer extends Subject
 
             return false;
         }
+
 
 
         $data['Customer Client Store Key']     = $this->data['Customer Store Key'];

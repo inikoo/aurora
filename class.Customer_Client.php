@@ -12,11 +12,12 @@
 include_once 'class.Subject.php';
 include_once 'trait.CustomerClientAiku.php';
 
-class Customer_Client extends Subject {
+class Customer_Client extends Subject
+{
     use CustomerClientAiku;
 
-    function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
-
+    function __construct($arg1 = false, $arg2 = false, $arg3 = false)
+    {
         global $db;
         $this->db = $db;
         $this->id = false;
@@ -37,35 +38,28 @@ class Customer_Client extends Subject {
         }
 
         $this->get_data($arg1, $arg2);
-
-
     }
 
 
-    function get_data($key, $id) {
-
+    function get_data($key, $id)
+    {
         if ($key == 'id') {
             $sql = sprintf(
-                "SELECT * FROM `Customer Client Dimension` WHERE `Customer Client Key`=%d", $id
+                "SELECT * FROM `Customer Client Dimension` WHERE `Customer Client Key`=%d",
+                $id
             );
-
         } else {
-
             return;
         }
 
         if ($this->data = $this->db->query($sql)->fetch()) {
             $this->id       = $this->data['Customer Client Key'];
             $this->metadata = json_decode($this->data['Customer Client Metadata'], true);
-
         }
-
-
     }
 
-    function create($raw_data, $address_raw_data) {
-
-
+    function create($raw_data, $address_raw_data)
+    {
         $sql  = "select `Customer Client Key` from `Customer Client Dimension` where `Customer Client Code`=? and `Customer Client Customer Key`=?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(
@@ -94,7 +88,9 @@ class Customer_Client extends Subject {
 
 
         $sql = sprintf(
-            "INSERT INTO `Customer Client Dimension` (%s) values (%s)", '`'.join('`,`', array_keys($this->data)).'`', join(',', array_fill(0, count($this->data), '?'))
+            "INSERT INTO `Customer Client Dimension` (%s) values (%s)",
+            '`'.join('`,`', array_keys($this->data)).'`',
+            join(',', array_fill(0, count($this->data), '?'))
         );
 
         $stmt = $this->db->prepare($sql);
@@ -107,8 +103,6 @@ class Customer_Client extends Subject {
 
 
         if ($stmt->execute()) {
-
-
             $this->id = $this->db->lastInsertId();
             $this->get_data('id', $this->id);
 
@@ -146,24 +140,25 @@ class Customer_Client extends Subject {
             );
 
             $this->add_subject_history(
-                $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
+                $history_data,
+                true,
+                'No',
+                'Changes',
+                $this->get_object_name(),
+                $this->id
             );
 
             $this->new = true;
             $this->sync_aiku();
-
-
         } else {
             $this->error = true;
             print_r($stmt->errorInfo());
             $this->msg = 'Error inserting customer client record';
         }
-
-
     }
 
-    function get($key, $arg1 = false) {
-
+    function get($key, $arg1 = false)
+    {
         if (!$this->id) {
             return '';
         }
@@ -196,9 +191,11 @@ class Customer_Client extends Subject {
                 }
 
                 return '<span title="'.strftime(
-                        "%a %e %b %Y %H:%M:%S %Z", strtotime($this->data['Customer Client '.$key]." +00:00")
+                        "%a %e %b %Y %H:%M:%S %Z",
+                        strtotime($this->data['Customer Client '.$key]." +00:00")
                     ).'">'.strftime(
-                        "%a %e %b %Y", strtotime($this->data['Customer Client '.$key]." +00:00")
+                        "%a %e %b %Y",
+                        strtotime($this->data['Customer Client '.$key]." +00:00")
                     ).'</span>';
 
             case 'Customer Client Contact Address':
@@ -234,18 +231,16 @@ class Customer_Client extends Subject {
                 }
 
                 return '';
-
         }
-
     }
 
-    function metadata($key) {
+    function metadata($key)
+    {
         return (isset($this->metadata[$key]) ? $this->metadata[$key] : '');
     }
 
-    function get_order_in_process_key() {
-
-
+    function get_order_in_process_key()
+    {
         $order_key = false;
         $sql       = "SELECT `Order Key` FROM `Order Dimension` WHERE `Order Customer Client Key`=? AND `Order State`='InBasket' ";
 
@@ -260,8 +255,8 @@ class Customer_Client extends Subject {
     }
 
 
-    function update_field_switcher($field, $value, $options = '', $metadata = array()) {
-
+    function update_field_switcher($field, $value, $options = '', $metadata = array())
+    {
         if (is_string($value)) {
             $value = _trim($value);
         }
@@ -272,8 +267,6 @@ class Customer_Client extends Subject {
 
 
         switch ($field) {
-
-
             case 'Customer Client Contact Address':
 
                 $this->update_address('Contact', json_decode($value, true), $options);
@@ -291,12 +284,11 @@ class Customer_Client extends Subject {
                 break;
 
             default:
-
-
         }
     }
 
-    function get_telephone() {
+    function get_telephone()
+    {
         $telephone = $this->data['Customer Client Main Plain Mobile'];
         if ($telephone == '') {
             $telephone = $this->data['Customer Client Main Plain Telephone'];
@@ -310,8 +302,8 @@ class Customer_Client extends Subject {
         return $telephone;
     }
 
-    function create_order() {
-
+    function create_order($overwrite_data = [])
+    {
         $account = get_object('Account', 1);
 
 
@@ -400,7 +392,12 @@ class Customer_Client extends Subject {
         $order_data['Recargo Equivalencia'] = $customer->get('Customer Recargo Equivalencia');
 
 
-        $order_data['Order Source Key']                = 2;
+        $order_data['Order Source Key'] = 2;
+
+
+        foreach ($overwrite_data as $overwrite_key => $overwrite_value) {
+            $order_data[$overwrite_key] = $overwrite_value;
+        }
 
 
         include_once 'class.Order.php';
@@ -421,21 +418,25 @@ class Customer_Client extends Subject {
 
         require_once 'utils/new_fork.php';
         new_housekeeping_fork(
-            'au_housekeeping', array(
-            'type'        => 'order_created',
-            'subject_key' => $order->id,
-            'editor'      => $order->editor
-        ), $account->get('Account Code'), $this->db
+            'au_housekeeping',
+            array(
+                'type'        => 'order_created',
+                'subject_key' => $order->id,
+                'editor'      => $order->editor
+            ),
+            $account->get('Account Code'),
+            $this->db
         );
 
 
         return $order;
-
     }
 
-    function get_number_of_orders() {
+    function get_number_of_orders()
+    {
         $sql    = sprintf(
-            "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Client Key`=%d ", $this->id
+            "SELECT count(*) AS number FROM `Order Dimension` WHERE `Order Customer Client Key`=%d ",
+            $this->id
         );
         $number = 0;
 
@@ -447,16 +448,12 @@ class Customer_Client extends Subject {
 
 
         return $number;
-
-
     }
 
 
-    function get_field_label($field) {
-
-
+    function get_field_label($field)
+    {
         switch ($field) {
-
             case 'Customer Client Company Name':
                 $label = _('company name');
                 break;
@@ -503,16 +500,14 @@ class Customer_Client extends Subject {
 
             default:
                 $label = $field;
-
         }
 
         return $label;
-
     }
 
 
-    public function update_customer_client_orders() {
-
+    public function update_customer_client_orders()
+    {
         $customer_orders  = 0;
         $orders_cancelled = 0;
         $first_order      = '';
@@ -524,21 +519,19 @@ class Customer_Client extends Subject {
 		min(`Order Date`) AS first_order_date ,
 		max(`Order Date`) AS last_order_date,
 		count(*) AS orders
-		FROM `Order Dimension` WHERE `Order Customer Client Key`=%d  AND `Order State` NOT IN ('Cancelled','InBasket') ", $this->id
+		FROM `Order Dimension` WHERE `Order Customer Client Key`=%d  AND `Order State` NOT IN ('Cancelled','InBasket') ",
+            $this->id
         );
 
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
-
-
                 $customer_orders = $row['orders'];
 
 
                 if ($customer_orders > 0) {
                     $first_order = $row['first_order_date'];
                     $last_order  = $row['last_order_date'];
-
                 }
             }
         }
@@ -567,8 +560,6 @@ class Customer_Client extends Subject {
         );
 
         $this->fast_update($update_data);
-
-
     }
 
 
