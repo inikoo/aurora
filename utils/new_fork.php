@@ -15,6 +15,13 @@
 function new_fork($type, $data, $account_code, $db, $priority = 'Normal'): array {
 
 
+    if(!empty($GLOBALS['skip_gearman'])){
+        return array(
+            0,
+            'Skipping'
+        );
+    }
+
     if (class_exists('GearmanClient')) {
 
 
@@ -86,7 +93,9 @@ function new_fork($type, $data, $account_code, $db, $priority = 'Normal'): array
 
 function new_housekeeping_fork($type, $data, $account_code, $priority = 'Normal'): string {
 
-
+    if(!empty($GLOBALS['skip_gearman'])){
+        return 'Skipping';
+    }
 
     if (class_exists('GearmanClient')) {
         $client        = new GearmanClient();

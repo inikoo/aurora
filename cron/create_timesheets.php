@@ -14,7 +14,7 @@ require_once __DIR__.'/cron_common.php';
 require_once 'class.Staff.php';
 require_once 'utils/date_functions.php';
 
-$mode='this HR year';
+$mode='all';
 
 if($mode=='this HR year'){
 
@@ -29,7 +29,7 @@ if($mode=='this HR year'){
 
 
 $sql = sprintf(
-    'SELECT `Staff Key` FROM `Staff Dimension` WHERE `Staff Type`!="Contractor"  ORDER BY `Staff Key` DESC '
+    'SELECT `Staff Key` FROM `Staff Dimension` WHERE `Staff Type`!="Contractor"  and  `Staff Key`=114 ORDER BY `Staff Key` DESC '
 );
 
 if ($result = $db->query($sql)) {
@@ -69,13 +69,14 @@ if ($result = $db->query($sql)) {
 
 
         print "$from $to\n";
-        exit;
+
 
         if ($from and $to) {
 
 
             $dates = date_range($from, $to);
             foreach ($dates as $date) {
+                print "$date\n";
                 $timesheet = $employee->create_timesheet(
                     strtotime($date.' 00:00:00'), 'force'
                 );
