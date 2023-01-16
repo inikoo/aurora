@@ -109,6 +109,24 @@ if (!empty($data['data']['order']['deferred_payment'])) {
 
     $payment->update_payment_parents();
 
+    $debug_data=[
+        'order_id'=>$order->id,
+        'order_public_id'=>$order->get('Order Public ID'),
+        'pending_hokodo_payment_id'=>$order->data['pending_hokodo_payment_id'],
+        'payment'=>$payment->id,
+        'data_to_update'=>$to_update
+
+    ];
+
+    $sql="insert into atest2 (date,data) values (?,?) ";
+    $db->prepare($sql)->execute(
+        [
+            gmdate('Y-m-d H:i:s'),
+            json_encode($debug_data)
+        ]
+    );
+
+
 }
 
 
