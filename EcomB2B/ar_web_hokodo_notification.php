@@ -115,6 +115,8 @@ if (!empty($data['data']['order']['deferred_payment'])) {
         'order_public_id'=>$order->get('Order Public ID'),
         'pending_hokodo_payment_id'=>$order->data['pending_hokodo_payment_id'],
         'payment'=>$payment->id,
+        'payment_status'=>$payment->get('Payment Transaction Status'),
+        'payment_status_info'=>$payment->get('Payment Transaction Status Info'),
         'data_to_update'=>$to_update
 
     ];
