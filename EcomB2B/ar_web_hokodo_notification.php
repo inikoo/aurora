@@ -110,6 +110,7 @@ if (!empty($data['data']['order']['deferred_payment'])) {
     $payment->update_payment_parents();
 
     $debug_data=[
+        'request'=>$_REQUEST,
         'order_id'=>$order->id,
         'order_public_id'=>$order->get('Order Public ID'),
         'pending_hokodo_payment_id'=>$order->data['pending_hokodo_payment_id'],
