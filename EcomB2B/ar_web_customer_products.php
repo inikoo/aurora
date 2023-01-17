@@ -235,7 +235,7 @@ function category_products($data, $db, $customer_key, $order)
         //print_r($order_family_data);
 
         foreach ($family_data as $family_key => $_data) {
-            if (isset($order_family_data[$family_key]) and $order_family_data[$family_key]['qty'] > $_data['discount_min_quantity_order']) {
+            if (isset($order_family_data[$family_key]) and $order_family_data[$family_key]['qty'] > $_data['discount_min_quantity_order'] and isset($_data['percentage']) ) {
                 $family_discounts[$family_key] = $_data['percentage'];
             }
         }
