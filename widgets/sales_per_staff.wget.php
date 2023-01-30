@@ -14,13 +14,20 @@ function get_dashboard_sales_per_staff($db, $account, $smarty, $currency, $perio
     $show_production=false;
 
     $adjust=0;
+    $show_side_production=0;
     if (DNS_ACCOUNT_CODE == 'AROMA' ) {
         $adjust=1;
         $show_production=true;
 
     }
 
+    if (DNS_ACCOUNT_CODE == 'AW' ) {
+        $show_side_production=true;
+
+    }
+
     $smarty->assign('show_production', $show_production);
+    $smarty->assign('show_side_production', $show_side_production);
 
 
     $factor=0;

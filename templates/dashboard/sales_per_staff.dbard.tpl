@@ -141,7 +141,7 @@
 
         </div>
 
-        <div style="flex-grow:1" class="{if !$show_production}hide{/if}" >
+        <div style="flex-grow:1" class="{if !($show_production or $show_side_production)}hide{/if}" >
 
             <span>Support</span>
             <div class="title "><span >{$teams_data['Support']['staff_percentage']}</span></div>
