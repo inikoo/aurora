@@ -21,6 +21,13 @@ trait OrderItems
     function update_item($data): array
     {
         $product = get_object('Product', $data['item_historic_key'], 'historic_key');
+        if(!$product->id){
+            return array(
+                'updated' => false,
+                'why'     => 'Historic product not found:'.$data['item_historic_key']
+
+            );
+        }
 
         $gross = 0;
 
