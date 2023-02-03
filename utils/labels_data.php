@@ -140,6 +140,21 @@ function get_label_data($code){
             'sheet_width'=>210,
             'sheet_height'=>297,
         ],
+        'ES0027D'=>[
+            'margin_top'=>13.5,
+            'margin_bottom'=>0,
+            'margin_left'=>0,
+            'margin_right'=>0,
+            'width'=>70,
+            'height'=>30,
+            'h_spacing'=>0,
+            'v_spacing'=>0,
+            'cols'=>3,
+            'rows'=>9,
+            'sheet_width'=>210,
+            'sheet_height'=>297,
+        ],
+
     ];
 
 
