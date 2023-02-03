@@ -1718,7 +1718,7 @@ class EmailCampaign extends DB_Table
 
     function update_sent_emails_totals()
     {
-        return;
+
         $unsubscribed = 0;
         $sent         = 0;
         $open         = 0;
