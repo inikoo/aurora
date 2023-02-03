@@ -142,7 +142,7 @@ function get_label_data($code){
         ],
         'ES0027D'=>[
             'margin_top'=>13.5,
-            'margin_bottom'=>0,
+            'margin_bottom'=>1.5,
             'margin_left'=>0,
             'margin_right'=>0,
             'width'=>70,
