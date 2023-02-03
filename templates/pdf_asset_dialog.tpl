@@ -186,7 +186,7 @@
                     <span onclick="select_option_from_asset_labels(this)" data-value="SK06302900" class="option can_image {if $labels_data.unit.size=='SK06302900'}selected{/if}">63.5 x 29.6</span>
 
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30040" class="option {if $labels_data.unit.size=='EU30040'}selected{/if}">70 x 29.7</span>
-                    <span onclick="select_option_from_asset_labels(this)" data-value="ES0027D" class="option {if $labels_data.unit.size=='ES0027D'}selected{/if}">70 x 90</span>
+                    <span onclick="select_option_from_asset_labels(this)" data-value="ES0027D" class="option {if $labels_data.unit.size=='ES0027D'}selected{/if}">70 x 30</span>
 
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30140" class="option can_image {if $labels_data.unit.size=='EU30140'}selected{/if}">125 x 37</span>
                     <span onclick="select_option_from_asset_labels(this)" data-value="EU30137" class="option can_image {if $labels_data.unit.size=='EU30137'}selected{/if}">130 x 60</span>
