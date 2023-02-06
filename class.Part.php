@@ -15,10 +15,12 @@
 use Elasticsearch\ClientBuilder;
 
 include_once 'class.Asset.php';
+include_once 'trait.PartAiku.php';
 
 class Part extends Asset
 {
 
+    use PartAiku;
 
     public bool $trigger_discontinued;
 
@@ -256,6 +258,7 @@ class Part extends Asset
             $this->update_weight_status();
 
             $this->fork_index_elastic_search();
+            $this->model_updated(null,'new',$this->id);
         } else {
             print "Error Part can not be created $sql\n";
             $this->msg = 'Error Part can not be created';
@@ -4483,6 +4486,7 @@ class Part extends Asset
         }
 
         $this->fork_index_elastic_search('delete_elastic_index_object');
+        $this->model_updated(null,'deleted',$this->id);
     }
 
     function get_field_label($field)
