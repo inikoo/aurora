@@ -49,7 +49,6 @@ class Account extends DB_Table {
 
     }
 
-
     function load_acc_data() {
 
         $sql = "SELECT * FROM `Account Data`  WHERE `Account Key`=?";
