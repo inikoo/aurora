@@ -8,6 +8,10 @@
 trait Aiku
 {
 
+    function get_table_name(){}
+
+    function update_aiku($a , $b){}
+
 
     function model_updated($table, $field, $key)
     {
@@ -74,5 +78,26 @@ trait Aiku
 
     }
 
+    function save_to_queue($model,$model_id){
+
+
+        $date=gmdate('Y-m-d H:i:s');
+
+        $sql = 'insert into pika_fetch (created_at, updated_at,model,model_id,error) values (?,?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE updated_at=? ,`count`=`count`+1 ';
+
+        $this->db->prepare($sql)->execute(
+            [
+                $date,
+                $date,
+                $model,
+                $model_id,
+                'No',
+                $date,
+
+            ]
+        );
+
+    }
 
 }
