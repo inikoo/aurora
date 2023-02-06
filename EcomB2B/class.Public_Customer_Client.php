@@ -157,7 +157,7 @@ class Public_Customer_Client extends DBW_Table {
             );
 
             $this->new = true;
-            $this->sync_aiku();
+            //$this->sync_aiku();
 
         } else {
             $this->error = true;

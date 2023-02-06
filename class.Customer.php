@@ -269,7 +269,7 @@ class Customer extends Subject
 
             $this->new = true;
             $this->fork_index_elastic_search();
-            $this->sync_aiku();
+            //$this->sync_aiku();
 
             return $this;
         } else {

@@ -149,7 +149,7 @@ class Customer_Client extends Subject
             );
 
             $this->new = true;
-            $this->sync_aiku();
+           // $this->sync_aiku();
         } else {
             $this->error = true;
             print_r($stmt->errorInfo());
