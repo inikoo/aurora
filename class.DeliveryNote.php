@@ -14,10 +14,13 @@
 include_once 'class.DB_Table.php';
 include_once 'class.Order.php';
 include_once 'class.Product.php';
+include_once 'trait.DeliveryNoteAiku.php';
 
 
 class DeliveryNote extends DB_Table
 {
+
+    use DeliveryNoteAiku;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false)
     {
@@ -225,6 +228,9 @@ class DeliveryNote extends DB_Table
             $this->update_totals();
 
             $this->fork_index_elastic_search();
+
+            $this->model_updated(null,'new',$this->id);
+
         } else {
             exit ("$sql \n Error can not create dn header");
         }
@@ -2698,6 +2704,7 @@ class DeliveryNote extends DB_Table
 
 
         $this->fork_index_elastic_search();
+        $this->model_updated(null,'deleted',$this->id);
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
     }
