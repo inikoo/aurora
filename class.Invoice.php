@@ -19,12 +19,13 @@ include_once 'class.Order.php';
 include_once 'class.Category.php';
 include_once 'class.DeliveryNote.php';
 include_once 'trait.Address.php';
-
+include_once 'trait.InvoiceAiku.php';
 
 class Invoice extends DB_Table
 {
 
     use Address;
+    use InvoiceAiku;
 
     public array $metadata;
 
@@ -1384,6 +1385,7 @@ class Invoice extends DB_Table
             );
 
             $this->fork_index_elastic_search();
+            $this->model_updated(null,'new',$this->id);
         }
     }
 
@@ -2308,6 +2310,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             ),
             $account->get('Account Code')
         );
+        $this->model_updated(null,'deleted',$this->id);
 
         if ($order->id) {
             return sprintf('/orders/%d/%d', $store_key, $order->id);
