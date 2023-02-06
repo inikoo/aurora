@@ -246,7 +246,7 @@
 
             </fieldset>
 
-            <fieldset id="search_lokate_fieldset"  class=""  style="position:relative">
+            <fieldset id="search_lokate_fieldset"  class="hide"  style="position:relative">
 
                 <section>
                     <div>Address Lookup</div>
