@@ -11,10 +11,12 @@
 */
 
 include_once 'class.Asset.php';
+include_once 'trait.ProductAiku.php';
 
 class Product extends Asset
 {
 
+    use ProductAiku;
     public ?Page $webpage;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false)
@@ -1066,6 +1068,7 @@ class Product extends Asset
 
 
             $this->fork_index_elastic_search();
+            $this->model_updated(null,'new',$this->id);
         } else {
             $this->error = true;
 
@@ -2449,6 +2452,7 @@ class Product extends Asset
             $this->deleted = true;
 
             $this->fork_index_elastic_search('delete_elastic_index_object');
+            $this->model_updated(null,'new',$this->id);
         }
     }
 
