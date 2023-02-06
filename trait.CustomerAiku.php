@@ -28,7 +28,10 @@ trait CustomerAiku {
 
                     ]
         )){
-            $this->submit_pika_fetch_model('Customer',$key);
+
+            $this->save_to_queue('Customer',$key);
+
+            //$this->submit_pika_fetch_model('Customer',$key);
         }
 
 

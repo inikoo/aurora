@@ -86,7 +86,9 @@ trait Aiku
         $sql = 'insert into pika_fetch (created_at, updated_at,model,model_id,error) values (?,?,?,?,?) 
                       ON DUPLICATE KEY UPDATE updated_at=? ,`count`=`count`+1 ';
 
-        $this->db->prepare($sql)->execute(
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(
             [
                 $date,
                 $date,
@@ -97,6 +99,9 @@ trait Aiku
 
             ]
         );
+
+
+
 
     }
 
