@@ -12,6 +12,7 @@ trait CustomerAiku
         $this->process_pika_fetch(
             'Customer', $key, $field,
             [
+                'new',
                 'Customer Main Contact Name',
                 'Customer Company Name',
                 'Customer Type by Activity',

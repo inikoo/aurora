@@ -269,7 +269,7 @@ class Customer extends Subject
 
             $this->new = true;
             $this->fork_index_elastic_search();
-            //$this->sync_aiku();
+            $this->model_updated(null, 'new', $this->id);
 
             return $this;
         } else {
@@ -1608,7 +1608,7 @@ class Customer extends Subject
             case('Customer Send Email Marketing'):
             case('Customer Send Basket Emails'):
 
-            $this->update_field($field, $value, $options);
+                $this->update_field($field, $value, $options);
                 /** @var \Store $store */
                 $store = get_object('Store', $this->data['Customer Store Key']);
                 $store->update_customers_email_marketing_data();
@@ -3742,7 +3742,7 @@ class Customer extends Subject
         $this->fast_update(array(
                                'Customer Send Newsletter'      => 'No',
                                'Customer Send Email Marketing' => 'No',
-                               'Customer Send Basket Emails' => 'No'
+                               'Customer Send Basket Emails'   => 'No'
                            ));
 
         /** @var $store \Store */
@@ -3770,7 +3770,7 @@ class Customer extends Subject
      *
      * @return bool|\Customer_Client
      */
-    public function create_client($data,$can_insert_with_no_code=false)
+    public function create_client($data, $can_insert_with_no_code = false)
     {
         global $account;
 
@@ -3789,7 +3789,6 @@ class Customer extends Subject
 
             return false;
         }
-
 
 
         $data['Customer Client Store Key']     = $this->data['Customer Store Key'];
