@@ -27,8 +27,8 @@ include_once 'trait.Order_Calculate_Totals.php';
 include_once 'trait.OrderOperations.php';
 include_once 'trait.OrderTax.php';
 include_once 'trait.OrderGet.php';
-include_once 'trait.OrderAiku.php';
 include_once 'trait.Address.php';
+include_once 'trait.OrderAiku.php';
 
 
 class Order extends DB_Table
@@ -36,6 +36,7 @@ class Order extends DB_Table
 
     use Address, AttachmentSubject, OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax, OrderGet;
     use ObjectTaxNumberTrait;
+    use OrderAiku;
 
 
     function __construct($arg1 = false, $arg2 = false)

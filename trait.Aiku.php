@@ -8,6 +8,10 @@
 trait Aiku
 {
 
+    protected bool $pika_ignore=false;
+    protected bool $pika_sync=false;
+
+
     function get_table_name(){}
 
     function update_aiku($a , $b){}
@@ -15,7 +19,27 @@ trait Aiku
 
     function model_updated($table, $field, $key)
     {
+
     }
+
+
+    function process_pika_fetch($model,$key,$field,$valid_fields){
+        if($this->pika_ignore){
+            return;
+        }
+
+        if(in_array($field, $valid_fields)){
+
+            if($this->pika_sync){
+                $this->submit_pika_fetch_model($model,$key);
+            }else{
+                $this->save_to_queue($model,$key);
+            }
+
+
+        }
+    }
+
 
     function submit_pika_fetch_model($model, $model_id)
     {

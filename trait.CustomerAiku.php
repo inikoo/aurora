@@ -1,43 +1,28 @@
 <?php
-
 /*
  * Author: Raul A Perusquía-Flores (raul@aiku.io)
  * Created: Fri, 16 Oct 2020 13:38:29 Malaysia Time, Kuala Lumpur, Malaysia
  * Copyright (c) 2020. Aiku.io
  */
 
-trait CustomerAiku {
-
-
-    function model_updated($table,$field,$key){
-
-
-        if(in_array($field,
-                    [
-                        'Customer Main Contact Name',
-                        'Customer Company Name',
-                        'Customer Type by Activity',
-                        'Customer Main Plain Email',
-                        'Customer Main Plain Mobile',
-                        'Customer Registration Number',
-                        'Customer Website',
-                        'Customer Tax Number',
-                        'Customer Tax Number Valid'
-
-
-
-                    ]
-        )){
-
-            $this->save_to_queue('Customer',$key);
-
-            //$this->submit_pika_fetch_model('Customer',$key);
-        }
-
-
-
+trait CustomerAiku
+{
+    function model_updated($table, $field, $key)
+    {
+        $this->process_pika_fetch(
+            'Customer', $key, $field,
+            [
+                'Customer Main Contact Name',
+                'Customer Company Name',
+                'Customer Type by Activity',
+                'Customer Main Plain Email',
+                'Customer Main Plain Mobile',
+                'Customer Registration Number',
+                'Customer Website',
+                'Customer Tax Number',
+                'Customer Tax Number Valid'
+            ]
+        );
     }
-
-
 
 }
