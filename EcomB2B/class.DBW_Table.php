@@ -90,7 +90,7 @@ abstract class DBW_Table extends stdClass {
 
             $affected = $update_op->rowCount();
             if ($affected > 0) {
-                $this->update_aiku($table_full_name, $field, $value);
+                $this->model_updated($table_full_name,$field,$this->id);
 
             }
 
@@ -375,7 +375,8 @@ abstract class DBW_Table extends stdClass {
 
             }
 
-            $this->update_aiku($table_full_name, $field, $value);
+            $this->model_updated($table_full_name,$field,$table_key);
+
 
         }
 

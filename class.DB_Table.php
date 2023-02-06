@@ -227,9 +227,8 @@ abstract class DB_Table extends stdClass
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
             }
 
-            //$this->update_aiku($table_full_name, $field, $value);
+            $this->model_updated($table_full_name,$field,$table_key);
 
-            $this->update_pika($table_full_name, $table_key, $field, 'UTF');
         }
     }
 
@@ -697,8 +696,7 @@ abstract class DB_Table extends stdClass
 
             $affected = $stmt->rowCount();
             if ($affected > 0) {
-                //$this->update_aiku($table_full_name, $field, $value);
-                $this->update_pika($table_full_name, $this->id, $field, 'FU');
+                $this->model_updated($table_full_name,$field,$this->id);
             }
         }
     }
@@ -970,68 +968,7 @@ abstract class DB_Table extends stdClass
         return $data_to_cache;
     }
 
-    function update_pika($table_full_name, $key_field, $field = 'error', $source = 'unk')
-    {
-        include_once 'utils/pika_api.php';
 
-
-        $params = [
-            'id'     => $key_field,
-            'field'  => $field,
-            'source' => $source,
-            'ver'    => '3',
-        ];
-        $path   = '';
-        switch ($table_full_name) {
-            case 'Store Dimension':
-                $path = 'shop';
-                break;
-            case 'Customer Dimension':
-
-                $path = 'customer';
-                if (in_array($field, ['Customer Number Products in Portfolio'])) {
-                    $path = '';
-                }
-
-                break;
-            case 'Order Dimension':
-
-                if (in_array($field, ['Order Public ID'])) {
-                    $path = 'order';
-                }
-                break;
-            case 'Warehouse Dimension':
-                $path = 'warehouse';
-                break;
-            case 'Warehouse Area Dimension':
-                $path = 'warehouse_area';
-                break;
-            case 'Location Dimension':
-                $path = 'location';
-                break;
-            case 'Part Dimension':
-                $path = 'stock';
-                if (in_array($field, [
-                    'Part Margin',
-                    'Part Commercial Value',
-                    'Current Stock Ordered Paid',
-                    'Part Acc Ongoing Intervals Updated',
-                    'Part XHTML Available for Forecast',
-                    'Part Current Value'
-
-                ])) {
-                    $path = '';
-                }
-                break;
-            case 'Employee Dimension':
-                $path = 'employee';
-                break;
-            default:
-        }
-        if ($path) {
-            pika_api($path, $params);
-        }
-    }
 
 
 }

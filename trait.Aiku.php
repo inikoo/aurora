@@ -8,61 +8,48 @@
 trait Aiku
 {
 
-    function get_table_name()
+
+    function model_updated($table, $field, $key)
     {
-        return $table_name = $this->table_name.' Dimension';
     }
 
-    function get_aiku_params($field, $value)
-    {
-        return [
-            false,
-            false
-        ];
-    }
-
-    function sync_aiku()
-    {
-        $this->update_aiku($this->get_table_name(), 'Object');
-    }
-
-    function update_aiku($table_full_name, $field, $value = ''): int
+    function submit_pika_fetch_model($model, $model_id)
     {
         $account = get_object('Account', 1);
+        $account->load_acc_data();
 
-
-        if (!$account->get('aiku_url') or !$account->get('aiku_token')) {
-            return 0;
-        }
-
-        switch ($table_full_name) {
-            case 'Staff Dimension':
-                //case 'User Dimension':
-                //case 'Store Dimension':
-                // case 'Customer Dimension':
-                // case 'Customer Client Dimension':
-                //case 'Part Dimension':
-                //case 'Product Dimension':
-                //case 'Part Location Dimension':
-                //case 'Order Dimension':
-
-                list($url, $params) = $this->get_aiku_params($field, $value);
-                if (!$url or count($params) == 0) {
-                    return 0;
-                }
+        switch ($model) {
+            case 'Customer':
+                $path = 'customer';
                 break;
-
+            case 'Part':
+                $path = 'stock';
+                break;
             default:
-                return 0;
+                $path = null;
         }
-
-
-        $url = $account->get('aiku_url').$url.'?'.http_build_query($params);
-
-
-        //print_r($url);
+        if (!$path) {
+            return;
+        }
 
         $curl = curl_init();
+
+
+        if (!defined('PIKA_URL')) {
+            return;
+        }
+
+
+        $url = PIKA_URL;
+        if (defined('AU_ENV') and AU_ENV == 'staging') {
+            if (!defined('PIKA_STAGING_URL')) {
+                return;
+            }
+
+            $url = PIKA_STAGING_URL;
+        }
+        $url .= '/api/aurora/'.$path.'?id='.$model_id;
+
 
         curl_setopt_array($curl, array(
             CURLOPT_URL            => $url,
@@ -72,9 +59,10 @@ trait Aiku
             CURLOPT_TIMEOUT        => 0,
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST  => 'PATCH',
+            CURLOPT_CUSTOMREQUEST  => 'POST',
             CURLOPT_HTTPHEADER     => array(
-                'Authorization: Bearer '.$account->get('aiku_token')
+                'Accept: application/json',
+                'Authorization: Bearer '.$account->get('pika_token')
             ),
         ));
 
@@ -82,11 +70,9 @@ trait Aiku
 
 
         curl_close($curl);
+        //echo $response;
 
-        ///print_r($response);
-        //exit;
-
-        return 1;
     }
+
 
 }
