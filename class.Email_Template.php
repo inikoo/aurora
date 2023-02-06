@@ -531,6 +531,8 @@ class Email_Template extends DB_Table {
 
     function update_sent_emails_totals() {
 
+        return;
+
         $unsubscribed = 0;
         $open         = 0;
         $sent         = 0;
