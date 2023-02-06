@@ -18,8 +18,6 @@ function get_customer_client_showcase($data, $smarty, $user, $db, $redis, $accou
         return "";
     }
 
-    //$customer_client->sync_aiku();
-    //exit;
     $customer = get_object('Customer', $customer_client->get('Customer Client Customer Key'));
 
     $smarty->assign('customer_client', $customer_client);
