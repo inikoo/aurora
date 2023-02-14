@@ -19,9 +19,7 @@
      style="clear:both;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
 
-    <h3 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;">{$data.title}</h3>
-
-
+    <h3 class="products_title hello_world  {if !$block.show_title}hide{/if}" style="margin-left:20px;">{$data.title}</h3>
 
     <div class="products {if !$data.item_headers}no_items_header{/if}"  data-sort="{$data.sort}" >
         {counter start=-1 print=false assign="counter"}

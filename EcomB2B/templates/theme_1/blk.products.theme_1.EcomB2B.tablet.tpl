@@ -19,7 +19,7 @@
      style="clear:both;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
 
-    <h1 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;">{$data.title}</h1>
+    <h3 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;">{$data.title}</h3>
 
 
 

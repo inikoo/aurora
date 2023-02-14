@@ -17,7 +17,7 @@
 
 <div id="block_{$key}"  class=" _block {if !$data.show}hide{/if}"
      style="clear:both;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
-    <h1 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;">{$data.title}</h1>
+    <h3 class="products_title {if !$block.show_title}hide{/if}" style="margin-left:20px;">{$data.title}</h3>
     <div >
 
         {counter start=-1 print=false assign="counter"}
