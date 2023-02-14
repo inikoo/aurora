@@ -70,7 +70,7 @@
 
                     <div class="product_description"  >
                         <span class="code">{$item.code}</span>
-                        <div class="name item_name">{$item.name}</div>
+                        <h4 class="name item_name">{$item.name}</h4>
 
                     </div>
 
