@@ -2948,7 +2948,7 @@ class Customer extends Subject
         );
 
         $this->fork_index_elastic_search('delete_elastic_index_object');
-
+        $this->model_updated(null,'deleted',$this->id);
         $this->deleted = true;
     }
 
