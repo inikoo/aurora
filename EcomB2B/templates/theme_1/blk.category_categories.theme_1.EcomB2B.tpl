@@ -27,7 +27,7 @@
 
                     {if $section_data.type!='anchor'}
                     <div class="page_break">
-                        <span class=" title  ">{$section_data.title}</span>
+                        <h4> <span class=" title  ">{$section_data.title}</span></h4>
                         <span class=" sub_title  "  >{$section_data.subtitle}</span>
                     </div>
                     {/if}
@@ -41,9 +41,11 @@
 
                                         <div class="item_header_text" > <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></div>
                                         <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center "   >
+                                            <h5>
                                             <a href="{$category_data.link}">
                                             <img src="{if empty($category_data.image_website)}{$category_data.image_src}{else}{$category_data.image_website}{/if}"  />
                                             </a>
+                                            </h5>
                                         </div>
 
                                     </div>
