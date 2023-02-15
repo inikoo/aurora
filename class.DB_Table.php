@@ -936,6 +936,9 @@ abstract class DB_Table extends stdClass
 
     function index_elastic_search($hosts, $bulk = false, $indices = ['quick'])
     {
+        if(!$hosts){
+            return;
+        }
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
         $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db, $indices);
@@ -953,6 +956,9 @@ abstract class DB_Table extends stdClass
 
     function delete_index_elastic_search($hosts)
     {
+        if(!$hosts){
+            return;
+        }
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
         $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db);
