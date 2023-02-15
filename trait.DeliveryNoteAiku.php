@@ -23,6 +23,7 @@ trait DeliveryNoteAiku
                 'deleted',
                 'Delivery Note State',
                 'Delivery Note Date',
+                'Delivery Note Weight',
                 'Delivery Note Shipper Key',
                 'Delivery Note ID',
                 'Delivery Note Shipper Consignment',
@@ -31,7 +32,10 @@ trait DeliveryNoteAiku
                 'Delivery Note Date Start Picking',
                 'Delivery Note Date Finish Picking',
                 'Delivery Note Date Start Packing',
-                'Delivery Note Date Finish Packing'
+                'Delivery Note Date Finish Packing',
+                'Delivery Note Date Done Approved',
+                'Delivery Note Email',
+                'Delivery Note Telephone'
 
             ]
         );
