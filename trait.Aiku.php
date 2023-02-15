@@ -11,6 +11,8 @@ trait Aiku
     protected bool $pika_ignore=false;
     protected bool $pika_sync=false;
 
+    protected string $use_field='';
+
 
     function get_table_name(){}
 
@@ -26,6 +28,10 @@ trait Aiku
     function process_pika_fetch($model,$key,$field,$valid_fields){
         if($this->pika_ignore){
             return;
+        }
+
+        if($this->use_field){
+            $model=$this->use_field;
         }
 
         if(in_array($field, $valid_fields)){
@@ -107,7 +113,7 @@ trait Aiku
 
         $date=gmdate('Y-m-d H:i:s');
 
-        $sql = 'insert into pika_fetch (created_at, updated_at,model,model_id,error) values (?,?,?,?,?) 
+        $sql = 'insert into pika_fetch (created_at, updated_at,model,model_id) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE updated_at=? ,`count`=`count`+1 ';
 
 
@@ -118,7 +124,6 @@ trait Aiku
                 $date,
                 $model,
                 $model_id,
-                'No',
                 $date,
 
             ]

@@ -9,6 +9,10 @@ trait InvoiceAiku
 {
     function model_updated($table, $field, $key)
     {
+        if ($field == 'deleted') {
+            $this->use_field = 'delete_invoice';
+        }
+
         $this->process_pika_fetch(
             'Invoice', $key, $field,
             [
@@ -20,9 +24,9 @@ trait InvoiceAiku
                 'Invoice Currency Exchange',
                 'Invoice Total Net Amount',
                 'Invoice Total Amount',
+                'Invoice Message'
 
             ]
         );
     }
-
 }
