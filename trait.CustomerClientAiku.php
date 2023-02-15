@@ -10,10 +10,17 @@ trait CustomerClientAiku {
 
     function model_updated($table, $field, $key)
     {
+        if ($field == 'deleted') {
+            $this->use_field = 'delete_customer_client';
+        }
+
+
         $this->process_pika_fetch(
             'CustomerClient', $key, $field,
             [
                 'new',
+                'deleted',
+                'deactivate',
                 'Customer Client Customer Key',
                 'Customer Client Status',
                 'Customer Client Metadata',

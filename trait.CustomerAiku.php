@@ -13,6 +13,7 @@ trait CustomerAiku
             'Customer', $key, $field,
             [
                 'new',
+                'deleted',
                 'Customer Main Contact Name',
                 'Customer Company Name',
                 'Customer Type by Activity',

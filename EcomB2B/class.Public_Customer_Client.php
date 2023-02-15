@@ -820,6 +820,7 @@ class Public_Customer_Client extends DBW_Table {
 
         if ($number_orders > 0) {
             $this->deactivate();
+            $this->model_updated(null,'deactivate',$this->id);
 
             return;
         }
@@ -856,6 +857,7 @@ class Public_Customer_Client extends DBW_Table {
         );
 
         $this->fork_index_elastic_search('delete_elastic_index_object');
+        $this->model_updated(null,'deleted',$this->id);
 
         $this->deleted = true;
     }
