@@ -9,6 +9,13 @@ trait DeliveryNoteAiku
 {
     function model_updated($table, $field, $key)
     {
+
+        if ($field == 'deleted') {
+            $this->use_field = 'delete_delivery_note';
+        }
+
+
+
         $this->process_pika_fetch(
             'DeliveryNote', $key, $field,
             [
