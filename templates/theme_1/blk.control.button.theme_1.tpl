@@ -19,7 +19,7 @@
 
 
         <span class="small" style="font-style: italic">{t}Background image{/t}, {t}Min width{/t} 1240px,{t}Min height{/t} 75px  </span>
-        <input style="xdisplay:none" type="file" block_key="{$key}" name="button_bg" id="update_image_{$key}" class="image_upload_from_iframe"
+        <input style="display:none" type="file" block_key="{$key}" name="button_bg" id="update_image_{$key}" class="image_upload_from_iframe"
 
                data-parent="Webpage" data-parent_key="{$webpage->id}" data-parent_object_scope="Image" data-metadata='{ "block":"button"}'  data-options='{ "min_width":"1240","min_height":"750"}'  data-response_type="webpage" />
 
