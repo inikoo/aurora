@@ -37,7 +37,7 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $mailshot = get_object('Email Campaign', $row['Email Campaign Key']);
 
-        $mailshot->update_sent_emails_totals();
+        $mailshot->update_sent_emails_totals2();
 
     }
 
@@ -49,10 +49,22 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $email_template_type = get_object('Email Campaign Type', $row['Email Campaign Type Key']);
 
-        $email_template_type->update_sent_emails_totals();
+        $email_template_type->update_sent_emails_totals2();
         $email_template_type->update_number_subscribers();
 
     }
 
 }
+
+$sql = sprintf("SELECT `Email Template Key` FROM `Email Template Dimension` ");
+if ($result = $db->query($sql)) {
+    foreach ($result as $row) {
+        $mailshot = get_object('Email Template', $row['Email Template Key']);
+
+        $mailshot->update_sent_emails_totals2();
+
+    }
+
+}
+
 

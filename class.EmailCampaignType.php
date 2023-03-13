@@ -428,7 +428,11 @@ class EmailCampaignType extends DB_Table {
 
     function update_sent_emails_totals() {
 
-        return ;
+    }
+
+    function update_sent_emails_totals2() {
+
+
 
         $unsubscribed = 0;
         $open         = 0;
