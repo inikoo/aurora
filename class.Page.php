@@ -222,6 +222,7 @@ class Page extends DB_Table
                 }
             }
         }
+        $raw_data['Webpage Sticky Note']          = '';
 
 
         $data['Webpage Properties'] = '{}';
@@ -1200,6 +1201,7 @@ class Page extends DB_Table
             case('Webpage Type Key'):
             case 'Webpage Launch Date':
             case 'Webpage URL':
+            case 'Webpage Sticky Note';
 
                 $this->update_field($field, $value, $options);
                 break;

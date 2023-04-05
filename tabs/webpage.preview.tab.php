@@ -58,6 +58,10 @@ $navigation=json_decode($webpage->properties('navigation'),true);
 $smarty->assign('navigation', $navigation);
 
 $html = '';
+
+
+
+
 if ($webpage->get('Webpage Scope') == 'Category Categories' or $webpage->get('Webpage Scope') == 'Category Products') {
 
     $scope = get_object('Category', $webpage->get('Webpage Scope Key'));

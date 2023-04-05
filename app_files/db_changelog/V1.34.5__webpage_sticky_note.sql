@@ -1,0 +1,1 @@
+ALTER TABLE `Page Store Dimension` ADD COLUMN `Webpage Sticky Note` text  COMMENT '';

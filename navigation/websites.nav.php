@@ -620,6 +620,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         $sections[$block_view]['selected'] = true;
     }
 
+
+
     $right_buttons[] = array(
         'icon'     => 'drafting-compass',
         'click'    => 'show_webpage_editor()',
@@ -635,6 +637,8 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
         'pre_text' => _('Exit'),
         'class'    => 'text width_150  hide  hide_webpage_editor'
     );
+
+
 
     $webpage_navigation=false;
 
@@ -679,6 +683,12 @@ function get_webpage_navigation($data, $smarty, $user, $db, $account) {
             //$title.=$object->get('Webpage Scope');
 
     }
+
+    $right_buttons[] = array(
+        'icon'  => 'sticky-note',
+        'title' => _('Sticky note'),
+        'class' => 'open_sticky_note  square_button right order_sticky_note  '.($object->get('Sticky Note') == '' ? '' : 'hide')
+    );
 
 
     $_content = array(

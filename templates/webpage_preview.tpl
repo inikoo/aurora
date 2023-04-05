@@ -9,6 +9,9 @@
 -->
 *}
 
+<div class="sticky_notes">
+    {include file="sticky_note.tpl" _scope="order_sticky_note" value=$webpage->get('Sticky Note') object="Webpage" key="{$webpage->id}" field="Webpage_Sticky_Note"  }
+</div>
 
 
 <div style="padding:20px 20px 10px 20px;border-bottom:1px solid #ccc;" class="control_panel"  data-webpage_key="{$webpage->id}"  >
