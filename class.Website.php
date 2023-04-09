@@ -936,7 +936,8 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         include_once 'class.Sitemap.php';
         $sitemap = new Sitemap($this->id,
             'https://'.$this->get('Website URL').'/',
-            'sitemap-index-'.strtolower(preg_replace('/\./','',$this->get('Website Code'))).'.xml'
+            'sitemap-index-'.strtolower(preg_replace('/\./','',$this->get('Website Code'))).'.xml',
+            false
         );
         $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-info');
 
