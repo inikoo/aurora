@@ -934,8 +934,11 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
 
         include_once 'class.Sitemap.php';
-        $sitemap = new Sitemap($this->id);
-        $sitemap->page('info');
+        $sitemap = new Sitemap($this->id,
+            'https://'.$this->get('Website URL').'/',
+            'sitemap-index-'.strtolower(preg_replace('/\./','',$this->get('Website Code'))).'.xml'
+        );
+        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-info');
 
 
         //ENUM('About','Basket','Catalogue','Category Categories','Category Products','Checkout','Contact','Homepage','HomepageLogout','HomepageNoOrders','HomepageToLaunch','Info','InProcess','Login','NotFound','Offline','Product','Register','ResetPwd','Search','ShippingInfo','TandC','Thanks','UserProfile','Welcome') NOT NULL
@@ -956,7 +959,7 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         }
 
 
-        $sitemap->page('products');
+        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products');
 
         $sql = sprintf(
             "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
@@ -967,16 +970,11 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
                 $updated = $row['Webpage Last Launch Date'];
                 $sitemap->url($row['Webpage URL'], $updated, 'weekly');
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            print "$sql\n";
-            exit;
         }
 
 
         $sitemap->close();
         unset ($sitemap);
-
 
         $this->update_field('Website Sitemap Last Update', gmdate("Y-m-d H:i:s"), 'no_history');
 

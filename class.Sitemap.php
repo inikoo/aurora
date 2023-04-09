@@ -12,7 +12,8 @@
 */
 
 
-class Sitemap {
+class Sitemap
+{
 
     /**
      * @var \PDO
@@ -24,43 +25,49 @@ class Sitemap {
     private $index = 1;
     private $count = 1;
     private $urls = array();
-    private $save_type = 'db';
+    private $save_type = 'file';
     private $website_key = 0;
+    public $save_path = 'EcomB2B/sitemaps/';
+    public $website_url = '';
+    public $index_filename = '';
 
 
-    public function __construct($website_key, $compress = true) {
-
+    public function __construct($website_key, $website_url, $index_filename, $compress = true)
+    {
         global $db;
         $this->db = $db;
 
-        //  ini_set('memory_limit', '75M'); // 50M required per tests
-        $this->compress = ($compress) ? '.gz' : '';
-        $this->website_key = $website_key;
+        ini_set('memory_limit', '75M'); // 50M required per tests
+        $this->compress       = ($compress) ? '.gz' : '';
+        $this->website_key    = $website_key;
+        $this->website_url    = $website_url;
+        $this->index_filename = $index_filename;
     }
 
-    public function page($name) {
+    public function page($name)
+    {
         $this->save();
         $this->page  = $name;
         $this->index = 1;
     }
 
-    private function save() {
-
+    private function save()
+    {
         if ($this->save_type == 'file') {
             $this->save_to_file();
         } else {
             $this->save_to_db();
         }
-
     }
 
-    private function save_to_file() {
+    private function save_to_file()
+    {
         if (empty($this->urls)) {
             return;
         }
         $file = "sitemap-{$this->page}-{$this->index}.xml{$this->compress}";
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+        $xml  .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($this->urls as $url) {
             $xml .= '  <url>'."\n";
             if (is_array($url)) {
@@ -72,78 +79,92 @@ class Sitemap {
             }
             $xml .= '  </url>'."\n";
         }
-        $xml .= '</urlset>'."\n";
+        $xml        .= '</urlset>'."\n";
         $this->urls = array();
         if (!empty($this->compress)) {
             $xml = gzencode($xml, 9);
         }
-        $fp = fopen(BASE_URI.$file, 'wb');
+        $fp = fopen($this->save_path.$file, 'wb');
         fwrite($fp, $xml);
         fclose($fp);
         $this->index++;
         $this->count = 1;
         $num         = $this->index; // should have already been incremented
         while (file_exists(
-            BASE_URI."sitemap-{$this->page}-{$num}.xml{$this->compress}"
+            $this->save_path."sitemap-{$this->page}-{$num}.xml{$this->compress}"
         )) {
             unlink(
-                BASE_URI."sitemap-{$this->page}-{$num}.xml{$this->compress}"
+                $this->save_path."sitemap-{$this->page}-{$num}.xml{$this->compress}"
             );
             $num++;
         }
         $this->index($file);
     }
 
-    private function index($file = false) {
-
+    private function index($file = false)
+    {
         if ($this->save_type == 'file') {
             $this->index_to_file($file);
         } else {
-
         }
-
     }
 
-    private function index_to_file($file) {
+    private function index_to_file($file)
+    {
+
+        $compress = null;
         $sitemaps = array();
-        $index    = "sitemap-index.xml{$this->compress}";
-        if (file_exists(BASE_URI.$index)) {
-            $xml  = (!empty($this->compress))
-                ? gzfile(BASE_URI.$index)
+        $index    = $this->index_filename."{$compress}";
+        if (file_exists($this->save_path.$index)) {
+            $xml  = (!empty($compress))
+                ? gzfile($this->save_path.$index)
                 : file(
-                    BASE_URI.$index
+                    $this->save_path.$index
                 );
             $tags = $this->xml_tag(implode('', $xml), array('sitemap'));
+
+
+
             foreach ($tags as $xml) {
                 $loc     = str_replace(
-                    BASE_URL, '', $this->xml_tag($xml, 'loc')
+                    $this->save_path,
+                    '',
+                    $this->xml_tag($xml, 'loc')
                 );
                 $lastmod = $this->xml_tag($xml, 'lastmod');
                 $lastmod = ($lastmod) ? date('Y-m-d', strtotime($lastmod)) : date('Y-m-d');
-                if (file_exists(BASE_URI.$loc)) {
+
+
+                $loc=preg_replace('/.*\//','',$loc);
+
+
+                if (file_exists($this->save_path.$loc)) {
                     $sitemaps[$loc] = $lastmod;
                 }
             }
         }
         $sitemaps[$file] = date('Y-m-d');
         $xml             = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-        $xml .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+        $xml             .= '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+
+
         foreach ($sitemaps as $loc => $lastmod) {
             $xml .= '  <sitemap>'."\n";
-            $xml .= '    <loc>'.BASE_URL.$loc.'</loc>'."\n";
+            $xml .= '    <loc>'.$this->website_url.'sitemaps/'.$loc.'</loc>'."\n";
             $xml .= '    <lastmod>'.$lastmod.'</lastmod>'."\n";
             $xml .= '  </sitemap>'."\n";
         }
         $xml .= '</sitemapindex>'."\n";
-        if (!empty($this->compress)) {
+        if (!empty($compress)) {
             $xml = gzencode($xml, 9);
         }
-        $fp = fopen(BASE_URI.$index, 'wb');
+        $fp = fopen($this->save_path.$index, 'wb');
         fwrite($fp, $xml);
         fclose($fp);
     }
 
-    private function xml_tag($xml, $tag, &$end = '') {
+    private function xml_tag($xml, $tag, &$end = '')
+    {
         if (is_array($tag)) {
             $tags = array();
             while ($value = $this->xml_tag($xml, $tag[0], $end)) {
@@ -164,13 +185,14 @@ class Sitemap {
         return ($end !== false) ? substr($xml, $start, $length) : false;
     }
 
-    private function save_to_db() {
+    private function save_to_db()
+    {
         if (empty($this->urls)) {
             return;
         }
         $file = "sitemap-{$this->page}-{$this->index}.xml{$this->compress}";
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
+        $xml  .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($this->urls as $url) {
             $xml .= '  <url>'."\n";
             if (is_array($url)) {
@@ -182,17 +204,21 @@ class Sitemap {
             }
             $xml .= '  </url>'."\n";
         }
-        $xml .= '</urlset>'."\n";
+        $xml        .= '</urlset>'."\n";
         $this->urls = array();
 
         //if (!empty($this->compress)) $xml = gzencode($xml, 9);
-        // $fp = fopen(BASE_URI . $file, 'wb');
+        // $fp = fopen($this->save_path . $file, 'wb');
         // fwrite($fp, $xml);
         // fclose($fp);
 
         $sql = sprintf(
             "INSERT INTO `Sitemap Dimension` (`Sitemap Website Key`,`Sitemap Date`,`Sitemap Name`,`Sitemap Number`,`Sitemap Content`) VALUES (%d,NOW(),%s,%d,%s) ON DUPLICATE KEY UPDATE `Sitemap Date`=NOW(), `Sitemap Content`=%s",
-            $this->website_key, prepare_mysql($file), $this->index, prepare_mysql($xml), prepare_mysql($xml)
+            $this->website_key,
+            prepare_mysql($file),
+            $this->index,
+            prepare_mysql($xml),
+            prepare_mysql($xml)
 
 
         );
@@ -205,14 +231,16 @@ class Sitemap {
         $num         = $this->index; // should have already been incremented
 
         $sql = sprintf(
-            "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d AND `Sitemap Number`>=%d ", $this->website_key, $this->index
+            "DELETE FROM `Sitemap Dimension` WHERE `Sitemap Website Key`=%d AND `Sitemap Number`>=%d ",
+            $this->website_key,
+            $this->index
         );
         $this->db->exec($sql);
-
         //$this->index($file);
     }
 
-    public function url($url, $lastmod = '', $changefreq = '', $priority = '') {
+    public function url($url, $lastmod = '', $changefreq = '', $priority = '')
+    {
         $url        = htmlspecialchars($url);
         $lastmod    = (!empty($lastmod)) ? date('Y-m-d', strtotime($lastmod)) : false;
         $changefreq = (!empty($changefreq)
@@ -253,15 +281,18 @@ class Sitemap {
         }
     }
 
-    public function close() {
+    public function close()
+    {
         $this->save();
         if ($this->save_type == 'file') {
             $this->ping_search_engines();
         }
     }
 
-    public function ping_search_engines() {
-        $sitemap                        = BASE_URL.'sitemap-index.xml'.$this->compress;
+    public function ping_search_engines()
+    {
+        return;
+        $sitemap                        = $this->save_path.'sitemap-index.xml'.$this->compress;
         $engines                        = array();
         $engines['www.google.com']      = '/webmasters/tools/ping?sitemap='.urlencode($sitemap);
         $engines['www.bing.com']        = '/webmaster/ping.aspx?siteMap='.urlencode(
@@ -286,7 +317,8 @@ class Sitemap {
         }
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->save();
     }
 

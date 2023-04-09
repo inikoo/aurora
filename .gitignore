@@ -156,3 +156,5 @@ cron/set_up_web_menu.php
 /cron/tc.csv
 /cron/update_tariff_codes.php
 /test_ar_web_hokodo_notification.php
+/EcomB2B/sitemaps/*.xml.gz
+/EcomB2B/sitemaps/*.xml
