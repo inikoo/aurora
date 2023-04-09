@@ -29,9 +29,8 @@ $url = preg_replace('/\?.*$/', '', $url);
 $url = substr($url, 0, 256);
 
 
+
 if ($url == 'sitemap.xml') {
-
-
     include_once 'utils/public_object_functions.php';
 
     date_default_timezone_set('UTC');
@@ -49,7 +48,8 @@ if ($url == 'sitemap.xml') {
     $site_protocol = 'https';
 
     $sql = sprintf(
-        "select `Sitemap Name` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Website Key`=%d", $website_key
+        "select `Sitemap Name` ,`Sitemap Date` from `Sitemap Dimension` where `Sitemap Website Key`=%d",
+        $website_key
     );
 
 
@@ -68,11 +68,24 @@ if ($url == 'sitemap.xml') {
     header("Content-Type:text/xml");
     print $xml;
     exit;
+} elseif ($url == 'robots.txt') {
+    $db = new PDO(
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    );
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-}
-elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
+
+    include_once 'utils/public_object_functions.php';
 
 
+    $website = get_object('Website', $website_key);
+    header("Content-Type:text/plain");
+
+    print "User-agent: *\n";
+    print "Disallow:\n\n";
+    print "Sitemap: https://".$website->get('Website URL')."/sitemaps/sitemap-index-".strtolower(preg_replace('/\./', '', $website->get('Website Code'))).".xml\n";
+    exit;
+} elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
     $db = new PDO(
         "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
@@ -87,7 +100,9 @@ elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
 
 
     $sql = sprintf(
-        "SELECT `Sitemap Content` FROM  `Sitemap Dimension` WHERE `Sitemap Website Key`=%d and `Sitemap Name`='%s' ", $website_key, addslashes($sitemap_name)
+        "SELECT `Sitemap Content` FROM  `Sitemap Dimension` WHERE `Sitemap Website Key`=%d and `Sitemap Name`='%s' ",
+        $website_key,
+        addslashes($sitemap_name)
     );
 
     if ($result = $db->query($sql)) {
@@ -105,8 +120,6 @@ elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
         $db = null;
     }
     exit;
-
-
 }
 
 
@@ -116,7 +129,6 @@ if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
     $db         = null;
 } else {
-
     $db = new PDO(
         "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
     );
@@ -135,7 +147,6 @@ if (is_numeric($webpage_id)) {
     $webpage_key = $webpage_id;
     include 'display_webpage.php';
 } else {
-
     header("Location: ".(ENVIRONMENT == 'DEVEL' ? 'http' : 'https')."://".$_SERVER['SERVER_NAME']."$webpage_id");
 }
 $db = null;
@@ -143,9 +154,8 @@ $db = null;
 exit();
 
 
-function get_url($db, $website_key, $url) {
-
-
+function get_url($db, $website_key, $url)
+{
     $original_url = $url;
     $page_key     = get_page_key_from_code($website_key, $url, $db);
     if ($page_key) {
@@ -177,12 +187,9 @@ function get_url($db, $website_key, $url) {
 
         if ($sitemap_key == 0) {
             return '/sitemap_index.xml.php';
-
         } else {
             return '/sitemap.xml.php?id='.$sitemap_key;
         }
-
-
     }
 
     $sql  = "SELECT  `Webpage Alias Webpage Key` FROM `Webpage Alias Dimension` WHERE `Webpage Alias Website Key`=? AND `Webpage Alias Tag`=?";
@@ -195,13 +202,9 @@ function get_url($db, $website_key, $url) {
     );
     if ($row = $stmt->fetch()) {
         return $row['Webpage Alias Webpage Key'];
-
     } else {
         return "/404.php?url=$url&original_url=$original_url&w=".$website_key;
-
     }
-
-
 }
 
 /**
@@ -211,8 +214,8 @@ function get_url($db, $website_key, $url) {
  *
  * @return int|mixed
  */
-function get_page_key_from_code($website_key, $code, $db) {
-
+function get_page_key_from_code($website_key, $code, $db)
+{
     $sql = "SELECT `Page Key` FROM `Page Store Dimension` WHERE `Webpage Website Key`=? AND ( `Webpage Code`=? or `Webpage Canonical Code`=? ) ";
 
     $stmt = $db->prepare($sql);
@@ -228,6 +231,4 @@ function get_page_key_from_code($website_key, $code, $db) {
     } else {
         return 0;
     }
-
-
 }

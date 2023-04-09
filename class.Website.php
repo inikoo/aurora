@@ -962,7 +962,21 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products');
 
         $sql = sprintf(
-            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products','Product') AND `Webpage State`='Online'   ", $this->id
+            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online'   ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Last Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+            }
+        }
+
+
+        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-categories');
+
+        $sql = sprintf(
+            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products') AND `Webpage State`='Online'   ", $this->id
         );
 
         if ($result = $this->db->query($sql)) {
