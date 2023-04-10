@@ -89,8 +89,10 @@ if ($url == 'sitemap.xml') {
     print "Disallow: /attachment.php*\n";
     print "Disallow: /asset_label*\n";
     print "Disallow: /page.php*\n";
-
+    print "Disallow: /*.sys$\n";
     print "Disallow: /ethics\n";
+    print "Disallow: /image_root*\n";
+
     print "\n";
 
     print "Sitemap: https://".$website->get('Website URL')."/sitemaps/sitemap-index-".strtolower(preg_replace('/\./', '', $website->get('Website Code'))).".xml\n";
