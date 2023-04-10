@@ -82,7 +82,13 @@ if ($url == 'sitemap.xml') {
     header("Content-Type:text/plain");
 
     print "User-agent: *\n";
-    print "Disallow:\n\n";
+    print "Disallow: /*.pdf$\n";
+    print "Disallow: /return_policy\n";
+    print "Disallow: /privacy_policy\n";
+    print "Disallow: /cookies\n";
+    print "Disallow: /ethics\n";
+    print "\n";
+
     print "Sitemap: https://".$website->get('Website URL')."/sitemaps/sitemap-index-".strtolower(preg_replace('/\./', '', $website->get('Website Code'))).".xml\n";
     exit;
 } elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
