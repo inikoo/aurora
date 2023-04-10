@@ -86,6 +86,10 @@ if ($url == 'sitemap.xml') {
     print "Disallow: /return_policy\n";
     print "Disallow: /privacy_policy\n";
     print "Disallow: /cookies\n";
+    print "Disallow: /attachment.php*\n";
+    print "Disallow: /asset_label*\n";
+    print "Disallow: /page.php*\n";
+
     print "Disallow: /ethics\n";
     print "\n";
 
