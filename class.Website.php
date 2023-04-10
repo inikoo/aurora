@@ -1016,7 +1016,31 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
 
 
+        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-test');
 
+        $sql = sprintf(
+            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL` limit 1  ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Last Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+            }
+        }
+
+        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-test2');
+
+        $sql = sprintf(
+            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL` limit 10  ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Last Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+            }
+        }
 
 
 
