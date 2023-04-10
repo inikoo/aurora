@@ -936,10 +936,10 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         include_once 'class.Sitemap.php';
         $sitemap = new Sitemap($this->id,
             'https://'.$this->get('Website URL').'/',
-            'sitemap-index-'.strtolower(preg_replace('/\./','',$this->get('Website Code'))).'.xml',
+            'i-'.strtolower(preg_replace('/\./','',$this->get('Website Key'))).'.xml',
             false
         );
-        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-info');
+        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Key'))).'i');
 
 
         //ENUM('About','Basket','Catalogue','Category Categories','Category Products','Checkout','Contact','Homepage','HomepageLogout','HomepageNoOrders','HomepageToLaunch','Info','InProcess','Login','NotFound','Offline','Product','Register','ResetPwd','Search','ShippingInfo','TandC','Thanks','UserProfile','Welcome') NOT NULL
@@ -971,10 +971,10 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         if($number_pages>4000){
 
 
-            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-a');
+            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Key'))).'p1');
 
             $sql = sprintf(
-                "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online'  order by `Webpage URL`  limit 4   ", $this->id
+                "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online'  order by `Webpage URL`  limit 4000   ", $this->id
             );
 
             if ($result = $this->db->query($sql)) {
@@ -984,7 +984,7 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
                 }
             }
 
-            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-b');
+            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Key'))).'p2');
 
             $sql = sprintf(
                 "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL`  limit 10000 offset 4000   ", $this->id
@@ -1000,7 +1000,7 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
         }else{
 
-            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products');
+            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Key'))).'p');
 
             $sql = sprintf(
                 "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL`  ", $this->id
@@ -1016,36 +1016,12 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
 
 
-        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-test');
-
-        $sql = sprintf(
-            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL` limit 1  ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $updated = $row['Webpage Last Launch Date'];
-                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
-            }
-        }
-
-        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-test2');
-
-        $sql = sprintf(
-            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL` limit 10  ", $this->id
-        );
-
-        if ($result = $this->db->query($sql)) {
-            foreach ($result as $row) {
-                $updated = $row['Webpage Last Launch Date'];
-                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
-            }
-        }
 
 
 
 
-        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-categories');
+
+        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Key'))).'c');
 
         $sql = sprintf(
             "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Category Categories','Category Products') AND `Webpage State`='Online'   ", $this->id

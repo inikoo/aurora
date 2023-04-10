@@ -65,7 +65,7 @@ class Sitemap
         if (empty($this->urls)) {
             return;
         }
-        $file = "sitemap-{$this->page}-{$this->index}.xml{$this->compress}";
+        $file = "s{$this->page}-{$this->index}.xml{$this->compress}";
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
         $xml  .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($this->urls as $url) {
@@ -91,10 +91,10 @@ class Sitemap
         $this->count = 1;
         $num         = $this->index; // should have already been incremented
         while (file_exists(
-            $this->save_path."sitemap-{$this->page}-{$num}.xml{$this->compress}"
+            $this->save_path."s{$this->page}-{$num}.xml{$this->compress}"
         )) {
             unlink(
-                $this->save_path."sitemap-{$this->page}-{$num}.xml{$this->compress}"
+                $this->save_path."s{$this->page}-{$num}.xml{$this->compress}"
             );
             $num++;
         }
@@ -190,7 +190,7 @@ class Sitemap
         if (empty($this->urls)) {
             return;
         }
-        $file = "sitemap-{$this->page}-{$this->index}.xml{$this->compress}";
+        $file = "s{$this->page}-{$this->index}.xml{$this->compress}";
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
         $xml  .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($this->urls as $url) {
@@ -292,7 +292,7 @@ class Sitemap
     public function ping_search_engines()
     {
         return;
-        $sitemap                        = $this->save_path.'sitemap-index.xml'.$this->compress;
+        $sitemap                        = $this->save_path.'sindex.xml'.$this->compress;
         $engines                        = array();
         $engines['www.google.com']      = '/webmasters/tools/ping?sitemap='.urlencode($sitemap);
         $engines['www.bing.com']        = '/webmaster/ping.aspx?siteMap='.urlencode(
