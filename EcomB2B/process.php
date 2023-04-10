@@ -95,7 +95,7 @@ if ($url == 'sitemap.xml') {
 
     print "\n";
 
-    print "Sitemap: https://".$website->get('Website URL')."/sitemaps/i-".strtolower(preg_replace('/\./', '', $website->get('Website Key'))).".xml\n";
+    print "Sitemap: https://".$website->get('Website URL')."/sitemaps/i-".$website_key.".xml\n";
     exit;
 } elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
     $db = new PDO(
