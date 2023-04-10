@@ -959,19 +959,66 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
             }
         }
 
-
-        $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products');
-
-        $sql = sprintf(
-            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online'   ", $this->id
-        );
+        $number_pages=0;
+        $sql=sprintf("select count(*) as num from `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`='Product' AND `Webpage State`='Online'",$this->id);
 
         if ($result = $this->db->query($sql)) {
             foreach ($result as $row) {
-                $updated = $row['Webpage Last Launch Date'];
-                $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+              $number_pages=$row['num'];
             }
         }
+
+        if($number_pages>4000){
+
+
+            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-a');
+
+            $sql = sprintf(
+                "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online'  order by `Webpage URL`  limit 4   ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $updated = $row['Webpage Last Launch Date'];
+                    $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+                }
+            }
+
+            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products-b');
+
+            $sql = sprintf(
+                "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL`  limit 10000 offset 4000   ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $updated = $row['Webpage Last Launch Date'];
+                    $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+                }
+            }
+
+
+        }else{
+
+            $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-products');
+
+            $sql = sprintf(
+                "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  IN  ('Product') AND `Webpage State`='Online' order by `Webpage URL`  ", $this->id
+            );
+
+            if ($result = $this->db->query($sql)) {
+                foreach ($result as $row) {
+                    $updated = $row['Webpage Last Launch Date'];
+                    $sitemap->url($row['Webpage URL'], $updated, 'weekly');
+                }
+            }
+        }
+
+
+
+
+
+
 
 
         $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Code'))).'-categories');
