@@ -242,10 +242,11 @@ function set_up_froala_editor(key) {
 
      var buttons={
          'moreText': {
-             'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting',
-                         'h1', 'h2', 'h3','h4','h5'
+             'buttons': ['h1', 'h2', 'h3','h4','h5','h6','bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting',
 
-             ]
+
+             ],'buttonsVisible': 8
+
          },
          'moreParagraph': {
              'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote']
