@@ -1,7 +1,7 @@
 /*Author: Raul Perusquia <raul@inikoo.com>
  Created:  08 April 2020  14:26::44  +0800, Kuala Lumpur, Malaysia
  Copyright (c) 2020, Inikoo
- Version 3.0*/
+ Version 3.1*/
 
 $(function () {
 
