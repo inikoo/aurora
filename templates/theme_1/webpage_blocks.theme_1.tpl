@@ -567,7 +567,6 @@
 
     set_up_froala_editor('thanks_text_{$key}');
     {elseif $block.type=='product'}
-
     set_up_froala_editor('_product_description');
 
     {elseif $block.type=='favourites'}

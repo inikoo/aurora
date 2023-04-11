@@ -233,11 +233,19 @@ function resize_banners() {
 
 function set_up_froala_editor(key) {
 
+
+
+
+
+
      default_font=$('body').data('default_font');
 
      var buttons={
          'moreText': {
-             'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting']
+             'buttons': ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', 'textColor', 'backgroundColor', 'inlineClass', 'inlineStyle', 'clearFormatting',
+                         'h1', 'h2', 'h3','h4','h5'
+
+             ]
          },
          'moreParagraph': {
              'buttons': ['alignLeft', 'alignCenter', 'formatOLSimple', 'alignRight', 'alignJustify', 'formatOL', 'formatUL', 'paragraphFormat', 'paragraphStyle', 'lineHeight', 'outdent', 'indent', 'quote']
@@ -254,6 +262,127 @@ function set_up_froala_editor(key) {
 
 
      var editor_container=$('#'+key);
+
+
+    var isActive = function (cmd) {
+        var blocks = this.selection.blocks();
+
+        if (blocks.length) {
+            var blk = blocks[0];
+            var tag = 'N';
+            var default_tag = this.html.defaultTag();
+            if (blk.tagName.toLowerCase() != default_tag && blk != this.el) {
+                tag = blk.tagName;
+            }
+        }
+
+        if (['LI', 'TD', 'TH'].indexOf(tag) >= 0) {
+            tag = 'N';
+        }
+
+        return tag.toLowerCase() == cmd;
+    }
+
+    FroalaEditor.DefineIcon('h1', {NAME: '<strong>H1</strong>', template: 'text'});
+    FroalaEditor.DefineIcon('h2', {NAME: '<strong>H2</strong>', template: 'text'});
+    FroalaEditor.DefineIcon('h3', {NAME: '<strong>H3</strong>', template: 'text'});
+    FroalaEditor.DefineIcon('h4', {NAME: '<strong>H4</strong>', template: 'text'});
+    FroalaEditor.DefineIcon('h5', {NAME: '<strong>H5</strong>', template: 'text'});
+    FroalaEditor.DefineIcon('h6', {NAME: '<strong>H6</strong>', template: 'text'});
+
+
+
+    FroalaEditor.RegisterCommand('h1', {
+        title: 'Heading 1',
+        callback: function (cmd, val, params) {
+            if (isActive.apply(this, [cmd])) {
+                this.paragraphFormat.apply('N');
+            }
+            else {
+                this.paragraphFormat.apply(cmd);
+            }
+        },
+        refresh: function ($btn) {
+            $btn.toggleClass('fr-active', isActive.apply(this, [$btn.data('cmd')]));
+        }
+    });
+
+    FroalaEditor.RegisterCommand('h2', {
+        title: 'Heading 2',
+        callback: function (cmd, val, params) {
+            if (isActive.apply(this, [cmd])) {
+                this.paragraphFormat.apply('N');
+            }
+            else {
+                this.paragraphFormat.apply(cmd);
+            }
+        },
+        refresh: function ($btn) {
+            $btn.toggleClass('fr-active', isActive.apply(this, [$btn.data('cmd')]));
+        }
+    });
+
+    FroalaEditor.RegisterCommand('h3', {
+        title: 'Heading 3',
+        callback: function (cmd, val, params) {
+            if (isActive.apply(this, [cmd])) {
+                this.paragraphFormat.apply('N');
+            }
+            else {
+                this.paragraphFormat.apply(cmd);
+            }
+        },
+        refresh: function ($btn) {
+            $btn.toggleClass('fr-active', isActive.apply(this, [$btn.data('cmd')]));
+        }
+    });
+
+    FroalaEditor.RegisterCommand('h4', {
+        title: 'Heading 4',
+        callback: function (cmd, val, params) {
+            if (isActive.apply(this, [cmd])) {
+                this.paragraphFormat.apply('N');
+            }
+            else {
+                this.paragraphFormat.apply(cmd);
+            }
+        },
+        refresh: function ($btn) {
+            $btn.toggleClass('fr-active', isActive.apply(this, [$btn.data('cmd')]));
+        }
+    });
+
+    FroalaEditor.RegisterCommand('h5', {
+        title: 'Heading 5',
+        callback: function (cmd, val, params) {
+            if (isActive.apply(this, [cmd])) {
+                this.paragraphFormat.apply('N');
+            }
+            else {
+                this.paragraphFormat.apply(cmd);
+            }
+        },
+        refresh: function ($btn) {
+            $btn.toggleClass('fr-active', isActive.apply(this, [$btn.data('cmd')]));
+        }
+    });
+
+    FroalaEditor.RegisterCommand('h6', {
+        title: 'Heading 6',
+        callback: function (cmd, val, params) {
+            if (isActive.apply(this, [cmd])) {
+                this.paragraphFormat.apply('N');
+            }
+            else {
+                this.paragraphFormat.apply(cmd);
+            }
+        },
+        refresh: function ($btn) {
+            $btn.toggleClass('fr-active', isActive.apply(this, [$btn.data('cmd')]));
+        }
+    });
+
+
 
     var editor=new FroalaEditor('#'+key, {
         key: $('body').data('fel'),
@@ -289,6 +418,10 @@ function set_up_froala_editor(key) {
             }
         }
     });
+
+
+
+
 
     editor_container.data('editor',editor)
 

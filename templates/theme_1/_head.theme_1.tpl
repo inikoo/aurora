@@ -171,7 +171,7 @@
     <script src="/js/validation.js?"></script>
     <script src="/js/common_webpage_preview.js?v2.2"></script>
 
-    <script src="/js/webpage_blocks.js?v1.1"></script>
+    <script src="/js/webpage_blocks.js?v1.3"></script>
 
     <style>
 
