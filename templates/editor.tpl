@@ -50,7 +50,7 @@
             }
         }
 
-
+        {literal}
       var isActive = function (cmd) {
         var blocks = this.selection.blocks();
 
@@ -69,6 +69,8 @@
 
         return tag.toLowerCase() == cmd;
       }
+
+
 
       FroalaEditor.DefineIcon('h1', {NAME: '<strong>H1</strong>', template: 'text'});
       FroalaEditor.DefineIcon('h2', {NAME: '<strong>H2</strong>', template: 'text'});
@@ -169,7 +171,7 @@
         }
       });
 
-
+      {/literal}
 
 
         new FroalaEditor('#editor_{$editor_data.id}', {
