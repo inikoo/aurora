@@ -65,7 +65,7 @@ class Sitemap
         if (empty($this->urls)) {
             return;
         }
-        $file = "s{$this->page}-{$this->index}.xml{$this->compress}";
+        $file = "{$this->page}.xml{$this->compress}";
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
         $xml  .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
         foreach ($this->urls as $url) {
@@ -91,10 +91,10 @@ class Sitemap
         $this->count = 1;
         $num         = $this->index; // should have already been incremented
         while (file_exists(
-            $this->save_path."s{$this->page}-{$num}.xml{$this->compress}"
+            $this->save_path."s{$this->page}.xml{$this->compress}"
         )) {
             unlink(
-                $this->save_path."s{$this->page}-{$num}.xml{$this->compress}"
+                $this->save_path."s{$this->page}.xml{$this->compress}"
             );
             $num++;
         }

@@ -936,14 +936,35 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         include_once 'class.Sitemap.php';
         $sitemap = new Sitemap($this->id,
             'https://'.$this->get('Website URL').'/',
-            'i-'.strtolower(preg_replace('/\./','',$this->get('Website Key'))).'.xml',
+            'index-'.strtolower(preg_replace('/\./','',$this->get('Website Code'))).'.xml',
             false
         );
+
+
+
+        $name=strtolower(DNS_ACCOUNT_CODE).'_'.strtolower(preg_replace('/\./','',$this->get('Website Code')));
+
+
+        $sitemap->page($name);
+
+        $sql = sprintf(
+            "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND `Webpage Code` not in 
+                                                          ('in_process.sys','profile.sys','basket.sys','checkout.sys','favourites.sys','home.sys','not_found.sys','offline.sys','reset_pwd.sys','search.sys',
+                                                          'thanks.sys','welcome.sys','unsubscribe.sys'
+                                                          )  and   `Webpage State`='Online' order by `Webpage Code`   ", $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $updated = $row['Webpage Last Launch Date'];
+                $sitemap->url($row['Webpage URL'], $updated,'daily');
+            }
+        }
+
+
+        /*
+
         $sitemap->page(strtolower(preg_replace('/\./','',$this->get('Website Key'))).'i');
-
-
-        //ENUM('About','Basket','Catalogue','Category Categories','Category Products','Checkout','Contact','Homepage','HomepageLogout','HomepageNoOrders','HomepageToLaunch','Info','InProcess','Login','NotFound','Offline','Product','Register','ResetPwd','Search','ShippingInfo','TandC','Thanks','UserProfile','Welcome') NOT NULL
-
 
         $sql = sprintf(
             "SELECT `Webpage Last Launch Date`,`Webpage URL` FROM `Page Store Dimension`  WHERE `Webpage Website Key`=%d  AND  `Webpage Scope`  NOT IN  ('Category Categories','Category Products','Product') AND `Webpage Code` not in 
@@ -1034,6 +1055,7 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
             }
         }
 
+        */
 
         $sitemap->close();
         unset ($sitemap);
