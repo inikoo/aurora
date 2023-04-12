@@ -2710,7 +2710,18 @@ class Page extends DB_Table
                 $this->update_state('Online');
             }
         }
-        $this->fast_update(array('Webpage Last Launch Date' => gmdate('Y-m-d H:i:s')));
+
+
+        $sql = sprintf(
+            "UPDATE `Page Store Dimension` SET  `Webpage Last Launch Date`='%s'  WHERE `Page Key`=%d",
+            gmdate('Y-m-d H:i:s'), $this->id
+        );
+
+        $this->db->exec($sql);
+
+
+       // $this->fast_update(array('Webpage Last Launch Date' => gmdate('Y-m-d H:i:s')));
+
 
 
         if ($this->get('Webpage Launch Date') == '') {
