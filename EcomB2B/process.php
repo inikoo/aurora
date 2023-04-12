@@ -29,7 +29,6 @@ $url = preg_replace('/\?.*$/', '', $url);
 $url = substr($url, 0, 256);
 
 
-
 if ($url == 'sitemap.xml') {
     include_once 'utils/public_object_functions.php';
 
@@ -95,7 +94,12 @@ if ($url == 'sitemap.xml') {
 
     print "\n";
 
-    print "Sitemap: https://".$website->get('Website URL')."/sitemaps/".strtolower(DNS_ACCOUNT_CODE)."_".strtolower(preg_replace('/\./','',$website->get('Website Code'))).".xml\n";
+    $name = strtolower(DNS_ACCOUNT_CODE)."_".strtolower(preg_replace('/\./', '', $website->get('Website Code')));
+    if ($name == 'aw_awbiz') {
+        $name = 'aw';
+    }
+
+    print "Sitemap: https://".$website->get('Website URL')."/sitemaps/".$name.".xml.gz\n";
     exit;
 } elseif ($url == 'sitemap-info.xml' or $url == 'sitemap-products.xml') {
     $db = new PDO(

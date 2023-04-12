@@ -937,12 +937,16 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
         $sitemap = new Sitemap($this->id,
             'https://'.$this->get('Website URL').'/',
             'index-'.strtolower(preg_replace('/\./','',$this->get('Website Code'))).'.xml',
-            false
+            true
         );
 
 
 
         $name=strtolower(DNS_ACCOUNT_CODE).'_'.strtolower(preg_replace('/\./','',$this->get('Website Code')));
+
+        if($name=='aw_awbiz'){
+            $name='aw';
+        }
 
 
         $sitemap->page($name);
