@@ -436,7 +436,7 @@
                                               //Possible layout options: bordered, large and reverse.
                                               layout: '',
                                               //How many reviews & questions to show per page?
-                                              per_page          : 15,
+                                              per_page          : 5,
                                               store_review      : {
                                                 hide_if_no_results: true,
                                               },
@@ -473,20 +473,20 @@
                                               //Filtering settings:
                                               filtering: {
                                                 enable                                : true, //Show filtering options
-                                                enable_text_search                    : true, //Show search field
-                                                enable_sorting                        : true, //Show sorting options (most recent, most popular)
-                                                enable_media_filter                   : true, //Show reviews with images/video/media options
-                                                enable_overall_rating_filter          : true, //Show overall rating breakdown filter
+                                                enable_text_search                    : false, //Show search field
+                                                enable_sorting                        : false, //Show sorting options (most recent, most popular)
+                                                enable_media_filter                   : false, //Show reviews with images/video/media options
+                                                enable_overall_rating_filter          : false, //Show overall rating breakdown filter
                                                 enable_language_filter                : false, // Filter by review language
                                                 enable_language_filter_language_change: false, // Update widget language based on language selected
-                                                enable_ratings_filters                : true, //Show product attributes filter
-                                                enable_attributes_filters             : true, //Show author attributes filter
+                                                enable_ratings_filters                : false, //Show product attributes filter
+                                                enable_attributes_filters             : false, //Show author attributes filter
                                               },
 
                                               //Review settings:
                                               reviews: {
                                                 enable_avatar             : true, //Show author avatar
-                                                enable_reviewer_name      : true, //Show author name
+                                                enable_reviewer_name      : false, //Show author name
                                                 enable_reviewer_address   : true, //Show author location
                                                 reviewer_address_format   : 'city, country', //Author location display format
                                                 enable_verified_badge     : true, //Show "Verified Customer" badge
@@ -514,93 +514,36 @@
                                               //Base font size is a reference size for all text elements. When base value gets changed, all TextHeading and TexBody elements get proportionally adjusted.
                                               '--base-font-size': '16px',
                                               //Button styles (shared between buttons):
-                                              '--common-button-font-family'       : 'inherit',
-                                              '--common-button-font-size'         : '14px',
-                                              '--common-button-font-weight'       : '500',
-                                              '--common-button-letter-spacing'    : '0',
-                                              '--common-button-text-transform'    : 'none',
-                                              '--common-button-vertical-padding'  : '10px',
-                                              '--common-button-horizontal-padding': '20px',
-                                              '--common-button-border-width'      : '2px',
-                                              '--common-button-border-radius'     : '0px',
+                                              '--common-button-font-family'
+                                                  : 'inherit', '--common-button-font-size':'12px', '--common-button-font-weight':'200', '--common-button-letter-spacing':'0', '--common-button-text-transform':'none', '--common-button-vertical-padding':'10px', '--common-button-horizontal-padding':'20px', '--common-button-border-width':'2px', '--common-button-border-radius':'0px',
                                               //Primary button styles:
-                                              '--primary-button-bg-color'    : '#4B5058',
-                                              '--primary-button-border-color': '#4B5058',
-                                              '--primary-button-text-color'  : '#FFFFFF',
+                                              '--primary-button-bg-color': '#4B5058', '--primary-button-border-color': '#4B5058', '--primary-button-text-color': '#ffffff',
                                               //Secondary button styles:
-                                              '--secondary-button-bg-color'    : 'transparent',
-                                              '--secondary-button-border-color': '#4B5058',
-                                              '--secondary-button-text-color'  : '#4B5058',
+                                              '--secondary-button-bg-color': 'transparent', '--secondary-button-border-color': '#4B5058', '--secondary-button-text-color': '#0E1311',
                                               //Star styles:
-                                              '--common-star-color'         : '#E87928',
-                                              '--common-star-disabled-color': 'rgba(0,0,0,0.25)',
-                                              '--medium-star-size'          : '22px',
-                                              '--small-star-size'           : '19px',
+                                              '--common-star-color': '#0E1311', '--common-star-disabled-color': 'rgba(0,0,0,0.25)', '--medium-star-size': '22px', '--small-star-size': '19px',
                                               //Heading styles:
-                                              '--heading-text-color'         : '4B5058',
-                                              '--heading-text-font-weight'   : '600',
-                                              '--heading-text-font-family'   : 'inherit',
-                                              '--heading-text-line-height'   : '1',
-                                              '--heading-text-letter-spacing': '0',
-                                              '--heading-text-transform'     : 'none',
+                                              '--heading-text-color': '#0E1311', '--heading-text-font-weight': '600', '--heading-text-font-family': 'inherit', '--heading-text-line-height': '2.4', '--heading-text-letter-spacing': '0', '--heading-text-transform': 'none',
                                               //Body text styles:
-                                              '--body-text-color'         : '#4B5058',
-                                              '--body-text-font-weight'   : '300',
-                                              '--body-text-font-family'   : 'inherit',
-                                              '--body-text-line-height'   : '1.4',
-                                              '--body-text-letter-spacing': '0',
-                                              '--body-text-transform'     : 'none',
+                                              '--body-text-color': '#4B5058', '--body-text-font-weight': '100', '--body-text-font-family': 'inherit', '--body-text-line-height': '1.2', '--body-text-letter-spacing': '0px', '--body-text-transform': 'none',
                                               //Input field styles:
-                                              '--inputfield-text-font-family': 'inherit',
-                                              '--input-text-font-size'       : '12px',
-                                              '--inputfield-text-font-weight': '400',
-                                              '--inputfield-text-color'      : '#0E1311',
-                                              '--inputfield-border-color'    : 'rgba(0,0,0,0.2)',
-                                              '--inputfield-background-color': 'transparent',
-                                              '--inputfield-border-width'    : '1px',
-                                              '--inputfield-border-radius'   : '0px',
-                                              '--common-border-color'        : 'rgba(0,0,0,0.15)',
-                                              '--common-border-width'        : '1px',
-                                              '--common-sidebar-width'       : '190px',
+                                              '--inputfield-text-font-family': 'inherit', '--input-text-font-size': '14px', '--inputfield-text-font-weight': '400', '--inputfield-text-color': '#4B5058', '--inputfield-border-color': 'rgba(0,0,0,0.2)', '--inputfield-background-color': 'transparent', '--inputfield-border-width': '1px', '--inputfield-border-radius': '0px', '--common-border-color': 'rgba(0,0,0,0.15)', '--common-border-width': '1px', '--common-sidebar-width': '190px',
                                               //Slider indicator (for attributes) styles:
-                                              '--slider-indicator-bg-color'    : 'rgba(0,0,0,0.1)',
-                                              '--slider-indicator-button-color': '#0E1311',
-                                              '--slider-indicator-width'       : '190px',
+                                              '--slider-indicator-bg-color': 'rgba(0,0,0,0.1)', '--slider-indicator-button-color': '#4B5058', '--slider-indicator-width': '190px',
                                               //Badge styles:
-                                              '--badge-icon-color'         : '#0E1311',
-                                              '--badge-icon-font-size'     : 'inherit',
-                                              '--badge-text-color'         : '#0E1311',
-                                              '--badge-text-font-size'     : 'inherit',
-                                              '--badge-text-letter-spacing': 'inherit',
-                                              '--badge-text-transform'     : 'inherit',
+                                              '--badge-icon-color': '#4B5058', '--badge-icon-font-size': 'inherit', '--badge-text-color': '#4B5058', '--badge-text-font-size': 'inherit', '--badge-text-letter-spacing': 'inherit', '--badge-text-transform': 'capitalize',
                                               //Author styles:
-                                              '--author-font-size'     : 'inherit',
-                                              '--author-text-transform': 'none',
+                                              '--author-font-size': 'inherit', '--author-text-transform': 'none',
                                               //Author avatar styles:
-                                              '--avatar-thumbnail-size'         : '30px',
-                                              '--avatar-thumbnail-border-radius': '100px',
-                                              '--avatar-thumbnail-text-color'   : '#0E1311',
-                                              '--avatar-thumbnail-bg-color'     : 'rgba(0,0,0,0.1)',
+                                              '--avatar-thumbnail-size': '30px', '--avatar-thumbnail-border-radius': '30px', '--avatar-thumbnail-text-color': '#FFFFFF', '--avatar-thumbnail-bg-color': '4B5058',
                                               //Product photo or review photo styles:
-                                              '--photo-video-thumbnail-size'         : '80px',
-                                              '--photo-video-thumbnail-border-radius': '0px',
+                                              '--photo-video-thumbnail-size': '20px', '--photo-video-thumbnail-border-radius': '0px',
                                               //Media (photo & video) slider styles:
-                                              '--mediaslider-scroll-button-icon-color': '#0E1311',
-                                              '--mediaslider-scroll-button-bg-color'  : 'rgba(255, 255, 255, 0.85)',
-                                              '--mediaslider-overlay-text-color'      : '#FFFFFF',
-                                              '--mediaslider-overlay-bg-color'        : 'rgba(0, 0, 0, 0.8))',
-                                              '--mediaslider-item-size'               : '110px',
+                                              '--mediaslider-scroll-button-icon-color': '#0E1311', '--mediaslider-scroll-button-bg-color': 'rgba(255, 255, 255, 0.85)', '--mediaslider-overlay-text-color': '#ffffff', '--mediaslider-overlay-bg-color': 'rgba(0, 0, 0, 0.8))', '--mediaslider-item-size': '110px',
                                               //Pagination & tabs styles (normal):
-                                              '--pagination-tab-text-color'         : '4B5058',
-                                              '--pagination-tab-text-transform'     : 'none',
-                                              '--pagination-tab-text-letter-spacing': '0',
-                                              '--pagination-tab-text-font-size'     : '16px',
-                                              '--pagination-tab-text-font-weight'   : '600',
+                                              '--pagination-tab-text-color': '#0E1311', '--pagination-tab-text-transform': 'none', '--pagination-tab-text-letter-spacing': '0', '--pagination-tab-text-font-size': '12px', '--pagination-tab-text-font-weight': '600',
                                               //Pagination & tabs styles (active):
-                                              '--pagination-tab-active-text-color'      : '#4B5058',
-                                              '--pagination-tab-active-text-font-weight': '500',
-                                              '--pagination-tab-active-border-color'    : '#4B5058',
-                                              '--pagination-tab-border-width'           : '1px',
+                                              '--pagination-tab-active-text-color': '#0E1311', '--pagination-tab-active-text-font-weight': '600', '--pagination-tab-active-border-color': '#0E1311', '--pagination-tab-border-width': '3px',
 
                                             }
                                           }
