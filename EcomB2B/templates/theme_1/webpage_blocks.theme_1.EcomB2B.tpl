@@ -498,10 +498,10 @@
                                                 enable_replies            : undefined, //Show review replies
                                                 enable_images             : true, //Show display review photos
                                                 enable_ratings            : true, //Show product attributes (additional ratings)
-                                                enable_share              : true, //Show share buttons
+                                                enable_share              : false, //Show share buttons
                                                 enable_helpful_vote       : true, //Show "was this helpful?" section
                                                 enable_helpful_display    : true, //Show how many times times review upvoted
-                                                enable_report             : true, //Show report button
+                                                enable_report             : false, //Show report button
                                                 enable_date               : true, //Show when review was published
                                               },
                                             },
