@@ -496,8 +496,8 @@
                                                 enable_product_name       : true, //Show display product name
                                                 enable_review_title       : undefined, //Show review title
                                                 enable_replies            : undefined, //Show review replies
-                                                enable_images             : true, //Show display review photos
-                                                enable_ratings            : true, //Show product attributes (additional ratings)
+                                                enable_images             : false, //Show display review photos
+                                                enable_ratings            : false, //Show product attributes (additional ratings)
                                                 enable_share              : false, //Show share buttons
                                                 enable_helpful_vote       : true, //Show "was this helpful?" section
                                                 enable_helpful_display    : true, //Show how many times times review upvoted
