@@ -39,13 +39,13 @@
 
                                     <div class="category_block" style="position:relative" >
 
-                                        <div class="item_header_text" > <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></div>
+                                        <h3 class="item_header_text" > <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></h3>
                                         <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center "   >
-                                            <h5>
+
                                             <a href="{$category_data.link}">
                                             <img src="{if empty($category_data.image_website)}{$category_data.image_src}{else}{$category_data.image_website}{/if}"  />
                                             </a>
-                                            </h5>
+
                                         </div>
 
                                     </div>
