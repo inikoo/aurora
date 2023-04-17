@@ -26,9 +26,9 @@
 
 
                     {if $section_data.type!='anchor'}
-                    <div class="page_break">
-                        <h4> <span class=" title  ">{$section_data.title}</span></h4>
-                        <span class=" sub_title  "  >{$section_data.subtitle}</span>
+                    <div style="display: flex" class="page_break">
+                        <h2 style="flex-grow: 1"> <span class=" title  ">{$section_data.title}</span></h2>
+                        <span style="flex-grow: 1"  class=" sub_title  "  >{$section_data.subtitle}</span>
                     </div>
                     {/if}
 
