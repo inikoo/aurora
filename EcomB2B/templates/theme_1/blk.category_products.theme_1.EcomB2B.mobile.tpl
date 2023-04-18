@@ -74,7 +74,6 @@
                     </div>
                     {if $logged_in}
                         <div class="Product_Code">{$item.code}</div>
-
                         <div style="margin-top: 3px;font-size: medium;color: coral">
                             {t}Price{/t}: <span class="Mobil_Product_Price">{$item.price}</span> {if isset($item.price_unit)}{$item.price_unit}{/if}
                         </div>
