@@ -74,11 +74,13 @@
                     </div>
                     {if $logged_in}
                         <div class="Product_Code">{$item.code}</div>
-                        {if !empty($item.rrp)}
-                            <div>{t}RRP{/t}: {$item.rrp}</div>{/if}
-                        <div style="margin-top: 3px;font-size: medium">
+
+                        <div style="margin-top: 3px;font-size: medium;color: coral">
                             {t}Price{/t}: <span class="Mobil_Product_Price">{$item.price}</span> {if isset($item.price_unit)}{$item.price_unit}{/if}
                         </div>
+                        {if !empty($item.rrp)}
+                            <div style="font-size: smaller">{t}RRP{/t}: {$item.rrp}</div>
+                        {/if}
 
                             {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
 
