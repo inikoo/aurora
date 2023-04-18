@@ -27,8 +27,8 @@
 
                     {if $section_data.type!='anchor'}
                     <div style="display: flex" class="page_break">
-                        <h2 style="flex-grow: 1"> <span class=" title  ">{$section_data.title}</span></h2>
-                        <span style="flex-grow: 1"  class=" sub_title  "  >{$section_data.subtitle}</span>
+                        <h2 style="flex-grow: 2;font-size: 20px"> <span class=" title  ">{$section_data.title}</span></h2>
+                        <span style="flex-grow: 1;font-size: 15px"  class=" sub_title  "  >{$section_data.subtitle}</span>
                     </div>
                     {/if}
 
@@ -39,7 +39,7 @@
 
                                     <div class="category_block" style="position:relative" >
 
-                                        <h3 class="item_header_text" > <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></h3>
+                                        <h3 class="item_header_text" style="font-size: 15px"> <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></h3>
                                         <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center "   >
 
                                             <a href="{$category_data.link}">
