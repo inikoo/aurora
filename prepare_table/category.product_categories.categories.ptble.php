@@ -87,6 +87,8 @@ if ($order == 'code') {
     $order = '`Category Label`';
 } elseif ($order == 'products') {
     $order = 'products';
+}elseif ($order == 'subdepartments') {
+    $order = '`Product Category Subdepartments`';
 }elseif ($order == 'families') {
     $order = '`Category Number Subjects`';
 } elseif ($order == 'status') {
@@ -163,7 +165,7 @@ $fields =
 
     "P.`Product Category Key`,C.`Category Code`,`Category Label`,C.`Category Key`,`Category Store Key`,
     (`Product Category Active Products`+`Product Category Discontinuing Products`) as products,
-    `Category Number Subjects` as subjects, 0 as  sub_departments,
+    `Category Number Subjects` as subjects, `Product Category Subdepartments` as  sub_departments,
     `Product Category Active Products`,`Product Category Status`,
 `Product Category Active Products`,`Product Category In Process Products`,`Product Category Suspended Products`,`Product Category Discontinued Products`,`Product Category Discontinuing Products`,
 `Product Category $db_period Acc Invoiced Amount` as sales,`Product Category $db_period Acc Quantity Invoiced` as qty_invoiced,

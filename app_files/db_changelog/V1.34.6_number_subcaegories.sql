@@ -1,0 +1,1 @@
+ALTER TABLE `Product Category Dimension` ADD COLUMN `Product Category Subdepartments` smallint unsigned DEFAULT '0' NOT NULL COMMENT '';
