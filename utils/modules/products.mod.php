@@ -146,6 +146,9 @@ function get_products_module(): array {
 
                     ),
 
+                    'category.subdepartments'       => array(
+                        'label' => _('Sub-departments'),
+                    ),
                     'category.subjects'        => array('label' => ''),
                     'category.customers'       => array(
                         'label' => _('Customers'),
