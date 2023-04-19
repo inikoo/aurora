@@ -27,6 +27,19 @@ editable: false,
 cell: "html"
 },
 {
+name: "sub_departments",
+label:"{t}Sub-departments{/t}",
+editable: false,
+renderable: {if $data._object->get('Category Subject')=='Category'}true{else}false{/if},
+defaultOrder:1,
+sortType: "toggle",
+{if $sort_key=='subdepartments'}direction: '{if $sort_order==1}descending{else}ascending{/if}',{/if}
+
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+
+},
+{
 name: "families",
 label:"{t}Families{/t}",
 editable: false,

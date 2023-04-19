@@ -1146,7 +1146,7 @@ function product_categories_categories($_data, $db, $user)
     include_once 'class.Store.php';
 
 
-    // print_r($_data);
+    //print_r($_data);
 
     $parent = new Category($_data['parameters']['parent_key']);
     $store  = new Store($parent->get('Category Store Key'));
@@ -1210,6 +1210,7 @@ function product_categories_categories($_data, $db, $user)
                 'status'           => $status,
                 'products'         => number($data['products']),
                 'families'         => number($data['subjects']),
+                'sub_departments'  => number($data['sub_departments']),
                 'in_process'       => number($data['Product Category In Process Products']),
                 'active'           => number($data['Product Category Active Products']),
                 'suspended'        => number($data['Product Category Suspended Products']),
