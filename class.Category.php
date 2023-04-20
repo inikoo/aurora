@@ -612,6 +612,17 @@ class Category extends DB_Table {
                         return $this->get('Product Category Department Category Key');
                         break;
 
+                    case 'Parent Category Code':
+
+
+                            $department = get_object('Category', $this->get('Category Parent Key'));
+                            if ($department->id) {
+                                return $department->get('Code');
+                            }
+
+
+                        return '';
+
                     case 'Department Category Code':
 
 
@@ -2125,10 +2136,13 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 $this->update_field($field, $value, $options);
 
             }
-        } elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
+        }
+        elseif (array_key_exists($field, $this->base_data('Product Category Dimension'))) {
 
 
             switch ($field) {
+
+
 
                 case 'Product Category Department Category Key':
 
@@ -2203,7 +2217,8 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                         $hide = array('no_department_warning');
 
 
-                    } else {
+                    }
+                    else {
                         if ($this->data['Product Category Department Category Key'] != '') {
 
 
@@ -2365,6 +2380,27 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
 
 
             switch ($field) {
+                case 'Subdepartment Parent Key':
+
+
+                    if($value==$this->id){
+                        $this->error=true;
+                        $this->msg="🙄 imbecile";
+                        return;
+                    }
+
+
+                    $old_parent_category = get_object('Category', $this->data['Category Parent Key']);
+                    $new_parent_category = get_object('Category', $value);
+                    $new_parent_category->associate_subject($this->id, false, '', 'skip_direct_update');
+
+                    $this->fast_update(
+                        [
+                            'Category Parent Key'=>$value
+                        ]
+                    );
+
+                    break;
                 case 'History Note':
 
 
@@ -2756,11 +2792,13 @@ VALUES (%d,%s, %d, %d, %d, %d, %s, %s, %s,%d,NOW())", $this->id,
                 return false;
             }
 
-        } else {
+        }
+        else {
 
 
             $sql = sprintf(
-                "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C    ON  (C.`Category Key`=B.`Category Key`)   WHERE  `Category Branch Type`='Head' AND `Category Root Key`=%d  AND B.`Category Key`!=%d AND `Subject`=%s AND `Subject Key`=%d",
+                "SELECT B.`Category Key` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C    ON  (C.`Category Key`=B.`Category Key`) 
+                        WHERE  `Category Branch Type`='Head' AND `Category Root Key`=%d  AND B.`Category Key`!=%d AND `Subject`=%s AND `Subject Key`=%d",
                 $this->data['Category Root Key'], $this->id, prepare_mysql($this->data['Category Subject']), $subject_key
             );
 

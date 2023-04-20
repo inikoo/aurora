@@ -931,7 +931,83 @@ trait ProductCategory {
         return $categories;
     }
 
-    function get_category_data() {
+
+
+    function get_department_parents_data(){
+
+        $parents=[];
+        $parent_key=$this->data['Category Parent Key'];
+        $i=0;
+
+        while($parent_key and $i<10){
+            $parent=get_object('Category',$this->data['Category Parent Key']);
+
+
+            if($parent->data['Category Parent Key']!=$parent_key){
+                $parent_key=$parent->data['Category Parent Key'];
+                $parents[]=array(
+                    'root_label'   => '',
+                    'root_code'    => '',
+                    'label'        => $parent->data['Category Label'],
+                    'code'         => $parent->data['Category Code'],
+                    'value'        => '',
+                    'category_key' => $parent->data['Category Key']
+                );
+
+            }else{
+                $parent_key=0;
+            }
+
+            $i++;
+
+        }
+
+
+
+
+            return $parents;
+
+    }
+
+    function get_breadcrumbs() {
+
+        $breadbrumb=[];
+        $store                = get_object('Store', $this->get('Store Key'));
+
+
+        if($store->get('Store Department Category Key')==$this->get('Category Root Key')){
+             $breadbrumb=$this->get_department_parents_data();
+        }elseif($store->get('Store Family Category Key')==$this->get('Category Root Key')){
+
+            $parent=get_object('Category',$this->get('Product Category Department Category Key'));
+
+            $category_data=[];
+            $category_data[] = array(
+                'root_label'   => '',
+                'root_code'    => '',
+                'label'        => $parent->data['Category Label'],
+                'code'         => $parent->data['Category Code'],
+                'value'        => '',
+                'category_key' => $parent->data['Category Key']
+            );
+
+            foreach($parent->get_department_parents_data() as $cat_data){
+                $category_data[]=$cat_data;
+            }
+            $breadbrumb= $category_data;
+
+        }
+
+        return array_reverse($breadbrumb);
+
+    }
+
+
+
+    function get_other_category_data() {
+
+
+
 
 
         $type = 'Category';
@@ -948,6 +1024,11 @@ trait ProductCategory {
             foreach ($result as $row) {
 
 
+                if($row['Category Key']==$this->get('Product Category Department Category Key')){
+                    continue;
+                }
+
+
                 $sql = sprintf(
                     "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
                 );
@@ -958,9 +1039,6 @@ trait ProductCategory {
                         $root_label = $row2['Category Label'];
                         $root_code  = $row2['Category Code'];
                     }
-                } else {
-                    print_r($error_info = $this->db->errorInfo());
-                    exit;
                 }
 
 
@@ -978,10 +1056,91 @@ trait ProductCategory {
                     'category_key' => $row['Category Key']
                 );
 
+                /*
+                // now lets get the parent if it have
+
+                $category=get_object('Category',$row['Category Key']);
+
+
+                $category_data
+
+                exit('caca');
+                */
+                // print_r($category->get_department_parents_data());
+
+
+
             }
-        } else {
-            print_r($error_info = $this->db->errorInfo());
-            exit;
+        }
+
+
+        return $category_data;
+    }
+
+
+    function get_category_data() {
+
+
+
+
+
+        $type = 'Category';
+
+        $sql = sprintf(
+            "SELECT B.`Category Key`,`Category Root Key`,`Other Note`,`Category Label`,`Category Code`,`Is Category Field Other` FROM `Category Bridge` B LEFT JOIN `Category Dimension` C ON (C.`Category Key`=B.`Category Key`) WHERE  `Category Branch Type`='Head'  AND B.`Subject Key`=%d AND B.`Subject`=%s",
+            $this->id, prepare_mysql($type)
+        );
+
+        $category_data = array();
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+
+
+
+                $sql = sprintf(
+                    "SELECT `Category Label`,`Category Code` FROM `Category Dimension` WHERE `Category Key`=%d", $row['Category Root Key']
+                );
+
+
+                if ($result2 = $this->db->query($sql)) {
+                    if ($row2 = $result2->fetch()) {
+                        $root_label = $row2['Category Label'];
+                        $root_code  = $row2['Category Code'];
+                    }
+                }
+
+
+                if ($row['Is Category Field Other'] == 'Yes' and $row['Other Note'] != '') {
+                    $value = $row['Other Note'];
+                } else {
+                    $value = $row['Category Label'];
+                }
+                $category_data[] = array(
+                    'root_label'   => $root_label,
+                    'root_code'    => $root_code,
+                    'label'        => $row['Category Label'],
+                    'code'         => $row['Category Code'],
+                    'value'        => $value,
+                    'category_key' => $row['Category Key']
+                );
+
+                /*
+                // now lets get the parent if it have
+
+                $category=get_object('Category',$row['Category Key']);
+
+
+                $category_data
+
+                exit('caca');
+                */
+               // print_r($category->get_department_parents_data());
+
+
+
+            }
         }
 
 

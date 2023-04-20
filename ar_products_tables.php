@@ -74,6 +74,9 @@ switch ($tipo) {
     case 'product_categories_categories':
         product_categories_categories(get_table_parameters(), $db, $user);
         break;
+    case 'sub_departments':
+        sub_departments(get_table_parameters(), $db, $user);
+        break;
     case 'product_categories_products':
         product_categories_products(get_table_parameters(), $db, $user);
         break;
@@ -1139,6 +1142,198 @@ function parts($_data, $db, $user, $account)
     echo json_encode($response);
 }
 
+
+function sub_departments($_data, $db, $user)
+{
+    include_once 'class.Category.php';
+    include_once 'class.Store.php';
+
+
+    $parent = new Category($_data['parameters']['parent_key']);
+    $store  = new Store($parent->get('Category Store Key'));
+
+
+    $rtext_label = 'sub-departments';
+
+
+    include_once 'prepare_table/init.php';
+
+    $sql = "select $fields from $table $where $wheref order by $order $order_direction limit $start_from,$number_results";
+
+    //print $sql;
+
+    $record_data = array();
+
+
+    if ($result = $db->query($sql)) {
+        foreach ($result as $data) {
+            switch ($data['Product Category Status']) {
+                case 'In Process':
+                    $status = _('In process');
+                    break;
+                case 'Active':
+                    $status = _('Active');
+                    break;
+                case 'Suspended':
+                    $status = _('Suspended');
+                    break;
+                case 'Discontinued':
+                    $status = _('Discontinued');
+                    break;
+                case 'Discontinuing':
+                    $status = _('Discontinuing');
+                    break;
+                default:
+                    $status = $data['Product Category Status'];
+                    break;
+            }
+
+
+            $record_data[] = array(
+                'id'        => (integer)$data['Product Category Key'],
+                'store_key' => (integer)$data['Category Store Key'],
+
+                'code' => sprintf(
+                    '<span class="link" onclick="change_view(\'products/%d/category/%d\')">%s</span>',
+                    $data['Category Store Key'],
+                    $data['Category Key'],
+                    $data['Category Code']
+                ),
+
+                'label'            => $data['Category Label'],
+                'status'           => $status,
+                'products'         => number($data['products']),
+                'families'         => number($data['subjects']),
+                'sub_departments'  => number($data['sub_departments']),
+                'in_process'       => number($data['Product Category In Process Products']),
+                'active'           => number($data['Product Category Active Products']),
+                'suspended'        => number($data['Product Category Suspended Products']),
+                'discontinuing'    => number($data['Product Category Discontinuing Products']),
+                'discontinued'     => number($data['Product Category Discontinued Products']),
+                'sales'            => money($data['sales'], $data['Product Category Currency Code']),
+                'sales_1yb'        => delta($data['sales'], $data['sales_1yb']),
+                'qty_invoiced'     => number($data['qty_invoiced']),
+                'qty_invoiced_1yb' => delta($data['qty_invoiced'], $data['qty_invoiced_1yb']),
+
+
+                'sales_year0' => sprintf(
+                    '<span>%s</span> %s',
+                    money($data['Product Category Year To Day Acc Invoiced Amount'], $data['Product Category Currency Code']),
+                    delta_icon($data["Product Category Year To Day Acc Invoiced Amount"], $data["Product Category Year To Day Acc 1YB Invoiced Amount"])
+                ),
+                'sales_year1' => sprintf(
+                    '<span>%s</span> %s',
+                    money($data['Product Category 1 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
+                    delta_icon($data["Product Category 1 Year Ago Invoiced Amount"], $data["Product Category 2 Year Ago Invoiced Amount"])
+                ),
+                'sales_year2' => sprintf(
+                    '<span>%s</span> %s',
+                    money($data['Product Category 2 Year Ago Invoiced Amount'], $data['Product Category Currency Code']),
+                    delta_icon($data["Product Category 2 Year Ago Invoiced Amount"], $data["Product Category 3 Year Ago Invoiced Amount"])
+                ),
+                'sales_year3' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 3 Year Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 3 Year Ago Invoiced Amount"],
+                        $data["Product Category 4 Year Ago Invoiced Amount"]
+                    )
+                ),
+                'sales_year4' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 4 Year Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 4 Year Ago Invoiced Amount"],
+                        $data["Product Category 5 Year Ago Invoiced Amount"]
+                    )
+                ),
+
+                'sales_quarter0' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category Quarter To Day Acc Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category Quarter To Day Acc Invoiced Amount"],
+                        $data["Product Category Quarter To Day Acc 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter1' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 1 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 1 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 1 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter2' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 2 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 2 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 2 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter3' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 3 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 3 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 3 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+                'sales_quarter4' => sprintf(
+                    '<span>%s</span> %s',
+                    money(
+                        $data['Product Category 4 Quarter Ago Invoiced Amount'],
+                        $data['Product Category Currency Code']
+                    ),
+                    delta_icon(
+                        $data["Product Category 4 Quarter Ago Invoiced Amount"],
+                        $data["Product Category 4 Quarter Ago 1YB Invoiced Amount"]
+                    )
+                ),
+
+
+            );
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        print " <br>\n $sql \n";
+
+        exit;
+    }
+
+
+    $response = array(
+        'resultset' => array(
+            'state'         => 200,
+            'data'          => $record_data,
+            'rtext'         => $rtext,
+            'sort_key'      => $_order,
+            'sort_dir'      => $_dir,
+            'total_records' => $total
+
+        )
+    );
+    echo json_encode($response);
+}
 
 function product_categories_categories($_data, $db, $user)
 {

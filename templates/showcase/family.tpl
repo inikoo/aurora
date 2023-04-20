@@ -8,11 +8,22 @@
 
     <span class="strong">{$category->get('Label')}</span>
     <ul class="tags Categories" style="float:right">
-        {foreach from=$category->get_category_data() item=item key=key}
+        {foreach from=$category->get_other_category_data() item=item key=key}
             <li><span class="button" onclick="change_view('category/{$item.category_key}')"
                       title="{$item.label}">{$item.code}</span></li>
         {/foreach}
     </ul>
+    </ul>
+    <div class=" Categories" style="float: right">
+        {foreach from=$category->get_breadcrumbs() item=item key=key}
+            <span class="button" onclick="change_view('category/{$item.category_key}')"
+                      title="{$item.label}">{$item.code}</span>
+                      title="{$item.label}">{$item.code}</span>
+
+            <i class="fa fa-angle-double-right separator"></i>
+
+        {/foreach}
+    </div>
     <div style="clear:both">
     </div>
 </div>
