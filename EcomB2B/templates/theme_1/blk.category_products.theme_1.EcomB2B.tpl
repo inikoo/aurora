@@ -59,6 +59,8 @@
                             {/if}
 
                             <a href="{$item.link}"
+                               title="{$item.name|escape:'quotes'}"
+
                                data-version="2"
                                data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                                data-list="Family"
