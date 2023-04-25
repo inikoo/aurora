@@ -222,7 +222,7 @@ class Page extends DB_Table
                 }
             }
         }
-        $raw_data['Webpage Sticky Note']          = '';
+        $raw_data['Webpage Sticky Note'] = '';
 
 
         $data['Webpage Properties'] = '{}';
@@ -1422,6 +1422,7 @@ class Page extends DB_Table
                     'type'                 => 'category',
                     'category_key'         => $row['Product Category Key'],
                     'header_text'          => trim(strip_tags($row['Category Label'])),
+                    'image_caption'        => trim(strip_tags($row['Category Label'])),
                     'image_src'            => ($row['Category Main Image Key'] ? 'wi/'.$row['Category Main Image Key'].'.'.$row['Image File Format'] : '/art/nopic.png'),
                     'image_mobile_website' => '',
                     'image_website'        => '',
@@ -2117,9 +2118,9 @@ class Page extends DB_Table
                             'image_src'            => $category->get('Image'),
                             'image_mobile_website' => '',
                             'image_website'        => '',
-
-                            'webpage_key'  => $see_also_page->id,
-                            'webpage_code' => $see_also_page->get('Webpage Code'),
+                            'image_caption'        => trim(strip_tags($category->get('Category Label'))),
+                            'webpage_key'          => $see_also_page->id,
+                            'webpage_code'         => $see_also_page->get('Webpage Code'),
 
                             'category_key'    => $category->id,
                             'category_code'   => $category->get('Category Code'),
@@ -2535,7 +2536,9 @@ class Page extends DB_Table
                         $content_data['blocks'][$block_key]['items'][] = array(
                             'type' => 'category',
 
-                            'header_text'          => $category->get('Category Label'),
+                            'header_text'   => $category->get('Category Label'),
+                            'image_caption' => trim(strip_tags($category->get('Category Label'))),
+
                             'image_src'            => $category->get('Image'),
                             'image_mobile_website' => '',
                             'image_website'        => '',
@@ -2700,9 +2703,9 @@ class Page extends DB_Table
                 $scope = get_object('Product', $this->data['Webpage Scope Key']);
                 if ($scope->get('Product Public') == 'Yes' and in_array(
                         $scope->get('Product Web State'), array(
-                                                            'For Sale',
-                                                            'Out of Stock'
-                                                        )
+                            'For Sale',
+                            'Out of Stock'
+                        )
                     )) {
                     $this->update_state('Online');
                 }
@@ -2714,14 +2717,14 @@ class Page extends DB_Table
 
         $sql = sprintf(
             "UPDATE `Page Store Dimension` SET  `Webpage Last Launch Date`='%s'  WHERE `Page Key`=%d",
-            gmdate('Y-m-d H:i:s'), $this->id
+            gmdate('Y-m-d H:i:s'),
+            $this->id
         );
 
         $this->db->exec($sql);
 
 
-       // $this->fast_update(array('Webpage Last Launch Date' => gmdate('Y-m-d H:i:s')));
-
+        // $this->fast_update(array('Webpage Last Launch Date' => gmdate('Y-m-d H:i:s')));
 
 
         if ($this->get('Webpage Launch Date') == '') {
@@ -3016,6 +3019,7 @@ class Page extends DB_Table
                 'type'                 => 'category',
                 'category_key'         => $item_data['Category Key'],
                 'header_text'          => trim(strip_tags($item_data['Category Label'])),
+                'image_caption'        => trim(strip_tags($item_data['Category Label'])),
                 'image_src'            => $img,
                 'image_mobile_website' => '',
                 'image_website'        => '',
@@ -3546,12 +3550,12 @@ class Page extends DB_Table
     {
         if (in_array(
             $this->get('Website Code'), array(
-                                          'reset_pwd.sys',
-                                          'profile.sys',
-                                          'basket.sys',
-                                          'checkout.sys',
-                                          'thanks.sys'
-                                      )
+                'reset_pwd.sys',
+                'profile.sys',
+                'basket.sys',
+                'checkout.sys',
+                'thanks.sys'
+            )
         )) {
             return;
         }
@@ -3579,22 +3583,22 @@ class Page extends DB_Table
 
         curl_setopt_array(
             $curl, array(
-                     CURLOPT_HEADER         => 1,
-                     CURLOPT_URL            => SCREENSHOTS_API_URL."/take$route?url=$url",
-                     CURLOPT_RETURNTRANSFER => true,
-                     CURLOPT_ENCODING       => "",
-                     CURLOPT_TIMEOUT        => 30,
-                     CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
-                     CURLOPT_CUSTOMREQUEST  => "GET",
-                     CURLOPT_HTTPHEADER     => array(
-                         "Accept: */*",
-                         "Accept-Encoding: gzip, deflate",
-                         "Authorization: Bearer ".SCREENSHOTS_JWT,
-                         "Cache-Control: no-cache",
-                         "Connection: keep-alive",
-                         "cache-control: no-cache"
-                     ),
-                 )
+                CURLOPT_HEADER         => 1,
+                CURLOPT_URL            => SCREENSHOTS_API_URL."/take$route?url=$url",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING       => "",
+                CURLOPT_TIMEOUT        => 30,
+                CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST  => "GET",
+                CURLOPT_HTTPHEADER     => array(
+                    "Accept: */*",
+                    "Accept-Encoding: gzip, deflate",
+                    "Authorization: Bearer ".SCREENSHOTS_JWT,
+                    "Cache-Control: no-cache",
+                    "Connection: keep-alive",
+                    "cache-control: no-cache"
+                ),
+            )
         );
 
         $response = curl_exec($curl);
