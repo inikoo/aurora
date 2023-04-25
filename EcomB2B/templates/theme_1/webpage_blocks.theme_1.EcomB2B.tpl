@@ -414,7 +414,7 @@
             {if $webpage->get('Webpage Scope')=='Product'   }
                 {assign reviews_data  $store->get('reviews_data')}
 
-                {if isset($reviews_data['provider']) and $reviews_data['provider']=='reviews.io' and isset($reviews_data['data']['store'])    }
+                {if isset($reviews_data['provider']) and $reviews_data['provider']=='reviews.io' and isset($reviews_data['data']['store'])  and false   }
 
                     <div style="padding:20px 40px">
                         <div id="ReviewsWidget"></div>
@@ -560,7 +560,7 @@
 
             {elseif $webpage->get('Webpage Scope')=='Category Products'   }
                 {assign reviews_data  $store->get('reviews_data')}
-            {if isset($reviews_data['provider']) and $reviews_data['provider']=='reviews.io' and isset($reviews_data['data']['store'])   }
+            {if isset($reviews_data['provider']) and $reviews_data['provider']=='reviews.io' and isset($reviews_data['data']['store'])  and false  }
 
 
                 <div style="padding:20px 40px">
