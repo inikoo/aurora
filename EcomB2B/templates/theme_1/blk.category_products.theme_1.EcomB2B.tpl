@@ -57,8 +57,9 @@
                                     <i class="stock_dot stock_level_{$item.product_id}  fa fa-fw fa-circle"></i>
                                 {/if}
                             {/if}
-                            <a href="{$item.link}"
 
+                            <a href="{$item.link}"
+                               data-version="2"
                                data-analytics='{ "id": "{$item.code}", "name": "{$item.name|escape:'quotes'}",{if isset($item.category)} "category": "{$item.category}",{/if}{if isset($item.raw_price)} "price": "{$item.raw_price}",{/if}"list": "Family", "position":{$counter}}'
                                data-list="Family"
                                onclick="go_product(this); return !ga.loaded;"
