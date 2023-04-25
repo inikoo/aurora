@@ -63,7 +63,7 @@
                                data-list="Family"
                                onclick="go_product(this); return !ga.loaded;"
 
-                            ><img src="{$item.image_website}"/></a>
+                            ><img alt="{$item.name|escape:'quotes'}"   src="{$item.image_website}"/></a>
                         </div>
 
 
