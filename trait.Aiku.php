@@ -96,7 +96,7 @@ trait Aiku
             CURLOPT_CUSTOMREQUEST  => 'POST',
             CURLOPT_HTTPHEADER     => array(
                 'Accept: application/json',
-                'Authorization: Bearer '.$account->get('pika_token')
+                'Authorization: Bearer '.$account->get('aiku_token')
             ),
         ));
 
