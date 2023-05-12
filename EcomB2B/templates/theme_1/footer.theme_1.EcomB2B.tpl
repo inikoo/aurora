@@ -42,10 +42,15 @@
                                           {if $item.text=='#tel' and  $store->get('Telephone')!=''}{$store->get('Telephone')}{elseif $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{elseif $item.text=='#address' and  $store->get('Address')!=''}{$store->get('Address')}{else}{$item.text|strip_tags|trim}{/if}
                                       </span></li>
                                     {elseif $item.type=='email'}
-                                        <li class="item _email"><i class="fa fa-fw fa-envelope"></i> <a href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}">
+                                        <li class="item _email"><i class="fa fa-fw fa-envelope"></i>
+                                            <!--email_off-->
+                                            <a href="mailto:{if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}">
                                                 {if $item.text=='#email' and  $store->get('Email')!=''}{$store->get('Email')}{else}{$item.text}{/if}
 
-                                            </a></li>
+                                            </a>
+                                            <!--/email_off-->
+
+                                        </li>
                                     {/if}
                                 {/foreach}
 
