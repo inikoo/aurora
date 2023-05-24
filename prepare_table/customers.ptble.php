@@ -71,7 +71,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
 
         $table = '`Order Transaction Fact` OTF  left join `Customer Dimension` C on (OTF.`Customer Key`=C.`Customer Key`)  left join `Product Dimension` P on (OTF.`Product ID`=P.`Product ID`)  ';
 
-        $where = sprintf(' where  P.`Product Family Category Key`=%d ', $parameters['parent_key']);
+        $where = sprintf(' where  P.`Product Family Category Key`=%d  and OTF.`Current Dispatching State`!="Cancelled"  ', $parameters['parent_key']);
 
 
     }elseif($store->get('Store Department Category Key')==$category->get('Category Root Key')){
@@ -188,6 +188,7 @@ if (isset($parameters['awhere']) and $parameters['awhere']) {
     }
     $where .= $where_stores;
 }
+
 
 
 switch ($parameters['elements_type']) {

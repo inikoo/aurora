@@ -36,7 +36,7 @@ if ($store->get('Store Family Category Key') == $category->get('Category Root Ke
         $parameters['parent_key']
     );
 
-    $where = sprintf(' where  OTF.`OTF Category Family Key`=%d ', $parameters['parent_key']);
+    $where = sprintf(' where  OTF.`OTF Category Family Key`=%d  and OTF.`Current Dispatching State`!="Cancelled"  ', $parameters['parent_key']);
 
 
 } elseif ($store->get('Store Department Category Key') == $category->get('Category Root Key')) {
@@ -46,7 +46,7 @@ if ($store->get('Store Family Category Key') == $category->get('Category Root Ke
         $parameters['parent_key']
     );
 
-    $where = sprintf(' where  OTF.`OTF Category Department Key`=%d ', $parameters['parent_key']);
+    $where = sprintf(' where  OTF.`OTF Category Department Key`=%d and OTF.`Current Dispatching State`!="Cancelled" ', $parameters['parent_key']);
 
 } else {
     exit();
