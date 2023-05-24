@@ -18,7 +18,7 @@
         {foreach from=$category->get_breadcrumbs() item=item key=key}
             <span class="button" onclick="change_view('category/{$item.category_key}')"
                       title="{$item.label}">{$item.code}</span>
-                      title="{$item.label}">{$item.code}</span>
+                     </span>
 
             <i class="fa fa-angle-double-right separator"></i>
 
