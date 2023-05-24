@@ -161,6 +161,8 @@ else {
         $_tipo = 'supplier.order.items';
     } elseif ($_data['tipo'] == 'job_order.items') {
         $_tipo = 'supplier.order.items';
+    } elseif ($_data['tipo'] == 'asset_customers') {
+        $_tipo = 'customers';
     } elseif ($_data['tipo'] == 'sent_emails') {
         //print_r($_data);
         // todo parse request for prospects (ise state to find out)
