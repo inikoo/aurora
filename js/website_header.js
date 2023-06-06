@@ -702,6 +702,20 @@ function  change_text_style(element,style){
             });
 
             break;
+
+        case 'N++':
+
+
+            $('#'+key).children().replaceWith(function() {
+                return $("<span>", {
+                    "class": 'like_h1',
+                    html: $(this).html(),
+                    type: style
+                });
+            });
+
+            break;
+
         case 'N':
 
 

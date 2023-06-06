@@ -105,6 +105,7 @@
         <tr><td>H1</td></tr>
         <tr><td>H2</td></tr>
         <tr><td>H3</td></tr>
+        <tr><td>N++</td></tr>
         <tr><td>N</td></tr>
         <tr><td>N-</td></tr>
     </table>
@@ -172,6 +173,10 @@
                     {elseif $header_text.type=='H3'}
                         <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                             <h3  type="{$header_text.type}">{$header_text.text}</h3>
+                        </div>
+                    {elseif $header_text.type=='N++'}
+                        <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                            <span  type="{$header_text.type}">{$header_text.text}</span>
                         </div>
                     {elseif $header_text.type=='N'}
                         <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">

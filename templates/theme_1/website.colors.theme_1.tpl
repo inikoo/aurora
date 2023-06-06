@@ -646,6 +646,10 @@
                             <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                                 <h3  type="{$header_text.type}">{$header_text.text}</h3>
                             </div>
+                        {elseif $header_text.type=='N++'}
+                            <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                                <span  type="{$header_text.type}">{$header_text.text}</span>
+                            </div>
                         {elseif $header_text.type=='N'}
                             <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                                 <span  type="{$header_text.type}">{$header_text.text}</span>
