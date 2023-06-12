@@ -10,4 +10,4 @@
 
 *}
 
-<div class="{$data.type} _block  "  style="width: 100%"    >{$data.mobile_src}</div>
+<div class="{$data.type}_block  "  style="width: 100%;clear:both"    >{$data.mobile_src}</div>
