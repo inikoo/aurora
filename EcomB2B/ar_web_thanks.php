@@ -195,6 +195,7 @@ function get_thanks_html($data, $customer, $db, $account)
         'gbp_revenue' => ceil($order->get('Order Total Amount') * $exchange),
         'tax'         => $order->get('Order Total Tax Amount'),
         'shipping'    => $order->get('Order Shipping Net Amount'),
+
     ));
 
 

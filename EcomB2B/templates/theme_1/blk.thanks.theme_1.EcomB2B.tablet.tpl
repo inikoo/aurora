@@ -47,7 +47,16 @@
 
         function submit_auTracker(){
 
-                {if isset($adwords_tag_manager_data)}
+                {if isset($tag_manager_analytic_data)}
+                dataLayer.push({
+                                       event: "purchase",
+                                       ecommerce: {$tag_manager_analytic_data}
+                               });
+                {/if}
+
+
+
+        {if isset($adwords_tag_manager_data)}
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){
                         dataLayer.push(arguments);}

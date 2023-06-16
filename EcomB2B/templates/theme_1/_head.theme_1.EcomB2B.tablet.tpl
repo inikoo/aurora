@@ -10,6 +10,12 @@
 *}<!DOCTYPE HTML>
 <html lang="en">
 <head>
+
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+    </script>
+
     {if !isset($is_devel) or !$is_devel}
     {if  $client_tag_google_manager_id!=''  }
         <!-- Google Tag Manager -->
