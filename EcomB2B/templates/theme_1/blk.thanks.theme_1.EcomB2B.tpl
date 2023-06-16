@@ -46,7 +46,20 @@
 
         function submit_auTracker(){
 
-                {if isset($adwords_tag_manager_data)}
+
+                console.log({
+                                    event: "purchase",
+                                    ecommerce: {$tag_manager_analytic_data}
+                            })
+
+                dataLayer.push({
+                                       event: "purchase",
+                                       ecommerce: {$tag_manager_analytic_data}
+                               });
+
+
+
+        {if isset($adwords_tag_manager_data)}
 
                         console.log('hey :)')
 

@@ -13,13 +13,16 @@
 <html lang="en-gb" class="isie ie9 no-js"> <![endif]--><!--[if (gt IE 9)|!(IE)]><!-->
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
 <head>
+
+    <script>
+      window.dataLayer = window.dataLayer || [];
+    </script>
+
     {if !isset($is_devel) or !$is_devel }
        {if  $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
 
-        <script>
-          window.dataLayer = window.dataLayer || [];
-        </script>
+
 
         <script>
           <!-- Google Tag Manager -->
