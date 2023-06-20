@@ -102,44 +102,60 @@
     $('.variant_chooser .variant_option').on('click',function() {
 
 
-
-
-        let parent = $(this).closest('.product_block.product_container')
-
-
-
-
-        parent.find('.Product_Code').html($(this).data('code'))
-        parent.find('.Mobil_Product_Price').html($(this).data('price'))
-
-
-
-
-        parent.find('.Product_Name').html($(this).data('name'))
-        parent.find('.Package_Weight').html($(this).data('weight'))
-        if($(this).data('weight')==''){
-            parent.find('.Package_Weight_Container').addClass('hide')
-        }else{
-            parent.find('.Package_Weight_Container').removeClass('hide')
-
-        }
-
-
-        parent.find('.ordering_variant').addClass('hide')
-        parent.find('#ordering_variant_'+$(this).data('id')).removeClass('hide')
-
-        parent.find('.variant_chooser tr').removeClass('current')
-
-        $(this).closest('tr').addClass('current');
-
-
-        parent.find('.variant_chooser_dialog').addClass('hide')
-
-
-        parent.data('product_id',$(this).data('id'))
+      variant_selected_in_family(this)
 
 
 
 
     });
+
+
+    function variant_selected_in_family(element){
+
+      let parent = $(element).closest('.product_block.product_container')
+
+
+
+
+      parent.find('.Product_Code').html($(element).data('code'))
+      parent.find('.Mobil_Product_Price').html($(element).data('price'))
+
+
+
+
+      parent.find('.Product_Name').html($(element).data('name'))
+      parent.find('.Package_Weight').html($(element).data('weight'))
+      if($(element).data('weight')==''){
+        parent.find('.Package_Weight_Container').addClass('hide')
+      }else{
+        parent.find('.Package_Weight_Container').removeClass('hide')
+
+      }
+
+
+      parent.find('.ordering_variant').addClass('hide')
+      parent.find('#ordering_variant_'+$(element).data('id')).removeClass('hide')
+
+      parent.find('.variant_chooser tr').removeClass('current')
+
+      $(element).closest('tr').addClass('current');
+
+
+      parent.find('.variant_chooser_dialog').addClass('hide')
+
+
+      parent.data('product_id',$(element).data('id'))
+
+    }
+
+
+
+      $( document ).ready(function() {
+      let elements=$('.variant_chooser  tr:nth-child(2)').each(function( index ) {
+        variant_selected_in_family(this)
+
+      });
+    });
+</script>
+
 </script>

@@ -68,33 +68,34 @@
 
     $('.variant_chooser .variant_option').on('click',function() {
 
-        let parent = $('.product.product_container')
-
-        parent.find('.Product_Code').html($(this).data('code'))
-        parent.find('.Product_Name').html($(this).data('name'))
-        parent.find('.Package_Weight').html($(this).data('weight'))
-        if($(this).data('weight')==''){
-            parent.find('.Package_Weight_Container').addClass('hide')
-        }else{
-            parent.find('.Package_Weight_Container').removeClass('hide')
-
-        }
-
-
-        parent.find('.ordering_variant').addClass('hide')
-        parent.find('#ordering_variant_'+$(this).data('id')).removeClass('hide')
-
-        parent.find('.variant_chooser tr').removeClass('current')
-        $(this).closest('tr').addClass('current');
-
-
-        parent.find('.variant_chooser_dialog').addClass('hide')
-
-
-        parent.data('product_id',$(this).data('id'))
-
-
-
+        variant_selected(this)
 
     });
+
+    function variant_selected(element){
+
+      console.log($(element).data('code'))
+      console.log($(element).data('name'))
+      console.log($(element).data('weight'))
+
+      let parent = $('.product.product_container')
+
+      parent.find('.Product_Code').html($(element).data('code'))
+      parent.find('.Product_Name').html($(element).data('name'))
+      parent.find('.Package_Weight').html($(element).data('weight'))
+      if($(element).data('weight')==''){
+        parent.find('.Package_Weight_Container').addClass('hide')
+      }else{
+        parent.find('.Package_Weight_Container').removeClass('hide')
+
+      }
+
+      parent.find('.ordering_variant').addClass('hide')
+      parent.find('#ordering_variant_'+$(element).data('id')).removeClass('hide')
+      parent.find('.variant_chooser tr').removeClass('current')
+      $(element).closest('tr').addClass('current');
+      parent.find('.variant_chooser_dialog').addClass('hide')
+      parent.data('product_id',$(element).data('id'))
+    }
+
 </script>

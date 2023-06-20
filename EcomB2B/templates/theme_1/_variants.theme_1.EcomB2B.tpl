@@ -25,7 +25,7 @@
                     data-code="{$variant->get('Product Code')}"
                     data-weight="{$variant->get('Package Weight')}"
             >
-                <td>{$variant->get('Product Variant Short Name')}</td>
+                <td>{$variant->get('Product Variant Short Name')} {$variant->id}  {$master_id} </td>
                 <td   style="text-align: right">{$variant->get('Price')}</td>
                 <td   style="text-align: right">{$variant->get('Formatted Units')}</td>
                 <td   style="text-align: right">{$variant->get('Price Per Unit Bis')}</td>
@@ -34,3 +34,9 @@
         <tr></tr>
     </table>
 </div>
+<script>
+  $( document ).ready(function() {
+    let element=$('.variant_chooser .variant_option')
+    variant_selected(element[0])
+  });
+</script>
