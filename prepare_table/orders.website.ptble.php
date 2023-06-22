@@ -70,13 +70,15 @@ if (isset($parameters['elements_type'])) {
 
             if ($_elements == '') {
                 $where .= ' and false';
-            } elseif ($num_elements_checked == 2) {
+            } elseif ($num_elements_checked == 3) {
 
             } else {
-                if ($_elements == "Export") {
-                    $where .= sprintf('and `Order Invoice Address Country 2 Alpha Code`!=%s', prepare_mysql($home_country));
+                if ($_elements == "Partner") {
+                    $where .= 'and `Order Customer Level Type`="Partner" ';
+                }elseif ($_elements == "Export") {
+                    $where .= sprintf('and `Order Customer Level Type`!="Partner"  and `Order Invoice Address Country 2 Alpha Code`!=%s', prepare_mysql($home_country));
                 } else {
-                    $where .= sprintf('and `Order Invoice Address Country 2 Alpha Code`=%s', prepare_mysql($home_country));
+                    $where .= sprintf('and `Order Customer Level Type`!="Partner"  and `Order Invoice Address Country 2 Alpha Code`=%s', prepare_mysql($home_country));
                 }
             }
             break;

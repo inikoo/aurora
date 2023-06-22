@@ -99,6 +99,10 @@ function get_elements_option($option) {
                         'label'    => _('Export'),
                         'selected' => true
                     ),
+                    'Partner'   => array(
+                        'label'    => _('Partner'),
+                        'selected' => true
+                    ),
 
                 )
 
@@ -502,6 +506,10 @@ function get_elements_option($option) {
                     ),
                     'Export'   => array(
                         'label'    => _('Export'),
+                        'selected' => true
+                    ),
+                    'Partner'   => array(
+                        'label'    => _('Partner'),
                         'selected' => true
                     ),
 

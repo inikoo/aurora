@@ -4161,6 +4161,7 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account)
         'location' => array(
             'Domestic' => 0,
             'Export'   => 0,
+            'Partners'=>0
         )
     );
     switch ($tipo) {
@@ -4227,7 +4228,20 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account)
 
         */
     }
-    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`!=? ";
+
+    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Customer Level Type`='Partner' ";
+    //print $sql;
+    $stmt = $db->prepare($sql);
+    if ($stmt->execute()) {
+        while ($row = $stmt->fetch()) {
+            $elements_numbers['location']['Partner'] = number($row['number']);
+        }
+    }
+
+
+
+
+    $sql = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`!=? and `Order Customer Level Type`!='Partner'  ";
     //print $sql;
     $stmt = $db->prepare($sql);
     if ($stmt->execute(
@@ -4238,11 +4252,11 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account)
         while ($row = $stmt->fetch()) {
             $elements_numbers['location']['Export'] = number($row['number']);
         }
-    } else {
-        print_r($error_info = $stmt->errorInfo());
-        exit();
     }
-    $sql  = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`=?  ";
+
+
+
+    $sql  = "select count(*) as number from `Order Dimension` O $where and `Order Invoice Address Country 2 Alpha Code`=? and `Order Customer Level Type`!='Partner'  ";
     $stmt = $db->prepare($sql);
     if ($stmt->execute(
         array(
@@ -4252,10 +4266,8 @@ function get_orders_control_panel_numbers($tipo, $db, $data, $user, $account)
         while ($row = $stmt->fetch()) {
             $elements_numbers['location']['Domestic'] = number($row['number']);
         }
-    } else {
-        print_r($error_info = $db->errorInfo());
-        exit();
     }
+
     $response = array(
         'state'            => 200,
         'elements_numbers' => $elements_numbers
