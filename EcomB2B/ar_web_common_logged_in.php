@@ -71,6 +71,12 @@ if (!$customer->id) {
         'state' => 400,
         'resp'  => 'not customer'
     );
+
+    setcookie("UTK", "", time() - 10000);
+    session_regenerate_id();
+    session_destroy();
+    unset($_SESSION);
+
     echo json_encode($response);
     exit;
 }
