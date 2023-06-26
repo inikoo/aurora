@@ -67,15 +67,25 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $customer = get_object('Customer', $_SESSION['customer_key']);
 
 if (!$customer->id) {
-    $response = array(
-        'state' => 400,
-        'resp'  => 'not customer'
-    );
+
 
     setcookie("UTK", "", time() - 10000);
     session_regenerate_id();
     session_destroy();
     unset($_SESSION);
+
+    if(!empty($from_log_out)){
+        $response = array(
+            'state' => 200
+
+        );
+    }else{
+        $response = array(
+            'state' => 400,
+            'resp'  => 'not customer'
+        );
+    }
+
 
     echo json_encode($response);
     exit;

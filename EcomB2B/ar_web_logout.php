@@ -9,6 +9,7 @@
 
 */
 
+$from_log_out=true;
 include_once 'ar_web_common_logged_in.php';
 
 
