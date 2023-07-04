@@ -2744,6 +2744,45 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
 
             break;
 
+        case 'Category_Category_Bis':
+
+            include_once 'class.Category.php';
+
+
+            $store = get_object('Store', $parent->get('Store Key'));
+
+            if (isset($data['fields_data']['Store Category Code'])) {
+                $object = new Category('root_key_code', $store->get('Store Family Category Key'), $data['fields_data']['Store Category Code']);
+
+            } else {
+
+                preg_match('/\d+/',$data['fields_data']['Store Category Key'],$match);
+                $key=$match[0];
+                if(!is_numeric($key)){
+                    $response = array(
+                        'state' => 400,
+                        'resp'  => _('Category not found')
+                    );
+                    echo json_encode($response);
+                    exit;
+                }
+                $object = new Category($key);
+            }
+
+            if ($object->id) {
+                $parent->associate_subject($object->id);
+            } else {
+                $response = array(
+                    'state' => 400,
+                    'resp'  => _('Category not found')
+                );
+                echo json_encode($response);
+                exit;
+            }
+            $new_object_html = '';
+            $updated_data    = array();
+
+            break;
 
         case 'Category_Category':
 

@@ -220,6 +220,9 @@ switch ($tipo) {
             case 'category_webpages':
                 find_category_webpages($db, $data, $smarty);
                 break;
+            case 'category_webpages_bis':
+                find_category_webpages_bis($db, $data);
+                break;
             case 'users':
                 find_users($db, $data);
                 break;
@@ -3194,6 +3197,7 @@ function find_product_webpages($db, $data) {
 
 function find_category_webpages($db, $data, $smarty) {
 
+
     include_once('utils/image_functions.php');
 
 
@@ -4116,6 +4120,247 @@ function find_allowance_targets($db, $data) {
         'n' => count($results),
         'd' => $results
     );
+
+    $response = array(
+        'state'          => 200,
+        'number_results' => $results_data['n'],
+        'results'        => $results_data['d'],
+        'q'              => $q
+    );
+
+    echo json_encode($response);
+
+}
+
+function find_category_webpages_bis($db, $data) {
+
+
+    include_once('utils/image_functions.php');
+
+
+    $max_results = 5;
+    $q           = trim($data['query']);
+
+
+    if ($q == '') {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+    $where='';
+    switch ($data['metadata']['parent']) {
+        case 'website':
+            $where = sprintf(' and `Webpage Website Key`=%d', $data['metadata']['parent_key']);
+            break;
+        case 'store':
+            $where = sprintf(' and `Webpage Store Key`=%d', $data['metadata']['parent_key']);
+            break;
+        default:
+
+            break;
+    }
+
+
+    if (isset($data['action'])) {
+        $action = $data['action'];
+    } else {
+        $action = '';
+    }
+
+
+    if (isset($data['metadata']['parent_category_key'])) {
+        $parent_category_key = $data['metadata']['parent_category_key'];
+        $sql                 = sprintf(
+            "SELECT `Subject Key`   FROM `Category Bridge` WHERE `Category Key`=%d ", $parent_category_key
+        );
+
+        $already_in_parent = array();
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
+                $already_in_parent[] = $row['Subject Key'];
+            }
+        } else {
+            print_r($error_info = $db->errorInfo());
+            exit;
+        }
+
+    } else {
+        $already_in_parent = array();
+    }
+
+
+    $candidates      = array();
+    $candidates_data = array();
+
+
+    $sql = sprintf(
+        "select `Webpage URL`,`Webpage Code`,`Product Category Webpage Key`,`Category Main Image Key`,`Category Parent Key`,`Product Category Public`,`Webpage State`,`Page Key`,`Category Code`,`Category Label`,`Category Subject`,`Category Key`,`Product Category Active Products`,`Product Category Discontinuing Products` ,`Product Category In Process Products`, `Product Category Status` 
+                      from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key` and `Webpage Scope` in ('Category Products','Category Categories')  )   left join `Product Category Dimension` on (`Category Key`=`Product Category Key`)  where  `Category Code` like '%s%%' %s order by `Category Code` limit $max_results ",
+        $q, $where
+    );
+
+    //	print $sql;
+    if ($result = $db->query($sql)) {
+        foreach ($result as $row) {
+
+            if ($row['Category Code'] == $q) {
+                $candidates[$row['Category Key']] = 1000;
+            } else {
+
+                $len_name                         = strlen($row['Category Code']);
+                $len_q                            = strlen($q);
+                $factor                           = $len_q / $len_name;
+                $candidates[$row['Category Key']] = 500 * $factor;
+            }
+
+
+            $candidates_data[$row['Category Key']] = array(
+                'Category Code'           => $row['Category Code'],
+                'Category Label'          => $row['Category Label'],
+                'Status'                  => $row['Product Category Status'],
+                'Products'                => $row['Product Category Active Products'] + $row['Product Category Discontinuing Products'] + $row['Product Category In Process Products'],
+                'Category Subject'        => $row['Category Subject'],
+                'Public'                  => $row['Product Category Public'],
+                'Webpage State'           => $row['Webpage State'],
+                'Category Parent Key'     => $row['Category Parent Key'],
+                'Category Webpage Key'    => $row['Product Category Webpage Key'],
+                'Category Main Image Key' => $row['Category Main Image Key'],
+                'Webpage URL'             => $row['Webpage URL'],
+                'Webpage Code'            => strtolower($row['Webpage Code']),
+
+            );
+
+        }
+    } else {
+        print_r($error_info = $db->errorInfo());
+        exit;
+    }
+    //print $sql;
+
+    arsort($candidates);
+
+
+    $total_candidates = count($candidates);
+
+    if ($total_candidates == 0) {
+        $response = array(
+            'state'   => 200,
+            'results' => 0,
+            'data'    => ''
+        );
+        echo json_encode($response);
+
+        return;
+    }
+
+
+    $results = array();
+    foreach ($candidates as $category_key => $candidate) {
+
+        //  print $candidates_data[$category_key]['Status'];
+
+        if (in_array(
+            $candidates_data[$category_key]['Status'], array(
+                'Active',
+                'Discontinuing'
+            )
+        )) {
+            $value       = $category_key;
+            $description = $candidates_data[$category_key]['Category Label'];
+            $code        = $candidates_data[$category_key]['Category Code'];
+
+            if ($candidates_data[$category_key]['Category Subject'] == 'Product') {
+                $description .= ' <span class="discreet italic">('.$candidates_data[$category_key]['Products'].' <i class="fa fa-cube" aria-hidden="true"></i>)</span>';
+
+                if ($action == 'add_category_to_webpage') {
+
+
+                    if ($candidates_data[$category_key]['Public'] == 'No') {
+                        $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._('Category is not public').'</span>';
+                        $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                        $value       = 0;
+                    } elseif ($candidates_data[$category_key]['Webpage State'] == 'Offline') {
+                        $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._('Webpage is offline').'</span>';
+                        $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                        $value       = 0;
+                    } elseif ($candidates_data[$category_key]['Products'] == 0) {
+                        $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._(
+                                "Category don't have any product for sale"
+                            ).'</span>';
+                        $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                        $value       = 0;
+                    } elseif (in_array($category_key, $already_in_parent)) {
+                        $description .= ' <i class="fa fa-exclamation-circle padding_left_10 error" aria-hidden="true"></i>  <span class="error">'._(
+                                "Family already in this department"
+                            ).'</span>';
+                        $code        = '<span class="strikethrough">'.$candidates_data[$category_key]['Category Code'].'</span>';
+                        $value       = 0;
+                    }
+
+                }
+
+
+            } else {
+                $description .= ' <span class="discreet italic">('._('Category').')</span>';
+
+            }
+
+        } else {
+            $value       = 0;
+            $description = '<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Label'].'</span>';
+            $code        = '<span style="text-decoration: line-through;">'.$candidates_data[$category_key]['Category Code'].'</span>';
+        }
+
+
+        $image_key = $candidates_data[$category_key]['Category Main Image Key'];
+
+
+        if ($image_key) {
+            $image = '/wi.php?s=320x280&id='.$image_key;
+        } else {
+            $image = '/art/nopic.png';
+
+        }
+
+
+
+
+        //print_r($data);
+
+
+        $results[$category_key] = array(
+            'code'            => $code,
+            'description'     => $description,
+            'value'           => $value,
+            'formatted_value' => $category_key.'-'.$candidates_data[$category_key]['Category Code'],
+            'metadata'        => json_encode(
+                array(
+                    'key'                   => $category_key,
+                    'code'                  => $candidates_data[$category_key]['Category Code'],
+                    'title'                 => $candidates_data[$category_key]['Category Label'],
+                    'image'                 => $image,
+                    'number_products'       => $candidates_data[$category_key]['Products'],
+                    'category_webpage_key'  => $candidates_data[$category_key]['Category Webpage Key'],
+                    'category_key'          => $category_key,
+                    'category_webpage_code' => $candidates_data[$category_key]['Webpage Code'],
+                    'category_webpage_link' => $candidates_data[$category_key]['Webpage URL'],
+                )
+            )
+        );
+
+    }
+
+    $results_data = array(
+        'n' => count($results),
+        'd' => $results
+    );
+
 
     $response = array(
         'state'          => 200,

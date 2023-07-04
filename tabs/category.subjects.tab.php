@@ -197,31 +197,64 @@ if ($category->get('Category Scope') == 'Product') {
         );
 */
 
-        $table_buttons[] = array(
-            'icon'              => 'link',
-            'title'             => _('Associate family'),
-            'id'                => 'new_record',
-            'inline_new_object' => array(
-                'field_id'                 => 'Store_Category_Code',
-                'field_label'              => _('Associate family').':',
-                'field_edit'               => 'dropdown',
-                'object'                   => 'Category_Category',
-                'parent'                   => $state['object'],
-                'parent_key'               => $state['key'],
-                'placeholder'              => _("Family's code"),
-                'dropdown_select_metadata' => base64_encode(
-                    json_encode(
-                        array(
-                            'scope'      => 'families',
-                            'parent'     => 'root_key',
-                            'parent_key' => $state['store']->get('Store Family Category Key'),
-                            'options'    => array()
+
+
+
+        if ($state['_object']->get('Category Root Key')== $state['store']->get('Store Family Category Key')) {
+            $table_buttons[] = array(
+                'icon'              => 'link',
+                'title'             => _('Associate family'),
+                'id'                => 'new_record',
+                'inline_new_object' => array(
+                    'field_id'                 => 'Store_Category_Code',
+                    'field_label'              => _('Associate family').':',
+                    'field_edit'               => 'dropdown',
+                    'object'                   => 'Category_Category',
+                    'parent'                   => $state['object'],
+                    'parent_key'               => $state['key'],
+                    'placeholder'              => _("Family's code"),
+                    'dropdown_select_metadata' => base64_encode(
+                        json_encode(
+                            array(
+                                'scope'      => 'families',
+                                'parent'     => 'root_key',
+                                'parent_key' => $state['store']->get('Store Family Category Key'),
+                                'options'    => array()
+                            )
                         )
                     )
                 )
-            )
 
-        );
+            );
+        }else{
+            $table_buttons[] = array(
+                'icon'              => 'link',
+                'title'             => _('Associate category'),
+                'id'                => 'new_record',
+                'inline_new_object' => array(
+                    'field_id'                 => 'Store_Category_Key',
+                    'field_label'              => _('Associate category').':',
+                    'field_edit'               => 'dropdown',
+                    'object'                   => 'Category_Category_Bis',
+                    'parent'                   => $state['object'],
+                    'parent_key'               => $state['key'],
+                    'placeholder'              => _("Category's code"),
+                    'dropdown_select_metadata' => base64_encode(
+                        json_encode(
+                            array(
+                                'scope'      => 'category_webpages_bis',
+                                'parent'     => 'store',
+                                'parent_key' => $state['store']->id,
+                                'options'    => array()
+                            )
+                        )
+                    )
+                )
+
+            );
+        }
+
+
 
 
     }
