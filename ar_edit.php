@@ -2752,13 +2752,28 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
             $store = get_object('Store', $parent->get('Store Key'));
 
             if (isset($data['fields_data']['Store Category Code'])) {
-                $object = new Category('root_key_code', $store->get('Store Family Category Key'), $data['fields_data']['Store Category Code']);
 
-            } else {
+                $q=$data['fields_data']['Store Category Code'];
 
-                preg_match('/\d+/',$data['fields_data']['Store Category Key'],$match);
-                $key=$match[0];
-                if(!is_numeric($key)){
+                $sql = sprintf(
+                    "select `Webpage URL`,`Webpage Code`,`Product Category Webpage Key`,`Category Main Image Key`,`Category Parent Key`,`Product Category Public`,`Webpage State`,`Page Key`,`Category Code`,`Category Label`,`Category Subject`,`Category Key`,`Product Category Active Products`,`Product Category Discontinuing Products` ,`Product Category In Process Products`, `Product Category Status` 
+                      from `Page Store Dimension`  left join `Category Dimension` on (`Webpage Scope Key`=`Category Key` and `Webpage Scope` in ('Category Products','Category Categories')  )   left join `Product Category Dimension` on (`Category Key`=`Product Category Key`)  where  `Category Code`=?  and `Webpage Store Key`=? ",
+
+                );
+
+
+
+                $stmt = $db->prepare($sql);
+                $stmt->execute(
+                    array(
+                        $q,$store->id
+                    )
+                );
+                if ($row = $stmt->fetch()) {
+                    $category_key=$row['Category Key'];
+                    $object = new Category($category_key);
+
+                }else{
                     $response = array(
                         'state' => 400,
                         'resp'  => _('Category not found')
@@ -2766,7 +2781,9 @@ function new_object($account, $db, $user, $editor, $data, $smarty)
                     echo json_encode($response);
                     exit;
                 }
-                $object = new Category($key);
+
+
+
             }
 
             if ($object->id) {

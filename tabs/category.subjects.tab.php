@@ -232,7 +232,7 @@ if ($category->get('Category Scope') == 'Product') {
                 'title'             => _('Associate category'),
                 'id'                => 'new_record',
                 'inline_new_object' => array(
-                    'field_id'                 => 'Store_Category_Key',
+                    'field_id'                 => 'Store_Category_Code',
                     'field_label'              => _('Associate category').':',
                     'field_edit'               => 'dropdown',
                     'object'                   => 'Category_Category_Bis',

@@ -4338,7 +4338,7 @@ function find_category_webpages_bis($db, $data) {
             'code'            => $code,
             'description'     => $description,
             'value'           => $value,
-            'formatted_value' => $category_key.'-'.$candidates_data[$category_key]['Category Code'],
+            'formatted_value' => $candidates_data[$category_key]['Category Code'],
             'metadata'        => json_encode(
                 array(
                     'key'                   => $category_key,
