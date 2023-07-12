@@ -51,7 +51,7 @@ include_once 'prepare_table/'.$tab.'.ptble.php';
 $group="GROUP BY
 	LEFT(`Product Tariff Code`, 8),
 	`Delivery Note Address Country 2 Alpha Code`,`Invoice Tax Number`,IF(`Invoice Tax Number Valid`='Yes' and `Invoice Tax Number`!='' , 'Y', 'N')";
-$fields=$fields.", `Invoice Tax Number` as tax_number,
+$fields=$fields.", `Invoice Tax Number` as tax_number,`Invoice Address Country 2 Alpha Code`,
 	IF(`Invoice Tax Number Valid`='Yes', 'Y', 'N') as valid_tax_number ";
 $sql = "select $fields from  $table   $where $wheref   and `Product Tariff Code`  is not null and `Product Package Weight` is not null  $group_by  order by `Delivery Note Address Country 2 Alpha Code`,`Product Tariff Code`  ";
 
@@ -142,6 +142,14 @@ while ($row = $stmt->fetch()) {
 
     if($row['valid_tax_number']=='Y'){
         $tax_number=$row['tax_number'];
+        $tax_number=preg_replace('/[^a-zA-Z0-9]/','',$tax_number);
+        if(preg_match('/^\d/', $tax_number)){
+
+            $tax_number=$row['Invoice Address Country 2 Alpha Code'].$tax_number;
+           }
+
+
+
     }
 
 
