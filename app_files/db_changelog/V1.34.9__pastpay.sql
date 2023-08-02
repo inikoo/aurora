@@ -1,0 +1,2 @@
+ALTER TABLE `Order Dimension`  add COLUMN `Order Pastpay`  varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL COMMENT '';
+ALTER TABLE `Order Dimension` ADD INDEX `pastpay` (`Order Pastpay`) USING BTREE;
