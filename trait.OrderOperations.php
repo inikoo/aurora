@@ -98,6 +98,7 @@ trait OrderOperations
 
         $this->data['Order Currency Exchange'] = 1;
         $this->data['Order Delivery Data']     = '{}';
+        $this->data['Order Pastpay Data']     = '{}';
 
 
         if ($this->data['Order Currency'] != $account->get('Currency Code')) {
