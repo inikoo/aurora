@@ -147,7 +147,8 @@
 
                 {assign "payment_accounts" $website->get_payment_accounts(
                 $order->get('Order Delivery Address Country 2 Alpha Code'),
-                $order->get('Order Invoice Address Country 2 Alpha Code')
+                $order->get('Order Invoice Address Country 2 Alpha Code'),
+                $customer
 
                 )  }
 
@@ -155,8 +156,10 @@
 
                     {foreach from=$payment_accounts item=payment_account key=key}
 
-
                         {if $payment_account.hide!='yes'}
+
+
+
                         <li id="payment_tab_header_{$payment_account.block}" class="{if $payment_account.block=='Hokodo' and  $payment_account.count>1}hide{/if}">
                             <a href="#payment_account_item_{$payment_account.object->get('Block')}" target="_self" data-analytics_label="{$payment_account.analytics_label}" class="payment_option_chooser" >
 
@@ -218,8 +221,10 @@
 
                             {if $block=='Checkout' }
                                 <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;border:none;"></iframe>
+                            {elseif $block=='Pastpay' }
+                                <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:1800px;width:100%;border:none;overflow:hidden;" ></iframe>
                              {elseif $block=='Hokodo' }
-                                <iframe src="ar_web_payment_account_hokodo_sdk_iframe.php?order_key={$order->id}" title="Checkout"
+                                <iframe src="ar_web_payment_account_hokodo_sdk_iframe.php?order_key={$order->id}" title="Hokodo"
 
 
                                         style="height:1800px;width:100%;border:none;overflow:hidden;"  ></iframe>
@@ -594,7 +599,6 @@
                                         <button  data-settings='{ "tipo":"place_order_pay_later", "payment_account_key":"{$payment_account.object->id}", "order_key":"{$order->id}"}' onclick="place_order(this)" class="button" id="_place_order_from_bank">{$data.labels._place_order_from_bank} <i class="margin_left_10 fa fa-fw fa-arrow-right" aria-hidden="true"></i> </button>
                                     </footer>
                                 </form>
-
 
 
 

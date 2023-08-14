@@ -109,10 +109,10 @@
                 <tr>
                     <td id="_total_to_pay" class="website_localized_label"
                         contenteditable="true">{if isset($labels._total_to_pay) and $labels._total_to_pay!=''}{$labels._total_to_pay}{else}{t}To pay{/t}{/if}</td>
-
-
                     <td class="text-right">£301.98</td>
                 </tr>
+
+
 
                 </tbody>
             </table>
@@ -133,7 +133,8 @@
             <li><a href="#example-3-tab-2" target="_self"><i class="fab fa-paypal" aria-hidden="true"></i>&nbsp; Paypal</a></li>
             <li><a href="#example-3-tab-3" target="_self"><i class="fa fa-university" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_bank_label">{if empty($data.labels._bank_label) }{t}Bank{/t}{else}{$data.labels._bank_label}{/if}</span></a></li>
             <li><a href="#example-3-tab-4" target="_self"><i class="fa fa-handshake" aria-hidden="true"></i>&nbsp; <span contenteditable="true" id="_cash_on_delivery_label">{if empty($data.labels._cash_on_delivery_label) }{t}Cash on delivery{/t}{else}{$data.labels._cash_on_delivery_label}{/if}</span></a></li>
-            <li ><a href="#example-3-tab-5" target="_self"><i class="fa fa-clock" aria-hidden="true"></i> <span  contenteditable="true" id="_pay_later_label">{if empty($data.labels._pay_later_label) }{t}Pay later{/t}{else}{$data.labels._pay_later_label}{/if}</span></a></li>
+            <li ><a href="#example-3-tab-5" target="_self"><i class="fa fa-clock" aria-hidden="true"></i> <span  contenteditable="true" id="_pay_later_label">{if empty($data.labels._pay_later_label) }{t}Pay later{/t}{else}{$data.labels._pay_later_label}{/if}</span> <small>Hokodo</small></a></li>
+            <li ><a href="#example-3-tab-6" target="_self"><i class="fa fa-clock" aria-hidden="true"></i> <span  contenteditable="true" id="_pastpay_label">{if empty($data.labels._pastpay_label) }{t}Pay later{/t}{else}{$data.labels._pastpay_label}{/if}</span> <small class="">Pastpay</small></a></li>
 
         </ul>
 
@@ -274,7 +275,7 @@
 
             </div>
 
-            <div id="example-3-tab-5" class="tabs-panel3">
+            <div id="example-3-tab-7" class="tabs-panel3">
 
 
                 <form action="" class="sky-form" style="max-width: 500px;">
@@ -288,9 +289,51 @@
 
 
                     <footer>
-                        <button class="button" id="_place_order_from_online_bank_transfer" contenteditable="true">{if !empty($data.labels._place_order_from_online_bank_transfer)}{{$data.labels._place_order_from_online_bank_transfer}}{else}Place Order{/if}</button>
+                        <button class="button" id="_place_order_from_online_bank_transfer" contenteditable="true">{if !empty($labels._place_order_from_online_bank_transfer)}{{$labels._place_order_from_online_bank_transfer}}{else}Place Order{/if}</button>
                     </footer>
                 </form>
+
+
+            </div>
+
+            <div id="example-3-tab-5" class="tabs-panel3">
+
+
+
+
+            </div>
+
+            <div id="example-3-tab-6" class="tabs-panel3">
+
+
+                <div action="" style="max-width: 500px;">
+
+
+                    <div style="padding:20px 0px">
+                        <p class="website_localized_label" id="_pastpay_text" contenteditable="true" >{if !empty($labels._pastpay_text)}{$labels._pastpay_text}{else}This are our plans:{/if}</p>
+
+                    </div>
+
+
+
+                    <div style="margin-top:40px;margin-bottom:20px">
+                    <span  style=" display: inline-block;
+        background-color: #7b38d8;
+        padding: 10px;
+        width: 200px;
+        color: #ffffff;
+        text-align: center;"  class="  button website_localized_label" id="_place_order_from_pastpay" contenteditable="true">{if !empty($labels._place_order_from_pastpay)}{{$labels._place_order_from_pastpay}}{else}Apply for credit{/if}</span>
+                    </div>
+
+
+
+
+                </div>
+
+
+                <div style="padding-top:20px;font-size: small;color: grey">
+                    <span  id="_pastpay_footer_info"   class="website_localized_label" contenteditable="true">{if !empty($labels._pastpay_footer_info)}{{$labels._pastpay_footer_info}}{else}Services provided by Pastpay{/if}</span>
+                </div>
 
 
             </div>

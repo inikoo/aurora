@@ -376,6 +376,7 @@ class Order extends DB_Table
                 if ($this->metadata('original_tax_code') != '' and $this->metadata('original_tax_code') != $this->get('Order Tax Code')) {
                     $tax_description = '<span class="error italic"> <i class="fa fa-exclamation-circle error"></i> ('._('Edited').')</span> '.$tax_description;
                 }
+
                 return $tax_description;
             case 'Margin':
 
@@ -1074,11 +1075,11 @@ class Order extends DB_Table
                         return false;
                     }
                     $this->fast_update(array(
-                                           'Order State'                      => $value,
-                                           'Order Submitted by Customer Date' => '',
-                                           'Order Date'                       => $date,
-                                           'Order Last Updated by Customer'   => $date,
-                                       ));
+                        'Order State'                      => $value,
+                        'Order Submitted by Customer Date' => '',
+                        'Order Date'                       => $date,
+                        'Order Last Updated by Customer'   => $date,
+                    ));
 
 
                     $history_data = array(
@@ -1108,8 +1109,8 @@ class Order extends DB_Table
 
                     //todo if user want to keep old allowances  you must do an if here
                     $this->fast_update(array(
-                                           'Order Pinned Deal Components' => json_encode(array())
-                                       ));
+                        'Order Pinned Deal Components' => json_encode(array())
+                    ));
 
 
                     $sql = sprintf(
@@ -1173,7 +1174,6 @@ class Order extends DB_Table
                             'payment_overview'
                         );
                     }
-                    $this->update_aiku($this->get_table_name(), 'refresh_basket');
                     $customer = get_object('Customer', $this->data['Order Customer Key']);
                     $customer->update_orders();
                     $customer->update_activity();
@@ -1191,15 +1191,15 @@ class Order extends DB_Table
                     }
 
                     $this->fast_update(array(
-                                           'Order State' => 'InProcess',
-                                           'Order Date'  => $date
-                                       ));
+                        'Order State' => 'InProcess',
+                        'Order Date'  => $date
+                    ));
 
 
                     if ($value == 'InProcess') {
                         $this->fast_update(array(
-                                               'Order Submitted by Customer Date' => $date,
-                                           ));
+                            'Order Submitted by Customer Date' => $date,
+                        ));
 
 
                         $history_data = array(
@@ -1284,8 +1284,8 @@ class Order extends DB_Table
                     $this->db->exec($sql);
 
                     $this->fast_update(array(
-                                           'Order Pinned Deal Components' => json_encode($deals_component_data)
-                                       ));
+                        'Order Pinned Deal Components' => json_encode($deals_component_data)
+                    ));
 
                     $hide = array('customer_balance');
 
@@ -1294,7 +1294,6 @@ class Order extends DB_Table
                         'payment_overview'
                     );
 
-                    $this->update_aiku($this->get_table_name(), 'refresh_basket');
 
                     $customer = get_object('Customer', $this->data['Order Customer Key']);
                     $customer->update_orders();
@@ -1491,10 +1490,10 @@ class Order extends DB_Table
                     }
 
                     $this->fast_update([
-                                           'Order State'       => 'Packed',
-                                           'Order Packed Date' => $date,
-                                           'Order Date'        => $date,
-                                       ]);
+                        'Order State'       => 'Packed',
+                        'Order Packed Date' => $date,
+                        'Order Date'        => $date,
+                    ]);
 
                     $history_data = array(
                         'History Abstract' => _('Order packed and closed'),
@@ -1583,12 +1582,12 @@ class Order extends DB_Table
                         case 'Approved':
 
                             $this->fast_update(array(
-                                                   'Order State'            => 'PackedDone',
-                                                   'Order Packed Done Date' => $date,
-                                                   'Order Invoiced Date'    => '',
-                                                   'Order Invoice Key'      => '',
-                                                   'Order Date'             => $date
-                                               ));
+                                'Order State'            => 'PackedDone',
+                                'Order Packed Done Date' => $date,
+                                'Order Invoiced Date'    => '',
+                                'Order Invoice Key'      => '',
+                                'Order Date'             => $date
+                            ));
 
 
                             $history_data = array(
@@ -1614,11 +1613,12 @@ class Order extends DB_Table
 
                         case 'Dispatched':
 
+
                             $this->fast_update(array(
-                                                   'Order Invoiced Date' => '',
-                                                   'Order Invoice Key'   => '',
-                                                   'Order Date'          => $date
-                                               ));
+                                'Order Invoiced Date' => '',
+                                'Order Invoice Key'   => '',
+                                'Order Date'          => $date
+                            ));
 
 
                             $history_data = array(
@@ -1628,6 +1628,10 @@ class Order extends DB_Table
                             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
                             $operations = array();
+
+                            if ($this->get('Order Pastpay')) {
+                                 $this->submit_pastpay_invoice();
+                            }
 
 
                             break;
@@ -1644,15 +1648,15 @@ class Order extends DB_Table
                     $dn         = get_object('DeliveryNote', $this->data['Order Delivery Note Key']);
                     $dn->editor = $this->editor;
                     $dn->fast_update(array(
-                                         'Delivery Note Invoiced'                    => 'No',
-                                         'Delivery Note Invoiced Net DC Amount'      => 0,
-                                         'Delivery Note Invoiced Shipping DC Amount' => 0,
-                                     ));
+                        'Delivery Note Invoiced'                    => 'No',
+                        'Delivery Note Invoiced Net DC Amount'      => 0,
+                        'Delivery Note Invoiced Shipping DC Amount' => 0,
+                    ));
 
                     $dn->update(array(
 
-                                    'Delivery Note State' => 'Invoice Deleted',
-                                ));
+                        'Delivery Note State' => 'Invoice Deleted',
+                    ));
 
 
                     break;
@@ -1727,13 +1731,14 @@ class Order extends DB_Table
 
 
                     $customer->fast_update(array(
-                                               'Customer Last Dispatched Order Key'  => $this->id,
-                                               'Customer Last Dispatched Order Date' => gmdate('Y-m-d', strtotime($date.' +0:00'))
-                                           ));
+                        'Customer Last Dispatched Order Key'  => $this->id,
+                        'Customer Last Dispatched Order Date' => gmdate('Y-m-d', strtotime($date.' +0:00'))
+                    ));
 
 
                     if ($this->data['Order Type'] == 'FulfilmentRent') {
-                        $sql = "update `Fulfilment Asset Dimension` left join `Fulfilment Rent Transaction Fact` on (`Fulfilment Rent Transaction Asset Key`=`Fulfilment Asset Key`) set `Fulfilment Asset Last Rent Order Date`=?   where `Fulfilment Rent Transaction Order Key`=?  ";
+                        $sql =
+                            "update `Fulfilment Asset Dimension` left join `Fulfilment Rent Transaction Fact` on (`Fulfilment Rent Transaction Asset Key`=`Fulfilment Asset Key`) set `Fulfilment Asset Last Rent Order Date`=?   where `Fulfilment Rent Transaction Order Key`=?  ";
                         $this->db->prepare($sql)->execute(
                             [
                                 gmdate('Y-m-d'),
@@ -1742,7 +1747,8 @@ class Order extends DB_Table
                         );
 
 
-                        $sql = "update `Fulfilment Asset Dimension` left join `Fulfilment Rent Transaction Fact` on (`Fulfilment Rent Transaction Asset Key`=`Fulfilment Asset Key`) set `Fulfilment Asset State`='Invoiced'    where `Fulfilment Rent Transaction Order Key`=?  and `Fulfilment Asset State`='BookedOut'   ";
+                        $sql =
+                            "update `Fulfilment Asset Dimension` left join `Fulfilment Rent Transaction Fact` on (`Fulfilment Rent Transaction Asset Key`=`Fulfilment Asset Key`) set `Fulfilment Asset State`='Invoiced'    where `Fulfilment Rent Transaction Order Key`=?  and `Fulfilment Asset State`='BookedOut'   ";
                         $this->db->prepare($sql)->execute(
                             [
                                 $this->id
@@ -1751,8 +1757,8 @@ class Order extends DB_Table
 
                         $customer = get_object('Customer_Fulfilment', $this->data['Order Customer Key']);
                         $customer->fast_update([
-                                                   'Customer Fulfilment Current Rent Order Key' => null
-                                               ]);
+                            'Customer Fulfilment Current Rent Order Key' => null
+                        ]);
                     }
 
 
@@ -1796,10 +1802,10 @@ class Order extends DB_Table
                     $dn->editor = $this->editor;
 
                     $dn->fast_update(array(
-                                         'Delivery Note Invoiced'                    => 'Yes',
-                                         'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                                         'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                                     ));
+                        'Delivery Note Invoiced'                    => 'Yes',
+                        'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                        'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                    ));
 
 
                     $dn->update_state('Approved', json_encode(array('date' => $date)));
@@ -1858,9 +1864,9 @@ class Order extends DB_Table
 
 
                     $this->fast_update(array(
-                                           'Order State'           => $value,
-                                           'Order Dispatched Date' => null
-                                       ));
+                        'Order State'           => $value,
+                        'Order Dispatched Date' => null
+                    ));
                     $history_data = array(
                         'History Abstract' => _('Order set as not dispatched'),
                         'History Details'  => '',
@@ -1919,9 +1925,9 @@ class Order extends DB_Table
 
 
                     $customer->fast_update(array(
-                                               'Customer Last Dispatched Order Key'  => $this->id,
-                                               'Customer Last Dispatched Order Date' => gmdate('Y-m-d', strtotime($date.' +0:00'))
-                                           ));
+                        'Customer Last Dispatched Order Key'  => $this->id,
+                        'Customer Last Dispatched Order Date' => gmdate('Y-m-d', strtotime($date.' +0:00'))
+                    ));
 
 
                     $this->confirm_hokodo_order_fulfilment();
@@ -1968,17 +1974,17 @@ class Order extends DB_Table
                     $dn->editor = $this->editor;
 
                     $dn->update(array(
-                                    'Delivery Note Invoiced'                    => 'Yes',
-                                    'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                                    'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
-                                ));
+                        'Delivery Note Invoiced'                    => 'Yes',
+                        'Delivery Note Invoiced Net DC Amount'      => $invoice->get('Invoice Total Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                        'Delivery Note Invoiced Shipping DC Amount' => $invoice->get('Invoice Shipping Net Amount') * $invoice->get('Invoice Currency Exchange'),
+                    ));
 
 
                     $this->fast_update(array(
-                                           'Order Invoiced Date' => $date,
-                                           'Order Date'          => $date,
-                                           'Order Invoice Key'   => $invoice->id,
-                                       ));
+                        'Order Invoiced Date' => $date,
+                        'Order Date'          => $date,
+                        'Order Invoice Key'   => $invoice->id,
+                    ));
 
 
                     $history_data = array(
@@ -2072,8 +2078,8 @@ class Order extends DB_Table
             'show'              => $show
         );
 
-        $this->update_aiku($this->get_table_name(), 'refresh_order');
 
+        $this->model_updated(null, 'Order State', $this->id);
 
         if ($this->data['Order State'] != 'Cancelled') {
             new_housekeeping_fork(
@@ -2088,6 +2094,7 @@ class Order extends DB_Table
 
         if ($old_value != $this->get('Order State')) {
             $this->fork_index_elastic_search();
+
             return $delivery_note_key_send_to_warehouse ?? true;
         } else {
             return false;
@@ -2468,7 +2475,7 @@ class Order extends DB_Table
 
             //  print "   $debug_total\n";
 
-           //  print_r($items);
+            //  print_r($items);
             // exit;
 
             //  if(count($reported_items)>0){
@@ -2488,7 +2495,7 @@ class Order extends DB_Table
                 'PUT',
                 $this->db
             );
-           //  print_r($res);
+            //  print_r($res);
 
         }
     }
@@ -2507,6 +2514,7 @@ class Order extends DB_Table
 
         if ($payment->get('Payment Transaction Status') == 'Pending' and $payment->get('Payment Metadata') == '') {
             $payment->delete();
+
             return;
         }
 
@@ -2643,8 +2651,8 @@ class Order extends DB_Table
                 [
                     $url,
                     json_encode([
-                                    'amount' => $amount
-                                ]),
+                        'amount' => $amount
+                    ]),
                     $output,
                     gmdate('Y-m-d H:i:s'),
                     'ok-v2'
@@ -2922,15 +2930,15 @@ class Order extends DB_Table
                 $sql = "INSERT INTO `Order Transaction Out of Stock in Basket Bridge` (`Order Transaction Fact Key`,`Date`,`Store Key`,`Order Key`,`Product Key`,`Product ID`,`Quantity`,`Amount`) VALUES (?,?,?,?,?,?,?,?)";
 
                 $this->db->prepare($sql)->execute(array(
-                                                      $row['Order Transaction Fact Key'],
-                                                      prepare_mysql(gmdate('Y-m-d H:i:s')),
-                                                      $this->data['Order Store Key'],
-                                                      $this->id,
-                                                      $row['Product Key'],
-                                                      $row['Product ID'],
-                                                      $row['Order Quantity'],
-                                                      round($row['Order Transaction Amount'], 2)
-                                                  ));
+                    $row['Order Transaction Fact Key'],
+                    prepare_mysql(gmdate('Y-m-d H:i:s')),
+                    $this->data['Order Store Key'],
+                    $this->id,
+                    $row['Product Key'],
+                    $row['Product ID'],
+                    $row['Order Quantity'],
+                    round($row['Order Transaction Amount'], 2)
+                ));
 
 
                 $sql = sprintf(
@@ -3028,13 +3036,13 @@ class Order extends DB_Table
 WHERE `Order Transaction Fact Key`=?";
 
                 $this->db->prepare($sql)->execute(array(
-                                                      'In Process',
-                                                      $row['Quantity'],
-                                                      $gross,
-                                                      0,
-                                                      $gross,
-                                                      $row['Order Transaction Fact Key']
-                                                  ));
+                    'In Process',
+                    $row['Quantity'],
+                    $gross,
+                    0,
+                    $gross,
+                    $row['Order Transaction Fact Key']
+                ));
 
 
                 $sql = sprintf(
@@ -3569,8 +3577,8 @@ WHERE `Order Transaction Fact Key`=?";
 
         if ($this->get('replacements_in_process') == 1) {
             $this->fast_update(array(
-                                   'Order Replacement Created Date' => $date
-                               ));
+                'Order Replacement Created Date' => $date
+            ));
         }
 
 
@@ -3598,9 +3606,9 @@ WHERE `Order Transaction Fact Key`=?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->data['Order Store Key'],
-                           $dn_id.$suffix_counter
-                       ));
+            $this->data['Order Store Key'],
+            $dn_id.$suffix_counter
+        ));
         if ($row = $stmt->fetch()) {
             if ($suffix_counter > 100) {
                 return $dn_id.$suffix_counter;
@@ -3638,8 +3646,8 @@ WHERE `Order Transaction Fact Key`=?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->id
-                       ));
+            $this->id
+        ));
         if ($row = $stmt->fetch()) {
             if ($row['num'] > 0) {
                 switch ($row['Delivery Note State']) {
@@ -3666,13 +3674,14 @@ WHERE `Order Transaction Fact Key`=?";
         }
 
 
-        $sql = "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=?  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ";
+        $sql =
+            "SELECT  `Delivery Note State`,count(*) as num  FROM `Delivery Note Dimension` WHERE `Delivery Note Order Key`=?  and  `Delivery Note Type` in ('Replacement & Shortages', 'Replacement', 'Shortages') and `Delivery Note Waiting State`='Customer'  group by `Delivery Note State` ";
 
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->id
-                       ));
+            $this->id
+        ));
         if ($row = $stmt->fetch()) {
             if ($row['num'] > 0) {
                 switch ($row['Delivery Note State']) {
@@ -3697,9 +3706,9 @@ WHERE `Order Transaction Fact Key`=?";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->id,
-                           gmdate('Y-m-d 00:00:00')
-                       ));
+            $this->id,
+            gmdate('Y-m-d 00:00:00')
+        ));
         if ($row = $stmt->fetch()) {
             if ($row['num'] > 0) {
                 $dispatched_today = $row['num'];
@@ -3708,14 +3717,14 @@ WHERE `Order Transaction Fact Key`=?";
 
 
         $this->fast_update(array(
-                               'Order Replacements In Warehouse without Alerts' => $in_warehouse_no_alerts,
-                               'Order Replacements In Warehouse with Alerts'    => $in_warehouse_with_alerts,
-                               'Order Replacements Packed Done'                 => $packed_done,
-                               'Order Replacements Approved'                    => $approved,
-                               'Order Replacements Dispatched Today'            => $dispatched_today,
+            'Order Replacements In Warehouse without Alerts' => $in_warehouse_no_alerts,
+            'Order Replacements In Warehouse with Alerts'    => $in_warehouse_with_alerts,
+            'Order Replacements Packed Done'                 => $packed_done,
+            'Order Replacements Approved'                    => $approved,
+            'Order Replacements Dispatched Today'            => $dispatched_today,
 
 
-                           ));
+        ));
 
 
         if ($update_parents) {
@@ -3850,23 +3859,23 @@ WHERE `Order Transaction Fact Key`=?";
 					 )";
 
                                 $this->db->prepare($sql)->execute(array(
-                                                                      'Return',
-                                                                      $row['Inventory Transaction Key'],
-                                                                      $part->id,
-                                                                      $account->get('Account Currency Code'),
-                                                                      $date,
-                                                                      'Dispatched',
+                                    'Return',
+                                    $row['Inventory Transaction Key'],
+                                    $part->id,
+                                    $account->get('Account Currency Code'),
+                                    $date,
+                                    'Dispatched',
 
-                                                                      round($unit_qty, 6),
-                                                                      round($amount, 2),
-                                                                      $extra_amount,
-                                                                      $cbm,
-                                                                      $weight,
-                                                                      $this->editor['User Key'],
-                                                                      $date,
-                                                                      $delivery->id,
-                                                                      $date
-                                                                  ));
+                                    round($unit_qty, 6),
+                                    round($amount, 2),
+                                    $extra_amount,
+                                    $cbm,
+                                    $weight,
+                                    $this->editor['User Key'],
+                                    $date,
+                                    $delivery->id,
+                                    $date
+                                ));
                             }
                         }
 
@@ -3879,9 +3888,9 @@ WHERE `Order Transaction Fact Key`=?";
         }
 
 
-       // if ($this->data['hokodo_order_id']) {
-       //     $this->hokado_submit_return($transactions);
-       // }
+        // if ($this->data['hokodo_order_id']) {
+        //     $this->hokado_submit_return($transactions);
+        // }
 
         return $delivery;
     }
@@ -3997,7 +4006,129 @@ WHERE `Order Transaction Fact Key`=?";
         }
     }
 
+    function submit_pastpay_invoice()
+    {
+        $store               = get_object('Store', $this->get('Order Store Key'));
+        $website             = get_object('Website', $store->get('Store Website Key'));
+        $payment_account_key = $website->get_payment_account__key('Pastpay');
+        $payment_account     = get_object('Payment_Account', $payment_account_key);
+        $api_key             = $payment_account->get('Payment Account Password');
 
+        $customer = get_object('Customer', $this->get('Order Customer Key'));
+
+        $tax_number = $customer->get('Customer Tax Number');
+
+        $tax_number = preg_replace('/^(PL|HU)/i', '', $tax_number);
+
+        $invoices    = $this->get_invoices();
+        $invoice_key = array_pop($invoices);
+
+        $invoice = get_object('invoice', $invoice_key);
+
+        $currency = $this->get('Order Currency');
+
+        $pastpay_data = json_decode($this->get('Order Pastpay Data'), true);
+        $term         = $pastpay_data['term'];
+
+        $smarty = new Smarty();
+        //$smarty->caching_type = 'redis';
+        $smarty->setTemplateDir('templates');
+        $smarty->setCompileDir('server_files/smarty/templates_c');
+        $smarty->setCacheDir('server_files/smarty/cache');
+        $smarty->setConfigDir('server_files/smarty/configs');
+        $smarty->addPluginsDir('./smarty_plugins');
+        $db      = $this->db;
+        $account = get_object('Account', 1);
+
+        $_REQUEST['id'] = $invoice->id;
+        $save_to_file   = 'server_files/tmp/'.$invoice->id.'_invoice.pdf';
+        require_once 'invoice.pdf.common.php';
+
+
+        $encoded_invoice = base64_encode(file_get_contents($save_to_file));
+
+
+        $data = [
+            'creditorTaxNumber' => 'SK2120525440',
+            'invoiceNo'         => $invoice->get('Invoice Public ID'),
+
+
+            'totalPrice' => [
+                'amount' => (float)$invoice->get('Invoice Total Amount'),
+                'currency'   => $currency
+            ],
+
+            'issueDate'  => date('Y-m-d', strtotime($invoice->get('Invoice Date'))),
+            'dueDate'    => date('Y-m-d', strtotime($invoice->get('Invoice Date')." + $term days")),
+            'invoicePdf' => 'data:application/pdf;base64,'.$encoded_invoice
+
+        ];
+
+//print_r(json_encode($data));
+        //  exit;
+
+
+        $order_id = $this->get('Order Public ID');
+
+        //print "/debtors/$tax_number/order/$order_id/finalize";
+
+        $res = $this->pastpay_api_post_call("/debtors/$tax_number/order/$order_id/finalize", $data, $api_key);
+
+     //   print_r($res);
+      //  exit;
+    }
+
+    function pastpay_api_post_call($url, $data, $api_key = false, $type = 'POST', $db = false)
+    {
+        $ch = curl_init();
+
+        $base_url = 'https://api.pastpay.com';
+        if (ENVIRONMENT == 'DEVEL') {
+            $base_url = 'https://api.demo.pastpay.com';
+        }
+
+        curl_setopt($ch, CURLOPT_URL, $base_url.$url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        if ($type == 'POST') {
+            curl_setopt($ch, CURLOPT_POST, 1);
+        } else {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
+        }
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        $headers   = array();
+        $headers[] = 'Content-Type: application/json';
+        if ($api_key) {
+            $headers[] = "X-Api-Key: $api_key";
+        }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $res = curl_exec($ch);
+
+
+        if ($res === false) {
+            Sentry\captureMessage('Curl error: '.curl_error($ch));
+            curl_close($ch);
+
+            return false;
+        } else {
+            curl_close($ch);
+
+            if ($db) {
+                $sql = "insert into hokodo_debug (`request`,`data`,`response`,`date`,`status`) values (?,?,?,?,?) ";
+                $db->prepare($sql)->execute(
+                    [
+                        $url,
+                        json_encode($data),
+                        $res,
+                        gmdate('Y-m-d H:i:s'),
+                        'ok'
+
+                    ]
+                );
+            }
+
+            return json_decode($res, true);
+        }
+    }
 
 }
 

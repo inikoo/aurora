@@ -1647,6 +1647,31 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
     }
 
+    function get_payment_account__key($code)
+    {
+
+
+        $payment_account__key = '';
+        $sql                  =
+            "SELECT `Payment Account Store Payment Account Key`
+FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
+WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`=? ";
+        $stmt                 = $this->db->prepare($sql);
+        $stmt->execute(
+            [
+                $this->id,
+                $code
+            ]
+        );
+
+        while ($row = $stmt->fetch()) {
+            $payment_account__key = $row['Payment Account Store Payment Account Key'];
+        }
+
+
+        return $payment_account__key;
+    }
+
 }
 
 

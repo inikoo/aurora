@@ -293,12 +293,13 @@ class Public_Website
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
-    function get_payment_accounts($delivery_2alpha_country = '', $options = '')
+    function get_payment_accounts($delivery_2alpha_country = '', $options = '',$customer =false)
     {
         $payments_accounts = array();
 
         $sql =
-            "SELECT `Payment Account Store Payment Account Key`,`hide` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ORDER BY `Payment Account Store Show Cart Order`";
+            "SELECT `Payment Account Store Payment Account Key`,`hide` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=? 
+            AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ORDER BY `Payment Account Store Show Cart Order`";
 
 
         $stmt = $this->db->prepare($sql);
@@ -310,10 +311,13 @@ class Public_Website
         );
         $count = 0;
         while ($row = $stmt->fetch()) {
+
             $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
 
 
             $ok = true;
+
+
             switch ($payment_account->get('Payment Account Block')) {
                 case 'BTree':
                 case 'Checkout':
@@ -359,6 +363,19 @@ class Public_Website
                         $ok = false;
                     }
                     break;
+                case 'Pastpay':
+
+
+                    if ($customer->get('Customer Tax Number Valid')=='Yes' and  $customer->get('Customer Tax Number')!=''  and  in_array($options, ['HU','PL','SK','CZ','DE','RO','IT'])) {
+                        $icon            = 'fa fa-money-check-alt';
+                        $tab_label_index = '_pastpay_label';
+                        $tab_label       = '';
+                        $short_label     = _('Pay later');
+                        $analytics_label = 'Pastpay';
+                    } else {
+                        $ok = false;
+                   }
+                    break;
                 case 'ConD':
 
 
@@ -398,6 +415,7 @@ class Public_Website
                 );
             }
         }
+
 
 
         return $payments_accounts;
@@ -525,6 +543,12 @@ class Public_Website
 
     function get_api_key($code)
     {
+
+        if (ENVIRONMENT=='DEVEL' and $code=='Hokodo' ) {
+            return HOKODO_DEVEL_KEY;
+        }
+
+
         $api_key = '';
         $sql     =
             "SELECT login 
@@ -573,6 +597,8 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
     function get_payment_account__key($code)
     {
+
+
         $payment_account__key = '';
         $sql                  =
             "SELECT `Payment Account Store Payment Account Key`

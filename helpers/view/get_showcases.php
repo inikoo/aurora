@@ -171,6 +171,13 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'order':
             include_once 'showcase/order.show.php';
+            $order=$data['_object'];
+
+
+           // if($order->get('Order Pastpay')){
+           //     $order->submit_pastpay_invoice();
+           // }
+
             $html         = get_order_showcase($data, $smarty, $user, $db);
             $title        = $data['_object']->get('Public ID');
             $web_location = '<i class="fal fa-fw fa-shopping-cart"></i> '.$title;

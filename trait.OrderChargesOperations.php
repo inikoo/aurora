@@ -382,11 +382,21 @@ trait OrderChargesOperations
     /**
      * @throws Exception
      */
-    function add_charge($charge)
+    function add_charge($charge,$amount=false)
     {
+
+
+        $_charge_amount=$charge->get('Charge Metadata');
+        if($amount){
+            $_charge_amount=$amount;
+        }
+
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return false;
         }
+
+
+
 
         $tax_category = new TaxCategory($this->db);
         $tax_category->loadWithKey($this->data['Order Tax Category Key']);
@@ -405,7 +415,7 @@ trait OrderChargesOperations
 
             );
         } else {
-            $tax = $charge->get('Charge Metadata') * $tax_category->get('Tax Category Rate');
+            $tax = $_charge_amount * $tax_category->get('Tax Category Rate');
 
 
             $sql = "INSERT INTO `Order No Product Transaction Fact` (`Order No Product Transaction Pinned`,`Order Key`,`Order Date`,`Transaction Type`,`Transaction Type Key`,
@@ -423,8 +433,8 @@ trait OrderChargesOperations
                                                   $charge->id,
 
                                                   $charge->get('Charge Description'),
-                                                  round($charge->get('Charge Metadata'), 2),
-                                                  round($charge->get('Charge Metadata'), 2),
+                                                  round($_charge_amount, 2),
+                                                  round($_charge_amount, 2),
                                                   $tax_category->id,
                                                   $this->data['Order Tax Code'],
                                                   round($tax, 2),
@@ -437,7 +447,7 @@ trait OrderChargesOperations
 
             $transaction_data = array(
                 'onptf_key' => $this->db->lastInsertId(),
-                'amount'    => money($charge->get('Charge Metadata'), $this->data['Order Currency'])
+                'amount'    => money($_charge_amount, $this->data['Order Currency'])
 
             );
         }
@@ -479,6 +489,8 @@ trait OrderChargesOperations
 
         $sql = "delete from  `Order No Product Transaction Fact`  where `Order Key`=? and `Transaction Type`='Charges' and `Transaction Type Key`=? and `Type`='Order'";
 
+
+       // print_r($sql);
 
         $this->db->prepare($sql)->execute([
                                               $this->id,
