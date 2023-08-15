@@ -81,7 +81,8 @@
 
             {assign "payment_accounts" $website->get_payment_accounts(
             $order->get('Order Delivery Address Country 2 Alpha Code'),
-            $order->get('Order Invoice Address Country 2 Alpha Code')
+            $order->get('Order Invoice Address Country 2 Alpha Code'),
+            $customer
 
             )  }
                 {assign "number_payment_accounts"  $payment_accounts|count  }

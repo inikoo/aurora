@@ -366,7 +366,14 @@ class Public_Website
                 case 'Pastpay':
 
 
-                    if ($customer->get('Customer Tax Number Valid')=='Yes' and  $customer->get('Customer Tax Number')!=''  and  in_array($options, ['HU','PL','SK','CZ','DE','RO','IT'])) {
+                    if (
+
+                        $customer and
+
+                        $customer->get('Customer Tax Number Valid')=='Yes' and
+                        $customer->get('Customer Tax Number')!=''  and
+
+                        in_array($options, ['HU','PL','SK','CZ','DE','RO','IT'])) {
                         $icon            = 'fa fa-money-check-alt';
                         $tab_label_index = '_pastpay_label';
                         $tab_label       = '';
