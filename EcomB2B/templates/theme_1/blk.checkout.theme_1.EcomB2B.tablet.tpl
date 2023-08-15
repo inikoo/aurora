@@ -162,6 +162,8 @@
 
                     {if $block=='Checkout' }
                         <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width:450px;min-height:300px;border:none;"></iframe>
+                    {elseif $block=='Pastpay' }
+                        <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:1800px;width:100%;border:none;overflow:hidden;" ></iframe>
 
                     {elseif $block=='Hokodo' }
                         <iframe src="ar_web_payment_account_hokodo_sdk_iframe.php?order_key={$order->id}" title="Checkout"
