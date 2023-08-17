@@ -123,58 +123,66 @@ $order = get_object('Order', $invoice->get('Invoice Order Key'));
 $pastpay_notes=[];
 if ($order->get('Order Pastpay')) {
 
-    $_currency=$order->get('Currency');
-    $locale=$store->get('Store Locale');
+    $ok=false;
+    $__payments=$invoice->get_payments('objects');
 
-
-
-    $_pastpay_notes = [
-        'EUR' =>
-            [
-                'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
-                'de_DE' => "Wichtig! Übertragungsklausel: Der Gläubiger der Forderung in dieser Rechnung ist PastPay Europe - Pentech Solutions sp. z o.o. (Adresse: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), der die Forderung aufgrund eines Forderungsübertragungsvertrages mit dem Händler erworben hat. Bitte zahlen Sie den Rechnungsbetrag auf das Konto von Pentech - IBAN: BE98 9140 4490 9493, SWIFT: FXBBBEBBXXX",
-                'it_IT' => "Importante! Presta attenzione alla clausola di trasferimento: il beneficiario del pagamento indicato in questa fattura è PastPay Europe - Pentech Solutions sp. z o.o. (situata in ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP 5472223365). Questa azienda ha assunto il diritto al pagamento a seguito della cessione del contratto di crediti stipulato con il webshop. Gentilmente effettua il pagamento dell'importo specificato sulla fattura sul conto di Pentech Solutions IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
-                'sk_SK' => "Dôležité! Prevodná doložka: veriteľ tejto pohľadávky v tejto faktúre je spoločnost PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), ktorá nadobudla túto pohľadávku z dôvodu postúpenia zmluvy o pohľadávke s internetovým obchodom. Prosíme o úhradu sumy faktúry na účet spoločnosti Pentech - IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
-
-            ],
-        "RON" =>
-            [
-                'ro_Ro' => "Important! Clauză de transfer: Creditorul creanței din această factură este PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) care a dobândit creanța datorită transferului contractului de creanțe cu magazinul online. Vă rugăm să achitați valoarea facturii în contul Pentech - IBAN: BE76 9140 4490 9695 SWIFT: FXBBBEBBXXX",
-                'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE76 9140 4490 9695 SWIFT: FXBBBEBBXXX",
-
-            ],
-        "HUF" =>
-            [
-                "hu_HU"=>"Fontos! Átruházási záradék: Jelen számlában megtestesülő követelés és járulékai jogosultja (átruházást követően) a PastPay Europe - Pentech Solutions sp. z o.o. (cím: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365). Kérjük, hogy a számla összegét mindenképpen a BE45 9140 4490 9089 (SWIFT: FXBBBEBBXXX) számú számlára szíveskedjenek kielégíteni.",
-                'en_GB' =>"Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE45 9140 4490 9089 SWIFT: FXBBBEBBXXX"
-            ],
-        "CZK"=>
-        [
-            "cs_CZ"=>"Důležité! Doložka o postoupení pohledávky: věřitelem této pohledávky v této faktuře je společnost PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), která tuto pohledávku nabyla na základě smlouvy o postoupení pohledávky s internetovým obchodem. Fakturovanou částku prosím uhraďte na účet společnosti Pentech - IBAN: BE23 9140 4490 9291 SWIFT: FXBBBEBBXXX",
-            'en_GB' =>"Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE23 9140 4490 9291 SWIFT: FXBBBEBBXXX"
-        ],
-        "PLN"=>
-            [
-                "pl_PL"=>"WAŻNE! Klauzula cesji: Wierzycielem roszczenia objętego niniejszą fakturą jest Pentech Solutions Polska sp. z o.o. (adres: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), która uzyskała wierzytelność wskutek umowy cesji ze sklepem internetowym, zgodnie z zasadami płatności w systemie PastPay. Proszę uprzejmie zapłacić wartość faktury na rachunek bankowy Pentech – IBAN: BE54 9140 4490 9897, SWIFT: FXBBBEBBXXX",
-                'en_GB' =>"Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE54 9140 4490 9897, SWIFT: FXBBBEBBXXX"
-            ]
-
-    ];
-
-    switch($_currency){
-        case 'EUR':
-
-            if(in_array($locale,['de_DE','it_IT','sk_SK'])){
-                $pastpay_notes[]=$_pastpay_notes[$_currency][$locale];
-            }
-            $pastpay_notes[]=$_pastpay_notes[$_currency]['en_GB'];
-
-            break;
-        default:
-            $pastpay_notes=$_pastpay_notes[$_currency];
+    foreach($__payments as $_payment){
+        if($_payment->get('Payment Account Code')=='Pastpay' and $_payment->get('Payment Transaction Status')=='Completed'  ){
+            $ok=true;
+        }
     }
 
+    if($ok) {
+        $_currency = $order->get('Currency');
+        $locale    = $store->get('Store Locale');
 
+
+        $_pastpay_notes = [
+            'EUR' =>
+                [
+                    'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
+                    'de_DE' => "Wichtig! Übertragungsklausel: Der Gläubiger der Forderung in dieser Rechnung ist PastPay Europe - Pentech Solutions sp. z o.o. (Adresse: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), der die Forderung aufgrund eines Forderungsübertragungsvertrages mit dem Händler erworben hat. Bitte zahlen Sie den Rechnungsbetrag auf das Konto von Pentech - IBAN: BE98 9140 4490 9493, SWIFT: FXBBBEBBXXX",
+                    'it_IT' => "Importante! Presta attenzione alla clausola di trasferimento: il beneficiario del pagamento indicato in questa fattura è PastPay Europe - Pentech Solutions sp. z o.o. (situata in ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP 5472223365). Questa azienda ha assunto il diritto al pagamento a seguito della cessione del contratto di crediti stipulato con il webshop. Gentilmente effettua il pagamento dell'importo specificato sulla fattura sul conto di Pentech Solutions IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
+                    'sk_SK' => "Dôležité! Prevodná doložka: veriteľ tejto pohľadávky v tejto faktúre je spoločnost PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), ktorá nadobudla túto pohľadávku z dôvodu postúpenia zmluvy o pohľadávke s internetovým obchodom. Prosíme o úhradu sumy faktúry na účet spoločnosti Pentech - IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
+
+                ],
+            "RON" =>
+                [
+                    'ro_Ro' => "Important! Clauză de transfer: Creditorul creanței din această factură este PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) care a dobândit creanța datorită transferului contractului de creanțe cu magazinul online. Vă rugăm să achitați valoarea facturii în contul Pentech - IBAN: BE76 9140 4490 9695 SWIFT: FXBBBEBBXXX",
+                    'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE76 9140 4490 9695 SWIFT: FXBBBEBBXXX",
+
+                ],
+            "HUF" =>
+                [
+                    "hu_HU" => "Fontos! Átruházási záradék: Jelen számlában megtestesülő követelés és járulékai jogosultja (átruházást követően) a PastPay Europe - Pentech Solutions sp. z o.o. (cím: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365). Kérjük, hogy a számla összegét mindenképpen a BE45 9140 4490 9089 (SWIFT: FXBBBEBBXXX) számú számlára szíveskedjenek kielégíteni.",
+                    'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE45 9140 4490 9089 SWIFT: FXBBBEBBXXX"
+                ],
+            "CZK" =>
+                [
+                    "cs_CZ" => "Důležité! Doložka o postoupení pohledávky: věřitelem této pohledávky v této faktuře je společnost PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), která tuto pohledávku nabyla na základě smlouvy o postoupení pohledávky s internetovým obchodem. Fakturovanou částku prosím uhraďte na účet společnosti Pentech - IBAN: BE23 9140 4490 9291 SWIFT: FXBBBEBBXXX",
+                    'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE23 9140 4490 9291 SWIFT: FXBBBEBBXXX"
+                ],
+            "PLN" =>
+                [
+                    "pl_PL" => "WAŻNE! Klauzula cesji: Wierzycielem roszczenia objętego niniejszą fakturą jest Pentech Solutions Polska sp. z o.o. (adres: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), która uzyskała wierzytelność wskutek umowy cesji ze sklepem internetowym, zgodnie z zasadami płatności w systemie PastPay. Proszę uprzejmie zapłacić wartość faktury na rachunek bankowy Pentech – IBAN: BE54 9140 4490 9897, SWIFT: FXBBBEBBXXX",
+                    'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE54 9140 4490 9897, SWIFT: FXBBBEBBXXX"
+                ]
+
+        ];
+
+        switch ($_currency) {
+            case 'EUR':
+
+                if (in_array($locale, ['de_DE', 'it_IT', 'sk_SK'])) {
+                    $pastpay_notes[] = $_pastpay_notes[$_currency][$locale];
+                }
+                $pastpay_notes[] = $_pastpay_notes[$_currency]['en_GB'];
+
+                break;
+            default:
+                $pastpay_notes = $_pastpay_notes[$_currency];
+        }
+    }
 
 }
 
