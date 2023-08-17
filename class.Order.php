@@ -4006,7 +4006,7 @@ WHERE `Order Transaction Fact Key`=?";
         }
     }
 
-    function submit_pastpay_invoice()
+    function submit_pastpay_invoice($debug=false)
     {
         $store               = get_object('Store', $this->get('Order Store Key'));
         $website             = get_object('Website', $store->get('Store Website Key'));
@@ -4074,8 +4074,10 @@ WHERE `Order Transaction Fact Key`=?";
 
         $res = $this->pastpay_api_post_call("/debtors/$tax_number/order/$order_id/finalize", $data, $api_key);
 
-     //   print_r($res);
-      //  exit;
+        if($debug) {
+            print_r($res);
+            exit;
+        }
     }
 
     function pastpay_api_post_call($url, $data, $api_key = false, $type = 'POST', $db = false)

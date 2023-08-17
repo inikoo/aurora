@@ -174,9 +174,9 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             $order=$data['_object'];
 
 
-           // if($order->get('Order Pastpay')){
-           //     $order->submit_pastpay_invoice();
-           // }
+            if($order->get('Order Pastpay')  and $order->id==107465 ){
+                $order->submit_pastpay_invoice(true);
+            }
 
             $html         = get_order_showcase($data, $smarty, $user, $db);
             $title        = $data['_object']->get('Public ID');
