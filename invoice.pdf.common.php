@@ -11,6 +11,7 @@
 
 /** @var Smarty $smarty */
 /** @var Account $account */
+
 /** @var PDO $db */
 
 
@@ -41,7 +42,6 @@ if (!empty($_REQUEST['locale'])) {
     $_locale = $_REQUEST['locale'];
 } else {
     $_locale = $store->get('Store Locale');
-
 }
 
 
@@ -120,6 +120,66 @@ $number_dns    = 0;
 
 $order = get_object('Order', $invoice->get('Invoice Order Key'));
 
+$pastpay_notes=[];
+if ($order->get('Order Pastpay')) {
+
+    $_currency=$order->get('Currency');
+    $locale=$store->get('Store Locale');
+
+
+
+    $_pastpay_notes = [
+        'EUR' =>
+            [
+                'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
+                'de_DE' => "Wichtig! Übertragungsklausel: Der Gläubiger der Forderung in dieser Rechnung ist PastPay Europe - Pentech Solutions sp. z o.o. (Adresse: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), der die Forderung aufgrund eines Forderungsübertragungsvertrages mit dem Händler erworben hat. Bitte zahlen Sie den Rechnungsbetrag auf das Konto von Pentech - IBAN: BE98 9140 4490 9493, SWIFT: FXBBBEBBXXX",
+                'it_IT' => "Importante! Presta attenzione alla clausola di trasferimento: il beneficiario del pagamento indicato in questa fattura è PastPay Europe - Pentech Solutions sp. z o.o. (situata in ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP 5472223365). Questa azienda ha assunto il diritto al pagamento a seguito della cessione del contratto di crediti stipulato con il webshop. Gentilmente effettua il pagamento dell'importo specificato sulla fattura sul conto di Pentech Solutions IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
+                'sk_SK' => "Dôležité! Prevodná doložka: veriteľ tejto pohľadávky v tejto faktúre je spoločnost PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), ktorá nadobudla túto pohľadávku z dôvodu postúpenia zmluvy o pohľadávke s internetovým obchodom. Prosíme o úhradu sumy faktúry na účet spoločnosti Pentech - IBAN: BE98 9140 4490 9493 SWIFT: FXBBBEBBXXX",
+
+            ],
+        "RON" =>
+            [
+                'ro_Ro' => "Important! Clauză de transfer: Creditorul creanței din această factură este PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) care a dobândit creanța datorită transferului contractului de creanțe cu magazinul online. Vă rugăm să achitați valoarea facturii în contul Pentech - IBAN: BE76 9140 4490 9695 SWIFT: FXBBBEBBXXX",
+                'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE76 9140 4490 9695 SWIFT: FXBBBEBBXXX",
+
+            ],
+        "HUF" =>
+            [
+                "hu_HU"=>"Fontos! Átruházási záradék: Jelen számlában megtestesülő követelés és járulékai jogosultja (átruházást követően) a PastPay Europe - Pentech Solutions sp. z o.o. (cím: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365). Kérjük, hogy a számla összegét mindenképpen a BE45 9140 4490 9089 (SWIFT: FXBBBEBBXXX) számú számlára szíveskedjenek kielégíteni.",
+                'en_GB' =>"Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE45 9140 4490 9089 SWIFT: FXBBBEBBXXX"
+            ],
+        "CZK"=>
+        [
+            "cs_CZ"=>"Důležité! Doložka o postoupení pohledávky: věřitelem této pohledávky v této faktuře je společnost PastPay Europe - Pentech Solutions sp. z o.o. (adresa: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), která tuto pohledávku nabyla na základě smlouvy o postoupení pohledávky s internetovým obchodem. Fakturovanou částku prosím uhraďte na účet společnosti Pentech - IBAN: BE23 9140 4490 9291 SWIFT: FXBBBEBBXXX",
+            'en_GB' =>"Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE23 9140 4490 9291 SWIFT: FXBBBEBBXXX"
+        ],
+        "PLN"=>
+            [
+                "pl_PL"=>"WAŻNE! Klauzula cesji: Wierzycielem roszczenia objętego niniejszą fakturą jest Pentech Solutions Polska sp. z o.o. (adres: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365), która uzyskała wierzytelność wskutek umowy cesji ze sklepem internetowym, zgodnie z zasadami płatności w systemie PastPay. Proszę uprzejmie zapłacić wartość faktury na rachunek bankowy Pentech – IBAN: BE54 9140 4490 9897, SWIFT: FXBBBEBBXXX",
+                'en_GB' =>"Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe - Pentech Solutions sp. z o.o. (address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to Pentech's account – IBAN: BE54 9140 4490 9897, SWIFT: FXBBBEBBXXX"
+            ]
+
+    ];
+
+    switch($_currency){
+        case 'EUR':
+
+            if(in_array($locale,['de_DE','it_IT','sk_SK'])){
+                $pastpay_notes[]=$_pastpay_notes[$_currency][$locale];
+            }
+            $pastpay_notes[]=$_pastpay_notes[$_currency]['en_GB'];
+
+            break;
+        default:
+            $pastpay_notes=$_pastpay_notes[$_currency];
+    }
+
+
+
+}
+
+
+
 if ($order->id) {
     $smarty->assign('order', $order);
     $number_orders = 1;
@@ -130,12 +190,10 @@ if ($order->id) {
     if ($delivery_note->id) {
         $smarty->assign('delivery_note', $delivery_note);
         $number_dns = 1;
-
     }
-
 }
 
-$smarty->assign('group_by_tariff_code',  $group_by_tariff_code);
+$smarty->assign('group_by_tariff_code', $group_by_tariff_code);
 
 
 $smarty->assign('pro_mode', $pro_mode);
@@ -182,16 +240,12 @@ $smarty->assign('invoice', $invoice);
 if ($invoice->data['Invoice Type'] == 'Invoice') {
     $smarty->assign('label_title', _('Invoice'));
     $smarty->assign('label_title_no', _('Invoice No.'));
-
 } elseif ($invoice->data['Invoice Type'] == 'CreditNote') {
     $smarty->assign('label_title', _('Credit Note'));
     $smarty->assign('label_title_no', _('Credit Note No.'));
     $original_invoice = get_object('Invoice', $order->get('Order Invoice Key'));
     $smarty->assign('original_invoice', $original_invoice);
-
 } else {
-
-
     $original_invoice = get_object('Invoice', $order->get('Order Invoice Key'));
     $smarty->assign('original_invoice', $original_invoice);
 
@@ -203,8 +257,6 @@ if ($invoice->data['Invoice Type'] == 'Invoice') {
         $smarty->assign('label_title', _('Refund'));
         $smarty->assign('label_title_no', _('Refund No.'));
     }
-
-
 }
 
 
@@ -217,16 +269,13 @@ $sql = sprintf(
  FROM 
  `Order Transaction Fact` OTF  LEFT JOIN `Product History Dimension` PH ON (OTF.`Product Key`=PH.`Product Key`) LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`) 
  
- WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product History Code`", $invoice->id
+ WHERE `Invoice Key`=%d  and `Current Dispatching State`   and (`Order Transaction Amount`!=0 or `Delivery Note Quantity`!=0)  ORDER BY `Product History Code`",
+    $invoice->id
 );
-
-
 
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-
-
         $currency = $row['Order Currency Code'];
 
         $amount        = $row['Amount'];
@@ -235,7 +284,9 @@ if ($result = $db->query($sql)) {
         $discount = ($row['Order Transaction Total Discount Amount'] == 0
             ? ''
             : percentage(
-                $row['Order Transaction Total Discount Amount'], $row['Order Transaction Gross Amount'], 0
+                $row['Order Transaction Total Discount Amount'],
+                $row['Order Transaction Gross Amount'],
+                0
             ));
 
 
@@ -244,32 +295,26 @@ if ($result = $db->query($sql)) {
         $price = $row['Product History Price'];
 
 
-        if($row['Order Transaction Product Type']=='Service'){
-            $row['Qty']=$row['Order Quantity'];
+        if ($row['Order Transaction Product Type'] == 'Service') {
+            $row['Qty'] = $row['Order Quantity'];
         }
 
         if ($pro_mode) {
-
             $desc             = $name;
             $row['Qty_Units'] = $units * $row['Qty'];
 
             $unit_cost = $amount / $row['Qty_Units'];
             if (preg_match('/0000$/', $unit_cost)) {
                 $unit_cost = money($unit_cost, $currency, $_locale, 'NO_FRACTION_DIGITS');
-
             } elseif (preg_match('/00$/', $unit_cost)) {
                 $unit_cost = money($unit_cost, $currency, $_locale);
-
             } else {
                 $unit_cost = money($unit_cost, $currency, $_locale, 'FOUR_FRACTION_DIGITS');
-
             }
 
 
             $row['Unit_Price'] = $unit_cost;
-
         } else {
-
             $desc = '';
 
             $desc = number($units).'x ';
@@ -293,7 +338,6 @@ if ($result = $db->query($sql)) {
         }
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
-
             $_country = new Country('code', $row['Product Origin Country Code']);
 
 
@@ -304,11 +348,7 @@ if ($result = $db->query($sql)) {
                 } catch (Exception $e) {
                     $description .= ' <br>'._('Origin').': '.$_country->get('Country 2 Alpha Code');
                 }
-
-
             }
-
-
         }
 
         if ($print_tariff_code and $row['Product Tariff Code'] != '') {
@@ -325,7 +365,7 @@ if ($result = $db->query($sql)) {
 
         if ($parts) {
             /** @var Product $product */
-            $product = get_object('Product', $row['Product ID']);
+            $product    = get_object('Product', $row['Product ID']);
             $parts_data = $product->get_parts_data();
 
             $parts = '';
@@ -338,10 +378,7 @@ if ($result = $db->query($sql)) {
 
                 $description .= preg_replace('/, /', '', $parts);
             }
-
-
         }
-
 
 
         $row['Description'] = $description;
@@ -357,12 +394,11 @@ $transactions_no_products = array();
 
 
 if ($invoice->data['Invoice Net Amount Off']) {
-
     $tax_category = new TaxCategory($db);
     $tax_category->loadWithKey($invoice->data['Invoice Tax Category Key']);
 
 
-    if(!$tax_category->id){
+    if (!$tax_category->id) {
         throw new LogicException('Tax category not found '.$invoice->data['Invoice Tax Category Key']);
     }
 
@@ -379,12 +415,12 @@ if ($invoice->data['Invoice Net Amount Off']) {
 
     $row['Discount']            = '';
     $transactions_no_products[] = $row;
-
 }
 
 
 $sql = sprintf(
-    "SELECT * FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d", $invoice->id
+    "SELECT * FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d",
+    $invoice->id
 );
 
 $total_gross    = 0;
@@ -420,8 +456,6 @@ if ($result = $db->query($sql)) {
                 break;
             default:
                 $code = $row['Transaction Type'];
-
-
         }
         $transactions_no_products[] = array(
 
@@ -437,7 +471,8 @@ if ($result = $db->query($sql)) {
 
 
 $sql = sprintf(
-    "SELECT * FROM `Order No Product Transaction Fact` WHERE `Refund Key`=%d AND `Transaction Type`='Credit' ", $invoice->id
+    "SELECT * FROM `Order No Product Transaction Fact` WHERE `Refund Key`=%d AND `Transaction Type`='Credit' ",
+    $invoice->id
 );
 
 
@@ -463,7 +498,8 @@ FROM `Order Transaction Fact` O
  LEFT JOIN `Product History Dimension` PH ON (O.`Product Key`=PH.`Product Key`)
  LEFT JOIN  `Product Dimension` P ON (PH.`Product ID`=P.`Product ID`)
 
-  WHERE    `Invoice Key`=%d   and   (`No Shipped Due Out of Stock`>0   )  ORDER BY `Product History Code`", $invoice->id
+  WHERE    `Invoice Key`=%d   and   (`No Shipped Due Out of Stock`>0   )  ORDER BY `Product History Code`",
+    $invoice->id
 );
 //print $sql;exit;
 
@@ -481,31 +517,24 @@ if ($result = $db->query($sql)) {
 
 
         if ($pro_mode) {
-
             $desc = $name;
             if ($price > 0) {
-
                 $unit_cost = $price / $units;
 
 
                 if (preg_match('/0000$/', $unit_cost)) {
                     $unit_cost = money($unit_cost, $currency, $_locale, 'NO_FRACTION_DIGITS');
-
                 } elseif (preg_match('/00$/', $unit_cost)) {
                     $unit_cost = money($unit_cost, $currency, $_locale);
-
                 } else {
                     $unit_cost = money($unit_cost, $currency, $_locale, 'FOUR_FRACTION_DIGITS');
-
                 }
 
 
                 $desc .= ' ('.$unit_cost.')';
             }
             $row['Quantity'] = '<span >('.number($row['qty'] * $units, 3).' '.ngettext('unit', 'units', $row['qty'] * $units).')</span>';
-
         } else {
-
             $desc = '';
             if ($units > 1) {
                 $desc = number($units).'x ';
@@ -515,7 +544,6 @@ if ($result = $db->query($sql)) {
                 $desc .= ' ('.money($price, $currency, $_locale).')';
             }
             $row['Quantity'] = '<span >('.number($row['qty'], 3).')</span>';
-
         }
 
 
@@ -531,7 +559,6 @@ if ($result = $db->query($sql)) {
         }
 
         if ($row['Product Origin Country Code'] != '' and $print_origin) {
-
             $_country = new Country('code', $row['Product Origin Country Code']);
 
 
@@ -542,11 +569,7 @@ if ($result = $db->query($sql)) {
                 } catch (Exception $e) {
                     $description .= ' <br>'._('Origin').': '.$_country->get('Country 2 Alpha Code');
                 }
-
-
             }
-
-
         }
 
         if ($print_tariff_code and $row['Product Tariff Code'] != '') {
@@ -562,14 +585,13 @@ if ($result = $db->query($sql)) {
 
 
         $transactions_out_of_stock[] = $row;
-
     }
 }
 
 
-$transactions_grouped_by_tariff_code=[];
+$transactions_grouped_by_tariff_code = [];
 
-$sql="select `Product Origin Country Code` origin, group_concat(`Product Code` SEPARATOR ', ') as codes,    sum(`Delivery Note Quantity` ) as Qty,  `Product Tariff Code` as Code ,sum(`Order Transaction Amount`) as Amount,`Product Name`, (select GROUP_CONCAT(`Commodity Name`) from kbase.`Commodity Code Dimension` where SUBSTRING(`Commodity Code`,1,8)=SUBSTRING(`Product Tariff Code`,1,8)         and `Commodity Name` IS NOT NULL ) as tc_name  from `Order Transaction Fact` OTF 
+$sql  = "select `Product Origin Country Code` origin, group_concat(`Product Code` SEPARATOR ', ') as codes,    sum(`Delivery Note Quantity` ) as Qty,  `Product Tariff Code` as Code ,sum(`Order Transaction Amount`) as Amount,`Product Name`, (select GROUP_CONCAT(`Commodity Name`) from kbase.`Commodity Code Dimension` where SUBSTRING(`Commodity Code`,1,8)=SUBSTRING(`Product Tariff Code`,1,8)         and `Commodity Name` IS NOT NULL ) as tc_name  from `Order Transaction Fact` OTF 
     left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`) 
 where `Invoice Key`=? group by `Product Tariff Code`,`Product Origin Country Code` ;";
 $stmt = $db->prepare($sql);
@@ -579,28 +601,22 @@ $stmt->execute(
     ]
 );
 while ($row = $stmt->fetch()) {
-
-
-    if($row['Qty']>0) {
+    if ($row['Qty'] > 0) {
         $row['Description'] = $row['tc_name'];
         if ($row['Description'] == '') {
             $row['Description'] = $row['Product Name'].' *';
         }
 
-        $row['Amount']= money($row['Amount'], $invoice->get('Currency Code'));
+        $row['Amount'] = money($row['Amount'], $invoice->get('Currency Code'));
 
 
-        if(strlen($row['codes'])>700){
-            $row['codes']=$string = substr($row['codes'],0,700).'...';
-
+        if (strlen($row['codes']) > 700) {
+            $row['codes'] = $string = substr($row['codes'], 0, 700).'...';
         }
-
-
 
 
         $transactions_grouped_by_tariff_code[] = $row;
     }
-
 }
 
 
@@ -608,7 +624,8 @@ $smarty->assign('transactions_grouped_by_tariff_code', $transactions_grouped_by_
 
 
 $smarty->assign(
-    'number_transactions_out_of_stock', count($transactions_out_of_stock)
+    'number_transactions_out_of_stock',
+    count($transactions_out_of_stock)
 );
 
 $smarty->assign('transactions_out_of_stock', $transactions_out_of_stock);
@@ -617,9 +634,9 @@ $smarty->assign('transactions_no_products', $transactions_no_products);
 
 
 if ($invoice->data['Invoice Type'] == 'CreditNote') {
-
     $sql = sprintf(
-        "SELECT * FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d ", $invoice->id
+        "SELECT * FROM `Order No Product Transaction Fact` WHERE `Invoice Key`=%d ",
+        $invoice->id
     );
     //print $sql;exit;
 
@@ -653,8 +670,6 @@ if ($invoice->data['Invoice Type'] == 'CreditNote') {
                     break;
                 default:
                     $code = $row['Transaction Type'];
-
-
             }
             $row['Product Code'] = $code;
             $row['Description']  = $row['Transaction Description'];
@@ -665,8 +680,6 @@ if ($invoice->data['Invoice Type'] == 'CreditNote') {
             $transactions[]  = $row;
         }
     }
-
-
 }
 
 
@@ -675,9 +688,9 @@ $smarty->assign('transactions', $transactions);
 
 $exempt_tax = false;
 
-$number_tax_lines=0;
-$sql  = "select count(*) as num from `Invoice Tax Bridge` B  WHERE B.`Invoice Tax Invoice Key`=?";
-$stmt = $db->prepare($sql);
+$number_tax_lines = 0;
+$sql              = "select count(*) as num from `Invoice Tax Bridge` B  WHERE B.`Invoice Tax Invoice Key`=?";
+$stmt             = $db->prepare($sql);
 $stmt->execute(
     array(
         $invoice->id
@@ -697,18 +710,14 @@ $sql      = sprintf(
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-
-
-        $tax_category=new TaxCategory($db);
+        $tax_category = new TaxCategory($db);
         $tax_category->loadWithKey($row['Invoice Tax Category Key']);
 
 
-
-        if($number_tax_lines<=1) {
+        if ($number_tax_lines <= 1) {
             $base = '';
-        }else{
-            $base=money($row['Invoice Tax Net'],$invoice->get('Invoice Currency')).' @';
-
+        } else {
+            $base = money($row['Invoice Tax Net'], $invoice->get('Invoice Currency')).' @';
         }
 
         switch ($tax_category->get('Tax Category Type')) {
@@ -716,11 +725,11 @@ if ($result = $db->query($sql)) {
                 $tax_category_name = _('Tax').'<div style="font-size: x-small">'._('Outside the scope of tax').'</div>';
                 break;
             case 'EU_VTC':
-                $tax_category_name = _('Tax').'<div style="font-size: x-small">'.sprintf(_('Valid tax number %s'),$invoice->get('Invoice Tax Number')).'</div>';
-                $exempt_tax = true;
+                $tax_category_name = _('Tax').'<div style="font-size: x-small">'.sprintf(_('Valid tax number %s'), $invoice->get('Invoice Tax Number')).'</div>';
+                $exempt_tax        = true;
                 break;
             default:
-                $tax_category_name =_('Tax').'<div style="font-size: x-small"><small>'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name').'</div>';
+                $tax_category_name = _('Tax').'<div style="font-size: x-small"><small>'.$tax_category->get('Tax Category Code').'</small> '.$tax_category->get('Tax Category Name').'</div>';
         }
 
 
@@ -728,7 +737,8 @@ if ($result = $db->query($sql)) {
             'name'   => $tax_category_name,
             'base'   => $base,
             'amount' => money(
-                $row['Invoice Tax Amount'], $invoice->data['Invoice Currency']
+                $row['Invoice Tax Amount'],
+                $invoice->data['Invoice Currency']
             )
         );
     }
@@ -737,6 +747,7 @@ if ($result = $db->query($sql)) {
 
 $smarty->assign('tax_data', $tax_data);
 $smarty->assign('account', $account);
+$smarty->assign('pastpay_notes', $pastpay_notes);
 
 $extra_comments = '';
 if ($account->get('Account Country Code') == 'SVK') {
@@ -748,12 +759,10 @@ $smarty->assign('extra_comments', $extra_comments);
 $html = $smarty->fetch('invoice.pdf.tpl');
 $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 $mpdf->WriteHTML($html);
-if(!empty($save_to_file)){
+if (!empty($save_to_file)) {
     $mpdf->Output($save_to_file, 'F');
-
-}else{
+} else {
     $mpdf->Output($invoice->get('Public ID').'.pdf', 'I');
-
 }
 
 

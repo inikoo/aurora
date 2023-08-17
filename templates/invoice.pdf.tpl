@@ -483,6 +483,12 @@
 <br>
 {/if}
 
+{foreach from=$pastpay_notes item=pastpay_note}
+    <div style="text-align: center; font-style: italic;">
+        {$pastpay_note}
+    </div>
+    <br>
+{/foreach}
 
 {if $invoice->metadata('store_message')!=''}
     <div style="text-align: center; font-style: italic;">
@@ -490,6 +496,9 @@
     </div>
     <br>
 {/if}
+
+
+
 {if $invoice->get('Invoice Message')!=''}
     <div style="text-align: center; font-style: italic;">
         {include file="string:{$invoice->get('Invoice Message')}" }
