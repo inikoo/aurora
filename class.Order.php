@@ -4064,17 +4064,29 @@ WHERE `Order Transaction Fact Key`=?";
 
         ];
 
-//print_r(json_encode($data));
-        //  exit;
-
 
         $order_id = $this->get('Order Public ID');
 
-        //print "/debtors/$tax_number/order/$order_id/finalize";
+
 
         $res = $this->pastpay_api_post_call("/debtors/$tax_number/order/$order_id/finalize", $data, $api_key);
 
+
+
+
         if($debug) {
+
+            print_r(json_encode($data));
+            //        exit;
+            print "=========\n";
+
+
+            print "=========\n";
+
+            print "=========\n";
+            print "/debtors/$tax_number/order/$order_id/finalize";
+            print "=========\n";
+
             print_r($res);
             exit;
         }
