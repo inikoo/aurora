@@ -1630,18 +1630,7 @@ class Order extends DB_Table
                             $operations = array();
 
 
-                            $pastpay=false;
-                            foreach($this->get_payments('objects') as $payment){
-                                if($payment->get('Payment Account Code')=='Pastpay'  and $payment->get('Payment Transaction Status')=='Completed' ){
-                                    $pastpay=true;
-                                }
 
-                            }
-
-
-                            if ($pastpay) {
-                                 $this->submit_pastpay_invoice();
-                            }
 
 
                             break;
@@ -1941,6 +1930,20 @@ class Order extends DB_Table
 
 
                     $this->confirm_hokodo_order_fulfilment();
+
+                    $pastpay=false;
+                    foreach($this->get_payments('objects') as $payment){
+                        if($payment->get('Payment Account Code')=='Pastpay'  and $payment->get('Payment Transaction Status')=='Completed' ){
+                            $pastpay=true;
+                        }
+
+                    }
+
+
+                    if ($pastpay) {
+                        $this->submit_pastpay_invoice();
+                    }
+
 
                     new_housekeeping_fork(
                         'au_housekeeping',
