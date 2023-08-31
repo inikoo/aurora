@@ -1629,7 +1629,17 @@ class Order extends DB_Table
 
                             $operations = array();
 
-                            if ($this->get('Order Pastpay')) {
+
+                            $pastpay=false;
+                            foreach($this->get_payments('objects') as $payment){
+                                if($payment->get('Payment Account Code')=='Pastpay'  and $payment->get('Payment Transaction Status')=='Completed' ){
+                                    $pastpay=true;
+                                }
+
+                            }
+
+
+                            if ($pastpay) {
                                  $this->submit_pastpay_invoice();
                             }
 

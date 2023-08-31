@@ -171,11 +171,11 @@ function get_object_showcase($showcase, $data, $smarty, $user, $db, $account, $r
             break;
         case 'order':
             include_once 'showcase/order.show.php';
-            $order=$data['_object'];
+            //$order=$data['_object'];
 
-            if($order->get('Order Pastpay')  and $order->id==107942 ){
-                $order->submit_pastpay_invoice(true);
-            }
+         //   if($order->get('Order Pastpay')  and $order->id==107942 ){
+              //  $order->submit_pastpay_invoice(true);
+          //  }
 
 
 

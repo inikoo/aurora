@@ -121,7 +121,19 @@ $number_dns    = 0;
 $order = get_object('Order', $invoice->get('Invoice Order Key'));
 
 $pastpay_notes=[];
-if ($order->get('Order Pastpay')) {
+
+
+$pastpay=false;
+foreach($order->get_payments('objects') as $payment){
+    if($payment->get('Payment Account Code')=='Pastpay'  and $payment->get('Payment Transaction Status')=='Completed' ){
+        $pastpay=true;
+    }
+
+}
+
+
+if ($pastpay) {
+
 
     $ok=false;
     $__payments=$invoice->get_payments('objects');
