@@ -920,6 +920,11 @@ function stock_transactions($_data, $db, $user) {
 
                         );
 
+                        if($data['Note']){
+                            $note.=' ('.$data['Note'].')';
+                        }
+
+
 
                     } else {
                         $note = sprintf(

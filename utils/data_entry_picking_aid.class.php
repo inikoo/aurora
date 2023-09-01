@@ -940,11 +940,20 @@ class data_entry_picking_aid {
                                 $date_packed             = $date;
                             }
 
+                            $note=null;
+                            $stmt = $this->db->prepare("select `Part Location Note` from `Part Location Dimension` where `Location Key`=? and `Part SKU`=? ");
+                            $stmt->execute([$transaction['location_key'],$row['Part SKU']]);
+                            while ($rowxx = $stmt->fetch()) {
+                              $note=$rowxx['Part Location Note'];
+                            }
+
 
                             $sql = 'UPDATE  `Inventory Transaction Fact`  SET  `Inventory Transaction Record Type`=?,`Date Picked`=? ,`Date Packed`=?,`Date`=? ,`Location Key`=? ,`Inventory Transaction Type`=? ,`Inventory Transaction Section`=? ,
                                   `Inventory Transaction Quantity`=?, `Inventory Transaction Amount`=?,`Inventory Transaction Weight`=?,
                                   `Picked`=?,`Packed`=?,`Out of Stock`=?,
-                                  `Picker Key`=?,`Packer Key`=? WHERE `Inventory Transaction Key`=? ';
+                                  `Picker Key`=?,`Packer Key`=?  ,`Note`=?
+                                      
+                                      WHERE `Inventory Transaction Key`=? ';
 
 
                             $this->db->prepare($sql)->execute(
@@ -964,6 +973,7 @@ class data_entry_picking_aid {
                                     $out_of_stock,
                                     $this->dn->get('Delivery Note Assigned Picker Key'),
                                     $this->dn->get('Delivery Note Assigned Packer Key'),
+                                    $note,
                                     $transaction['itf_key']
 
                                 ]
