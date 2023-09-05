@@ -1,0 +1,1 @@
+ALTER TABLE `Payment Account Dimension` CHANGE `Payment Account Login` `Payment Account Login` varchar(255) ,CHANGE `Payment Account Password` `Payment Account Password` varchar(255) ;
