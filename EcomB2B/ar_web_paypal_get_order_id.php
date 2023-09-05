@@ -85,6 +85,7 @@ function submit_order_to_paypal($token,$order)
         $currency = "USD";
     }
 
+    $to_pay = $order->get('Order To Pay Amount');
 
     curl_setopt_array($curl, array(
         CURLOPT_URL            => $base_url.'checkout/orders',
@@ -101,7 +102,7 @@ function submit_order_to_paypal($token,$order)
         {
             "amount": {
                 "currency_code": "'.$currency.'",
-                "value": "'.$order->get('Order Total Amount').'"
+                "value": "'.$to_pay.'"
             }
         }
     ]
@@ -121,9 +122,6 @@ function submit_order_to_paypal($token,$order)
     return $response;
 }
 
-//AamwhMiN8KF8iU3w34W4eC3TgX-12NNsIoT1WVOmpcmT7sMmO7MDp6IUwWpVYx1xvOeXorLnNPxdAWIK
-//AcyT9kAltT_HCoyhIZAAfnYhBuSViBqlUf9iWu5vDl5BczcWQJHFQbjNhXKcf6htfsEynTGBJ9Lm-6kh
-//AamwhMiN8KF8iU3w34W4eC3TgX-12NNsIoT1WVOmpcmT7sMmO7MDp6IUwWpVYx1xvOeXorLnNPxdAWIK   &components=buttons&enable-funding=venmo,paylater"
 function get_access_token($payment_account)
 {
     $x = $payment_account->get('Payment Account Login').':'.$payment_account->get('Payment Account Password');
