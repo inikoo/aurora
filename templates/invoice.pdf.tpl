@@ -140,6 +140,11 @@
                 {t}Invoice Date{/t}:<b>{$invoice->get_date('Invoice Date')}</b>
             </div>
 
+            {if   !empty($pastpay_due_date)}
+            <div>
+                {t}Payment Due Date{/t}:<b>{$pastpay_due_date}</b>
+            </div>
+            {/if}
 
             <div style="text-align: right">
                 {t}Tax liability date{/t}" <b>{$invoice->get_date('Invoice Tax Liability Date')}</b>

@@ -2320,6 +2320,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
     }
 
 
+
     public function get_payments($scope = 'keys', $filter = ''): array
     {
         if ($filter == 'Completed') {

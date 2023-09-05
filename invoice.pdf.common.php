@@ -131,9 +131,19 @@ foreach($order->get_payments('objects') as $payment){
 
 }
 
-
+$pastpay_due_date=false;
 if ($pastpay) {
 
+
+
+    $pastpay_data = json_decode($order->get('Order Pastpay Data'), true);
+    $term         = $pastpay_data['term'];
+
+    $pastpay_due_date=date('Y-m-d', strtotime($invoice->get('Invoice Date')." + $term days"));
+
+
+    $pastpay_due_date = strftime(
+        "%e %b %Y",strtotime($pastpay_due_date));
 
     $ok=false;
     $__payments=$invoice->get_payments('objects');
@@ -215,6 +225,9 @@ if ($order->id) {
 
 $smarty->assign('group_by_tariff_code', $group_by_tariff_code);
 
+
+
+$smarty->assign('pastpay_due_date', $pastpay_due_date);
 
 $smarty->assign('pro_mode', $pro_mode);
 $smarty->assign('customer', $customer);
