@@ -360,6 +360,20 @@ if ($webpage->get('Webpage State') == 'Offline') {
 }
 
 
+if ($webpage->get('Webpage Code') == 'checkout.sys') {
+
+    $paypal_client_id='';
+    $payment_account_key = $website->get_payment_account__key('Paypal');
+    if($payment_account_key) {
+        $payment_account = get_object('Payment_Account', $payment_account_key);
+
+        $paypal_client_id = $payment_account->get('Payment Account Login');
+    }
+    $smarty->assign('paypal_client_id',$paypal_client_id);
+    $smarty->assign('paypal_currency',$store->get('Store Currency Code'));
+
+}
+
 if ($webpage->get('Webpage Code') == 'register.sys') {
     require_once __DIR__.'/utils/get_addressing.php';
     //print_r( $website->settings);

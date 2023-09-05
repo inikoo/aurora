@@ -81,9 +81,7 @@ function submit_order_to_paypal($token,$order)
     }
 
     $currency = $order->get('Order Currency');
-    if (ENVIRONMENT == 'DEVEL') {
-        $currency = "USD";
-    }
+
 
     $to_pay = $order->get('Order To Pay Amount');
 

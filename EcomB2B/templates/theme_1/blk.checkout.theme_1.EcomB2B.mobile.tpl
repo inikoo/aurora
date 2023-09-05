@@ -157,10 +157,7 @@
                     {elseif $block=='Paypal' }
 
                         <div style="margin-top: 20px" id="paypal-button-container"></div>
-                        <script
-                                data-sdk-integration-source="integrationbuilder_sc"
-                                src="https://www.paypal.com/sdk/js?client-id={$payment_account.object->get('Payment Account Login')}&components=buttons&enable-funding=venmo,paylater"></script>
-                        </script>
+
                         <script>
 
                           jQuery(function() {

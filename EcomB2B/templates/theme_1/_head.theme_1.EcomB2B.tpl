@@ -436,6 +436,13 @@
     {/if}
 
 
+    {if $with_basket==1 or  $with_checkout==1 and $account_code=='AROMA' }
+        <script
+                data-sdk-integration-source="integrationbuilder_sc"
+                src="https://www.paypal.com/sdk/js?client-id={$paypal_client_id}&components=buttons&enable-funding=paylater&currency={$paypal_currency}"></script>
+
+        </script>
+    {/if}
     <style>
         {if $website->get('Website Text Font')!=''}
         body {
