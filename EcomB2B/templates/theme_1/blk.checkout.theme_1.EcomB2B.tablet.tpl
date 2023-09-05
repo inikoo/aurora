@@ -159,11 +159,137 @@
                 {assign "block" $payment_account.object->get("Block")  }
 
                 <div id="payment_account_item_{$payment_account.object->get('Block')}" class="payment_method_block {if !$smarty.foreach.foo.first}hide{/if}" style="margin:auto;{if {$payment_account.object->get('Block')}!='Hokodo'}width: 440px{/if}">
-
                     {if $block=='Checkout' }
                         <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width:450px;min-height:300px;border:none;"></iframe>
                     {elseif $block=='Pastpay' }
                         <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:1800px;width:100%;border:none;overflow:hidden;" ></iframe>
+                    {elseif $block=='Paypal' }
+
+                        <div style="margin-top: 20px" id="paypal-button-container"></div>
+                        <script
+                                data-sdk-integration-source="integrationbuilder_sc"
+                                src="https://www.paypal.com/sdk/js?client-id={$payment_account.object->get('Payment Account Login')}&components=buttons&enable-funding=venmo,paylater"></script>
+                        </script>
+                        <script>
+
+                          jQuery(function() {
+
+                            const FUNDING_SOURCES = [
+                              paypal.FUNDING.PAYPAL,
+                              paypal.FUNDING.PAYLATER,
+
+                            ];
+
+                            FUNDING_SOURCES.forEach(fundingSource => {
+                              paypal.Buttons({
+                                               fundingSource,
+
+                                               style: {
+                                                 layout: 'vertical',
+                                                 shape: 'rect',
+                                                 color: (fundingSource == paypal.FUNDING.PAYLATER) ? 'gold' : '',
+                                               },
+
+                                               createOrder: async (data, actions) => {
+                                                 try {
+
+                                                   const response =
+                                                             await fetch("ar_web_paypal_get_order_id.php?payment_account_id={$payment_account.object->id}&order_id={$order->id}", {
+                                                               method: "GET"
+                                                             });
+
+                                                   const details = await response.json();
+                                                   console.log(details)
+
+                                                   console.log(details.data.id)
+                                                   return details.data.id;
+
+                                                 }catch (e) {
+                                                   console.log(e)
+                                                 }
+                                               },
+
+
+
+                                               onApprove: async (data, actions) => {
+                                                 try {
+                                                   console.log(data)
+                                                   const response = await fetch(`ar_web_paypal_capture_payment.php?order_id=`+data.orderID, {
+                                                     method: "GET"
+                                                   });
+
+                                                   const details = await response.json();
+                                                   // Three cases to handle:
+                                                   //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
+                                                   //   (2) Other non-recoverable errors -> Show a failure message
+                                                   //   (3) Successful transaction -> Show confirmation or thank you message
+
+                                                   // This example reads a v2/checkout/orders capture response, propagated from the server
+                                                   // You could use a different API or structure for your 'orderData'
+                                                   const errorDetail = Array.isArray(details.details) && details.details[0];
+
+                                                   if (errorDetail && errorDetail.issue === 'INSTRUMENT_DECLINED') {
+                                                     return actions.restart();
+                                                     // https://developer.paypal.com/docs/checkout/integration-features/funding-failure/
+                                                   }
+
+                                                   if (errorDetail) {
+                                                     let msg = 'Sorry, your transaction could not be processed.';
+                                                     msg += errorDetail.description ? ' ' + errorDetail.description : '';
+                                                     msg += details.debug_id ? ' (' + details.debug_id + ')' : '';
+                                                     alert(msg);
+                                                     return;
+                                                   }
+
+                                                   // Successful capture! For demo purposes:
+                                                   console.log('Capture result', details, JSON.stringify(details, null, 2));
+                                                   const transaction = details.purchase_units[0].payments.captures[0];
+
+
+
+                                                   if(details.status==='COMPLETED') {
+
+                                                     $.ajax({
+                                                              type   : 'POST',
+                                                              url    : 'ar_web_paypal_process_payment.php',
+                                                              data   : details,
+                                                              success: function(raw_data) {
+                                                                $('#processing').addClass('hidden');
+
+                                                                console.log(raw_data)
+                                                                const data = JSON.parse(raw_data);
+
+                                                                console.log(data)
+
+                                                                $('.ordered_products_number').html('0')
+                                                                $('.order_total').html('')
+
+                                                                var d = new Date();
+                                                                var timestamp = d.getTime()
+                                                                d.setTime(timestamp + 300000);
+                                                                var expires = "expires=" + d.toUTCString();
+                                                                document.cookie = "au_pu_" + data.order_key + "=" + data.order_key + ";" + expires + ";path=/";
+                                                                window.location.replace("thanks.sys?order_key=" + data.order_key + '&t=' + timestamp);
+
+                                                              },
+                                                            });
+
+                                                   }else{
+                                                     alert('Error, please try other payment method');
+                                                   }
+
+                                                   // alert('Transaction ' + transaction.status + ': ' + transaction.id + 'See console for all available details');
+                                                 } catch (error) {
+                                                   console.error(error);
+                                                   // Handle the error or display an appropriate error message to the user
+                                                 }
+                                               },
+                                             }).render("#paypal-button-container");
+                            })
+
+                          });
+
+                        </script>
 
                     {elseif $block=='Hokodo' }
                         <iframe src="ar_web_payment_account_hokodo_sdk_iframe.php?order_key={$order->id}" title="Checkout"

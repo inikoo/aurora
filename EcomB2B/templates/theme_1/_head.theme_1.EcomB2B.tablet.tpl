@@ -332,7 +332,7 @@
     {/if}
 
 
-    {if $with_basket==1 or  $with_checkout==1}
+    {if $with_basket==1 or  $with_checkout==1 and $account_code!='AROMA' }
         <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
     {/if}
 
