@@ -32,7 +32,7 @@ print date('l jS \of F Y h:i:s A')."\n";
 $account = new Account();
 
 
-$sql = sprintf("SELECT `Email Campaign Key` FROM `Email Campaign Dimension` ");
+$sql = sprintf("SELECT `Email Campaign Key` FROM `Email Campaign Dimension` order by `Email Campaign Key` desc  ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $mailshot = get_object('Email Campaign', $row['Email Campaign Key']);
@@ -44,7 +44,7 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf("SELECT `Email Campaign Type Key` FROM `Email Campaign Type Dimension`");
+$sql = sprintf("SELECT `Email Campaign Type Key` FROM `Email Campaign Type Dimension` order by `Email Campaign Type Key`  desc ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $email_template_type = get_object('Email Campaign Type', $row['Email Campaign Type Key']);
@@ -56,7 +56,7 @@ if ($result = $db->query($sql)) {
 
 }
 
-$sql = sprintf("SELECT `Email Template Key` FROM `Email Template Dimension` ");
+$sql = sprintf("SELECT `Email Template Key` FROM `Email Template Dimension` order by `Email Template Key` desc ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $mailshot = get_object('Email Template', $row['Email Template Key']);
