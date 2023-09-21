@@ -19,6 +19,8 @@ include_once __DIR__.'/utils/web_locale_functions.php';
 include_once __DIR__.'/utils/etag_output.php';
 
 
+$zaraz=false;
+
 list($detected_device, $template_suffix) = get_device();
 
 date_default_timezone_set('UTC');
@@ -416,7 +418,8 @@ if ($webpage->get('Webpage Code') == 'register.sys') {
     $smarty->assign('selected_country', $country_code);
 
 
-} elseif ($webpage->get('Webpage Code') == 'clients.sys' or $webpage->get('Webpage Code') == 'client_order_new.sys') {
+}
+elseif ($webpage->get('Webpage Code') == 'clients.sys' or $webpage->get('Webpage Code') == 'client_order_new.sys') {
 
 
     require_once __DIR__.'/utils/get_addressing.php';
@@ -436,7 +439,8 @@ if ($webpage->get('Webpage Code') == 'register.sys') {
     $smarty->assign('countries', $countries);
     $smarty->assign('selected_country', $store->get('Store Home Country Code 2 Alpha'));
 
-} elseif ($webpage->get('Webpage Code') == 'login.sys') {
+}
+elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
       if (!empty($_GET['invoice_pdf'])) {
           $smarty->assign('redirect_after_login', '/ar_web_invoice.pdf.php?id='.$_GET['invoice_pdf']);
@@ -450,6 +454,10 @@ if ($webpage->get('Webpage Code') == 'register.sys') {
 
 }
 
+
+if (in_array($webpage->get('Webpage Code'),['welcome.sys','thanks.sys','checkout.sys'])){
+    $zaraz=true;
+}
 
 if ($webpage->get('Webpage Scope') == 'Product') {
 
@@ -514,6 +522,8 @@ if ($cacheable == 'Yes') {
 
 }
 header('Vary: Accept-Encoding, X-Device, X-State');
+$smarty->assign('zaraz', $zaraz);
+
 $smarty->display($template);
 
 

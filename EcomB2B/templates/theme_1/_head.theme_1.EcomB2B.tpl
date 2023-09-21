@@ -770,4 +770,8 @@
     </script>
     {/if}
 
+    {if !empty($zaraz)}
+        <script src="/cdn-cgi/zaraz/i.js" referrerpolicy="origin"></script>
+    {/if}
+
 </head>
