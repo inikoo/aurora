@@ -332,10 +332,13 @@
     {/if}
 
 
-    {if $with_basket==1 or  $with_checkout==1 and $account_code!='AROMA' }
+
+    {if $with_basket==1 or  $with_checkout==1 and !( $account_code=='AROMA' or   $account_code=='AWEU'  )  }
         <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
     {/if}
-    {if $with_basket==1 or  $with_checkout==1 and $account_code=='AROMA' }
+
+
+    {if $with_basket==1 or  $with_checkout==1 and $account_code=='AROMA'  }
         <script
                 data-sdk-integration-source="integrationbuilder_sc"
                 src="https://www.paypal.com/sdk/js?client-id={$paypal_client_id}&components=buttons&enable-funding=paylater&currency={$paypal_currency}"></script>
@@ -343,8 +346,21 @@
         </script>
     {/if}
 
-    {if $with_register==1}
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {if $with_basket==1 or  $with_checkout==1 and  $account_code=='AWEU'  }
+
+        {if $website->get('Website Code')=='NL'}
+            <script
+                    data-sdk-integration-source="integrationbuilder_sc"
+                    src="https://www.paypal.com/sdk/js?client-id={$paypal_client_id}&components=buttons,fields,marks,funding-eligibility&enable-funding=ideal&currency={$paypal_currency}"></script>
+
+
+        {else}
+            <script
+                    data-sdk-integration-source="integrationbuilder_sc"
+                    src="https://www.paypal.com/sdk/js?client-id={$paypal_client_id}&components=buttons&currency={$paypal_currency}"></script>
+
+            </script>
+        {/if}
     {/if}
 
     <style>

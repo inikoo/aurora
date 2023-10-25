@@ -233,7 +233,7 @@
                                     const FUNDING_SOURCES = [
                                     paypal.FUNDING.PAYPAL,
                                     paypal.FUNDING.PAYLATER,
-
+                                    paypal.FUNDING.IDEAL,
                                     ];
 
                                     FUNDING_SOURCES.forEach(fundingSource => {
@@ -264,9 +264,6 @@
                                                          console.log(e)
                                                        }
                                                      },
-
-
-
                                                      onApprove: async (data, actions) => {
                                                        try {
                                                          console.log(data)
