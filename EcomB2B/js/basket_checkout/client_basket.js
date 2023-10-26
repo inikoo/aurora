@@ -8,7 +8,6 @@ var special_instructions_timeout
 
 $(document).on('input propertychange', "#special_instructions", function (ev) {
 
-
     if (special_instructions_timeout) clearTimeout(special_instructions_timeout);
 
 

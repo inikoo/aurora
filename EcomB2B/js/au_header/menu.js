@@ -24,7 +24,6 @@ function menu_in() {
 
     }
 
-
     $('.menu').removeClass('active')
     $(this).addClass('active')
 

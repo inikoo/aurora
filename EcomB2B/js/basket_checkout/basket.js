@@ -19,7 +19,6 @@ $(document).on('change', "#order_for_collection", function(ev){
     }
 });
 
-
 var special_instructions_timeout
 
 $(document).on('input propertychange', "#special_instructions", function(ev){

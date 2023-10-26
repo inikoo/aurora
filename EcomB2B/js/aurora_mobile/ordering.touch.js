@@ -21,7 +21,6 @@ $(document).on('input propertychange', '.order_qty', function (evt) {
 
         }
 });
-
 function save_item_qty_change(element,options) {
 
     console.log(options)

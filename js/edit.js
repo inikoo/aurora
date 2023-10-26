@@ -18,11 +18,6 @@ function open_edit_this_field(scope) {
 function open_edit_field(object, key, field) {
 
 
-    //console.log(object)
-    //console.log(key)
-    //console.log(field)
-
-
     var type = $('#' + field + '_container').attr('field_type')
 
 

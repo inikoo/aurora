@@ -6,7 +6,6 @@
  Revision to fix bug Mon 21 Oct 2019 04:15:30 +0800 MYT
  */
 
-
 $(function() {
     $("form").on('submit', function (e) {
         e.preventDefault();

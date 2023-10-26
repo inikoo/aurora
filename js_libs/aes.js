@@ -11,7 +11,6 @@
  applies Nr rounds (10/12/14) using key schedule w for 'add round key' stage
 
  returns: byte-array encrypted value (16 bytes)
-
  About:
  AES implementation in JavaScript (c) Chris Veness 2005-2008
 
