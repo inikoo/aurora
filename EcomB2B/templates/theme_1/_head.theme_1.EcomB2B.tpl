@@ -436,7 +436,9 @@
     {/if}
 
     <script>
-      console.log('xxx');
+      console.log('AAA');
+      console.log('{$with_basket}');
+      console.log('{$with_checkout}');
     console.log('{$account_code}');
 
     </script>
