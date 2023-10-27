@@ -1450,7 +1450,14 @@ function prospects($_data, $db, $user)
 
 
             $link_format = '/prospects/%d/%d';
-            $name        = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>', $parameters['parent_key'], $data['Prospect Key'], $data['Prospect Name']);
+
+            $prospect_name=$data['Prospect Name'];
+            if($prospect_name==''){
+                $prospect_name='Unknown';
+            }
+
+            $name        = sprintf('<span class="link" onClick="change_view(\''.$link_format.'\')">%s</span>',
+                $parameters['parent_key'], $data['Prospect Key'],$prospect_name);
 
 
             $table_data[] = array(
