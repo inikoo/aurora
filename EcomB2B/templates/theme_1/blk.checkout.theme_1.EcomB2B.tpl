@@ -224,7 +224,7 @@
                             {elseif $block=='Pastpay' }
                                 <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:1800px;width:100%;border:none;overflow:hidden;" ></iframe>
                             {elseif $block=='Paypal' }
-                                <div id="paypal-button-container"></div>
+                                <div id="paypal-button-container" style="width: 400px"></div>
 
                                   <script>
 

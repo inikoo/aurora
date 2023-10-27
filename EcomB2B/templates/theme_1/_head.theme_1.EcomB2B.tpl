@@ -435,13 +435,7 @@
         <script src="https://www.paypalobjects.com/api/checkout.min.js" async></script>
     {/if}
 
-    <script>
-      console.log('AAA');
-      console.log('{$with_basket}');
-      console.log('{$with_checkout}');
-    console.log('{$account_code}');
 
-    </script>
     {if $with_basket==1 or  $with_checkout==1 and $account_code=='AROMA'  }
         <script
                 data-sdk-integration-source="integrationbuilder_sc"
@@ -459,10 +453,7 @@
 
 
     {else}
-        <script>
-          console.log('xxxx');
 
-        </script>
         <script
                 data-sdk-integration-source="integrationbuilder_sc"
                 src="https://www.paypal.com/sdk/js?client-id={$paypal_client_id}&components=buttons&currency={$paypal_currency}"></script>
