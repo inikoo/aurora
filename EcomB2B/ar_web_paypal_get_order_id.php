@@ -36,6 +36,20 @@ if (empty($_REQUEST['order_id'])) {
     exit;
 }
 
+if ($website->get('Website Type') == 'EcomDS') {
+    $order = get_object('Order', $_REQUEST['order_id']);
+
+    if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
+        $response = array(
+            'state' => 200,
+            'html'  => '<div style="margin:100px auto;text-align: center">Incorrect order id</div>'
+
+        );
+        echo json_encode($response);
+    }
+}
+
+
 
 if ($order->id and $order->id == $_REQUEST['order_id']) {
     $customer = get_object('Customer', $order->get('Order Customer Key'));
@@ -125,6 +139,7 @@ function get_access_token($payment_account)
     $x = $payment_account->get('Payment Account Login').':'.$payment_account->get('Payment Account Password');
 
     $auth = base64_encode($x);
+
 
 
     $res = paypal_api_post_call(
