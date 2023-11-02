@@ -1614,7 +1614,11 @@ function order_items_in_process($_data, $db, $user, $account) {
             }
 
 
-            if ($data['Part Units Per Package'] == 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
+            if (
+                $data['Part Units Per Package'] == 0 or $data['Supplier Part Packages Per Carton']==0 or
+                $data['Purchase Order Ordering Units'] %
+                ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or
+                $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
                 $class = 'error';
             } else {
                 $class = '';
