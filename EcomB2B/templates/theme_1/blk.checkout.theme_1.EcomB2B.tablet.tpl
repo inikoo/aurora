@@ -248,7 +248,7 @@ a
 
                                                      $.ajax({
                                                               type   : 'POST',
-                                                              url    : 'ar_web_paypal_process_payment.php',
+                                                              url    : 'ar_web_paypal_process_payment.php?order_id={$order->id}',
                                                               data   : details,
                                                               success: function(raw_data) {
                                                                 $('#processing').addClass('hidden');

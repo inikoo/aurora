@@ -19,6 +19,20 @@ require_once 'utils/natural_language.php';
 /** @var Order $order */
 
 
+if ($website->get('Website Type') == 'EcomDS') {
+    $order = get_object('Order', $_REQUEST['order_id']);
+
+    if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
+        $response = array(
+            'state' => 200,
+            'html'  => '<div style="margin:100px auto;text-align: center">Incorrect order id</div>'
+
+        );
+        echo json_encode($response);
+    }
+}
+
+
 $customer = get_object('Customer', $order->get('Order Customer Key'));
 $store    = get_object('Store', $order->get('Order Store Key'));
 $website  = get_object('Website', $store->get('Store Website Key'));
