@@ -319,7 +319,7 @@
                 </table>
             </td>
             <td align="left">{$transaction.description}</td>
-            <td align="center">{$transaction.qty}</td>
+            <td align="center" style="font-size:11pt">{$transaction.qty}</td>
             <td align="left" style="font-size: 6pt;">
                 {if $transaction.un_number>1}<span style="background-color:#f6972a;border:.5px solid #231e23;color:#231e23;">&nbsp;{$transaction.un_number|strip_tags}&nbsp;</span> {/if}
                 {if $transaction.part_packing_group!='None'}PG<b>{$transaction.part_packing_group}</b>{/if}
