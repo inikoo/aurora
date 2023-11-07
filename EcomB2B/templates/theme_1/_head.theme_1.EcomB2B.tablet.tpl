@@ -338,7 +338,7 @@
     {/if}
 
 
-    {if $with_basket==1 or  $with_checkout==1 and $account_code=='AROMA'  }
+    {if $with_basket==1 or  $with_checkout==1 and $account_code=='AROMA'  and isset($paypal_client_id)  }
         <script
                 data-sdk-integration-source="integrationbuilder_sc"
                 src="https://www.paypal.com/sdk/js?client-id={$paypal_client_id}&components=buttons&enable-funding=paylater&currency={$paypal_currency}"></script>
@@ -346,7 +346,7 @@
         </script>
     {/if}
 
-    {if $with_basket==1 or  $with_checkout==1 and  $account_code=='AWEU'  }
+    {if $with_basket==1 or  $with_checkout==1 and  $account_code=='AWEU' and isset($paypal_client_id)  }
 
         {if $website->get('Website Code')=='NL'}
             <script

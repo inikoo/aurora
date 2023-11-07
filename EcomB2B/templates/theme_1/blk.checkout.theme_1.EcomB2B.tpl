@@ -267,7 +267,7 @@
                                                      onApprove: async (data, actions) => {
                                                        try {
                                                          console.log(data)
-                                                         const response = await fetch(`ar_web_paypal_capture_payment.php?order_id=`+data.orderID, {
+                                                         const response = await fetch(`ar_web_paypal_capture_payment.php?ds_order_key={$order->id}&order_id=`+data.orderID, {
                                                            method: "GET"
                                                          });
 

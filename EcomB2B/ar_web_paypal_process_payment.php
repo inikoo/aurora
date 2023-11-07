@@ -29,6 +29,7 @@ if ($website->get('Website Type') == 'EcomDS') {
 
         );
         echo json_encode($response);
+        return;
     }
 }
 

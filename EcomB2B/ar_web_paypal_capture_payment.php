@@ -29,7 +29,7 @@ if (empty($_REQUEST['order_id'])) {
 }
 
 if ($website->get('Website Type') == 'EcomDS') {
-    $order = get_object('Order', $_REQUEST['order_id']);
+    $order = get_object('Order', $_REQUEST['ds_order_key']);
 
     if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
         $response = array(
@@ -38,6 +38,7 @@ if ($website->get('Website Type') == 'EcomDS') {
 
         );
         echo json_encode($response);
+        return;
     }
 }
 
