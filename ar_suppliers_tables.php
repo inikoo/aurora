@@ -3635,6 +3635,14 @@ function sales_history($_data, $db, $user, $account) {
             $to         = ($supplier->get('Part Type') == 'Archived' ? $supplier->get('Supplier Valid To') : gmdate('Y-m-d'));
             $date_field = '`Timeseries Record Date`';
             break;
+        case 'agent':
+            include_once 'class.Agent.php';
+            $agent   = new Agent($_data['parameters']['parent_key']);
+            $currency   = $account->get('Account Currency');
+            $from       = $agent->get('Agent Valid From');
+            $to         =  gmdate('Y-m-d');
+            $date_field = '`Timeseries Record Date`';
+            break;
         case 'category':
             include_once 'class.Category.php';
             $category   = new Category($_data['parameters']['parent_key']);
@@ -3645,7 +3653,7 @@ function sales_history($_data, $db, $user, $account) {
             break;
         default:
             print_r($_data);
-            exit('parent not configured '.$_data['parameters']['parent']);
+            exit('parent not x configured >'.$_data['parameters']['parent'].'<');
             break;
     }
 
@@ -3725,7 +3733,7 @@ function sales_history($_data, $db, $user, $account) {
 
 
     switch ($_data['parameters']['parent']) {
-
+        case 'agent':
         case 'supplier':
         case 'category':
             if ($_data['parameters']['frequency'] == 'annually') {
@@ -3761,7 +3769,7 @@ function sales_history($_data, $db, $user, $account) {
     $last_year_data = array();
 
 
-    //print $sql;
+
     if ($result = $db->query($sql)) {
 
 

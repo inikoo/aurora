@@ -344,12 +344,55 @@ function get_suppliers_module() {
                 'label'     => _('agent'),
                 'icon'      => 'hand-holding-box',
                 'reference' => 'agent/%d',
+
+                'subtabs_parent' => array(
+                    'agent.sales.plot'      => 'agent.sales',
+                    'agent.sales.history'   => 'agent.sales',
+                    'agent.sales.dashboard' => 'agent.sales',
+                    'agent.sales.info'      => 'agent.sales',
+
+                ),
+
                 'tabs'      => array(
                     'agent.details'   => array(
                         'label' => _('Data'),
                         'icon'  => 'database',
                         'title' => _('Details')
                     ),
+
+                    'agent.sales' => array(
+                        'label'   => _('Purchases/Sales'),
+                        'icon'    => 'money-bill',
+                        'subtabs' => array(
+                            'agent.sales.dashboard' => array(
+                                'label' => _(
+                                    'Dashboard'
+                                )
+                            ),
+                            'agent.sales.plot'      => array(
+                                'label' => _(
+                                    'Plot'
+                                )
+                            ),
+                            'agent.sales.history'   => array(
+                                'label' => _(
+                                    'Sales history'
+                                )
+                            ),
+
+
+                            'agent.sales.info' => array(
+                                'label'   => '',
+                                'title'   => _('Sales data info'),
+                                'icon_v2' => 'fal fa-fw fa-chess-clock',
+                                'class'   => 'right icon_only'
+                            ),
+
+
+                        )
+                    ),
+
+
                     'agent.suppliers' => array(
                         'label' => _("Agent's suppliers"),
                         'icon'  => 'hand-holding-box'

@@ -353,6 +353,25 @@ count(distinct `Customer Key`) as customers
 
             $group = 'group by `Date`';
             break;
+        case 'agent':
+
+            $sql = sprintf(
+                'SELECT `Timeseries Key` FROM `Timeseries Dimension` WHERE `Timeseries Parent`="Agent" AND `Timeseries Parent Key`=%s AND `Timeseries Frequency`="Daily" AND  `Timeseries Type`="AgentSales" ', $data['parent_key']
+            );
+            if ($result = $db->query($sql)) {
+                if ($row = $result->fetch()) {
+                    $timeseries_key = $row['Timeseries Key'];
+                }
+            } else {
+                print_r($error_info = $db->errorInfo());
+                exit;
+            }
+
+            $fields = ' `Timeseries Record Date` as Date,sum(`Timeseries Record Float A`) as Sales ,sum(`Timeseries Record Integer A`) as Volume';
+            $where  = sprintf("where `Timeseries Record Timeseries Key`=%d", $timeseries_key);
+
+            $group = 'group by `Date`';
+            break;
         case 'customer':
 
             $sql = sprintf(
