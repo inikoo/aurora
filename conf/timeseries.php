@@ -118,12 +118,38 @@ function get_time_series_config(): array {
                 'Timeseries Scope'     => 'Sales',
                 'Timeseries Parent'    => 'Supplier'
             ),
-
-
-
-
-
-
+        ),
+        'Agent'        => array(
+            array(
+                'Timeseries Type'      => 'AgentSales',
+                'Timeseries Frequency' => 'Daily',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Agent'
+            ),
+            array(
+                'Timeseries Type'      => 'AgentSales',
+                'Timeseries Frequency' => 'Weekly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Agent'
+            ),
+            array(
+                'Timeseries Type'      => 'AgentSales',
+                'Timeseries Frequency' => 'Monthly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Agent'
+            ),
+            array(
+                'Timeseries Type'      => 'AgentSales',
+                'Timeseries Frequency' => 'Quarterly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Agent'
+            ),
+            array(
+                'Timeseries Type'      => 'AgentSales',
+                'Timeseries Frequency' => 'Yearly',
+                'Timeseries Scope'     => 'Sales',
+                'Timeseries Parent'    => 'Agent'
+            ),
         ),
         'Customer'        => array(
             array(
