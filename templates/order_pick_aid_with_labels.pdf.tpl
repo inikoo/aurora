@@ -288,8 +288,8 @@
         <td align="center" width="14%">{t}Reference{/t}</td>
         <td align="left" width="14%">{t}Alt Locations{/t}</td>
         <td align="left">{t}SKO description{/t}</td>
-        <td align="center" width="7%">SKOs</td>
-        <td align="left" width="16%">{t}Notes{/t}</td>
+        <td align="center" width="10%">SKOs</td>
+        <td align="left" width="14%">{t}Notes{/t}</td>
     </tr>
     </thead>
     <tbody>
