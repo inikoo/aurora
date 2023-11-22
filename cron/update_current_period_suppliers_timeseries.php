@@ -117,7 +117,7 @@ if ($result = $db->query($sql)) {
 
 
         }
-        exit;
+
     }
 
 } else {
@@ -217,7 +217,7 @@ if ($result = $db->query($sql)) {
 
 
         }
-        exit;
+
     }
 
 } else {
