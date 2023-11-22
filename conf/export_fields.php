@@ -2049,7 +2049,7 @@ function get_export_fields($element, $account_currency_code = ''): array
             array(
                 'name'    => '`Product Price`',
                 'code'    => 'product_price',
-                'label'   => _(' Price'),
+                'label'   => _('Price'),
                 'checked' => 1
             ),
             array(
@@ -2256,7 +2256,7 @@ function get_export_fields($element, $account_currency_code = ''): array
             array(
                 'name'    => '`Product Price`',
                 'code'    => 'product_price',
-                'label'   => _(' Price'),
+                'label'   => _('Price'),
                 'checked' => 1
             ),
             array(
