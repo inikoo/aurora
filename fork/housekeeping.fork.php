@@ -1411,6 +1411,8 @@ function fork_housekeeping($job)
 
 
             $store = get_object('Store', $data['store_key']);
+
+            /*
             $store->load_acc_data();
             $account->load_acc_data();
 
@@ -1422,7 +1424,7 @@ function fork_housekeeping($job)
 
             $store->update_orders();
             $account->update_orders();
-
+*/
 
             $sql = sprintf(
                 'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ',
