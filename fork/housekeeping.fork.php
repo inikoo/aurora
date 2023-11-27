@@ -1661,10 +1661,10 @@ function fork_housekeeping($job)
 
             update_invoice_products_sales_data($db, $account, $data);
             $customer = get_object('Customer', $data['customer_key']);
-            $customer->update_invoices();
+            //$customer->update_invoices();
 
             $store = get_object('Store', $customer->get('Store Key'));
-            $store->update_invoices();
+            //$store->update_invoices();
 
 
             require_once 'conf/timeseries.php';
