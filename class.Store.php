@@ -1723,6 +1723,7 @@ class Store extends DB_Table
 
     function update_customers_data()
     {
+        return;
         $this->data['Store Contacts']                     = 0;
         $this->data['Store New Contacts']                 = 0;
         $this->data['Store Contacts With Orders']         = 0;
