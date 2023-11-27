@@ -2527,6 +2527,7 @@ function fork_housekeeping($job)
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
 
+            /*
             $account->load_acc_data();
             $account->update_dispatching_time_data('1m');
             $account->update_sitting_time_in_warehouse();
@@ -2534,6 +2535,7 @@ function fork_housekeeping($job)
             $store->update_orders();
             $store->update_dispatching_time_data('1m');
             $store->update_sitting_time_in_warehouse();
+            */
 
             $smarty               = new Smarty();
             $smarty->caching_type = 'redis';
