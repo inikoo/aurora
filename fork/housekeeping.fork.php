@@ -910,10 +910,10 @@ function fork_housekeeping($job)
 
             $store = get_object('Store', $payment->get('Payment Store Key'));
 
-            //$customer->update_payments();
-            //$store->update_orders();
-            //$store->update_payments();
-            //$account->update_orders();
+            $customer->update_payments();
+            $store->update_orders();
+            $store->update_payments();
+            $account->update_orders();
 
             break;
 
@@ -1091,8 +1091,8 @@ function fork_housekeeping($job)
             $store = get_object('Store', $order->get('Store Key'));
 
 
-           // $store->update_orders();
-          //  $account->update_orders();
+            $store->update_orders();
+            $account->update_orders();
 
 
             break;
@@ -1412,7 +1412,7 @@ function fork_housekeeping($job)
 
             $store = get_object('Store', $data['store_key']);
 
-            /*
+
             $store->load_acc_data();
             $account->load_acc_data();
 
@@ -1424,7 +1424,7 @@ function fork_housekeeping($job)
 
             $store->update_orders();
             $account->update_orders();
-*/
+
 
             $sql = sprintf(
                 'SELECT `Product Part Part SKU` FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`)  WHERE  `Delivery Note Key`=%d  ',
@@ -1594,8 +1594,8 @@ function fork_housekeeping($job)
             $store = get_object('Store', $order->get('Store Key'));
 
 
-            //$store->update_orders();
-            //$account->update_orders();
+            $store->update_orders();
+            $account->update_orders();
 
             $order->send_review_invitation();
 
@@ -1661,10 +1661,10 @@ function fork_housekeeping($job)
 
             update_invoice_products_sales_data($db, $account, $data);
             $customer = get_object('Customer', $data['customer_key']);
-            //$customer->update_invoices();
+            $customer->update_invoices();
 
             $store = get_object('Store', $customer->get('Store Key'));
-            //$store->update_invoices();
+            $store->update_invoices();
 
 
             require_once 'conf/timeseries.php';
@@ -2529,7 +2529,7 @@ function fork_housekeeping($job)
             $shipper = get_object('Shipper', $delivery_note->get('Delivery Note Shipper Key'));
             $shipper->update_shipper_usage();
 
-            /*
+
             $account->load_acc_data();
             $account->update_dispatching_time_data('1m');
             $account->update_sitting_time_in_warehouse();
@@ -2537,7 +2537,7 @@ function fork_housekeeping($job)
             $store->update_orders();
             $store->update_dispatching_time_data('1m');
             $store->update_sitting_time_in_warehouse();
-            */
+
 
             $smarty               = new Smarty();
             $smarty->caching_type = 'redis';
