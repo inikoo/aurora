@@ -1594,8 +1594,8 @@ function fork_housekeeping($job)
             $store = get_object('Store', $order->get('Store Key'));
 
 
-            $store->update_orders();
-            $account->update_orders();
+            //$store->update_orders();
+            //$account->update_orders();
 
             $order->send_review_invitation();
 
