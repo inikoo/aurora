@@ -910,10 +910,10 @@ function fork_housekeeping($job)
 
             $store = get_object('Store', $payment->get('Payment Store Key'));
 
-            $customer->update_payments();
-            $store->update_orders();
-            $store->update_payments();
-            $account->update_orders();
+            //$customer->update_payments();
+            //$store->update_orders();
+            //$store->update_payments();
+            //$account->update_orders();
 
             break;
 

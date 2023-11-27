@@ -2091,17 +2091,17 @@ class Store extends DB_Table
 
     function update_orders()
     {
+        /*
         $this->update_orders_in_basket_data();
         $this->update_orders_in_process_data();
         $this->update_orders_in_warehouse_data();
         $this->update_orders_packed_data();
         $this->update_orders_packed_done_data();
-
         $this->update_orders_approved_data();
         $this->update_orders_dispatched();
         $this->update_orders_dispatched_today();
-
         $this->update_orders_cancelled();
+        */
     }
 
     function update_orders_in_basket_data()
@@ -2626,6 +2626,7 @@ class Store extends DB_Table
 
     function update_payments()
     {
+        return;
         $data = array(
 
             'payments' => array(
