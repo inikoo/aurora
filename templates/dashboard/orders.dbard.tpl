@@ -40,16 +40,14 @@
             <span class="Orders_In_Warehouse_No_Alerts_Number button {if  $order_flow=='in_warehouse'}blue{/if} " title="{t}Orders in warehouse without alerts{/t}" onclick="get_orders_table('in_warehouse',{ parent: 'store','parent_key':{$store->id}})">
                <i style="font-size: 50%" class="fa fa-bell invisible" aria-hidden="true"></i>  {$store->get('Orders In Warehouse No Alerts Number')}
             </span>
-            | </span>
-            <span class="Orders_In_Warehouse_With_Alerts_Number button {if  $order_flow=='in_warehouse_with_alerts'}blue{/if} " title="{t}Orders in warehouse with alerts{/t}" onclick="get_orders_table('in_warehouse_with_alerts',{ parent: 'store','parent_key':{$store->id}})">
-                {$store->get('Orders In Warehouse With Alerts Number')} <i style="font-size: 50%" class="fa fa-bell error" aria-hidden="true"></i>
-            </span>
+
         </div>
 
         </div>
         <div >
-            <span onclick="get_orders_table('in_warehouse',{ parent: 'store','parent_key':{$store->id}})" class="button {if  $order_flow=='in_warehouse'}blue{/if} Orders_In_Warehouse_No_Alerts_Amount" title="{if $currency=='account'}{$store->get('DC Orders In Warehouse No Alerts Amount')}{else}{$store->get('Orders In Warehouse No Alerts Amount')}{/if}">{if $currency=='account'}{$store->get('DC Orders In Warehouse No Alerts Amount Minify')}{else}{$store->get('Orders In Warehouse No Alerts Amount Minify')}{/if}</span> |
-            <span onclick="get_orders_table('in_warehouse_with_alerts',{ parent: 'store','parent_key':{$store->id}})" class="button {if  $order_flow=='in_warehouse_with_alerts'}blue{/if} Orders_In_Warehouse_With_Alerts_Amount" title="{if $currency=='account'}{$store->get('DC Orders In Warehouse With Alerts Amount')}{else}{$store->get('Orders In Warehouse With Alerts Amount')}{/if}">{if $currency=='account'}{$store->get('DC Orders In Warehouse With Alerts Amount Minify')}{else}{$store->get('Orders In Warehouse With Alerts Amount Minify')}{/if}</span>
+            <span onclick="get_orders_table('in_warehouse',{ parent: 'store','parent_key':{$store->id}})" class="button {if  $order_flow=='in_warehouse'}blue{/if} Orders_In_Warehouse" title="{if $currency=='account'}{$store->get('DC Orders In Warehouse No Alerts Amount')}{else}{$store->get('Orders In Warehouse No Alerts Amount')}{/if}">
+                {if $currency=='account'}{$store->get('DC Orders In Warehouse No Alerts Amount Minify')}{else}{$store->get('Orders In Warehouse No Alerts Amount Minify')}{/if}</span>
+
 
         </div>
 

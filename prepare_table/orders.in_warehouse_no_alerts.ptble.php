@@ -18,7 +18,9 @@ $currency = '';
 
 
 
-$where = 'where (( `Order State`="InWarehouse"  and `Order Delivery Note Alert`!="Yes") or `Order Replacements In Warehouse without Alerts`>0 )';
+//$where = 'where (( `Order State`="InWarehouse"  and `Order Delivery Note Alert`!="Yes") or `Order Replacements In Warehouse without Alerts`>0 )';
+
+$where = ' where `Order State`="InWarehouse"  ';
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
 
 $home_country = 'XX';
@@ -225,7 +227,6 @@ if(`Order Replacements In Warehouse without Alerts`>0,`Order Replacement Created
     ';
 
 $sql_totals = "select count(Distinct O.`Order Key`) as num from $table $where";
-
 
 
 
