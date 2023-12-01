@@ -2010,12 +2010,13 @@ function sales($_data, $db, $user, $account) {
     );
     $number_stores = 0;
 
-    $sql = sprintf('select `Store Code`,`Store Name`,`Store Currency Code` from `Store Dimension` ');
+    $sql = sprintf('select `Store Status`,`Store Code`,`Store Name`,`Store Currency Code` from `Store Dimension` where `Store Status` in ("Normal","ClosingDown")  ');
 
     if ($result = $db->query($sql)) {
         foreach ($result as $data) {
             $adata[$data['Store Code']] = array(
 
+                'status' => $data['Store Status'],
                 'store_code' => $data['Store Code'],
                 'store'      => $data['Store Name'],
                 'store_raw'  => $data['Store Name'],
@@ -2091,6 +2092,12 @@ function sales($_data, $db, $user, $account) {
     if ($result = $db->query($sql)) {
 
         foreach ($result as $data) {
+
+
+            if($data['Store Status']=='Closed' or $data['Store Status']=='InProcess'){
+
+                continue;
+            }
 
 
             $adata[$data['Store Code']] = array(
@@ -2171,6 +2178,11 @@ function sales($_data, $db, $user, $account) {
 
         foreach ($result as $data) {
 
+
+            if($data['Store Status']=='Closed' or $data['Store Status']=='InProcess'){
+
+                continue;
+            }
 
             $refund_amount_1yb_oc = money($data['refunds_amount_oc'], $account->get('Account Currency Code'));
             $revenue_1yb_oc       = money($data['revenue_oc'], $account->get('Account Currency Code'));
@@ -2400,7 +2412,8 @@ function sales_invoice_category($_data, $db, $user, $account) {
     $number_stores = 0;
 
     $sql = sprintf(
-        'select `Category Key`,`Category Code`,`Category Label`,`Store Currency Code`  from `Invoice Category Dimension` IC  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`="Head"  '
+        'select `Category Key`,`Category Code`,`Category Label`,`Store Currency Code`  from `Invoice Category Dimension` IC  left join `Category Dimension` C on (C.`Category Key`=IC.`Invoice Category Key`) 
+    left join `Store Dimension` S on (S.`Store Key`=C.`Category Store Key`) where `Category Branch Type`="Head"  and `Invoice Category Status` in("Normal","ClosingDown")     '
     );
 
 

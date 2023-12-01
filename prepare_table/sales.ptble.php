@@ -17,9 +17,7 @@
 //$where_interval_working_hours='';
 
 
-$where = " where true   ";
-
-
+$where = ' where  `Store Status` in ("Normal","ClosingDown")    ';
 if (isset($parameters['period']) ) {
 
     include_once 'utils/date_functions.php';
@@ -90,7 +88,7 @@ sum(if(`Invoice Type`='Refund',`Invoice Total Net Amount`,0)) refunds_amount,
 sum(`Invoice Total Net Amount` ) revenue,
 sum(`Invoice Total Profit` ) profit,
 
-count(distinct `Invoice Customer Key`) customers
+count(distinct `Invoice Customer Key`) customers , `Store Status`
 
 
 
@@ -99,7 +97,6 @@ count(distinct `Invoice Customer Key`) customers
 
 $sql_totals = "select count(Distinct `Store Key` )  as num from $table  $where  ";
 
-//print $sql_totals;
 
 
-?>
+
