@@ -23,35 +23,70 @@
                 {assign 'key'  "u_id_`$key`" }
                 {if $header_text.type=='H1++'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <h1 class="huge" type="{$header_text.type}">{$header_text.text}</h1>
+                        <h1 class="huge" type="{$header_text.type}">
+                            {if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}</h1>
                     </div>
                 {elseif $header_text.type=='H1+'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <h1 class="big" type="{$header_text.type}">{$header_text.text}</h1>
+                        <h1 class="big" type="{$header_text.type}">{if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}</h1>
                     </div>
                 {elseif $header_text.type=='H1'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <h1 type="{$header_text.type}">{$header_text.text}</h1>
+                        <h1 type="{$header_text.type}">{if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}</h1>
                     </div>
                 {elseif $header_text.type=='H2'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <h2 type="{$header_text.type}">{$header_text.text}</h2>
+                        <h2 type="{$header_text.type}">{if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}</h2>
                     </div>
                 {elseif $header_text.type=='H3'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <h3  type="{$header_text.type}">{$header_text.text}</h3>
+                        <h3  type="{$header_text.type}">
+                            {if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}
+                         </h3>
                     </div>
                 {elseif $header_text.type=='N++'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <span  type="{$header_text.type}">{$header_text.text}</span>
+                        <span  type="{$header_text.type}">{if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}</span>
                     </div>
                 {elseif $header_text.type=='N'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <span  type="{$header_text.type}">{$header_text.text}</span>
+                        <span  type="{$header_text.type}">{if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}</span>
                     </div>
                 {elseif $header_text.type=='N-'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <small  type="{$header_text.type}">{$header_text.text}</small>
+                        <small  type="{$header_text.type}">{if !empty($header_text.link)}
+                                <a href="{$header_text.link}">{$header_text.text}</a>
+                            {else}
+                                {$header_text.text}
+                            {/if}</small>
                     </div>
                 {/if}
             {/foreach}
