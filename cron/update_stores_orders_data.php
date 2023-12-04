@@ -39,7 +39,7 @@ $account = new Account();
 $account->update_orders();
 
 
-$sql = "SELECT `Store Key` FROM `Store Dimension`";
+$sql = "SELECT `Store Key` FROM `Store Dimension` where `Store Status` in ('Normal','ClosingDown') ";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $store = get_object('store', $row['Store Key']);
