@@ -1721,6 +1721,148 @@ class Store extends DB_Table
         }
     }
 
+    function update_customers_data_bis()
+    {
+
+        $this->data['Store Contacts']                     = 0;
+        $this->data['Store New Contacts']                 = 0;
+        $this->data['Store Contacts With Orders']         = 0;
+        $this->data['Store Active Contacts']              = 0;
+        $this->data['Store Losing Contacts']              = 0;
+        $this->data['Store Lost Contacts']                = 0;
+        $this->data['Store New Contacts With Orders']     = 0;
+        $this->data['Store Active Contacts With Orders']  = 0;
+        $this->data['Store Losing Contacts With Orders']  = 0;
+        $this->data['Store Lost Contacts With Orders']    = 0;
+        $this->data['Store Contacts Who Visit Website']   = 0;
+        $this->data['Store Lost Contacts With No Orders'] = 0;
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer Number Web Logins`>0  AND `Customer Store Key`=%d  ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store Contacts Who Visit Website'] = $row['num'];
+            } else {
+                $this->data['Store Contacts Who Visit Website'] = 0;
+            }
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  ",
+            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime('now -1 week'))),
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store New Contacts'] = $row['num'];
+            }
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM  `Customer Dimension`    WHERE   `Customer First Contacted Date`>%s  AND `Customer Store Key`=%d  AND `Customer With Orders`='Yes' ",
+            prepare_mysql(gmdate('Y-m-d H:i:s', strtotime('now -1 week'))),
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store New Contacts With Orders'] = $row['num'];
+            }
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num ,  sum(IF(`Customer Type by Activity`='Active'   ,1,0)) AS active, sum(IF(`Customer Type by Activity`='Losing',1,0)) AS losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) AS lost  FROM   `Customer Dimension` WHERE `Customer Store Key`=%d ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store Contacts']        = $row['num'];
+                $this->data['Store Active Contacts'] = $row['active'];
+                $this->data['Store Losing Contacts'] = $row['losing'];
+                $this->data['Store Lost Contacts']   = $row['lost'];
+            }
+        }
+
+        $sql = sprintf(
+            "SELECT count(*) AS num ,sum(IF(`Customer New`='Yes',1,0)) AS new,sum(IF(`Customer Type by Activity`='Active'   ,1,0)) AS active, sum(IF(`Customer Type by Activity`='Losing',1,0)) AS losing, sum(IF(`Customer Type by Activity`='Lost',1,0)) AS lost  FROM   `Customer Dimension` WHERE `Customer Store Key`=%d AND `Customer With Orders`='Yes'",
+            $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store Contacts With Orders']        = $row['num'];
+                $this->data['Store Active Contacts With Orders'] = $row['active'];
+                $this->data['Store Losing Contacts With Orders'] = $row['losing'];
+                $this->data['Store Lost Contacts With Orders']   = $row['lost'];
+            }
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num   FROM   `Customer Dimension` WHERE `Customer Store Key`=%d AND `Customer With Orders`='No'  and `Customer Type by Activity`='NeverOrder' ",
+            $this->id
+        );
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $this->data['Store Lost Contacts With No Orders'] = $row['num'];
+            }
+        }
+
+
+        $sql = sprintf(
+            "UPDATE `Store Dimension` SET
+                     `Store Contacts`=%d,
+                     `Store New Contacts`=%d,
+                     `Store Active Contacts`=%d ,
+                     `Store Losing Contacts`=%d ,
+                     `Store Lost Contacts`=%d ,
+
+                     `Store Contacts With Orders`=%d,
+                     `Store New Contacts With Orders`=%d,
+                     `Store Active Contacts With Orders`=%d,
+                     `Store Losing Contacts With Orders`=%d,
+                     `Store Lost Contacts With Orders`=%d,
+                     `Store Contacts Who Visit Website`=%d,
+                       `Store Lost Contacts With No Orders`=%d
+                     WHERE `Store Key`=%d  ",
+            $this->data['Store Contacts'],
+            $this->data['Store New Contacts'],
+            $this->data['Store Active Contacts'],
+            $this->data['Store Losing Contacts'],
+            $this->data['Store Lost Contacts'],
+
+            $this->data['Store Contacts With Orders'],
+            $this->data['Store New Contacts With Orders'],
+            $this->data['Store Active Contacts With Orders'],
+            $this->data['Store Losing Contacts With Orders'],
+            $this->data['Store Lost Contacts With Orders'],
+            $this->data['Store Contacts Who Visit Website'],
+            $this->data['Store Lost Contacts With No Orders'],
+            $this->id
+        );
+
+        $this->db->exec($sql);
+
+
+        $this->update_customers_email_marketing_data();
+
+
+        $account = get_object('Account', 1);
+        $account->update_customers_data();
+    }
+
     function update_customers_data()
     {
         return;
@@ -2062,7 +2204,7 @@ class Store extends DB_Table
     }
 
 
-    function update_invoices()
+    function update_invoices_bis()
     {
         $invoices = 0;
         $refunds  = 0;
@@ -2088,7 +2230,48 @@ class Store extends DB_Table
             'Store Data'
         );
     }
+    function update_invoices()
+    {
+        return;
+        $invoices = 0;
+        $refunds  = 0;
 
+
+        $sql = sprintf(
+            "select sum(if(`Invoice Type`='Invoice',1,0)) as invoices,sum(if(`Invoice Type`='Refund',1,0)) as refunds from  `Invoice Dimension` where `Invoice Store Key`=%d  ",
+            $this->id
+        );
+
+        if ($result = $this->db->query($sql)) {
+            if ($row = $result->fetch()) {
+                $invoices = $row['invoices'];
+                $refunds  = $row['refunds'];
+            }
+        }
+
+        $this->fast_update(
+            array(
+                'Store Invoices' => $invoices,
+                'Store Refunds'  => $refunds,
+            ),
+            'Store Data'
+        );
+    }
+
+    function update_orders_bis()
+    {
+
+                $this->update_orders_in_basket_data();
+                $this->update_orders_in_process_data();
+                $this->update_orders_in_warehouse_data();
+                $this->update_orders_packed_data();
+                $this->update_orders_packed_done_data();
+                $this->update_orders_approved_data();
+                $this->update_orders_dispatched();
+                $this->update_orders_dispatched_today();
+                $this->update_orders_cancelled();
+
+    }
 
     function update_orders()
     {
@@ -2625,8 +2808,73 @@ class Store extends DB_Table
         $this->fast_update($data_to_update, 'Store DC Data');
     }
 
+    function update_payments_bis()
+    {
+
+
+        $data = array(
+
+            'payments' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+            'credits'  => array(
+                'number' => 0,
+                'amount' => 0,
+            ),
+        );
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Payment Transaction Amount`),0) AS amount,ifnull(sum(`Payment Transaction Amount`*`Payment Currency Exchange Rate`),0) AS dc_amount FROM `Payment Dimension`  WHERE  `Payment Store Key`=%d  AND   `Payment Transaction Status` ='Completed' ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data['payments']['number']    = $row['num'];
+                $data['payments']['amount']    = $row['amount'];
+                $data['payments']['dc_amount'] = $row['dc_amount'];
+            }
+        }
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Customer Account Balance`),0) AS amount FROM `Customer Dimension`  WHERE  `Customer Store Key`=%d  AND   `Customer Account Balance`!=0 ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data['credits']['number'] = $row['num'];
+                $data['credits']['amount'] = $row['amount'];
+            }
+        }
+
+
+        $data_to_update = array(
+            'Store Total Acc Payments'        => $data['payments']['number'],
+            'Store Total Acc Payments Amount' => round($data['payments']['amount'], 2),
+            'Store Total Acc Credits'         => $data['credits']['number'],
+            'Store Total Acc Credits Amount'  => round($data['credits']['amount'], 2)
+
+        );
+
+
+        $this->fast_update($data_to_update, 'Store Data');
+
+
+        $data_to_update = array(
+            'Store DC Total Acc Payments Amount' => round($data['payments']['dc_amount'], 2)
+
+        );
+        $this->fast_update($data_to_update, 'Store DC Data');
+    }
     function update_payments()
     {
+return;
 
         $data = array(
 

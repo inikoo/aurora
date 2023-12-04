@@ -43,13 +43,13 @@ $sql = "SELECT `Store Key` FROM `Store Dimension`";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
         $store = get_object('store', $row['Store Key']);
-        $store->update_orders_in_process_data();
 
-        $store->update_invoices();
-        $store->update_customers_data();
 
-        $store->update_orders();
-        $store->update_payments();
+        $store->update_invoices_bis();
+        $store->update_customers_data_bis();
+
+        $store->update_orders_bis();
+        $store->update_payments_bis();
 
 
     }
