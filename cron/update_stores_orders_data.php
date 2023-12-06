@@ -36,7 +36,9 @@ print date('l jS \of F Y h:i:s A')."\n";
 
 $account = new Account();
 
-$account->update_orders();
+$account->update_orders_bis();
+
+
 
 
 $sql = "SELECT `Store Key` FROM `Store Dimension` where `Store Status` in ('Normal','ClosingDown') ";
