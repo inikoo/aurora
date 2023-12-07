@@ -40,7 +40,6 @@ $account->update_orders_bis();
 
 
 
-
 $sql = "SELECT `Store Key` FROM `Store Dimension` where `Store Status` in ('Normal','ClosingDown') ";
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
