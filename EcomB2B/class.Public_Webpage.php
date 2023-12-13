@@ -149,9 +149,12 @@ class Public_Webpage {
             case 'Webpage Scope Key':
             case 'Webpage Website Key':
             case 'Website URL':
+
+
                 return $this->data[$key];
 
-
+            case 'Webpage Blog URL':
+                return $this->data[$key];
             case 'Name':
 
                 return $this->data['Webpage Name'];

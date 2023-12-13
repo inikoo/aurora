@@ -1202,7 +1202,7 @@ class Page extends DB_Table
             case 'Webpage Launch Date':
             case 'Webpage URL':
             case 'Webpage Sticky Note';
-
+            case 'Webpage Blog URL':
                 $this->update_field($field, $value, $options);
                 break;
 

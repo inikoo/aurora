@@ -296,8 +296,23 @@
 
 
         </table>
+            {if $webpage->get('Webpage Blog URL')!=''}
+            <table   style="margin-top: 20px;min-width: 270px">
+
+                <tr >
+
+                    <td ><a href="{$webpage->get('Webpage Blog URL')}" style="text-decoration: none">
+                              <span style="border:1px solid #ccc;padding:5px 15px 5px 10px"> <i style="margin-right: 3px" class="fab fa-blogger-b"></i>    Blog </span>
+                        </a></td>
+                </tr>
+                <tr style="height: 20px"><td></td></tr>
+
+
+            </table>
+            {/if}
 
          <table class="{if $materials==''}hide{/if}"   style="margin-top: 20px;min-width: 270px">
+
              <tr class="{if $materials==''}hide{/if}">
 
                  <td ><a href="asset_label.php?object=product&key={$product->id}&type=unit_ingredients" target="_blank" style="text-decoration: none">

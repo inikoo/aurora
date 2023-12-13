@@ -288,6 +288,45 @@ $object_fields[] = array(
 );
 
 
+
+if (in_array(
+        $object->get('Webpage Scope'), array(
+            'Product',
+        )
+    ) and $can_change_state) {
+
+    $object_fields[] = array(
+        'label' => _('Blog'),
+
+        'show_title' => true,
+        'fields'     => array(
+
+
+            array(
+                'id'   => 'Webpage_Blog_URL',
+                'edit' => ($edit ? 'string' : ''),
+
+                'value'           => htmlspecialchars($object->get('Webpage Blog URL')),
+                'formatted_value' => $object->get('Webpage Blog URL'),
+                'label'           => ucfirst($object->get_field_label('Blog URL')),
+                'required'        => false,
+                'type'            => 'value',
+
+
+            ),
+
+
+        )
+    );
+
+
+
+
+}
+
+
+
+
 if (in_array($object->get('Webpage Scope'), array('HomepageToLaunch'))) {
     $object_fields[] = array(
         'label'      => _('Webpage settings'),
