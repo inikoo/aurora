@@ -34,21 +34,35 @@
 
                     <div class="section_items">
                         {foreach from=$section_data.items item=category_data}
-                            <div class="category_wrap"">
+                            <div class="category_wrap" style="margin-bottom: 44px">
                                 {if $category_data.type=='category'}
 
-                                    <div class="category_block" style="position:relative" >
+                                    <div class="category_block" style="position:relative;border:none"  >
+                                        <a href="{$category_data.link}">
+                                            <img style="object-fit: cover;width: 226px;height: 100%"
+                                                 src="{if empty($category_data.image_website)}{$category_data.image_src}{else}{$category_data.image_website}{/if}"  />
+                                        </a>
 
-                                        <h3 class="item_header_text" style="font-size: 15px"> <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></h3>
-                                        <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center "   >
 
-                                            <a href="{$category_data.link}">
-                                            <img src="{if empty($category_data.image_website)}{$category_data.image_src}{else}{$category_data.image_website}{/if}"  />
-                                            </a>
-
-                                        </div>
 
                                     </div>
+                                    <div style="max-width: 226px;padding-top: 6px;padding-bottom: 0px">
+                                    <h3  style="font-size: 15px;text-align: center;font-weight: normal;"> <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></h3>
+                                    </div>
+                        {elseif $category_data.type=='categoryx'}
+
+                            <div class="category_block" style="position:relative" >
+
+                                <h3 class="item_header_text" style="font-size: 15px"> <a href="{$category_data.link}">{$category_data.header_text|strip_tags}</a></h3>
+                                <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center "   >
+
+                                    <a href="{$category_data.link}">
+                                        <img src="{if empty($category_data.image_website)}{$category_data.image_src}{else}{$category_data.image_website}{/if}"  />
+                                    </a>
+
+                                </div>
+
+                            </div>
 
                                 {elseif $category_data.type=='text'}
 
