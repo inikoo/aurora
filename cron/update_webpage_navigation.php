@@ -25,16 +25,18 @@ $editor = array(
 
 
 print "xx";
-$sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  
-                                                                             where `Webpage State`="Online" and `Page Key`=199061 ');
+$sql = sprintf('SELECT `Page Key`,`Website Status` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  
+                                                                             where `Website Status`="Active" and  `Webpage State`="Online" and `Webpage Scope`!="Product" ');
 if ($result=$db->query($sql)) {
     foreach ($result as $row) {
+
+      //  print_r($row);
 
         $webpage = get_object('Webpage', $row['Page Key']);
 
         // print_r(json_decode($webpage->data['Webpage Navigation Data']));
 
-        $webpage->update_public_navigation2();
+        $webpage->update_public_navigation();
 
         //$webpage = get_object('Webpage', $row['Page Key']);
 
