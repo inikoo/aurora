@@ -1599,28 +1599,14 @@ class Page extends DB_Table
 
 
         switch ($this->get('Webpage Scope')) {
-            case 'Category Products':
+
+            case 'Category Categories':
+                $store = get_object('Store', $this->data['Webpage Store Key']);
 
                 $website = get_object('Website', $this->data['Webpage Website Key']);
 
                 $category = get_object('Category', $this->data['Webpage Scope Key']);
-
-
-                $parent_webpage_key = 0;
-
-                if ($category->get('Product Category Department Category Key')) {
-                    $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
-                    $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
-                    if ($parent_webpage->get('Webpage State') == 'Offline') {
-                        $parent_webpage_key = 0;
-                    } else {
-                        $parent_webpage_key = $parent_webpage->id;
-                    }
-                }
-
-
-                // print_r($parent_webpage);
-
+                $navigation_data['show'] = 1;
                 $navigation_data['breadcrumbs'][] = array(
                     'link'        => 'https://'.$website->get('Website URL'),
                     'label'       => '<i class="fa fa-home"></i>',
@@ -1630,18 +1616,181 @@ class Page extends DB_Table
 
                 );
 
+                if($store->get('Store Department Category Key')!= $category->get('Category Root Key')){
 
-                if ($parent_webpage_key) {
-                    $navigation_data['breadcrumbs'][] = array(
-                        'link'        => $parent_webpage->get('Webpage URL'),
-                        'label'       => $parent_webpage->get('Name'),
-                        'label_short' => $parent_webpage->get('Webpage Code'),
-                        'title'       => $parent_webpage->get('Webpage Browser Title'),
-                        'type'        => 'Category Categories',
-                        'icon'        => 'folder-tree',
-                        'key'         => $parent_webpage->id
-                    );
+
+                    $parent_webpage_key = 0;
+
+
+                    if ($category->get('Category Parent Key')) {
+                        $parent         = get_object('Category', $category->get('Category Parent Key'));
+                        $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                        if ($parent_webpage->get('Webpage State') == 'Offline') {
+                            $parent_webpage_key = 0;
+                        } else {
+                            $parent_webpage_key = $parent_webpage->id;
+                        }
+                    }
+
+
+
+
+
+                    if ($parent_webpage_key) {
+                        $navigation_data['breadcrumbs'][] = array(
+                            'link'        => $parent_webpage->get('Webpage URL'),
+                            'label'       => $parent_webpage->get('Name'),
+                            'label_short' => $parent_webpage->get('Webpage Code'),
+                            'title'       => $parent_webpage->get('Webpage Browser Title'),
+                            'type'        => 'Category Categories',
+                            'icon'        => 'folder-tree',
+                            'key'         => $parent_webpage->id
+                        );
+                    }
+
                 }
+
+
+
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => $this->get('Webpage URL'),
+                    'label'       => $this->get('Name'),
+                    'label_short' => $this->get('Webpage Code'),
+                    'title'       => $this->get('Webpage Browser Title'),
+                    'type'        => 'Category Categories',
+                    'icon'        => 'folder-tree',
+                    'key'         => $this->id
+                );
+
+
+              //  print_r($navigation_data);
+
+                $this->update_field('Webpage Navigation Data', json_encode($navigation_data), 'no_history');
+
+
+                break;
+            case 'Category Products':
+
+                $store = get_object('Store', $this->data['Webpage Store Key']);
+                $website = get_object('Website', $this->data['Webpage Website Key']);
+
+                $category = get_object('Category', $this->data['Webpage Scope Key']);
+
+
+
+
+
+
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => 'https://'.$website->get('Website URL'),
+                    'label'       => '<i class="fa fa-home"></i>',
+                    'label_short' => '<i class="fa fa-home"></i>',
+                    'title'       => _('Home'),
+                    'type'        => 'home'
+
+                );
+                //-------------------------
+
+                if($store->get('Store Family Category Key')!= $category->get('Category Root Key')){
+                    $parent_webpage_key=null;
+
+                    $sql="select `Category Head Key` from `Category Bridge` where `Subject Key`=? and `Subject`='Category' and `Category Key`!=?  ";
+
+                 //  print "$sql";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                        $category->id,$category->get('Category Root Key')
+                        )
+                    );
+                    while ($row = $stmt->fetch()) {
+
+                        $parent         = get_object('Category', $row['Category Head Key']);
+
+                        if($parent->id!=$parent->get('Category Root Key')) {
+                            $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                            if ($parent_webpage->id && $parent_webpage->get('Webpage State') == 'Online') {
+                             //   print_r($parent);
+                              //  print_r($parent_webpage);
+
+                                $parent_webpage_key = $parent_webpage->id;
+                            }
+                        }
+
+                    }
+
+                    if ($parent_webpage_key) {
+
+
+                        $navigation_data['breadcrumbs'][] = array(
+                            'link'        => $parent_webpage->get('Webpage URL'),
+                            'label'       => $parent_webpage->get('Name'),
+                            'label_short' => $parent_webpage->get('Webpage Code'),
+                            'title'       => $parent_webpage->get('Webpage Browser Title'),
+                            'type'        => 'Category Categories',
+                            'icon'        => 'folder-tree',
+                            'key'         => $parent_webpage->id
+                        );
+                    }
+
+
+
+                   // print_r($navigation_data);
+
+
+
+                }else{
+
+
+                               $parent_webpage_key = 0;
+
+                               if ($category->get('Product Category Department Category Key')) {
+                                   $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
+                                   $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                                   if ($parent_webpage->get('Webpage State') == 'Offline') {
+                                       $parent_webpage_key = 0;
+                                   } else {
+                                       $parent_webpage_key = $parent_webpage->id;
+                                   }
+                               }
+
+
+
+
+
+                               if ($parent_webpage_key) {
+                                   $navigation_data['breadcrumbs'][] = array(
+                                       'link'        => $parent_webpage->get('Webpage URL'),
+                                       'label'       => $parent_webpage->get('Name'),
+                                       'label_short' => $parent_webpage->get('Webpage Code'),
+                                       'title'       => $parent_webpage->get('Webpage Browser Title'),
+                                       'type'        => 'Category Categories',
+                                       'icon'        => 'folder-tree',
+                                       'key'         => $parent_webpage->id
+                                   );
+                               }
+
+                }
+
+
+
+
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => $this->get('Webpage URL'),
+                    'label'       => $this->get('Name'),
+                    'label_short' => $this->get('Webpage Code'),
+                    'title'       => $this->get('Webpage Browser Title'),
+                    'type'        => 'Category Categories',
+                    'icon'        => 'folder-tree',
+                    'key'         => $this->id
+                );
+
+
+
+
+
+                //======================
+
 
 
                 //print_r($parent_webpage);
@@ -2180,7 +2329,6 @@ class Page extends DB_Table
         $see_also     = array();
         $number_links = 0;
         $items        = array();
-
         switch ($this->data['Webpage Scope']) {
             case 'Category Products':
 
