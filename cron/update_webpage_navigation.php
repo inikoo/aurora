@@ -36,7 +36,7 @@ if ($result=$db->query($sql)) {
 
         // print_r(json_decode($webpage->data['Webpage Navigation Data']));
 
-        $webpage->update_public_navigation();
+        $webpage->update_navigation();
 
         //$webpage = get_object('Webpage', $row['Page Key']);
 
