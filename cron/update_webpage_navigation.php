@@ -42,7 +42,7 @@ if ($result=$db->query($sql)) {
 
         //  print_r(json_decode($webpage->data['Webpage Navigation Data']));
 
-        print 'Nav '.$webpage->get('Code')."\n";
+        print 'Nav  '.$row['Page Key'].'   '.$webpage->get('Code')."\n";
 
 
 
