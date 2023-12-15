@@ -1588,6 +1588,336 @@ class Page extends DB_Table
         $this->update_internal_navigation();
     }
 
+    function update_public_navigation2()
+    {
+        $navigation_data = array(
+            'show'        => false,
+            'breadcrumbs' => array(),
+            'prev'        => false,
+            'next'        => false,
+        );
+
+
+        switch ($this->get('Webpage Scope')) {
+
+            case 'Category Categories':
+                $store = get_object('Store', $this->data['Webpage Store Key']);
+
+                $website = get_object('Website', $this->data['Webpage Website Key']);
+
+                $category = get_object('Category', $this->data['Webpage Scope Key']);
+                $navigation_data['show'] = 1;
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => 'https://'.$website->get('Website URL'),
+                    'label'       => '<i class="fa fa-home"></i>',
+                    'label_short' => '<i class="fa fa-home"></i>',
+                    'title'       => _('Home'),
+                    'type'        => 'home'
+
+                );
+
+                if($store->get('Store Department Category Key')!= $category->get('Category Root Key')){
+
+
+                    $parent_webpage_key = 0;
+
+
+                    if ($category->get('Category Parent Key')) {
+                        $parent         = get_object('Category', $category->get('Category Parent Key'));
+                        $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                        if ($parent_webpage->get('Webpage State') == 'Offline') {
+                            $parent_webpage_key = 0;
+                        } else {
+                            $parent_webpage_key = $parent_webpage->id;
+                        }
+                    }
+
+
+
+
+
+                    if ($parent_webpage_key) {
+                        $navigation_data['breadcrumbs'][] = array(
+                            'link'        => $parent_webpage->get('Webpage URL'),
+                            'label'       => $parent_webpage->get('Name'),
+                            'label_short' => $parent_webpage->get('Webpage Code'),
+                            'title'       => $parent_webpage->get('Webpage Browser Title'),
+                            'type'        => 'Category Categories',
+                            'icon'        => 'folder-tree',
+                            'key'         => $parent_webpage->id
+                        );
+                    }
+
+                }
+
+
+
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => $this->get('Webpage URL'),
+                    'label'       => $this->get('Name'),
+                    'label_short' => $this->get('Webpage Code'),
+                    'title'       => $this->get('Webpage Browser Title'),
+                    'type'        => 'Category Categories',
+                    'icon'        => 'folder-tree',
+                    'key'         => $this->id
+                );
+
+
+                //  print_r($navigation_data);
+
+                $this->update_field('Webpage Navigation Data', json_encode($navigation_data), 'no_history');
+
+
+                break;
+            case 'Category Products':
+
+                $store = get_object('Store', $this->data['Webpage Store Key']);
+                $website = get_object('Website', $this->data['Webpage Website Key']);
+
+                $category = get_object('Category', $this->data['Webpage Scope Key']);
+
+
+
+
+
+
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => 'https://'.$website->get('Website URL'),
+                    'label'       => '<i class="fa fa-home"></i>',
+                    'label_short' => '<i class="fa fa-home"></i>',
+                    'title'       => _('Home'),
+                    'type'        => 'home'
+
+                );
+                //-------------------------
+
+                if($store->get('Store Family Category Key')!= $category->get('Category Root Key')){
+                    $parent_webpage_key=null;
+
+                    $sql="select `Category Head Key` from `Category Bridge` where `Subject Key`=? and `Subject`='Category' and `Category Key`!=?  ";
+
+                    //  print "$sql";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(
+                        array(
+                            $category->id,$category->get('Category Root Key')
+                        )
+                    );
+                    while ($row = $stmt->fetch()) {
+
+                        $parent         = get_object('Category', $row['Category Head Key']);
+
+                        if($parent->id!=$parent->get('Category Root Key')) {
+                            $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                            if ($parent_webpage->id && $parent_webpage->get('Webpage State') == 'Online') {
+                                //   print_r($parent);
+                                //  print_r($parent_webpage);
+
+                                $parent_webpage_key = $parent_webpage->id;
+                            }
+                        }
+
+                    }
+
+                    if ($parent_webpage_key) {
+
+
+                        $navigation_data['breadcrumbs'][] = array(
+                            'link'        => $parent_webpage->get('Webpage URL'),
+                            'label'       => $parent_webpage->get('Name'),
+                            'label_short' => $parent_webpage->get('Webpage Code'),
+                            'title'       => $parent_webpage->get('Webpage Browser Title'),
+                            'type'        => 'Category Categories',
+                            'icon'        => 'folder-tree',
+                            'key'         => $parent_webpage->id
+                        );
+                    }
+
+
+
+                    // print_r($navigation_data);
+
+
+
+                }else{
+
+
+                    $parent_webpage_key = 0;
+
+                    if ($category->get('Product Category Department Category Key')) {
+                        $parent         = get_object('Category', $category->get('Product Category Department Category Key'));
+                        $parent_webpage = get_object('Webpage', $parent->get('Product Category Webpage Key'));
+                        if ($parent_webpage->get('Webpage State') == 'Offline') {
+                            $parent_webpage_key = 0;
+                        } else {
+                            $parent_webpage_key = $parent_webpage->id;
+                        }
+                    }
+
+
+
+
+
+                    if ($parent_webpage_key) {
+                        $navigation_data['breadcrumbs'][] = array(
+                            'link'        => $parent_webpage->get('Webpage URL'),
+                            'label'       => $parent_webpage->get('Name'),
+                            'label_short' => $parent_webpage->get('Webpage Code'),
+                            'title'       => $parent_webpage->get('Webpage Browser Title'),
+                            'type'        => 'Category Categories',
+                            'icon'        => 'folder-tree',
+                            'key'         => $parent_webpage->id
+                        );
+                    }
+
+                }
+
+
+
+
+                $navigation_data['breadcrumbs'][] = array(
+                    'link'        => $this->get('Webpage URL'),
+                    'label'       => $this->get('Name'),
+                    'label_short' => $this->get('Webpage Code'),
+                    'title'       => $this->get('Webpage Browser Title'),
+                    'type'        => 'Category Categories',
+                    'icon'        => 'folder-tree',
+                    'key'         => $this->id
+                );
+
+
+
+
+
+                //======================
+
+
+
+                //print_r($parent_webpage);
+
+                $prev = false;
+                $next = false;
+
+                $next_key = 0;
+                $prev_key = 0;
+
+                $sql = sprintf(
+                    "SELECT `Website Webpage Scope Index` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND `Website Webpage Scope Scope`='Category' AND `Website Webpage Scope Scope Key`=%d ",
+                    $parent_webpage_key,
+                    $category->id
+
+                );
+                // print $sql;
+
+                if ($result = $this->db->query($sql)) {
+                    if ($row = $result->fetch()) {
+                        $sql = sprintf(
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map` WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND  `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`<%d ORDER BY `Website Webpage Scope Index` DESC',
+                            $parent_webpage_key,
+                            $row['Website Webpage Scope Index']
+                        );
+
+                        //print $sql;
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $prev_key = $row2['Website Webpage Scope Scope Key'];
+                            } else {
+                                $sql = sprintf(
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` DESC ',
+                                    $parent_webpage_key
+                                );
+                                //print $sql;
+                                if ($result3 = $this->db->query($sql)) {
+                                    if ($row3 = $result3->fetch()) {
+                                        $prev_key = $row3['Website Webpage Scope Scope Key'];
+                                    }
+                                }
+                            }
+                        }
+
+
+                        $sql = sprintf(
+                            'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Category" AND `Website Webpage Scope Index`>%d ORDER BY `Website Webpage Scope Index` ',
+                            $parent_webpage_key,
+                            $row['Website Webpage Scope Index']
+                        );
+
+                        if ($result2 = $this->db->query($sql)) {
+                            if ($row2 = $result2->fetch()) {
+                                $next_key = $row2['Website Webpage Scope Scope Key'];
+                            } else {
+                                $sql = sprintf(
+                                    'SELECT `Website Webpage Scope Scope Key` FROM `Website Webpage Scope Map`  WHERE `Website Webpage Scope Webpage Key`=%d  AND  `Website Webpage Scope Type`="Subject" AND `Website Webpage Scope Scope`="Category"  ORDER BY `Website Webpage Scope Index` ',
+                                    $parent_webpage_key
+                                );
+
+                                if ($result3 = $this->db->query($sql)) {
+                                    if ($row3 = $result3->fetch()) {
+                                        $next_key = $row3['Website Webpage Scope Scope Key'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ($prev_key) {
+                    $prev_category         = get_object('Category', $prev_key);
+                    $prev_category_webpage = get_object('Webpage', $prev_category->get('Product Category Webpage Key'));
+                    $prev                  = array(
+                        'link'        => $prev_category_webpage->get('Webpage URL'),
+                        'label'       => $prev_category_webpage->get('Name'),
+                        'label_short' => $prev_category_webpage->get('Webpage Code'),
+                        'title'       => $prev_category_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Products',
+                        'icon'        => 'folder-open',
+                        'key'         => $prev_category_webpage->id
+                    );
+                }
+
+
+                if ($next_key) {
+                    $next_category         = get_object('Category', $next_key);
+                    $next_category_webpage = get_object('Webpage', $next_category->get('Product Category Webpage Key'));
+                    $next                  = array(
+                        'link'        => $next_category_webpage->get('Webpage URL'),
+                        'label'       => $next_category_webpage->get('Name'),
+                        'label_short' => $next_category_webpage->get('Webpage Code'),
+                        'title'       => $next_category_webpage->get('Webpage Browser Title'),
+                        'type'        => 'Category Products',
+                        'icon'        => 'folder-open',
+                        'key'         => $prev_category_webpage->id
+                    );
+                }
+
+
+                if ($next_key or $prev_key or $parent_webpage_key) {
+                    $navigation_data['show'] = 1;
+                }
+
+                //  print $prev_key;
+
+                // print $next_key;
+
+
+                $navigation_data['prev'] = $prev;
+                $navigation_data['next'] = $next;
+                // print_r($navigation_data);
+
+
+                $this->update_field('Webpage Navigation Data', json_encode($navigation_data), 'no_history');
+
+
+                //print_r($this);
+                break;
+
+
+
+            default:
+        }
+    }
+
     function update_public_navigation()
     {
         $navigation_data = array(

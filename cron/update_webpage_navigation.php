@@ -26,7 +26,7 @@ $editor = array(
 
 
 $sql = sprintf('SELECT `Page Key` FROM `Page Store Dimension`  left join `Website Dimension` on (`Website Key`=`Webpage Website Key`)  
-                                                                             where `Webpage State`="Online" ');
+                                                                             where `Webpage State`="Online" and `Page Key`=199061 ');
 if ($result=$db->query($sql)) {
     foreach ($result as $row) {
 
@@ -34,7 +34,7 @@ if ($result=$db->query($sql)) {
 
         // print_r(json_decode($webpage->data['Webpage Navigation Data']));
 
-        $webpage->update_navigation();
+        $webpage->update_navigation2();
 
         //$webpage = get_object('Webpage', $row['Page Key']);
 
