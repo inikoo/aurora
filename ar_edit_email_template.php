@@ -378,7 +378,7 @@ function send_test_email($data, $smarty) {
 
 
     $ses_clients = array();
-    /*
+
     $ses_clients[] = SesClient::factory(
         array(
             'version'     => 'latest',
@@ -389,7 +389,7 @@ function send_test_email($data, $smarty) {
             ],
         )
     );
-        */
+        /*
     $ses_clients[] = SesClient::factory(
         array(
             'version'     => 'latest',
@@ -400,7 +400,7 @@ function send_test_email($data, $smarty) {
             ],
         )
     );
-
+*/
 
     $placeholders = array(
         '[Greetings]'          => 'Dear John Smith',

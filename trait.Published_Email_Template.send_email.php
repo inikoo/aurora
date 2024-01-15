@@ -307,6 +307,7 @@ trait Send_Email
                 )
             );
 
+            /*
             $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
@@ -317,6 +318,7 @@ trait Send_Email
                     ],
                 )
             );
+            */
         }
 
 
