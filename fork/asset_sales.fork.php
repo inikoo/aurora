@@ -444,7 +444,7 @@ function fork_asset_sales($job) {
                     $category = new Category($row['Category Key']);
                     $category->load_acc_data();
 
-                    $category->update_part_category_sales(
+                    $category->update_product_category_sales(
                         $data['interval'], $this_year, $last_year
                     );
                 }
