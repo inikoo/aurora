@@ -30,6 +30,10 @@ $table_filters = array(
         'label' => _('Reference'),
         'title' => _('Part reference')
     ),
+    'description'      => array(
+        'label' => _('Description'),
+        'title' => _('Part description')
+    ),
 
 );
 
