@@ -1,0 +1,1 @@
+ALTER TABLE `User Dimension` ADD COLUMN `aiku_ignore` enum('Yes','No') NULL DEFAULT 'No' COMMENT '';
