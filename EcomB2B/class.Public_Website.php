@@ -373,7 +373,9 @@ class Public_Website
                         $customer->get('Customer Tax Number Valid')=='Yes' and
                         $customer->get('Customer Tax Number')!=''  and
 
-                        in_array($options, ['HU','PL','SK','CZ','DE','RO','IT'])) {
+                        in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
+                                            'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH','GB'
+                        ])) {
                         $icon            = 'fa fa-money-check-alt';
                         $tab_label_index = '_pastpay_label';
                         $tab_label       = '';
