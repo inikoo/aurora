@@ -200,29 +200,32 @@
         <td style="text-align: right">
 
             {if $purchase_order->metadata('payment_terms')!=''}
-                </div>
+                <div>
                 {t}Payment terms{/t}:
                 <b>{$purchase_order->metadata('payment_terms')}</b>
                 </div>
             {/if}
-            </div>
+            <div>
             {t}Currency{/t}:
             <b>{$purchase_order->get('Currency Code')}</b>
             </div>
             {if ($purchase_order->get('Incoterm')!=''  and   $purchase_order->get('Incoterm')!='No')}
-                </div>
+                <div>
                 Incoterm:
                 <b>{$purchase_order->get('Incoterm')}</b>
                 </div>
             {/if}
             {if $purchase_order->get('Purchase Order Port of Import')!='' }
-                </div>
+                <div>
                 {t}Port of import{/t}:
                 <b>{$purchase_order->get('Port of Import')}</b>
                 </div>
 
             {/if}
-
+            <div>
+                {t}CBM{/t}:
+                <b>{$purchase_order->get('CBM')}</b>
+            </div>
 
         </td>
     </tr>
