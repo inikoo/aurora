@@ -1,0 +1,1 @@
+ALTER TABLE `Supplier Part Dimension` ADD COLUMN `aiku_source_slug` varchar(100)  NULL DEFAULT NULL  COMMENT '';
