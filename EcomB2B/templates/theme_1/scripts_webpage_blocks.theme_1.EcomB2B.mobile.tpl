@@ -1527,11 +1527,11 @@
             {if $with_iframe==1}
 
             $(document).ready(function () {
-                resize_banners();
+                //resize_banners();
             });
 
             $(window).resize(function () {
-                resize_banners();
+               // resize_banners();
 
             });
 
