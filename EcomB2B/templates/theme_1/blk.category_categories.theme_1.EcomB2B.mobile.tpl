@@ -15,7 +15,7 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
-<div id="block_{$key}" class="{$data.type}  {if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
+<div id="block_{$key}" class="{$data.type}  {if !$data.show}hide{/if}" style="clear:both;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
     {foreach from=$data.sections item=section_data key=section_key}
         {if $section_data.type!='anchor'}
             <div class="sec_div">
