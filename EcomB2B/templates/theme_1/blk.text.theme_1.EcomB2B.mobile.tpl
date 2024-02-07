@@ -13,7 +13,7 @@
 <div id="block_{$key}"  class=" {if !$data.show}hide{/if} ">
     <div  style="padding:5px 10px" class="text_blocks    text_template_{$data.template}"  >
 
-        <div class="asset_description">
+        <div class="asset_description text">
 
         <div class="asset_description_wrap">
 

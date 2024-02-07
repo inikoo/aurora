@@ -70,10 +70,15 @@ $color_background: #fcfcfc;
   color: #555;
   line-height: 140%;
 
-  max-height: 250px;
+  max-height: 270px;
   position: relative;
   overflow: hidden;
   margin-bottom: 30px;
+
+  .text{
+
+    max-height: 300px;
+  }
 
 }
 
