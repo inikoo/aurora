@@ -11,10 +11,23 @@
 
 <div style="clear:both"></div>
 <div id="block_{$key}"  class=" {if !$data.show}hide{/if} ">
-    <div  style="padding:5px 10px" class="text_blocks  text_template_{$data.template}"  >
+    <div  style="padding:5px 10px" class="text_blocks    text_template_{$data.template}"  >
+
+        <div class="asset_description">
+
+        <div class="asset_description_wrap">
+
         {foreach from=$data.text_blocks item=text_block key=text_block_key}
             <div class="text_block">{$text_block.text}</div>
         {/foreach}
+        </div>
+        <div class="clear"></div>
+            <p class="read-more">
+                <span class="show_all fa-stack "><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-arrow-down fa-stack-1x fa-inverse"></i></span>
+            </p>
+        </div>
+
     </div>
+
 </div>
 

@@ -336,7 +336,8 @@
                         {/if}
                     {else}
                         {if $block.type=='search'   }{assign "with_search" 1}{/if}
-                        {if $block.type=='blackboard'   }{assign "with_blackboard" 1}{/if}
+                        {if $block.type=='blackboard'    }{assign "with_blackboard" 1}{/if}
+                        {if $block.type=='text'    }{assign "with_blackboard" 1}{/if}
                         {if $block.type=='reset_passowrd'   }{assign "with_reset_passowrd" 1}{/if}
                         {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
 
