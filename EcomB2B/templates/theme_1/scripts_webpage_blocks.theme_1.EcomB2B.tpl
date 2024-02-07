@@ -323,6 +323,40 @@
 
                             });
             {/if}
+
+                            {if $with_blackboard==1}
+
+
+                          $(".asset_description .show_all").on('click', function () {
+
+                            totalHeight = 0
+
+                            $el = $(this);
+                            $p = $el.parent();
+                            $up = $p.parent();
+                            $ps = $up.find("p:not('.read-more')");
+
+                            $ps.each(function () {
+                              totalHeight += $(this).outerHeight();
+                            });
+
+                            h = $(this).closest('.asset_description').find('.asset_description_wrap').outerHeight();
+
+                            $up.css({
+                                      "height": $up.height(), "max-height": 9999
+                                    })
+                            .animate({
+                                       "height": h + 30
+                                     });
+
+                            // fade out read-more
+                            $p.fadeOut();
+
+                            // prevent jump-down
+                            return false;
+
+                          });{/if}
+
             {if $with_thanks==1}
                             getScript("/assets/desktop.logged_in.min.js", function () {
 

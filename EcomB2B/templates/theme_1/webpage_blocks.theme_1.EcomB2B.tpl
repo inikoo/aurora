@@ -87,6 +87,7 @@
             {assign "with_datatables" false}
             {assign "with_catalogue" false}
             {assign "with_top_up" false}
+            {assign "with_blackboard" false}
 
             {if $webpage->get('Webpage Scope')=='Category Products'}
                 {if $website->get('Website Type')=='EcomDS' and $logged_in}
@@ -379,7 +380,7 @@
                             {if $block.type=='product'   }{assign "with_gallery" 1}{/if}
                             {if $block.type=='reset_password' }{assign "with_reset_password" 1}{/if}
                             {if $block.type=='unsubscribe'}{assign "with_unsubscribe" 1}{/if}
-
+                            {if $block.type=='text'    }{assign "with_blackboard" 1}{/if}
                             {if $block.type=='category_products' or   $block.type=='products'  or   $block.type=='product' }
 
 

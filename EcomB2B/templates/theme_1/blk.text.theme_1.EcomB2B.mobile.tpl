@@ -29,7 +29,6 @@
 
         {else}
         <div class="asset_description text">
-
             <div class="asset_description_wrap">
 
                 {foreach from=$data.text_blocks item=text_block key=text_block_key}
