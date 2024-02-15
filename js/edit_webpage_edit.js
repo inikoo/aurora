@@ -309,15 +309,17 @@ $(document).on('click', '.apply_changes', function (e) {
             input.data('element').attr('value', value)
 
 
+
             if (input.attr('device') == 'desktop') {
                 $(this).closest('div').data('element').html(value + 'px').next('span.iframe_ratio').html((1240 / value).toFixed(2))
 
                 $("#preview").contents().find("#block_" + $(this).closest('.edit_mode').attr('key')).attr('h', value);
                 $("#preview")[0].contentWindow.resize_banners();
             } else {
-                $(this).closest('div').data('element').html(value + 'px').next('span.iframe_ratio').html((420 / value).toFixed(2))
-
-                console.log("#block_" + $(this).closest('.edit_mode').attr('key'))
+                $(this).closest('div').data('element').html(value + 'px').next('span.iframe_ratio_mobile').html((420 / value).toFixed(2))
+                console.log(value)
+                console.log(420 / value)
+                console.log((420 / value).toFixed(2))
 
                 $("#preview").contents().find("#block_" + $(this).closest('.edit_mode').attr('key')).attr('h_mobile', value);
 
