@@ -1527,7 +1527,7 @@
             {if $with_iframe==1}
 
             $(document).ready(function () {
-                //resize_banners();
+                resize_banners();
             });
 
             $(window).resize(function () {
@@ -1544,7 +1544,7 @@
                         height: $(this).width() * $(this).data('h') / $(this).data('w')})
                     $(this).find('iframe').css({
                         height: $(this).height(), width: $(this).width()})
-                    $(this).find('iframe').attr('src', $(this).data('src'));
+                    //$(this).find('iframe').attr('src', $(this).data('src'));
 
                 });
             }
