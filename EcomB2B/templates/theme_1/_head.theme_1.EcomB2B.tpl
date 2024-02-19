@@ -232,6 +232,14 @@
     {/if}
 
 
+    {if $website->get('Website Code')=='SE'}
+        <script
+                src=‘//eu.fw-cdn.com/12689074/684268.js’
+                chat=‘true’>
+        </script>
+
+    {/if}
+
     <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
     {assign "with_forms" false}
     {assign "with_not_found" 0}
