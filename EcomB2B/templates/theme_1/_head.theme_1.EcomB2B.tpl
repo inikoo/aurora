@@ -156,7 +156,7 @@
 
     {if $website->get('Website Code')=='SE'}
         <script
-                src=‘//eu.fw-cdn.com/12689074/684268.js’
+                src="https://eu.fw-cdn.com/12689074/684268.js"
                 chat=‘true’>
         </script>
 
