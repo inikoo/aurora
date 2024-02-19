@@ -145,13 +145,23 @@
 
     <title>{$webpage->get('Browser Title')}</title>
     <meta charset="utf-8">
-    <meta name="keywords" content=""/>
+    <meta name="keywords" content="giftware aromatherapy"/>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
     {if !empty($settings['favicon_website'])}
        <link rel="shortcut icon" type="image/png" href="{$settings['favicon_website']}"/>
     {/if}
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    {if $website->get('Website Code')=='SE'}
+        <script
+                src=‘//eu.fw-cdn.com/12689074/684268.js’
+                chat=‘true’>
+        </script>
+
+    {/if}
+
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -232,13 +242,7 @@
     {/if}
 
 
-    {if $website->get('Website Code')=='SE'}
-        <script
-                src=‘//eu.fw-cdn.com/12689074/684268.js’
-                chat=‘true’>
-        </script>
 
-    {/if}
 
     <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
     {assign "with_forms" false}
