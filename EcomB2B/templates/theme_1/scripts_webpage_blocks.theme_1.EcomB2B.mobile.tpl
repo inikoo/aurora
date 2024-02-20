@@ -1526,22 +1526,27 @@
             {/if}
             {if $with_iframe==1}
 
+
+          $(window).resize(function () {
+            // resize_banners();
+
+          });
+
             $(document).ready(function () {
+              console.log('-- resizing banners --')
                 resize_banners();
             });
 
-            $(window).resize(function () {
-               // resize_banners();
-
-            });
-
             function resize_banners() {
-
-
                 $('.iframe').each(function (i, obj) {
-
+                  console.log($(this))
+                  console.log($(this).width() )
+                  console.log($(this).data('h') )
+                  console.log($(this).data('w') )
+                  console.log($(this).width() * $(this).data('h') / $(this).data('w'))
                     $(this).css({
-                        height: $(this).width() * $(this).data('h') / $(this).data('w')})
+                        height: $(this).width() * $(this).data('h') / $(this).data('w')
+                    })
                     $(this).find('iframe').css({
                         height: $(this).height(), width: $(this).width()})
                     //$(this).find('iframe').attr('src', $(this).data('src'));
