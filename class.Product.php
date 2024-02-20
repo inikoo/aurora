@@ -2220,7 +2220,7 @@ class Product extends Asset
         $sql = sprintf(
             "SELECT
 		ifnull(count(DISTINCT `Customer Key`),0) AS customers,
-		ifnull(count(DISTINCT `Invoice Key`),0) AS invoices,
+		ifnull(count(DISTINCT OTF.`Invoice Key`),0) AS invoices,
 		round(ifnull(sum( `Order Transaction Amount` +(  `Cost Supplier`/`Invoice Currency Exchange Rate`)  ),0),2) AS profit,
 		round(ifnull(sum(`Order Transaction Amount`),0),2) AS net ,
 		round(ifnull(sum(`Delivery Note Quantity`),0),1) AS delivered,
@@ -2228,14 +2228,18 @@ class Product extends Asset
 		round(ifnull(sum(`Delivery Note Quantity`),0),1) AS invoiced,
 		round(ifnull(sum((`Order Transaction Amount`)*`Invoice Currency Exchange Rate`),0),2) AS dc_net,
 		round(ifnull(sum((`Order Transaction Amount`+`Cost Supplier`)*`Invoice Currency Exchange Rate`),0),2) AS dc_profit
-		FROM `Order Transaction Fact` USE INDEX (`Product ID`,`Invoice Date`) WHERE `Invoice Key` >0 AND  `Product ID`=%d %s %s ",
+		FROM `Order Transaction Fact` OTF  USE INDEX (`Product ID`,`Invoice Date`) 
+		       left join `Invoice Dimension` I on (I.`Invoice Key`=OTF.`Invoice Key`)
+		      WHERE OTF.`Invoice Key` >0  and `Invoice Customer Level Type` in ('Normal','VIP')  
+		          
+		          AND  `Product ID`=%d %s %s ",
             $this->id,
             ($from_date ? sprintf(
-                'and `Invoice Date`>=%s',
+                'and OTF.`Invoice Date`>=%s',
                 prepare_mysql($from_date)
             ) : ''),
             ($to_date ? sprintf(
-                'and `Invoice Date`<%s',
+                'and OTF.`Invoice Date`<%s',
                 prepare_mysql($to_date)
             ) : '')
 
@@ -2262,7 +2266,7 @@ class Product extends Asset
             exit;
         }
 
-
+//print_r($sales_data);
         return $sales_data;
     }
 
