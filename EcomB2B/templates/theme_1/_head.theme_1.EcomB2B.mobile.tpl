@@ -128,13 +128,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    {if $website->get('Website Code')=='SE'}
-        <script
-                src=‘//eu.fw-cdn.com/12689074/684268.js’
-                chat=‘true’>
-        </script>
 
-    {/if}
 
     {if isset($sentry_js) }
 

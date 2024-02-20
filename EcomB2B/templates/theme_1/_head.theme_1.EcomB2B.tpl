@@ -154,13 +154,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    {if $website->get('Website Code')=='SE'}
-        <script
-                src="https://eu.fw-cdn.com/12689074/684268.js"
-                chat=‘true’>
-        </script>
-
-    {/if}
 
     <!--[if lt IE 9]>
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
