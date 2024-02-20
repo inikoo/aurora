@@ -154,7 +154,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     {if $website->get('Website Code')=='AW.biz'}
-        <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/2dfc4018e22b28a66ec6cc1bd/b9c276fd71aa5eecf3a87d6d5.js");</script>
+        <script id="mcjs">!function(c,h,i,m,p){
+            m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/2dfc4018e22b28a66ec6cc1bd/b9c276fd71aa5eecf3a87d6d5.js");</script>
     {/if}
 
     <!--[if lt IE 9]>
