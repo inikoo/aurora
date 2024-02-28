@@ -88,6 +88,10 @@ trait Send_Email
                 $recipient->id
             );
 
+            $_event_data_error=[
+                'products'=>[]
+            ];
+
 
             if ($result = $this->db->query($sql)) {
                 foreach ($result as $row) {
@@ -98,6 +102,14 @@ trait Send_Email
                     if ($product->id and $product->get('Product Web State') == 'For Sale' and $webpage->id and $webpage->get('Webpage State') == 'Online') {
                         $with_products++;
                         break;
+                    }else{
+                        $_event_data_error['products'][]=[
+                            'id'=>$product->id,
+                            'code'=>$product->get('Product Code'),
+                            'web_state'=>$product->get('Product Web State'),
+                            'webpage'=>$webpage->id,
+                            'webpage_state'=>$webpage->get('Webpage State')
+                        ];
                     }
                 }
             }
@@ -110,6 +122,22 @@ trait Send_Email
 
                     )
                 );
+
+
+
+                $sql = sprintf(
+                    'insert into `Email Tracking Event Dimension` (
+              `Email Tracking Event Tracking Key`,`Email Tracking Event Type`,
+              `Email Tracking Event Date`,`Email Tracking Event Data`) values (
+                    %d,%s,%s,%s)',
+                    $email_tracking->id,
+                    prepare_mysql('Error'),
+                    prepare_mysql(gmdate('Y-m-d H:i:s')),
+                    prepare_mysql(json_encode($_event_data_error))
+
+
+                );
+                $this->db->exec($sql);
 
 
                 $this->error = true;
