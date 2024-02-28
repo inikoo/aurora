@@ -257,31 +257,50 @@ function parse_customer_list($data, $db) {
 
         //   print_r($country_codes);
 
-        if (count($product_ids) > 0) {
-            $with_otf = true;
-            $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
-            $group    = ' group by C.`Customer Key`';
+        if(count($product_ids) > 0 or  count($families) > 0  or count($departments)  ) {
 
-            $tmp .= sprintf(' and `Product ID` in (\'%s\') ', join("','", $product_ids));
+            $otf_first=false;
+
+            $tmp .= 'and ( ';
+
+            if (count($product_ids) > 0) {
+                $with_otf = true;
+                $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+                $group    = ' group by C.`Customer Key`';
+
+
+
+                $tmp .= sprintf('  `Product ID` in (\'%s\') ', join("','", $product_ids));
+                $otf_first=true;
+            }
+
+            if (count($families) > 0) {
+                $with_otf = true;
+                $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+                $group    = ' group by C.`Customer Key`';
+
+                if($otf_first){
+                   $tmp.=' or ';
+                }
+
+                $tmp .= sprintf('  `OTF Category Family Key` in (\'%s\') ', join("','", $families));
+            }
+
+
+            if (count($departments) > 0) {
+                $with_otf = true;
+                $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
+                $group    = ' group by C.`Customer Key`';
+
+                if($otf_first){
+                    $tmp.=' or ';
+                }
+
+                $tmp .= sprintf(' or `OTF Department Family Key` in (\'%s\') ', join("','", $departments));
+            }
+
+            $tmp.=' ) ';
         }
-
-        if (count($families) > 0) {
-            $with_otf = true;
-            $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
-            $group    = ' group by C.`Customer Key`';
-
-            $tmp .= sprintf(' and `OTF Category Family Key` in (\'%s\') ', join("','", $families));
-        }
-
-
-        if (count($departments) > 0) {
-            $with_otf = true;
-            $table    = '`Customer Dimension` C  left join  `Order Transaction Fact` OTF  on (C.`Customer Key`=OTF.`Customer Key`)   ';
-            $group    = ' group by C.`Customer Key`';
-
-            $tmp .= sprintf(' and `OTF Department Family Key` in (\'%s\') ', join("','", $departments));
-        }
-
 
 
         $where .= $tmp;
