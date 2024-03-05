@@ -123,9 +123,35 @@ switch ($tipo) {
         );
 
 
+        $payment_account_key = $data['payment_account_key'];
+
+        $payment_account     = get_object('Payment_Account', $payment_account_key);
+
+
+        //===== CoD charges
+
+
+        if($payment_account->get('Payment Account Block')=='ConD') {
+            $sql  = "select `Charge Key` from `Charge Dimension` where `Charge Store Key`=? and `Charge Name`=? ";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(
+                [
+                    $store->id,
+                    'ConD'
+                ]
+            );
+            if ($row = $stmt->fetch()) {
+                $charge = get_object('Charge', $row['Charge Key']);
+                $order->add_charge($charge);
+            }
+        }
+
+
+        //================
+
+
         $to_pay = $order->get('Order To Pay Amount');
 
-        $payment_account_key = $data['payment_account_key'];
 
         $credits = $customer->get('Customer Account Balance');
         if ($credits > 0) {
