@@ -448,8 +448,8 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'checked' => 1
             ),
             array(
-                'name'    => '`Delivery Note Weight`',
-                'label'   => _('Weight'),
+                'name'    => '`Delivery Note Number Boxes`',
+                'label'   => _('Number boxes'),
                 'checked' => 1
             ),
         ),
