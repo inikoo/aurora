@@ -90,7 +90,6 @@ function new_fork($type, $data, $account_code, $db, $priority = 'Normal'): array
     }
 }
 
-
 function new_housekeeping_fork($type, $data, $account_code, $priority = 'Normal'): string {
 
     if(!empty($GLOBALS['skip_gearman'])){
