@@ -158,7 +158,6 @@ if ($pastpay) {
         $_currency = $order->get('Currency');
         $locale    = $store->get('Store Locale');
 
-
         $_pastpay_notes = [
             'EUR' =>
                 [
