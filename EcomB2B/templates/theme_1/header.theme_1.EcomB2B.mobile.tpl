@@ -72,7 +72,9 @@
 
                 <div class="submenu" id="sidebar-sub-{$key}">
                     {foreach from=$column.items key=sub_col_key item=item}
+                        {if !empty($item.url) and !empty($item.label) }
                         <a href="{$item.url}"><span>{$item.label}</span></a>
+                        {/if}
                     {/foreach}
                 </div>
                 {/if}

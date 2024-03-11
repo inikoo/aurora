@@ -51,7 +51,9 @@
 
                         {if $sub_column.type=='items'}
                                  {foreach from=$sub_column.items item=item}
-                                     <a href="{$item.url}"><span>{$item.label}</span></a>
+                                     {if !empty($item.url) and !empty($item.label) }
+                                         <a href="{$item['url']}"><span>{$item['label']}</span></a>
+                                     {/if}
                                  {/foreach}
                         {elseif $sub_column.type=='departments' or   $sub_column.type=='families' or  $sub_column.type=='web_departments' or   $sub_column.type=='web_families'}
                             {if isset($sub_column.title)}<em class="menu-divider">{$sub_column.title}</em>{/if}
@@ -60,7 +62,9 @@
 
 
                                 {foreach from=$store->get_categories({$sub_column.type},{$sub_column.page},'menu') item=item}
-                                    <a href="{$item['url']}"><span>{$item['label']}</span></a>
+                                    {if !empty($item.url) and !empty($item.label) }
+                                        <a href="{$item['url']}"><span>{$item['label']}</span></a>
+                                    {/if}
 
                                 {/foreach}
 
@@ -72,7 +76,9 @@
 
                     <div class="submenu" id="sidebar-sub-{$key}">
                         {foreach from=$column.items key=sub_col_key item=item}
-                            <a href="{$item.url}"><span>{$item.label}</span></a>
+                            {if !empty($item.url) and !empty($item.label) }
+                                <a href="{$item.url}"><span>{$item.label}</span></a>
+                            {/if}
                         {/foreach}
                     </div>
 
