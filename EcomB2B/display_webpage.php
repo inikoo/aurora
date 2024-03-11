@@ -362,7 +362,7 @@ if ($webpage->get('Webpage State') == 'Offline') {
 }
 
 
-if ($webpage->get('Webpage Code') == 'checkout.sys') {
+if ($webpage->get('Webpage Code') == 'checkout.sys' or $webpage->get('Webpage Code') == 'basket.sys'  ) {
 
     $paypal_client_id='';
     $payment_account_key = $website->get_payment_account__key('Paypal');
