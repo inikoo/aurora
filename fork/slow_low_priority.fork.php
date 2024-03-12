@@ -137,21 +137,25 @@ function fork_update_part_products_availability($job) {
         $part->editor = $editor;
     }
 
+    $old_value = $part->get('Part Stock Status');
 
     $part->update_available_forecast();
     $part->update_stock_status();
+    $new_value = $part->get('Part Stock Status');
 
-    foreach ($part->get_products('objects') as $product) {
-        if (isset($data['editor'])) {
-            $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
-            $product->editor        = $data['editor'];
-        } else {
-            $product->editor = $editor;
+    if($new_value!= $old_value) {
+        foreach ($part->get_products('objects') as $product) {
+            if (isset($data['editor'])) {
+                $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
+                $product->editor        = $data['editor'];
+            } else {
+                $product->editor = $editor;
+            }
+
+            $product->fork = true;
+
+            $product->update_availability(false);
         }
-
-        $product->fork = true;
-
-        $product->update_availability(false);
     }
 
 
