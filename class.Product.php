@@ -1856,26 +1856,29 @@ class Product extends Asset
                 );
                 $this->db->exec($sql);
             }
+
+            if ($use_fork) {
+                include_once 'utils/new_fork.php';
+
+
+                new_housekeeping_fork(
+                    'au_housekeeping',
+                    array(
+                        'type'                     => 'update_web_state_slow_forks',
+                        'web_availability_updated' => $web_availability_updated,
+                        'product_id'               => $this->id,
+                        'editor'                   => $this->editor
+                    ),
+                    DNS_ACCOUNT_CODE
+                );
+            } else {
+                $this->update_web_state_slow_forks($web_availability_updated);
+            }
+
         }
 
 
-        if ($use_fork) {
-            include_once 'utils/new_fork.php';
 
-
-            new_housekeeping_fork(
-                'au_housekeeping',
-                array(
-                    'type'                     => 'update_web_state_slow_forks',
-                    'web_availability_updated' => $web_availability_updated,
-                    'product_id'               => $this->id,
-                    'editor'                   => $this->editor
-                ),
-                DNS_ACCOUNT_CODE
-            );
-        } else {
-            $this->update_web_state_slow_forks($web_availability_updated);
-        }
     }
 
     function get_web_state(): string
