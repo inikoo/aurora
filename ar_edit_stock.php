@@ -1620,7 +1620,13 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
             $part = get_object('Part', $row['Part SKU']);
 
 
-            $part->update_stock_run();
+
+            new_housekeeping_fork(
+                'au_housekeeping', array(
+                'type'     => 'part_stock_run',
+                'part_sku' => $part->id,
+            ), $account->get('Account Code')
+            );
 
 
             $cost_per_sko = $amount / $row['Inventory Transaction Quantity'];
