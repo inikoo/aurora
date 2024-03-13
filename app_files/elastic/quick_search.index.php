@@ -17,8 +17,10 @@ use Elasticsearch\ClientBuilder;
 
 require '../../vendor/autoload.php';
 
-$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
-
+$client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+    ->setApiKey(ES_KEY1,ES_KEY2)
+    ->setSSLVerification(ES_SSL)
+    ->build();
 //curl -X DELETE 'http://localhost:9200/au_search_es';
 //curl -X DELETE 'http://localhost:9200/au_search_aw';
 //curl -X DELETE 'http://localhost:9200/au_search_aweu';

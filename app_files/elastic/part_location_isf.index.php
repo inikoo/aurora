@@ -17,9 +17,11 @@ use Elasticsearch\ClientBuilder;
 
 require '../../vendor/autoload.php';
 
-$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
 
-
+$client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+    ->setApiKey(ES_KEY1,ES_KEY2)
+    ->setSSLVerification(ES_SSL)
+    ->build();
 
 $params = [
     'index' => strtolower('au_part_location_isf'),
