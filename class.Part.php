@@ -3478,13 +3478,8 @@ class Part extends Asset
             $account = get_object('Account', 1);
             if ($account->get('Account Add Stock Value Type') == 'Blockchain') {
 
-                new_housekeeping_fork(
-                    'au_housekeeping', array(
-                    'type'     => 'part_stock_run',
-                    'part_sku' => $this->id,
-                ), $account->get('Account Code')
-                );
 
+                $this->update_stock_run();
 
             }
 
