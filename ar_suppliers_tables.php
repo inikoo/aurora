@@ -3379,11 +3379,23 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
             $cartons_qty = $skos_qty / $data['Supplier Part Packages Per Carton'];
 
 
-            if ($data['Purchase Order Ordering Units'] % ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
+
+         //   print_r($data);
+
+
+            if($data['Purchase Order Ordering Units'] ==''){
                 $class = 'error';
-            } else {
-                $class = '';
+            }else{
+                if ($data['Purchase Order Ordering Units'] %
+                    ($data['Part Units Per Package'] * $data['Supplier Part Packages Per Carton']) != 0 or $data['Purchase Order Ordering Units'] % ($data['Part Units Per Package']) != 0) {
+                    $class = 'error';
+                } else {
+                    $class = '';
+                }
             }
+
+
+
 
 
             $quantity_units = sprintf(
