@@ -76,7 +76,7 @@ function fork_isf($job)
             'au_elastic',
             array(
                 'type'          => 'part_inventory_snapshot_fact',
-                'warehouse_key' => $row['Part SKU'],
+                'part_sku' => $row['Part SKU'],
                 'date'          => $data['date']
             ),
             $account->get('Code'),
