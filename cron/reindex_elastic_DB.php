@@ -1113,7 +1113,9 @@ function update_customers_index($db) {
         process_indexing(
             $object->index_elastic_search(
                 $hosts, true, [
-                          'quick'
+                          'quick',
+                          'assets',
+                          'assets_interval'
 
                       ]
             )
