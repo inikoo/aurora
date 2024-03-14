@@ -3383,7 +3383,7 @@ function order_supplier_all_parts($_data, $db, $user, $account) {
          //   print_r($data);
 
 
-            if($data['Purchase Order Ordering Units'] ==''){
+            if(!$data['Purchase Order Ordering Units'] or !$data['Part Units Per Package']  or !$data['Supplier Part Packages Per Carton'] ){
                 $class = 'error';
             }else{
                 if ($data['Purchase Order Ordering Units'] %
