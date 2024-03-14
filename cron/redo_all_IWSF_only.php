@@ -60,7 +60,7 @@ if ($result = $db->query($sql)) {
                         'date'          => $row['Date']
                     ),
                     DNS_ACCOUNT_CODE,
-                    $this->db
+                    $db
                 );
 
 
