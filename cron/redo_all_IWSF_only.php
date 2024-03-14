@@ -20,14 +20,17 @@ require_once 'class.Product.php';
 
 require_once 'utils/date_functions.php';
 require_once 'utils/object_functions.php';
+require_once 'utils/new_fork.php';
 
 
-
-
-$warehouse=get_object('Warehouse',1);
+$warehouse = get_object('Warehouse', 1);
 
 //$warehouse->update_inventory_snapshot('2020-07-01');
 //exit("--\n");
+
+if($warehouse->get('Warehouse Valid From')==''){
+    exit('error no Warehouse Valid From');
+}
 
 $from = date("Y-m-d", strtotime($warehouse->get('Warehouse Valid From')));
 $to   = date("Y-m-d", strtotime('now'));
@@ -37,27 +40,32 @@ $to   = date("Y-m-d", strtotime('now'));
 //$to='2020-07-01';
 
 
-
-
-
 $sql = sprintf(
-    "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=%s AND `Date`<=%s ORDER BY `Date` DESC", prepare_mysql($from), prepare_mysql($to)
+    "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=%s AND `Date`<=%s ORDER BY `Date` DESC",
+    prepare_mysql($from),
+    prepare_mysql($to)
 );
 
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-
-
         $sql = sprintf('SELECT `Warehouse Key` FROM `Warehouse Dimension`');
         if ($result2 = $db->query($sql)) {
             foreach ($result2 as $row2) {
-                $warehouse = new Warehouse($row2['Warehouse Key']);
-                $warehouse->update_inventory_snapshot($row['Date']);
-                 print $row['Date']."\r";
+                new_housekeeping_fork(
+                    'au_elastic',
+                    array(
+                        'type'          => 'update_inventory_snapshot',
+                        'warehouse_key' => $row2['Warehouse Key'],
+                        'date'          => $row['Date']
+                    ),
+                    DNS_ACCOUNT_CODE,
+                    $this->db
+                );
+
+
+                print $row['Date']."\r";
             }
         }
-
-
     }
 }

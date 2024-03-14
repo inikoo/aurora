@@ -8,8 +8,8 @@
 */
 
 
-function fork_elastic($job) {
-
+function fork_elastic($job)
+{
     global $account, $db;// remove the global $db and $account is removed
 
     if (!$_data = get_fork_metadata($job)) {
@@ -19,11 +19,18 @@ function fork_elastic($job) {
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
 
-
     //return true;
     switch ($data['type']) {
+        case 'part_inventory_snapshot_fact':
+            $part = get_object('Part', $data['part_sku']);
+            $part->update_part_inventory_snapshot_fact($data['date'], $data['date']);
 
+            break;
+        case 'update_inventory_snapshot':
+            $warehouse = new Warehouse($data['warehouse_key']);
+            $warehouse->update_inventory_snapshot($data['date']);
 
+            break;
 
         case 'create_elastic_index_object':
             print  $data['object']." ".$data['object_key']."  \n";
@@ -36,7 +43,6 @@ function fork_elastic($job) {
                 } catch (Exception $e) {
                     echo 'Caught exception indexing: ', $e->getMessage(), "\n";
                 }
-
             }
 
             break;
@@ -44,7 +50,6 @@ function fork_elastic($job) {
             print  $data['object']." ".$data['object_key']."  (delete)\n";
             $object = get_object($data['object'], $data['object_key']);
             if ($object->id) {
-
                 try {
                     $object->delete_index_elastic_search($ES_hosts);
                 } catch (Exception $e) {
@@ -55,7 +60,6 @@ function fork_elastic($job) {
 
         default:
             break;
-
     }
 
 
