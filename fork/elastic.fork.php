@@ -27,7 +27,8 @@ function fork_elastic($job)
 
             break;
         case 'update_inventory_snapshot':
-            $warehouse = new Warehouse($data['warehouse_key']);
+
+            $warehouse=get_object('Warehouse', $data['warehouse_key']);
             $warehouse->update_inventory_snapshot($data['date']);
 
             break;
