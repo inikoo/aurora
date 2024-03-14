@@ -1395,6 +1395,8 @@ class Warehouse extends DB_Table {
             }
         }
 
+        $client=null;
+
     }
 
 

@@ -56,17 +56,8 @@ if ($result = $db->query($sql)) {
                 $warehouse->update_inventory_snapshot($row['Date']);
                  print $row['Date']."\r";
             }
-        } else {
-            print_r($error_info = $db->errorInfo());
-            exit;
         }
 
 
     }
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
-
-
-?>
