@@ -19,15 +19,15 @@ function fork_elastic_low_priority($job)
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
 
-    //return true;
+    return true;
     switch ($data['type']) {
         case 'forked_part_inventory_snapshot_fact':
 
-            if(isset($data['part_sku'])){
+
                 /** @var \Part $part */
                 $part = get_object('Part', $data['part_sku']);
                 $part->update_part_inventory_snapshot_fact($data['date'], $data['date']);
-            }
+
 
 
 

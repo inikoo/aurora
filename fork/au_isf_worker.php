@@ -56,7 +56,7 @@ function fork_isf($job)
         return true;
     }
 
-
+return true;
     $account = $_data[0];
     $db      = $_data[1];
     $data    = $_data[2];

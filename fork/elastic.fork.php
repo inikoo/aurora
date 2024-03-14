@@ -21,14 +21,7 @@ function fork_elastic($job)
 
     //return true;
     switch ($data['type']) {
-        //date this asap
-        case 'forked_part_inventory_snapshot_fact':
 
-          return;
-
-
-
-            break;
         case 'update_inventory_snapshot':
 
             $warehouse=get_object('Warehouse', $data['warehouse_key']);
