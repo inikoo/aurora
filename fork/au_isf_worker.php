@@ -21,7 +21,6 @@ include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';
 include 'utils/natural_language.php';
-require_once 'utils/new_fork.php';
 
 
 include_once 'keyring/au_deploy_conf.php';
@@ -47,8 +46,7 @@ while ($worker->work()) {
 }
 
 
-function fork_isf($job)
-{
+function fork_isf($job) {
     global $account, $db;// remove the global $db and $account is removed
 
 
@@ -56,10 +54,10 @@ function fork_isf($job)
         return true;
     }
 
-return true;
-    $account = $_data[0];
-    $db      = $_data[1];
-    $data    = $_data[2];
+
+    $account=$_data[0];
+    $db=$_data[1];
+    $data=$_data[2];
 
     print 'ISF: '.$account->get('Code').' '.$data['date']."\n";
 
@@ -68,18 +66,9 @@ return true;
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
-
-
-        new_housekeeping_fork(
-            'au_elastic_low_priority',
-            array(
-                'type'     => 'forked_part_inventory_snapshot_fact',
-                'part_sku' => $row['Part SKU'],
-                'date'     => $data['date']
-            ),
-            $account->get('Code'),
-            $db
-        );
+        /** @var $part \Part */
+        $part = get_object('Part', $row['Part SKU']);
+        $part->update_part_inventory_snapshot_fact($data['date'], $data['date']);
     }
 
 
@@ -87,19 +76,9 @@ return true;
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
-        $warehouse = get_object('Warehouse', $row['Warehouse Key']);
+        $warehouse = get_object('Warehouse',$row['Warehouse Key']);
         $warehouse->update_inventory_snapshot($data['date']);
-
-
-        new_housekeeping_fork(
-            'au_elastic',
-            array(
-                'type'          => 'update_inventory_snapshot',
-                'warehouse_key' => $row['Warehouse Key'],
-                'date'          => $data['Date']
-            ),
-            $account->get('Code'),
-            $db
-        );
     }
+
+
 }

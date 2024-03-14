@@ -19,7 +19,6 @@ function fork_elastic($job)
     list($account, $db, $data, $editor, $ES_hosts) = $_data;
 
 
-    //return true;
     switch ($data['type']) {
 
         case 'update_inventory_snapshot':
