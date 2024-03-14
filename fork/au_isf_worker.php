@@ -62,7 +62,7 @@ function fork_isf($job)
     $data    = $_data[2];
 
     print 'ISF: '.$account->get('Code').' '.$data['date']."\n";
-
+return;
 
     $sql  = "SELECT `Part SKU` FROM `Part Dimension` ";
     $stmt = $db->prepare($sql);
