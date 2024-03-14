@@ -13,7 +13,10 @@ use Elasticsearch\ClientBuilder;
 
 require_once 'utils/ar_common.php';
 
-$client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+$client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+        ->setApiKey(ES_KEY1,ES_KEY2)
+        ->setSSLVerification(ES_SSL)
+        ->build();
 
 
 $query_data = prepare_values(

@@ -965,7 +965,10 @@ class Warehouse extends DB_Table {
 
     function update_inventory_snapshot($from = '', $to = false) {
 
-        $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+        $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+        ->setApiKey(ES_KEY1,ES_KEY2)
+        ->setSSLVerification(ES_SSL)
+        ->build();
 
 
         include_once 'utils/warehouse_isf_functions.php';
@@ -1341,7 +1344,10 @@ class Warehouse extends DB_Table {
                 $data['locations'] = $response['aggregations']['locations']['value'];
 
 
-                $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+                $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+        ->setApiKey(ES_KEY1,ES_KEY2)
+        ->setSSLVerification(ES_SSL)
+        ->build();
 
 
                 $params = ['body' => []];

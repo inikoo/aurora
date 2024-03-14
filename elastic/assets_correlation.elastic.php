@@ -14,7 +14,10 @@ use Elasticsearch\ClientBuilder;
 
 function get_elastic_sales_correlated_assets($object_key,$scope_prefix,$period_suffix='',$number_results=20,$min_doc_count=1){
 
-    $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+    $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+        ->setApiKey(ES_KEY1,ES_KEY2)
+        ->setSSLVerification(ES_SSL)
+        ->build();
     $params = [
         'index' => strtolower('au_customers_'.strtolower(DNS_ACCOUNT_CODE)),
 

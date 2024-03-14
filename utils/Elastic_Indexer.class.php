@@ -16,7 +16,8 @@ use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 
 require_once 'vendor/autoload.php';
-
+require_once 'keyring/dns.php';
+require_once 'keyring/au_deploy_conf.php';
 
 class Elastic_Indexer {
     /**
@@ -112,8 +113,16 @@ class Elastic_Indexer {
      */
     private $indices;
 
-    function __construct($hosts, $account_code, $object, $db, $indices = []) {
-        $this->client       = ClientBuilder::create()->setHosts($hosts)->build();
+    function __construct( $account_code, $object, $db, $indices = []) {
+
+
+
+        $this->client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+            ->setApiKey(ES_KEY1,ES_KEY2)
+            ->setSSLVerification(ES_SSL)
+            ->build();
+
+
         $this->indices      = $indices;
         $this->object       = $object;
         $this->db           = $db;

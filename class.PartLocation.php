@@ -1521,7 +1521,10 @@ class PartLocation extends DB_Table
 
     function update_stock_history_date($date)
     {
-        $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+        $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+        ->setApiKey(ES_KEY1,ES_KEY2)
+        ->setSSLVerification(ES_SSL)
+        ->build();
 
 
         if ($this->exist_on_date($date)) {

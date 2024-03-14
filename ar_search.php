@@ -276,7 +276,10 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
     $max_results = 16;
 
 
-    $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+    $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+        ->setApiKey(ES_KEY1,ES_KEY2)
+        ->setSSLVerification(ES_SSL)
+        ->build();
 
 
     if (in_array('customers', $modules)) {

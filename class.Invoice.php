@@ -2216,7 +2216,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
 
 
         try {
-            $this->delete_index_elastic_search(get_ES_hosts());
+            $this->delete_index_elastic_search(get_elasticsearch_hosts());
         } catch (Throwable $exception) {
             Sentry\captureException($exception);
         }

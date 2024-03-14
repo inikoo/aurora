@@ -941,7 +941,7 @@ abstract class DB_Table extends stdClass
         }
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
-        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db, $indices);
+        $indexer = new Elastic_Indexer( $account->get('Code'), $this, $this->db, $indices);
         $indexer->prepare_object();
         if (!$bulk) {
             if (in_array('quick', $indices)) {
@@ -961,7 +961,7 @@ abstract class DB_Table extends stdClass
         }
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
-        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db);
+        $indexer = new Elastic_Indexer( $account->get('Code'), $this, $this->db);
         $indexer->delete_index();
     }
 

@@ -72,7 +72,10 @@ function fork_export_from_elastic_search($job) {
     );
 
 
-    $client = ClientBuilder::create()->setHosts(get_ES_hosts())->build();
+    $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
+        ->setApiKey(ES_KEY1,ES_KEY2)
+        ->setSSLVerification(ES_SSL)
+        ->build();
 
     $params = [
         'index'  => strtolower('au_part_isf_'.strtolower(DNS_ACCOUNT_CODE)),

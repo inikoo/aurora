@@ -290,7 +290,7 @@ function update_mailshots_index($db) {
 
 
     $object_name = 'Email Campaigns';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -319,7 +319,7 @@ function update_deals_index($db) {
 
 
     $object_name = 'Deals';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -725,7 +725,7 @@ function update_deal_campaigns_index($db) {
 
 
     $object_name = 'Deal Campaigns';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -752,7 +752,7 @@ function update_deal_components_index($db) {
 
 
     $object_name = 'Deal Components';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -788,7 +788,7 @@ function update_staff_index($db) {
 
 
     $object_name = 'Staff';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -817,7 +817,7 @@ function update_categories_index($db) {
 
 
     $object_name = 'Categories';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -846,7 +846,7 @@ function update_webpages_index($db) {
 
 
     $object_name = 'Webpages';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -875,7 +875,7 @@ function update_webpages_index($db) {
 function update_products_index($db) {
 
     $object_name = 'Products';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
     $total       = get_total_objects($db, $object_name);
 
@@ -905,7 +905,7 @@ function update_parts_index($db) {
 
 
     $object_name = 'Parts';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -937,7 +937,7 @@ function update_locations_index($db) {
     include_once 'class.Location.php';
 
     $object_name = 'Locations';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -981,7 +981,7 @@ function update_locations_index($db) {
 function update_suppliers_index($db) {
 
     $object_name = 'Suppliers';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1010,7 +1010,7 @@ function update_suppliers_index($db) {
 function update_agents_index($db) {
 
     $object_name = 'Agents';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1039,7 +1039,7 @@ function update_agents_index($db) {
 function update_supplier_products_index($db) {
 
     $object_name = 'Supplier Parts';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1067,7 +1067,7 @@ function update_supplier_products_index($db) {
 function update_orders_index($db) {
 
     $object_name = 'Orders';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1095,7 +1095,7 @@ function update_orders_index($db) {
  */
 function update_customers_index($db) {
     $object_name = 'Customers';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1135,7 +1135,7 @@ function update_customers_index($db) {
 function update_prospects_index($db) {
 
     $object_name = 'Prospects';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1168,7 +1168,7 @@ function update_prospects_index($db) {
  */
 function update_users_index($db) {
     $object_name = 'Users';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1194,7 +1194,7 @@ function update_users_index($db) {
  */
 function update_deleted_invoices_index($db) {
     $object_name = 'Deleted_Invoices';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1220,7 +1220,7 @@ function update_deleted_invoices_index($db) {
  */
 function update_invoices_index($db) {
     $object_name = 'Invoices';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1246,7 +1246,7 @@ function update_invoices_index($db) {
  */
 function update_delivery_notes_index($db) {
     $object_name = 'Delivery Notes';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1273,7 +1273,7 @@ function update_delivery_notes_index($db) {
  */
 function update_payments_index($db) {
     $object_name = 'Payments';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);
@@ -1300,7 +1300,7 @@ function update_payments_index($db) {
  */
 function update_lists_index($db) {
     $object_name = 'Lists';
-    $hosts       = get_ES_hosts();
+    $hosts       = get_elasticsearch_hosts();
     $print_est   = true;
 
     $total     = get_total_objects($db, $object_name);

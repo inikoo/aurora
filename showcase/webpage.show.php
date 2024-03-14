@@ -16,7 +16,7 @@ function get_webpage_showcase($data, $smarty) {
     $webpage = $data['_object'];
 
 
-    // $webpage->index_elastic_search(get_ES_hosts(),false);
+    // $webpage->index_elastic_search(get_elasticsearch_hosts(),false);
     //exit;
 
     //   print_r($webpage->get('Content Data'));

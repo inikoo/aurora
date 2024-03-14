@@ -675,7 +675,7 @@ abstract class DBW_Table extends stdClass {
     function index_elastic_search($hosts, $bulk = false, $indices = ['quick']) {
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
-        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db, $indices);
+        $indexer = new Elastic_Indexer($account->get('Code'), $this, $this->db, $indices);
         $indexer->prepare_object();
         if (!$bulk) {
             $indexer->add_index();
@@ -687,7 +687,7 @@ abstract class DBW_Table extends stdClass {
     function delete_index_elastic_search($hosts) {
         include_once 'utils/Elastic_Indexer.class.php';
         $account = get_object('Account', 1);
-        $indexer = new Elastic_Indexer($hosts, $account->get('Code'), $this, $this->db);
+        $indexer = new Elastic_Indexer( $account->get('Code'), $this, $this->db);
         $indexer->delete_index();
 
     }
