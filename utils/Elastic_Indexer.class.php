@@ -16,7 +16,6 @@ use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
 
 require_once 'vendor/autoload.php';
-require_once 'keyring/dns.php';
 require_once 'keyring/au_deploy_conf.php';
 
 class Elastic_Indexer {
