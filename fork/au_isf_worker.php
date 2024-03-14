@@ -62,22 +62,20 @@ function fork_isf($job)
     $data    = $_data[2];
 
     print 'ISF: '.$account->get('Code').' '.$data['date']."\n";
-return;
+
 
     $sql  = "SELECT `Part SKU` FROM `Part Dimension` ";
     $stmt = $db->prepare($sql);
     $stmt->execute();
     while ($row = $stmt->fetch()) {
-        /** @var $part \Part */
-        // $part = get_object('Part', $row['Part SKU']);
-        // $part->update_part_inventory_snapshot_fact($data['date'], $data['date']);
+
 
         new_housekeeping_fork(
-            'au_elastic',
+            'au_elastic_low_priority',
             array(
-                'type'          => 'part_inventory_snapshot_fact',
+                'type'     => 'forked_part_inventory_snapshot_fact',
                 'part_sku' => $row['Part SKU'],
-                'date'          => $data['date']
+                'date'     => $data['date']
             ),
             $account->get('Code'),
             $db
