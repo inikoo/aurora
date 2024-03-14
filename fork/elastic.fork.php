@@ -21,7 +21,7 @@ function fork_elastic($job)
 
     //return true;
     switch ($data['type']) {
-        case 'part_inventory_snapshot_fact':
+        case 'part_inventory_snapshot_factx':
             $part = get_object('Part', $data['part_sku']);
             $part->update_part_inventory_snapshot_fact($data['date'], $data['date']);
 
