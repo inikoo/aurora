@@ -132,12 +132,12 @@ switch ($tipo) {
 
 
         if($payment_account->get('Payment Account Block')=='ConD') {
-            $sql  = "select `Charge Key` from `Charge Dimension` where `Charge Store Key`=? and `Charge Name`=? ";
+            $sql  = "select `Charge Key` from `Charge Dimension` where `Charge Store Key`=? and `Charge Scope`=? ";
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 [
                     $store->id,
-                    'ConD'
+                    'CoD'
                 ]
             );
             if ($row = $stmt->fetch()) {
