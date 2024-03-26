@@ -2267,7 +2267,7 @@ class Store extends DB_Table
                 $this->update_orders_packed_data();
                 $this->update_orders_packed_done_data();
                 $this->update_orders_approved_data();
-                $this->update_orders_dispatched();
+                $this->update_orders_dispatched_bis();
                 $this->update_orders_dispatched_today();
                 $this->update_orders_cancelled();
 
@@ -2659,6 +2659,50 @@ class Store extends DB_Table
 
         $data_to_update = array(
             'Store DC Orders Dispatch Approved Amount' => round($data['approved']['dc_amount'], 2)
+
+        );
+        $this->fast_update($data_to_update, 'Store DC Data');
+    }
+
+    function update_orders_dispatched_bis()
+    {
+        $data = array(
+            'dispatched' => array(
+                'number'    => 0,
+                'amount'    => 0,
+                'dc_amount' => 0
+            ),
+
+        );
+
+
+        $sql = sprintf(
+            "SELECT count(*) AS num,ifnull(sum(`Order Total Net Amount`),0) AS amount,ifnull(sum(`Order Total Net Amount`*`Order Currency Exchange`),0) AS dc_amount FROM `Order Dimension` USE INDEX (StoreState)   WHERE `Order Store Key`=%d  AND  `Order State` ='Dispatched' ",
+            $this->id
+        );
+
+
+        if ($result = $this->db->query($sql)) {
+            foreach ($result as $row) {
+                $data['dispatched']['number']    = $row['num'];
+                $data['dispatched']['amount']    = $row['amount'];
+                $data['dispatched']['dc_amount'] = $row['dc_amount'];
+            }
+        }
+
+
+        $data_to_update = array(
+            'Store Orders Dispatched Number' => $data['dispatched']['number'],
+            'Store Orders Dispatched Amount' => round($data['dispatched']['amount'], 2)
+
+
+        );
+        $this->fast_update($data_to_update, 'Store Data');
+
+        print_r($data_to_update);
+
+        $data_to_update = array(
+            'Store DC Orders Dispatched Amount' => round($data['dispatched']['dc_amount'], 2)
 
         );
         $this->fast_update($data_to_update, 'Store DC Data');
