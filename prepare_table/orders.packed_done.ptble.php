@@ -18,9 +18,9 @@ $wheref   = '';
 $currency = '';
 
 
-//$where = 'where  (`Order State`="PackedDone" or `Order Replacements Packed Done`>0 ) ';
+$where = 'where  (`Order State`="PackedDone" or `Order Replacements Packed Done`>0 ) ';
 
-$where = 'where  `Order State`="PackedDone"  ';
+//$where = 'where  `Order State`="PackedDone"  ';
 
 
 $table = '`Order Dimension` O left join `Payment Account Dimension` P on (P.`Payment Account Key`=O.`Order Payment Account Key`)';
