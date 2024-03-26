@@ -143,7 +143,7 @@ function fork_update_part_products_availability($job) {
     $part->update_stock_status();
     $new_value = $part->get('Part Stock Status');
 
-    if($new_value!= $old_value) {
+    //if($new_value!= $old_value) {
         foreach ($part->get_products('objects') as $product) {
             if (isset($data['editor'])) {
                 $data['editor']['Date'] = gmdate('Y-m-d H:i:s');
@@ -156,7 +156,7 @@ function fork_update_part_products_availability($job) {
 
             $product->update_availability(false);
         }
-    }
+  //  }
 
 
 }
