@@ -20,43 +20,41 @@ function process_payment_response($response, $order, $website, $payment_account,
 
 
     $card_type = '';
-    if (isset($response->source['product_type'])) {
-        $card_type = $response->source['product_type'];
+    if (isset($response['source']['product_type'])) {
+        $card_type = $response['source']['product_type'];
     }
-    if ($card_type == '' and isset($response->source['scheme'])) {
-        $card_type = $response->source['scheme'];
+    if ($card_type == '' and isset($response['source']['scheme'])) {
+        $card_type = $response['source']['scheme'];
     }
 
     $date = gmdate('Y-m-d H:i:s');
-    if (!empty($response->processed_on)) {
-        $date = gmdate('Y-m-d H:i:s', strtotime($response->processed_on));
-    } elseif (!empty($response->requested_on)) {
-        $date = gmdate('Y-m-d H:i:s', strtotime($response->requested_on));
+    if (!empty($response['processed_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($response['processed_on']));
+    } elseif (!empty($response['requested_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($response['requested_on']));
     }
 
     $info = '';
-    if (isset($response->response_summary)) {
-        $info .= $response->response_summary;
+    if (isset($response['response_summary'])) {
+        $info .= $response['response_summary'];
     }
-    if (isset($response->response_code)) {
-        $info .= ' ('.$response->response_code.')';
+    if (isset($response['response_code'])) {
+        $info .= ' ('.$response['response_code'].')';
     }
-
-
 
 
     $payment_data = array(
         'Payment Store Key'          => $order->get('Order Store Key'),
         'Payment Website Key'        => $website->id,
         'Payment Customer Key'       => $customer->id,
-        'Payment Transaction Amount' => $response->amount / 100,
-        'Payment Currency Code'      => $response->currency,
+        'Payment Transaction Amount' => $response['amount'] / 100,
+        'Payment Currency Code'      => $response['currency'],
 
         'Payment Sender Card Type' => $card_type,
         'Payment Created Date'     => $date,
 
         'Payment Last Updated Date'       => $date,
-        'Payment Transaction ID'          => $response->id,
+        'Payment Transaction ID'          => $response['id'],
         'Payment Method'                  => $payment_method,
         'Payment Location'                => 'Basket',
         'Payment Metadata'                => json_encode($response),
@@ -64,9 +62,12 @@ function process_payment_response($response, $order, $website, $payment_account,
 
     );
 
+   // print_r($payment_data);
+   // exit;
+
     //print_r($response);
 
-    if ($response->approved) {
+    if ($response['approved']) {
         $payment_data['Payment Transaction Status'] = 'Completed';
 
 
@@ -91,8 +92,8 @@ function process_payment_response($response, $order, $website, $payment_account,
     } else {
         $payment_data['Payment Transaction Status'] = 'Declined';
 
-        if(isset($response->actions)) {
-            foreach ($response->actions as $action) {
+        if(isset($response['actions'])) {
+            foreach ($response['actions'] as $action) {
                 if($action['type']=='Authorization'){
                     if (isset($action['response_summary'])) {
                         $info .=$action['response_summary'];
@@ -134,26 +135,26 @@ function process_payment_top_up_response($response, $top_up, $website, $payment_
 
 
     $card_type = '';
-    if (isset($response->source['product_type'])) {
-        $card_type = $response->source['product_type'];
+    if (isset($response['source']['product_type'])) {
+        $card_type = $response['source']['product_type'];
     }
-    if ($card_type == '' and isset($response->source['scheme'])) {
-        $card_type = $response->source['scheme'];
+    if ($card_type == '' and isset($response['source']['scheme'])) {
+        $card_type = $response['source']['scheme'];
     }
 
     $date = gmdate('Y-m-d H:i:s');
-    if (!empty($response->processed_on)) {
-        $date = gmdate('Y-m-d H:i:s', strtotime($response->processed_on));
-    } elseif (!empty($response->requested_on)) {
-        $date = gmdate('Y-m-d H:i:s', strtotime($response->requested_on));
+    if (!empty($response['processed_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($response['processed_on']));
+    } elseif (!empty($response['requested_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($response['requested_on']));
     }
 
     $info = '';
-    if (isset($response->response_summary)) {
-        $info .= $response->response_summary;
+    if (isset($response['response_summary'])) {
+        $info .= $response['response_summary'];
     }
-    if (isset($response->response_code)) {
-        $info .= ' ('.$response->response_code.')';
+    if (isset($response['response_code'])) {
+        $info .= ' ('.$response['response_code'].')';
     }
 
 
@@ -162,14 +163,14 @@ function process_payment_top_up_response($response, $top_up, $website, $payment_
         'Payment Store Key'          => $top_up->get('Top Up Store Key'),
         'Payment Website Key'        => $website->id,
         'Payment Customer Key'       => $customer->id,
-        'Payment Transaction Amount' => $response->amount / 100,
-        'Payment Currency Code'      => $response->currency,
+        'Payment Transaction Amount' => $response['amount'] / 100,
+        'Payment Currency Code'      => $response['currency'],
 
         'Payment Sender Card Type' => $card_type,
         'Payment Created Date'     => $date,
 
         'Payment Last Updated Date'       => $date,
-        'Payment Transaction ID'          => $response->id,
+        'Payment Transaction ID'          => $response['id'],
         'Payment Method'                  => $payment_method,
         'Payment Location'                => 'Basket',
         'Payment Metadata'                => json_encode($response),
@@ -179,7 +180,7 @@ function process_payment_top_up_response($response, $top_up, $website, $payment_
 
     //print_r($response);
 
-    if ($response->approved) {
+    if ($response['approved']) {
         $payment_data['Payment Transaction Status'] = 'Completed';
 
         $payment = $payment_account->create_payment($payment_data);
@@ -197,7 +198,7 @@ function process_payment_top_up_response($response, $top_up, $website, $payment_
                 'Top Up Payment Key' => $payment->id,
                 'Top Up Status'      => 'Paid',
                 'Top Up Exchange'    => $exchange,
-                'Top Up Amount'      => $response->amount / 100
+                'Top Up Amount'      => $response['amount'] / 100
             ]
         );
 
@@ -272,8 +273,8 @@ function process_payment_top_up_response($response, $top_up, $website, $payment_
     } else {
         $payment_data['Payment Transaction Status'] = 'Declined';
 
-        if(isset($response->actions)) {
-            foreach ($response->actions as $action) {
+        if(isset($response['actions'])) {
+            foreach ($response['actions'] as $action) {
                 if($action['type']=='Authorization'){
                     if (isset($action['response_summary'])) {
                         $info .=$action['response_summary'];

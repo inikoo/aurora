@@ -10,9 +10,15 @@
 
 */
 
-use Checkout\CheckoutApi;
-use Checkout\Models\Payments\TokenSource;
-use Checkout\Models\Payments\Payment;
+use Checkout\CheckoutApiException;
+use Checkout\CheckoutSdk;
+use Checkout\Common\CustomerRequest;
+use Checkout\Environment;
+use Checkout\Payments\Request\PaymentRequest;
+use Checkout\Payments\Request\Source\RequestTokenSource;
+use Checkout\Payments\Sender\PaymentInstrumentSender;
+use Checkout\Payments\ThreeDsRequest;
+
 
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/placed_order_functions.php';
@@ -63,15 +69,15 @@ switch ($tipo) {
     case 'get_checkout_html':
         $data = prepare_values(
             $_REQUEST, array(
-                         'device_prefix'    => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         ),
-                         'client_order_key' => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         )
-                     )
+                'device_prefix'    => array(
+                    'type'     => 'string',
+                    'optional' => true
+                ),
+                'client_order_key' => array(
+                    'type'     => 'string',
+                    'optional' => true
+                )
+            )
         );
 
         get_checkout_html($data, $website, $customer, $smarty);
@@ -81,10 +87,10 @@ switch ($tipo) {
     case 'place_order_pay_later':
         $data = prepare_values(
             $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key')
+                'payment_account_key' => array('type' => 'key'),
+                'order_key'           => array('type' => 'key')
 
-                     )
+            )
         );
 
 
@@ -200,13 +206,13 @@ switch ($tipo) {
     case 'place_order_pay_braintree_paypal':
         $data    = prepare_values(
             $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key'),
-                         'amount'              => array('type' => 'string'),
-                         'nonce'               => array('type' => 'string'),
+                'payment_account_key' => array('type' => 'key'),
+                'order_key'           => array('type' => 'key'),
+                'amount'              => array('type' => 'string'),
+                'nonce'               => array('type' => 'string'),
 
 
-                     )
+            )
         );
         $website = get_object('Website', $_SESSION['website_key']);
 
@@ -245,11 +251,11 @@ switch ($tipo) {
     case 'place_order_pay_checkout':
         $data    = prepare_values(
             $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key'),
-                         'token'               => array('type' => 'string'),
+                'payment_account_key' => array('type' => 'key'),
+                'order_key'           => array('type' => 'key'),
+                'token'               => array('type' => 'string'),
 
-                     )
+            )
         );
         $website = get_object('Website', $_SESSION['website_key']);
 
@@ -288,11 +294,11 @@ switch ($tipo) {
     case 'place_order_pay_braintree':
         $data    = prepare_values(
             $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key'),
-                         'data'                => array('type' => 'json array'),
+                'payment_account_key' => array('type' => 'key'),
+                'order_key'           => array('type' => 'key'),
+                'data'                => array('type' => 'json array'),
 
-                     )
+            )
         );
         $website = get_object('Website', $_SESSION['website_key']);
 
@@ -332,11 +338,11 @@ switch ($tipo) {
     case 'place_order_pay_braintree_using_saved_card':
         $data    = prepare_values(
             $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
-                         'order_key'           => array('type' => 'key'),
-                         'data'                => array('type' => 'json array'),
+                'payment_account_key' => array('type' => 'key'),
+                'order_key'           => array('type' => 'key'),
+                'data'                => array('type' => 'json array'),
 
-                     )
+            )
         );
         $website = get_object('Website', $_SESSION['website_key']);
 
@@ -375,12 +381,12 @@ switch ($tipo) {
 
         $data = prepare_values(
             $_REQUEST, array(
-                         'payment_account_key' => array('type' => 'key'),
+                'payment_account_key' => array('type' => 'key'),
 
-                         'token' => array('type' => 'string'),
+                'token' => array('type' => 'string'),
 
 
-                     )
+            )
         );
 
         delete_braintree_saved_card($data, $editor);
@@ -699,9 +705,9 @@ function place_order_pay_braintree_using_saved_card($store, $_data, $order, $cus
 
         $verification_result = $gateway->paymentMethod()->update(
             $token, [
-                      'paymentMethodNonce' => $nonce,
-                      'options'            => ['verifyCard' => true]
-                  ]
+                'paymentMethodNonce' => $nonce,
+                'options'            => ['verifyCard' => true]
+            ]
         );
     } catch (Exception $e) {
         $msg = _('There was a problem with your saved card').'<br>'.sprintf(_('click in %s and provide the credit card details again'), '<b>'._('Pay with other card').'</b>');
@@ -971,12 +977,12 @@ function process_braintree_order($braintree_data, $order, $gateway, $customer, $
 
                 if (!(in_array(
                     $error->code, array(
-                                    '81714',
-                                    '81715',
-                                    '81716',
-                                    '81736',
-                                    '81737',
-                                )
+                        '81714',
+                        '81715',
+                        '81716',
+                        '81736',
+                        '81737',
+                    )
                 ))) {
                     $_msg .= ' ('.$error->code.')';
                 }
@@ -1187,8 +1193,12 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
 
 
     $sql =
-        "SELECT `password` FROM `Payment Account Store Bridge`    WHERE 
-`Payment Account Store Payment Account Key`=?  and `Payment Account Store Store Key`=?  AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
+        "SELECT `login` FROM `Payment Account Store Bridge`    
+               WHERE 
+                    `Payment Account Store Payment Account Key`=?  and 
+                    `Payment Account Store Store Key`=?  AND 
+                     `Payment Account Store Status`='Active' AND 
+                   `Payment Account Store Show in Cart`='Yes'  ";
     /** @var TYPE_NAME $db */
     $stmt = $db->prepare($sql);
     $stmt->execute(
@@ -1197,57 +1207,91 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
             $store->id
         ]
     );
-    $secretKey = '';
+    $channel = '';
     while ($row = $stmt->fetch()) {
-        $secretKey = $row['password'];
+        $channel=$row['login'];
     }
 
+$secretKey=$payment_account->get('Payment Account Password');
 
-    // Initialize the Checkout API in Sandbox mode. Use new CheckoutApi($liveSecretKey, false); for production
-    if (ENVIRONMENT == 'DEVEL') {
-        $checkout = new CheckoutApi($secretKey);
-    } else {
-        $checkout = new CheckoutApi($secretKey, false);
-    }
-
-    // Create a payment method instance with card details
-    $method = new TokenSource($_data['token']);
-
-    // Prepare the payment parameters
-    $payment         = new Payment($method, $order->get('Order Currency'));
-    $payment->amount = $order->get('Order Basket To Pay Amount') * 100;
+    //====== v3
 
 
+    $CheckoutAPI = CheckoutSdk::builder()->staticKeys()
 
-    $payment->threeDs = new Checkout\Models\Payments\ThreeDs(true);
+        ->secretKey($secretKey)
+        ->environment(ENVIRONMENT == 'DEVEL' ?Environment::sandbox(): Environment::production())
+        ->build();
 
-    $payment->reference = $order->get('Order Public ID');
-
-    if (ENVIRONMENT == 'DEVEL') {
-        $payment->success_url = 'http://ds.ir'."/ar_web_process_checkout.php";
-        $payment->failure_url = 'http://ds.ir'."/ar_web_process_checkout.php";
-    } else {
-        $payment->success_url = 'https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
-        $payment->failure_url = 'https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
-    }
-
-    if ($website->get('Website Type') == 'EcomDS') {
-        $payment->success_url.='?client_order_key='.$order->id;
-        $payment->failure_url.='?client_order_key='.$order->id;
-
-    }
-
-
-        $payment->{'customer'} = [
-        'email' => $customer->get('Customer Main Plain Email'),
-        'name'  => $customer->get('Customer Name'),
-    ];
-
-    // Send the request and retrieve the response
 
     try {
-        $response = $checkout->payments()->request($payment);
-    } catch (Exception $e) {
+
+        $requestTokenSource = new RequestTokenSource();
+        $requestTokenSource->token = $_data['token'];
+
+        $threeDsRequest = new ThreeDsRequest();
+        $threeDsRequest->enabled = true;
+
+        $paymentInstrumentSender = new PaymentInstrumentSender();
+
+        $customerRequest = new CustomerRequest();
+        $customerRequest->email = $customer->get('Customer Main Plain Email');
+        $customerRequest->name = $customer->get('Customer Name');
+
+        $paymentRequest = new PaymentRequest();
+        $paymentRequest->source = $requestTokenSource;
+        $paymentRequest->amount = $order->get('Order Basket To Pay Amount') * 100;
+        $paymentRequest->currency = $order->get('Order Currency');
+        $paymentRequest->capture = true;
+        $paymentRequest->reference = $order->get('Order Public ID');
+        $paymentRequest->three_ds = $threeDsRequest;
+        $paymentRequest->sender = $paymentInstrumentSender;
+        $paymentRequest->customer = $customerRequest;
+        $paymentRequest->processing_channel_id = $channel;
+        //$paymentRequest->metadata = $metadata;
+
+
+        if (ENVIRONMENT == 'DEVEL') {
+            $success_url = "http://ecom.test:88/ar_web_process_checkout.php";
+            $failure_url = "http://ecom.test:88/ar_web_process_checkout.php";
+        } else {
+            $success_url = 'https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
+            $failure_url = 'https://'.$website->get('Website URL')."/ar_web_process_checkout.php";
+        }
+
+
+
+        if ($website->get('Website Type') == 'EcomDS') {
+            $success_url.='?client_order_key='.$order->id;
+            $failure_url.='?client_order_key='.$order->id;
+
+        }
+
+        $paymentRequest->success_url = $success_url;
+        $paymentRequest->failure_url = $failure_url;
+
+
+        try {
+            $response = $CheckoutAPI->getPaymentsClient()->requestPayment($paymentRequest);
+
+        } catch (Exception $e) {
+            $msg                                = _('There was a problem processing your credit card; please double check your payment information and try again');
+            $_SESSION['checkout_payment_error'] = strip_tags($msg).' '.$e->getMessage();
+
+            $response = array(
+
+                'state' => 400,
+                'msg'   => $msg
+
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+    }
+    catch (CheckoutApiException $e) {
+
+
         $msg                                = _('There was a problem processing your credit card; please double check your payment information and try again');
         $_SESSION['checkout_payment_error'] = strip_tags($msg).' '.$e->getMessage();
 
@@ -1259,19 +1303,17 @@ function place_order_pay_checkout($store, $_data, $order, $customer, $website, $
         );
         echo json_encode($response);
         exit;
+
     }
 
-
-    switch ($response->http_code) {
+    switch ($response['http_metadata']->getStatusCode()) {
         case 202:
 
-            // print_r($response);
-            // print_r($response->_links);
             $response = array(
 
 
                 'state'    => 201,
-                'redirect' => $response->_links['redirect']['href']
+                'redirect' => $response['_links']['redirect']['href']
 
             );
             echo json_encode($response);

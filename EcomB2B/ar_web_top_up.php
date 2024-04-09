@@ -10,9 +10,14 @@
 
 */
 
-use Checkout\CheckoutApi;
-use Checkout\Models\Payments\TokenSource;
-use Checkout\Models\Payments\Payment;
+use Checkout\CheckoutApiException;
+use Checkout\CheckoutSdk;
+use Checkout\Common\CustomerRequest;
+use Checkout\Environment;
+use Checkout\Payments\Request\PaymentRequest;
+use Checkout\Payments\Request\Source\RequestTokenSource;
+use Checkout\Payments\Sender\PaymentInstrumentSender;
+use Checkout\Payments\ThreeDsRequest;
 
 
 include_once 'ar_web_common_logged_in.php';
@@ -760,16 +765,14 @@ function top_up_pay_checkout($store, $_data, $customer, $website, $editor, $db, 
         exit;
     }
 
+    $store   = get_object('Store', $website->get('Website Store Key'));
 
     $payment_account         = get_object('Payment_Account', $_data['payment_account_key']);
     $payment_account->editor = $editor;
 
-
     $sql =
-        "SELECT `password` FROM `Payment Account Store Bridge`    WHERE `Payment Account Store Payment Account Key`=? 
-                                                           and `Payment Account Store Store Key`=?
-
-                                                           AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
+        "SELECT `login` FROM `Payment Account Store Bridge`    WHERE 
+`Payment Account Store Payment Account Key`=?  and `Payment Account Store Store Key`=?  AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
     /** @var TYPE_NAME $db */
     $stmt = $db->prepare($sql);
     $stmt->execute(
@@ -778,53 +781,89 @@ function top_up_pay_checkout($store, $_data, $customer, $website, $editor, $db, 
             $store->id
         ]
     );
-    $secretKey = '';
+    $channel = '';
     while ($row = $stmt->fetch()) {
-        $secretKey = $row['password'];
+        $channel=$row['login'];
     }
+    $secretKey=$payment_account->get('Payment Account Password');
 
-    if (ENVIRONMENT == 'DEVEL') {
-        $checkout = new CheckoutApi($secretKey);
-    } else {
-        $checkout = new CheckoutApi($secretKey, false);
-    }
+    //========
+    $CheckoutAPI = CheckoutSdk::builder()->staticKeys()
 
+        ->secretKey($secretKey)
+        ->environment(ENVIRONMENT == 'DEVEL' ?Environment::sandbox(): Environment::production())
+        ->build();
 
-    $method = new TokenSource($_data['token']);
-    $store   = get_object('Store', $website->get('Website Store Key'));
-
-
-    $payment          = new Payment($method, $store->get('Store Currency Code'));
-    $payment->amount  = $_data['amount'] * 100;
-    $payment->threeDs = new Checkout\Models\Payments\ThreeDs(true);
-
-    $payment->reference = 'top_up-'.$top_up->id;
-
-    if(ENVIRONMENT == 'DEVEL'){
-        $payment->success_url = 'http://ds.ir'."/ar_web_process_top_up.php";
-        $payment->failure_url = 'http://ds.ir'."/ar_web_process_top_up.php";
-
-    }else{
-        $payment->success_url='https://'.$website->get('Website URL')."/ar_web_process_top_up.php";
-        $payment->failure_url='https://'.$website->get('Website URL')."/ar_web_process_top_up.php";
-
-    }
-
-    $payment->success_url .= '?top_up_key='.$top_up->id;
-    $payment->failure_url .= '?top_up_key='.$top_up->id;
-
-    $payment->{'customer'} = [
-        'email' => $customer->get('Customer Main Plain Email'),
-        'name'  => $customer->get('Customer Name'),
-    ];
 
     try {
-        $response = $checkout->payments()->request($payment);
-        //print_r($response);
 
-    } catch (Exception $e) {
-        $msg = _('There was a problem processing your credit card; please double check your payment information and try again');
-        $_SESSION['top_up_payment_error'] = strip_tags($msg);
+        $requestTokenSource = new RequestTokenSource();
+        $requestTokenSource->token = $_data['token'];
+
+        $threeDsRequest = new ThreeDsRequest();
+        $threeDsRequest->enabled = true;
+
+        $paymentInstrumentSender = new PaymentInstrumentSender();
+
+        $customerRequest = new CustomerRequest();
+        $customerRequest->email = $customer->get('Customer Main Plain Email');
+        $customerRequest->name = $customer->get('Customer Name');
+
+        $paymentRequest = new PaymentRequest();
+        $paymentRequest->source = $requestTokenSource;
+        $paymentRequest->amount =  $_data['amount'] * 100;
+        $paymentRequest->currency =$store->get('Store Currency Code');
+        $paymentRequest->capture = true;
+        $paymentRequest->reference = 'top_up-'.$top_up->id;
+        $paymentRequest->three_ds = $threeDsRequest;
+        $paymentRequest->sender = $paymentInstrumentSender;
+        $paymentRequest->customer = $customerRequest;
+        $paymentRequest->processing_channel_id = $channel;
+        //$paymentRequest->metadata = $metadata;
+
+
+        if (ENVIRONMENT == 'DEVEL') {
+            $success_url = "http://ecom.test:88/ar_web_process_top_up.php";
+            $failure_url = "http://ecom.test:88/ar_web_process_top_up.php";
+        } else {
+            $success_url = 'https://'.$website->get('Website URL')."/ar_web_process_top_up.php";
+            $failure_url = 'https://'.$website->get('Website URL')."/ar_web_process_top_up.php";
+        }
+
+
+
+            $success_url.='?top_up_key='.$top_up->id;
+            $failure_url.='?top_up_key='.$top_up->id;
+
+
+
+        $paymentRequest->success_url = $success_url;
+        $paymentRequest->failure_url = $failure_url;
+
+
+        try {
+            $response = $CheckoutAPI->getPaymentsClient()->requestPayment($paymentRequest);
+
+        } catch (Exception $e) {
+            $msg                                = _('There was a problem processing your credit card; please double check your payment information and try again');
+            $_SESSION['checkout_payment_error'] = strip_tags($msg).' '.$e->getMessage();
+
+            $response = array(
+
+                'state' => 400,
+                'msg'   => $msg
+
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+    }
+    catch (CheckoutApiException $e) {
+
+
+        $msg                                = _('There was a problem processing your credit card; please double check your payment information and try again');
+        $_SESSION['checkout_payment_error'] = strip_tags($msg).' '.$e->getMessage();
 
         $response = array(
 
@@ -834,18 +873,17 @@ function top_up_pay_checkout($store, $_data, $customer, $website, $editor, $db, 
         );
         echo json_encode($response);
         exit;
+
     }
 
-    switch ($response->http_code) {
+    switch ($response['http_metadata']->getStatusCode()) {
         case 202:
 
-            // print_r($response);
-            // print_r($response->_links);
             $response = array(
 
 
                 'state'    => 201,
-                'redirect' => $response->_links['redirect']['href']
+                'redirect' => $response['_links']['redirect']['href']
 
             );
             echo json_encode($response);
@@ -864,6 +902,9 @@ function top_up_pay_checkout($store, $_data, $customer, $website, $editor, $db, 
             echo json_encode($res);
             exit;
     }
+
+
+
 
 }
 
