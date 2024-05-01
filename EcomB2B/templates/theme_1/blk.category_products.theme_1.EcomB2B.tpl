@@ -72,7 +72,7 @@
 
                         <div class="product_description">
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
-                                <h4 style="margin-bottom: 2px" class="name item_name {if $item.name|strlen > 40}small{elseif $item.name|strlen > 60} very_small{else}smallish{/if}  ">{$item.name}</h4>
+                                <h4 style="margin-bottom: 2px" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
                                 <span class="code"><small>{$item.code}</small></span>
                             {else}
                                 <div class="name item_name Product_Name ">{$item.variants[0].name}</div>
