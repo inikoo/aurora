@@ -207,6 +207,26 @@ $part_fields[] = array(
 );
 
 
+
+$part_fields[] = array(
+    'label'      => _('Target stock levels'),
+    'show_title' => true,
+    'fields'     => array(
+        array(
+            'id'              => 'Part_Target_Stock',
+            'edit'            => ($edit ? 'numeric' : ''),
+            'value'           => $object->get('Part Target Stock'),
+            'formatted_value' => $object->get('Target Stock'),
+            'label'           => ucfirst($object->get_field_label('Target Stock')),
+            'invalid_msg'     => get_invalid_message('string'),
+            'required'        => true,
+            'type'            => 'value'
+        ),
+
+
+    )
+);
+
 if (!$new) {
 
     $part_fields[] = array(
