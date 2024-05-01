@@ -1047,6 +1047,8 @@ class Page extends DB_Table
                     'product_id'              => $product_id,
                     'web_state'               => $product->get('Web State'),
                     'price'                   => $product->get('Price'),
+                    'price_unit'              => $product->get('Price Per Unit'),
+
                     'rrp'                     => $product->get('RRP'),
                     'header_text'             => '',
                     'code'                    => $product->get('Code'),
@@ -1078,8 +1080,6 @@ class Page extends DB_Table
             }
         }
 
-
-        //print_r($content_data['blocks'][$block_key]['items']);
 
         $this->update_field_switcher('Page Store Content Data', json_encode($content_data), 'no_history');
 
