@@ -184,6 +184,15 @@
             <tr class="{if $weight==''}hide{/if}">
 
 
+                {foreach from=$product->get_attachments() item=attachment}
+            <tr>
+                <td>{$attachment.label} <i class="fa fa-paperclip" style="margin-left:5px" aria-hidden="true"></i></td>
+                <td><a href="attachment.php?id={$attachment.id}" target="_blank">{$attachment.name}</a></td>
+            </tr>
+            {/foreach}
+
+
+
         </table>
 
 
