@@ -310,7 +310,11 @@ class Public_Website
             )
         );
         $count = 0;
+
+
+
         while ($row = $stmt->fetch()) {
+
 
             $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
 
@@ -366,16 +370,31 @@ class Public_Website
                 case 'Pastpay':
 
 
-                    if (
+                    $pass=false;
+                    if($options=='GB'){
+                        $pass=true;
+                    }else{
 
-                        $customer and
+                        if (
 
-                        $customer->get('Customer Tax Number Valid')=='Yes' and
-                        $customer->get('Customer Tax Number')!=''  and
+                            $customer and
 
-                        in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
-                                            'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH','GB'
-                        ])) {
+                            $customer->get('Customer Tax Number Valid')=='Yes' and
+                            $customer->get('Customer Tax Number')!=''  and
+
+
+
+
+                            in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
+                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH'
+                            ])) {
+                                $pass=true;
+                        }
+                    }
+
+
+
+                    if ($pass) {
                         $icon            = 'fa fa-money-check-alt';
                         $tab_label_index = '_pastpay_label';
                         $tab_label       = '';

@@ -4029,9 +4029,16 @@ WHERE `Order Transaction Fact Key`=?";
 
         $customer = get_object('Customer', $this->get('Order Customer Key'));
 
-        $tax_number = $customer->get('Customer Tax Number');
 
-        $tax_number = preg_replace('/^(PL|HU)/i', '', $tax_number);
+        if($this->get('Order Invoice Address Country 2 Alpha Code')=='GB'){
+            $tax_number='GB'.$customer->get('Customer Registration Number');
+        }else{
+            $tax_number = $customer->get('Customer Tax Number');
+
+            $tax_number = preg_replace('/^(PL|HU)/i', '', $tax_number);
+
+        }
+
 
         $invoices    = $this->get_invoices();
         $invoice_key = array_pop($invoices);
@@ -4061,8 +4068,14 @@ WHERE `Order Transaction Fact Key`=?";
         $encoded_invoice = base64_encode(file_get_contents($save_to_file));
 
 
+        if(DNS_ACCOUNT_CODE=='AW'){
+            $creditorTaxNumber='GB04108870';
+        }else{
+            $creditorTaxNumber='SK2120525440';
+        }
+
         $data = [
-            'creditorTaxNumber' => 'SK2120525440',
+            'creditorTaxNumber' => $creditorTaxNumber,
             'invoiceNo'         => $invoice->get('Invoice Public ID'),
 
 

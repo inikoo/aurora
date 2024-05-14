@@ -45,14 +45,20 @@ if ($order->id and $order->id == $_REQUEST['order_id']) {
 
     $website_url = 'https://'.$website->get('Website URL');
     if (ENVIRONMENT == 'DEVEL') {
-        $website_url = 'https://4f1f-103-121-18-51.ngrok-free.app';
+        $website_url = 'https://9678-62-30-84-183.ngrok-free.app';
     }
-    //https://api.demo.pastpay.com/buy/afdedec1-cea7-4b87-a6ae-ee2d4569d095
 
 
-    $tax_number=$customer->get('Customer Tax Number');
+    if($order->get('Order Invoice Address Country 2 Alpha Code')=='GB'){
 
-    $tax_number=preg_replace('/^(PL|HU)/i','',$tax_number);
+        $tax_number='GB'.$customer->get('Customer Registration Number');
+    }else{
+
+        $tax_number=$customer->get('Customer Tax Number');
+        $tax_number=preg_replace('/^(PL|HU)/i','',$tax_number);
+    }
+
+
 
 
     //===
