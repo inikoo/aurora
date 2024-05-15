@@ -203,6 +203,31 @@ $part_fields[] = array(
             'type'                     => 'value'
 
         ),
+
+        array(
+            'render'          => !$new,
+            'id'              => 'Part_Seasonal',
+            'edit'            => ($edit ? 'option' : ''),
+            'right_code'      => 'PE',
+            'options'         => $options_yes_no,
+            'value'           => htmlspecialchars($object->get('Part Seasonal')),
+            'formatted_value' => $object->get('Seasonal'),
+            'label'           => ucfirst($object->get_field_label('Part Seasonal')),
+            'required'        => false,
+            'type'            => 'skip'
+        ),
+        array(
+            'render'          => !$new,
+            'id'              => 'Part_For_Disconinue_Review',
+            'edit'            => ($edit ? 'option' : ''),
+            'right_code'      => 'PE',
+            'options'         => $options_yes_no,
+            'value'           => htmlspecialchars($object->get('Part For Disconinue Review')),
+            'formatted_value' => $object->get('For Disconinue Review'),
+            'label'           => ucfirst($object->get_field_label('Part For Disconinue Review')),
+            'required'        => false,
+            'type'            => 'skip'
+        ),
     )
 );
 
