@@ -4609,6 +4609,9 @@ class Part extends Asset
             case 'Part For Disconinue Review':
                 $label = _('Propose for discontinue');
                 break;
+            case 'Part Attention':
+                $label = _('for attention');
+                break;
             default:
                 $label = $field;
         }

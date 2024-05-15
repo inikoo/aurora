@@ -228,6 +228,18 @@ $part_fields[] = array(
             'required'        => false,
             'type'            => 'skip'
         ),
+        array(
+            'render'          => !$new,
+            'id'              => 'Part_Attention',
+            'edit'            => ($edit ? 'option' : ''),
+            'right_code'      => 'PE',
+            'options'         => $options_yes_no,
+            'value'           => htmlspecialchars($object->get('Part Attention')),
+            'formatted_value' => $object->get('Attention'),
+            'label'           => ucfirst($object->get_field_label('Part Attention')),
+            'required'        => false,
+            'type'            => 'skip'
+        ),
     )
 );
 
