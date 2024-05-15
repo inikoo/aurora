@@ -4070,6 +4070,8 @@ WHERE `Order Transaction Fact Key`=?";
 
         if(DNS_ACCOUNT_CODE=='AW'){
             $creditorTaxNumber='GB04108870';
+        }elseif(DNS_ACCOUNT_CODE=='AROMA'){
+        $creditorTaxNumber='GB12796117';
         }else{
             $creditorTaxNumber='SK2120525440';
         }
