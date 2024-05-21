@@ -27,7 +27,7 @@ $website=get_object('Website',$website_key);
 $store=get_object('Store',$website->get('Store Key'));
 
 
-$sql="select `Webpage Scope Key`,`Webpage Code` from `Page Store Dimension`  where `Webpage State`='Online' and `Webpage Scope`='Product'  and `Webpage Website Key`=? limit 10";
+$sql="select `Webpage Scope Key`,`Webpage Code` from `Page Store Dimension`  where `Webpage State`='Online' and `Webpage Scope`='Product'  and `Webpage Website Key`=? ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
