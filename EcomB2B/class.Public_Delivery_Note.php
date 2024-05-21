@@ -454,9 +454,12 @@ class Public_Delivery_Note extends DBW_Table {
                 if ($this->data['Delivery Note Shipper Key'] != '') {
                     $shipper     = $this->get('Shipper');
                     $consignment = sprintf(
-                        '<span class="link" onclick="change_view(\'warehouse/%d/shippers/%d\' title="%s")">%s</span>', $this->data['Delivery Note Warehouse Key'], $this->data['Delivery Note Shipper Key'], $shipper->get('Name'), $shipper->get('Code')
+                        '<span style="color:purple" >%s: </span>', $shipper->get('Code')
 
                     );
+
+
+
 
                     if ($this->data['Delivery Note Shipper Tracking'] != '') {
                         $consignment .= ' '.$this->data['Delivery Note Shipper Tracking'];

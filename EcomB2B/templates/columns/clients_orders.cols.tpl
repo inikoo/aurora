@@ -47,7 +47,16 @@ label: "{t}State{/t}",
 editable: false,
 sortType: "toggle",
 cell: "html"
-},  {
+}, {
+name: "tracking_number",
+label: "{t}Tracking number{/t}",
+editable: false,
+sortType: "toggle",
+cell: "html"
+},
+
+
+{
 name: "total_amount",
 label: "{t}Total{/t}",
 editable: false,
