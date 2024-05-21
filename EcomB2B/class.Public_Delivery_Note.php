@@ -453,11 +453,32 @@ class Public_Delivery_Note extends DBW_Table {
 
                 if ($this->data['Delivery Note Shipper Key'] != '') {
                     $shipper     = $this->get('Shipper');
-                    $consignment = sprintf(
-                        '<span style="color:purple" >%s: </span>', $shipper->get('Code')
 
-                    );
 
+                    $code= $shipper->get('Code');
+
+                    if($code=='Whistl' or $code=='ITD'){
+                        $code='Yodel';
+                    }
+
+
+                    if($shipper->get('Shipper Tracking URL')){
+                        $consignment = sprintf(
+                            '<a target="_blank"  href="'.$shipper->get('Shipper Tracking URL').'" style="color:purple" >%s: </a>', $code
+
+                        );
+                        
+                    }else{
+
+                        $consignment = sprintf(
+                            '<span style="color:purple" >%s: </span>', $code
+
+                        );
+                    }
+
+                
+
+                    
 
 
 
