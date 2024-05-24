@@ -45,7 +45,7 @@ if ($order->id and $order->id == $_REQUEST['order_id']) {
 
     $website_url = 'https://'.$website->get('Website URL');
     if (ENVIRONMENT == 'DEVEL') {
-        $website_url = 'https://5fb7-217-38-105-105.ngrok-free.app';
+        $website_url = 'https://fe18-217-38-105-105.ngrok-free.app';
     }
 
 
@@ -102,7 +102,7 @@ if ($order->id and $order->id == $_REQUEST['order_id']) {
         ],
         'paymentRedirectUrl' => [
             'success' => $website_url.'/ar_web_pastpay_success.php?id='.$order->id,
-            'failure' => $website_url.'/ar_web_pastpay_failure.php?id='.$order->id,
+            'failure' => $website_url.'/checkout.sys'
         ],
     ];
 
