@@ -55,13 +55,17 @@ if ($order->id and $order->id == $_REQUEST['order_id']) {
     }else{
 
         $tax_number=$customer->get('Customer Tax Number');
+
+        if(preg_match('/^\d/',$tax_number)){
+        $tax_number=$order->get('Order Invoice Address Country 2 Alpha Code').$tax_number;
+         }
+
+
         $tax_number=preg_replace('/^(PL|HU)/i','',$tax_number);
     }
 
 
 
-
-    //===
 
 
 
