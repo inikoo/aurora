@@ -47,6 +47,7 @@ while ($row = $stmt->fetch()) {
     if($product->id) {
 
         $products[] = [
+            'title'=>$product->get('Product Name'),
             'identity' => $row['Webpage Scope Key'],
             'web_url'=>$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
             'availability'=>$product->get('Product Availability')>1?1:0,
