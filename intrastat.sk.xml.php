@@ -143,16 +143,31 @@ while ($row = $stmt->fetch()) {
         $tax_number = $row['tax_number'];
         $tax_number = preg_replace('/[^a-zA-Z0-9]/', '', $tax_number);
 
-        $tax_number = preg_replace('/^'.$row['Invoice Address Country 2 Alpha Code'].'/i', '', $tax_number);
 
-        if ($row['Invoice Address Country 2 Alpha Code'] == 'GR') {
-            $tax_number = preg_replace('/^el/i', '', $tax_number);
-            $tax_number = 'EL'.$tax_number;
+
+        if(preg_match('/^[A-Za-z]{2}\d/', $tax_number)){
+
+            if ($row['Invoice Address Country 2 Alpha Code'] == 'GR') {
+                $tax_number = preg_replace('/^GR/i', '', $tax_number);
+                $tax_number = 'EL'.$tax_number;
+
+            }
 
         }else{
-            $tax_number = $row['Invoice Address Country 2 Alpha Code'].$tax_number;
+            $tax_number = preg_replace('/^'.$row['Invoice Address Country 2 Alpha Code'].'/i', '', $tax_number);
 
+            if ($row['Invoice Address Country 2 Alpha Code'] == 'GR') {
+                $tax_number = preg_replace('/^el/i', '', $tax_number);
+                $tax_number = 'EL'.$tax_number;
+
+            }else{
+                $tax_number = $row['Invoice Address Country 2 Alpha Code'].$tax_number;
+
+            }
         }
+
+
+
 
 
     }
