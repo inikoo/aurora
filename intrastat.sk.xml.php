@@ -149,6 +149,8 @@ while ($row = $stmt->fetch()) {
 
             if ($row['Invoice Address Country 2 Alpha Code'] == 'GR') {
                 $tax_number = preg_replace('/^GR/i', '', $tax_number);
+                $tax_number = preg_replace('/^EL/i', '', $tax_number);
+
                 $tax_number = 'EL'.$tax_number;
 
             }
