@@ -140,7 +140,7 @@ while ($row = $stmt->fetch()) {
 
     $tax_number='QT999999999999';
 
-    if($row['valid_tax_number']=='Y'){
+    if($row['valid_tax_number']=='Y' and  $row['Invoice Address Country 2 Alpha Code']!='ES' ){
         $tax_number=$row['tax_number'];
         $tax_number=preg_replace('/[^a-zA-Z0-9]/','',$tax_number);
         if(preg_match('/^\d/', $tax_number)){
