@@ -110,7 +110,8 @@ while ($row = $stmt->fetch()) {
     }
 
     $tariff_code = trim($row['tariff_code']);
-    if ($tariff_code == '') {
+    $tariff_code = preg_replace('/[^a-zA-Z0-9]/', '', $tariff_code);
+    if ($tariff_code == '' or strlen($tariff_code) < 8) {
         continue;
     }
 
@@ -145,7 +146,7 @@ while ($row = $stmt->fetch()) {
 
 
 
-        if(preg_match('/^[A-Za-z]{2}\d/', $tax_number)){
+        if(preg_match('/^[A-Za-z]{2}\d/', $tax_number) or preg_match('/^ES[A-Za-z]{1}\d/i', $tax_number)  ){
 
             if ($row['Invoice Address Country 2 Alpha Code'] == 'GR') {
                 $tax_number = preg_replace('/^GR/i', '', $tax_number);
