@@ -162,6 +162,10 @@ function get_object($object_name, $key, $load_other_data = false) {
             require_once "class.Public_Category.php";
             $object = new Public_Category($key);
             break;
+        case 'shipper':
+            include_once 'class.Public_Shipper.php';
+            $object = new Shipper('id', $key);
+            break;
         default:
             exit('need to complete Pub  E1: >'.strtolower($object_name.' '.$load_other_data)."<\n");
             break;

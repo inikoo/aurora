@@ -18,6 +18,13 @@
       window.dataLayer = window.dataLayer || [];
     </script>
 
+
+    {if  $account_code=='AW'  }
+        {if $website->get('Website Code')=='AW.biz'}
+            <script src="https://scripts.luigisbox.com/LBX-588294.js"></script>
+        {/if}
+    {/if}
+
     {if !isset($is_devel) or !$is_devel }
        {if  $client_tag_google_manager_id!=''}
         <!-- Google Tag Manager -->
@@ -99,6 +106,8 @@
                     });
                 }
             }
+
+
 
         </script>
 

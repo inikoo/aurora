@@ -45,17 +45,27 @@ if ($order->id and $order->id == $_REQUEST['order_id']) {
 
     $website_url = 'https://'.$website->get('Website URL');
     if (ENVIRONMENT == 'DEVEL') {
-        $website_url = 'https://4f1f-103-121-18-51.ngrok-free.app';
+        $website_url = 'https://fe18-217-38-105-105.ngrok-free.app';
     }
-    //https://api.demo.pastpay.com/buy/afdedec1-cea7-4b87-a6ae-ee2d4569d095
 
 
-    $tax_number=$customer->get('Customer Tax Number');
+    if($order->get('Order Invoice Address Country 2 Alpha Code')=='GB'){
 
-    $tax_number=preg_replace('/^(PL|HU)/i','',$tax_number);
+        $tax_number='GB'.$customer->get('Customer Registration Number');
+    }else{
+
+        $tax_number=$customer->get('Customer Tax Number');
+
+        if(preg_match('/^\d/',$tax_number)){
+        $tax_number=$order->get('Order Invoice Address Country 2 Alpha Code').$tax_number;
+         }
 
 
-    //===
+        $tax_number=preg_replace('/^(PL|HU)/i','',$tax_number);
+    }
+
+
+
 
 
 
@@ -96,7 +106,7 @@ if ($order->id and $order->id == $_REQUEST['order_id']) {
         ],
         'paymentRedirectUrl' => [
             'success' => $website_url.'/ar_web_pastpay_success.php?id='.$order->id,
-            'failure' => $website_url.'/ar_web_pastpay_failure.php?id='.$order->id,
+            'failure' => $website_url.'/checkout.sys'
         ],
     ];
 

@@ -4017,23 +4017,35 @@ WHERE `Order Transaction Fact Key`=?";
             default:
                 return $field;
         }
+
     }
 
     function submit_pastpay_invoice($debug=false)
     {
-        $store               = get_object('Store', $this->get('Order Store Key'));
-        $website             = get_object('Website', $store->get('Store Website Key'));
+        $store = get_object('Store', $this->get('Order Store Key'));
+        $website = get_object('Website', $store->get('Store Website Key'));
         $payment_account_key = $website->get_payment_account__key('Pastpay');
-        $payment_account     = get_object('Payment_Account', $payment_account_key);
-        $api_key             = $payment_account->get('Payment Account Password');
+        $payment_account = get_object('Payment_Account', $payment_account_key);
+        $api_key = $payment_account->get('Payment Account Password');
 
         $customer = get_object('Customer', $this->get('Order Customer Key'));
 
-        $tax_number = $customer->get('Customer Tax Number');
 
-        $tax_number = preg_replace('/^(PL|HU)/i', '', $tax_number);
+        if ($this->get('Order Invoice Address Country 2 Alpha Code') == 'GB') {
+            $tax_number = 'GB' . $customer->get('Customer Registration Number');
+        } else {
+            $tax_number = $customer->get('Customer Tax Number');
 
-        $invoices    = $this->get_invoices();
+            if(preg_match('/^\d/',$tax_number)){
+                $tax_number=$this->get('Order Invoice Address Country 2 Alpha Code').$tax_number;
+            }
+
+            $tax_number = preg_replace('/^(PL|HU)/i', '', $tax_number);
+
+        }
+
+
+        $invoices = $this->get_invoices();
         $invoice_key = array_pop($invoices);
 
         $invoice = get_object('invoice', $invoice_key);
@@ -4041,7 +4053,7 @@ WHERE `Order Transaction Fact Key`=?";
         $currency = $this->get('Order Currency');
 
         $pastpay_data = json_decode($this->get('Order Pastpay Data'), true);
-        $term         = $pastpay_data['term'];
+        $term = $pastpay_data['term'];
 
         $smarty = new Smarty();
         //$smarty->caching_type = 'redis';
@@ -4050,19 +4062,34 @@ WHERE `Order Transaction Fact Key`=?";
         $smarty->setCacheDir('server_files/smarty/cache');
         $smarty->setConfigDir('server_files/smarty/configs');
         $smarty->addPluginsDir('./smarty_plugins');
-        $db      = $this->db;
+        $db = $this->db;
         $account = get_object('Account', 1);
 
         $_REQUEST['id'] = $invoice->id;
-        $save_to_file   = 'server_files/tmp/'.$invoice->id.'_invoice.pdf';
+        $save_to_file = 'server_files/tmp/' . $invoice->id . '_invoice.pdf';
         require_once 'invoice.pdf.common.php';
 
 
         $encoded_invoice = base64_encode(file_get_contents($save_to_file));
 
 
+        if (DNS_ACCOUNT_CODE == 'AW') {
+            $creditorTaxNumber = 'GB04108870';
+
+        } elseif (DNS_ACCOUNT_CODE == 'AROMA') {
+            $creditorTaxNumber = 'GB12796117';
+
+        } elseif (DNS_ACCOUNT_CODE == 'ES') {
+            $creditorTaxNumber = 'ESB93657658';
+
+        } else {
+            $creditorTaxNumber = 'SK2120525440';
+
+        }
+    
+
         $data = [
-            'creditorTaxNumber' => 'SK2120525440',
+            'creditorTaxNumber' => $creditorTaxNumber,
             'invoiceNo'         => $invoice->get('Invoice Public ID'),
 
 

@@ -48,7 +48,7 @@ $to_pay = $order->get('Order To Pay Amount');
 
 
 $sql  =
-    "SELECT `Payment Account Store Payment Account Key`,`login` FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
+    "SELECT `Payment Account Store Payment Account Key`,`Payment Account Login` FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`  
 WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`='Checkout' ";
 /** @var TYPE_NAME $db */
 $stmt = $db->prepare($sql);
@@ -59,7 +59,7 @@ $stmt->execute(
 );
 $payment_account_key_key = false;
 while ($row = $stmt->fetch()) {
-    $public_key          = $row['login'];
+    $public_key          = $row['Payment Account Login'];
     $payment_account_key = $row['Payment Account Store Payment Account Key'];
 }
 

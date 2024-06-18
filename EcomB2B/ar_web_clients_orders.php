@@ -128,6 +128,16 @@ function clients_orders($_data, $db) {
             }
 
 
+            $delivery_note= get_object('delivery_note',$data['Order Delivery Note Key']);
+
+
+            $tracking_number= '';
+
+            if($delivery_note->id){
+                $tracking_number=$delivery_note->get('Consignment');
+            }
+
+
             $adata[] = array(
                 'id' => (integer)$data['Order Key'],
 
@@ -137,6 +147,7 @@ function clients_orders($_data, $db) {
                 'date'           => strftime("%e %b %Y", strtotime($data['Order Date'].' +0:00')),
                 'last_date'      => strftime("%a %e %b %Y %H:%M %Z", strtotime($data['Order Last Updated Date'].' +0:00')),
                 'customer'       => sprintf('<a href="client.sys?id=%d">%s</a>',  $data['Order Customer Client Key'], $data['Customer Client Name']),
+                'tracking_number'=>$tracking_number,
                 'total_amount'   => money($data['Order Total Amount'], $data['Order Currency']),
 
 

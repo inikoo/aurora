@@ -31,7 +31,7 @@
 
     {/foreach}
 
-    {if $running_total<=200}
+    {if $running_total<=20000}
     <div class="text_blocks  container  text_template_{$data.template}">
         {foreach from=$data.text_blocks item=text_block key=text_block_key}
             <div class="text_block_container" style="position: relative">

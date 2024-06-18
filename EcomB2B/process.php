@@ -29,7 +29,13 @@ $url = preg_replace('/\?.*$/', '', $url);
 $url = substr($url, 0, 256);
 
 
-if ($url == 'sitemap.xml') {
+if ($url == 'search_products_feed.xml') {
+
+    include_once 'feeds/search_products_feed.php';
+    exit;
+
+}
+elseif ($url == 'sitemap.xml') {
     include_once 'utils/public_object_functions.php';
 
     date_default_timezone_set('UTC');

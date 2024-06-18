@@ -161,6 +161,8 @@ else {
         $_tipo = 'supplier.order.items';
     } elseif ($_data['tipo'] == 'job_order.items') {
         $_tipo = 'supplier.order.items';
+    }  elseif ($_data['tipo'] == 'part_families') {
+        $_tipo = 'part_categories';
     } elseif ($_data['tipo'] == 'asset_customers') {
         $_tipo = 'customers';
     } elseif ($_data['tipo'] == 'sent_emails') {

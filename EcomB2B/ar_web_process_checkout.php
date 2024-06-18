@@ -1,9 +1,12 @@
 <?php
 
-use Checkout\CheckoutApi;
+use Checkout\CheckoutApiException;
+use Checkout\CheckoutSdk;
+use Checkout\Environment;
 
 
 include_once 'payment_account_checkout_common_functions.php';
+
 
 if (!empty($_REQUEST['cko-session-id'])) {
     $payment_id = $_REQUEST['cko-session-id'];
@@ -58,7 +61,7 @@ $to_pay = $order->get('Order To Pay Amount');
 
 
 $sql =
-    "SELECT `Payment Account Store Payment Account Key`,`Payment Account Login` FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`
+    "SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`
 WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`='Checkout' ";
 /** @var TYPE_NAME $db */
 $stmt = $db->prepare($sql);
@@ -69,7 +72,6 @@ $stmt->execute(
 );
 $payment_account_key_key = false;
 while ($row = $stmt->fetch()) {
-    $public_key          = $row['Payment Account Login'];
     $payment_account_key = $row['Payment Account Store Payment Account Key'];
 }
 
@@ -84,32 +86,27 @@ $payment_account->editor = $editor;
 
 
 
-$sql  =
-    "SELECT `password` FROM `Payment Account Store Bridge`    WHERE `Payment Account Store Payment Account Key`=?   and `Payment Account Store Store Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
-/** @var TYPE_NAME $db */
-$stmt = $db->prepare($sql);
-$stmt->execute(
-    [
-        $payment_account->id,
-        $order->get('Order Store Key')
-    ]
-);
-$secretKey = '';
-while ($row = $stmt->fetch()) {
-    $secretKey       = $row['password'];
-}
 
+$secretKey=$payment_account->get('Payment Account Password');
 
 
 $store = get_object('Store', $order->get('Order Store Key'));
-if (ENVIRONMENT == 'DEVEL') {
-    $checkout = new CheckoutApi($secretKey);
-} else {
-    $checkout = new CheckoutApi($secretKey, false);
+
+$CheckoutAPI = CheckoutSdk::builder()->staticKeys()
+
+    ->secretKey($secretKey)
+    ->environment(ENVIRONMENT == 'DEVEL' ?Environment::sandbox(): Environment::production())
+    ->build();
+
+
+try {
+    $response = $CheckoutAPI->getPaymentsClient()->getPaymentDetails($payment_id);
+
+} catch (CheckoutApiException $e) {
+    print_r($e);
+    exit;
 }
 
-
-$response = $checkout->payments()->details($payment_id);
 $res      = process_payment_response($response, $order, $website, $payment_account, $customer, $editor, $smarty, $account, $store, $db);
 
 

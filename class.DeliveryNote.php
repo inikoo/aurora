@@ -2933,6 +2933,16 @@ class DeliveryNote extends DB_Table
         $order = get_object('Order', $this->get('Delivery Note Order Key'));
 
 
+
+        if($shipper->get('Shipper Code')=='ITD'){
+            $post['service'] = 'YODEL_XPECT_MINI_48_M_S_POD_137954';
+            if($order->get('Order Priority Level')=='PaidPremium'){
+                $post['service'] = 'YODEL_XPECT_MINI_24_M_S_POD_137953';
+            }
+
+        }
+
+
         $post['note']='';
         if ($order->get('Order Customer Message') != '') {
             $post['note'] = $order->get('Order Customer Message');

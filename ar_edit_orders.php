@@ -9,7 +9,12 @@
 
 */
 
-use Checkout\CheckoutApi;
+
+use Checkout\CheckoutApiException;
+use Checkout\CheckoutAuthorizationException;
+use Checkout\CheckoutSdk;
+use Checkout\Environment;
+use Checkout\Payments\RefundRequest;
 
 require 'vendor/autoload.php';
 
@@ -1446,32 +1451,89 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
                     switch ($payment_account->get('Payment Account Block')) {
                         case 'Checkout':
 
-                            $sql =
-                                "SELECT `password` FROM `Payment Account Store Bridge`    WHERE 
-                                                               
-                                                               `Payment Account Store Payment Account Key`=? 
-                                                           and `Payment Account Store Store Key`=?
-                                                           AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ";
-                            /** @var TYPE_NAME $db */
-                            $stmt = $db->prepare($sql);
-                            $stmt->execute(
-                                [
-                                    $payment_account->id,
-                                    $payment->get('Payment Store Key')
-                                ]
-                            );
-                            $secretKey = '';
-                            while ($row = $stmt->fetch()) {
-                                $secretKey = $row['password'];
+
+                            $secretKey=$payment_account->get('Payment Account Password');
+
+
+                            $api = CheckoutSdk::builder()->staticKeys()
+
+                                ->secretKey($secretKey)
+                                ->environment(ENVIRONMENT == 'DEVEL' ?Environment::sandbox(): Environment::production())
+                                ->build();
+
+
+                            $request = new RefundRequest();
+                            $request->amount = (integer)(round($data['amount'], 2) * 100);
+
+                            try {
+                                // or, refundPayment("payment_id") for a full refund
+                                $response = $api->getPaymentsClient()->refundPayment($payment->data['Payment Transaction ID'], $request);
+                            } catch (CheckoutApiException $e) {
+                                // API error
+
+                                $error_details='Error: ';
+
+                                $error_details .= $e->error_details;
+                                $http_status_code = isset($e->http_metadata) ? $e->http_metadata->getStatusCode() : null;
+
+
+                                switch ($http_status_code) {
+
+                                    case 403:
+                                        $error_details .= ' Refund not allowed';
+                                        break;
+                                    case 404:
+                                        $error_details .= 'Payment not found';
+                                        break;
+                                }
+
+                                $error_details=trim($error_details);
+                                $response = array(
+                                    'state' => 400,
+                                    'msg'   => $error_details." ($http_status_code)"
+                                );
+                                echo json_encode($response);
+                                exit;
+
+
+                            } catch (CheckoutAuthorizationException $e) {
+                                $response = array(
+                                    'state' => 400,
+                                    'msg'   => $e->getMessage()
+                                );
+                                echo json_encode($response);
+                                exit;
+                            }
+
+                            if ($response['http_metadata']->getStatusCode()==202) {
+                                $reference = $response['action_id'];
+                                $metadata  = json_encode($response);
+                            }else{
+                                $msg = 'Error refund could not been processed';
+                                switch ($response['http_metadata']->getStatusCode()) {
+                                    case 422:
+                                        $msg = 'Error: '.$response['error_type'];
+                                        break;
+                                    case 403:
+                                        $msg = 'Refund not allowed';
+                                        break;
+                                    case 404:
+                                        $msg = 'Payment not found';
+                                        break;
+                                }
+
+
+                                $response = array(
+                                    'state' => 400,
+                                    'msg'   => $msg
+                                );
+                                echo json_encode($response);
+                                exit;
                             }
 
 
-                            if (ENVIRONMENT == 'DEVEL') {
-                                $checkout = new CheckoutApi($secretKey);
-                            } else {
-                                $checkout = new CheckoutApi($secretKey, false);
-                            }
 
+                            /*
 
                             // Partial capture: $payment->amount = 999;
                             $_payment         = new Checkout\Models\Payments\Refund($payment->data['Payment Transaction ID']);
@@ -1490,7 +1552,11 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
                                 echo json_encode($response);
                                 exit;
                             }
+*/
 
+
+
+/*
 
                             if ($_refund->http_code == 202) {
                                 $reference = $_refund->action_id;
@@ -1518,7 +1584,7 @@ function refund_payment($data, $editor, $smarty, $db, $account, $user)
                                 exit;
                             }
 
-
+*/
                             break;
                         case 'BTree':
                         case 'BTreePaypal':

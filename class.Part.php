@@ -4603,7 +4603,15 @@ class Part extends Asset
             case 'Part Packing Band Key':
                 $label = _('packing band');
                 break;
-
+            case 'Part Seasonal':
+                $label = _('sesonal product');
+                break;
+            case 'Part For Disconinue Review':
+                $label = _('Propose for discontinue');
+                break;
+            case 'Part Attention':
+                $label = _('for attention');
+                break;
             default:
                 $label = $field;
         }

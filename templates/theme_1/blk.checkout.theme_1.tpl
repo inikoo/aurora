@@ -309,6 +309,13 @@
                 <div action="" style="max-width: 500px;">
 
 
+                    <div style="padding:20px 0px" class="error">
+                        Error message:
+                        <p class="website_localized_label" id="_pastpay_error" contenteditable="true" >{if !empty($labels._pastpay_error)}{$labels._pastpay_error}{else}Sorry you can not use this payment method, try other one{/if}</p>
+
+                    </div>
+
+
                     <div style="padding:20px 0px">
                         <p class="website_localized_label" id="_pastpay_text" contenteditable="true" >{if !empty($labels._pastpay_text)}{$labels._pastpay_text}{else}This are our plans:{/if}</p>
 
