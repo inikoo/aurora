@@ -705,7 +705,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                 $units_per_case=$this->clean_num($units_per_case);
                 $items[$row['Order Transaction Fact Key']] = array(
                     'code'             => $code,
-                    'code_description' => '<b class="item_code ">'.$row['Product Code'].'</b> <span class="item_description">'.$units_per_case.'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
+                    'code_description' => '<b class="item_code _version_2">'.$row['Product Code'].'</b> <span class="item_description">'.$units_per_case.'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
                     'description'      => $name,
                     'price_raw'        => $row['Product Price'],
                     'qty'              => $qty,
