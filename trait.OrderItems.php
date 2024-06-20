@@ -701,9 +701,11 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                 }
                 $name .= $deal_info.$out_of_stock_info;
 
+                $units_per_case=$row['Product History Units Per Case'];
+                $units_per_case=$this->clean_num($units_per_case);
                 $items[$row['Order Transaction Fact Key']] = array(
                     'code'             => $code,
-                    'code_description' => '<b class="item_code">'.$row['Product Code'].'</b> <span class="item_description">'.$row['Product History Units Per Case'].'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
+                    'code_description' => '<b class="item_code ">'.$row['Product Code'].'</b> <span class="item_description">'.$units_per_case.'x '.$row['Product History Name'].$deal_info.'</span>'.$out_of_stock_info,
                     'description'      => $name,
                     'price_raw'        => $row['Product Price'],
                     'qty'              => $qty,
@@ -727,6 +729,15 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
         }
 
         return $items;
+    }
+
+    function clean_num( $num ){
+        $pos = strpos($num, '.');
+        if($pos === false) { // it is integer number
+            return $num;
+        }else{ // it is decimal number
+            return rtrim(rtrim($num, '0'), '.');
+        }
     }
 
 }
