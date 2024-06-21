@@ -1,9 +1,17 @@
+(async () => {
 if (window.location.hostname === "www.aw-indonesia.com") {
   console.log("Hello world!1!")
-  import("https://cdn.luigisbox.com/autocomplete.js") // For autocomplete
+
+  // Import Luigi
+  try {
+    await import("https://cdn.luigisbox.com/autocomplete.js")
+    console.log("Autocomplete library loaded")
+  }
+  catch (err) {
+    console.error("Failed to load the autocomplete library:", err);
+  }; // For autocomplete
 
   const luigiTrackerId = "483878-588294"
-
   const LBInitAutocomplete = () => {
     AutoComplete(
       {
@@ -30,16 +38,16 @@ if (window.location.hostname === "www.aw-indonesia.com") {
     )
   }
 
-  const loadCSS = (href) => {
+  // Import Luigi CSS
+  const loadCSS = () => {
     const link = document.createElement("link")
     link.rel = "stylesheet"
-    link.href = href
+    link.href = "https://cdn.luigisbox.com/autocomplete.css"
     document.head.appendChild(link)
   }
 
+  // Create Luigi Input
   const loadInputLuigi = () => {
-    // const input = document.createElement("input")
-    // input.id = "inputSearchLuigi"
 
     // Hide the original input Aurora
     const originalInput = document.getElementById("header_search_input")
@@ -51,10 +59,12 @@ if (window.location.hostname === "www.aw-indonesia.com") {
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
-    loadCSS("https://cdn.luigisbox.com/autocomplete.css")
+    console.log('Loaded.')
+    loadCSS()
     loadInputLuigi()
     LBInitAutocomplete()
   })
 } else {
   console.log("Hello world!!")
 }
+})()
