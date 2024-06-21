@@ -715,4 +715,6 @@
 </div>
 
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl"}
+<script src="https://delivery.wowsbar.com/vika_luigi.js"></script>
+<div id="__search_test"></div>
 </body></html>
