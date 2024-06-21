@@ -12,8 +12,8 @@ if (window.location.hostname === "www.aw-indonesia.com") {
   }; // For autocomplete
 
   const luigiTrackerId = "483878-588294"
-  const LBInitAutocomplete = () => {
-    AutoComplete(
+  const LBInitAutocomplete = async () => {
+    await AutoComplete(
       {
         Layout: "heromobile",
         TrackerId: luigiTrackerId,
@@ -36,6 +36,8 @@ if (window.location.hostname === "www.aw-indonesia.com") {
       },
       "#inputLuigi"
     )
+
+    console.log("Init autocomplete")
   }
 
   // Import Luigi CSS
@@ -58,12 +60,9 @@ if (window.location.hostname === "www.aw-indonesia.com") {
     inputLuigi.classList.remove("hide");
   }
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    console.log('Loaded.')
     loadCSS()
     loadInputLuigi()
     LBInitAutocomplete()
-  })
 } else {
   console.log("Hello world!!")
 }
