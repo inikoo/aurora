@@ -121,7 +121,7 @@
         </div>
         {/if}
         <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px">
-            <input class="hidden" id="inputLuigi"/> <input id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i>
+            <input class="hide" id="inputLuigi"/> <input id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i>
         </div>
         {if isset($settings.search_texts)}
             {foreach from=$settings.search_texts key=key item=header_text}
