@@ -1,51 +1,58 @@
-import 'https://cdn.luigisbox.com/autocomplete.js'; // For autocomplete
+if (window.location.hostname === 'www.aw-indonesia.com') {
+  console.log('Hello world!!!')
+} else if (window.location.hostname === 'ancientwisdom.biz') {
+  console.log('Hello world!!')
+}
 
-console.log("Hello world 123!!")
+// import "https://cdn.luigisbox.com/autocomplete.js" // For autocomplete
 
-const luigiTrackerId = '483878-588294';
+// console.log("Hello world 123!!")
 
-const LBInitAutocomplete = () => {
-  AutoComplete({
-                 Layout: 'heromobile',
-                 TrackerId: luigiTrackerId,
-                 Locale: 'en',
-                 Types: [
-                   {
-                     name: 'Product',
-                     type: 'product',
-                     size: 7
-                   },
-                   {
-                     name: 'Query',
-                     type: 'query'
-                   },
-                   {
-                     name: 'Category',
-                     type: 'category'
-                   }
-                 ]
-               }, '#inputSearchLuigi');
-};
+// const luigiTrackerId = "483878-588294"
 
-const loadCSS = (href) => {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = href;
-  document.head.appendChild(link);
-};
+// const LBInitAutocomplete = () => {
+//   AutoComplete(
+//     {
+//       Layout: "heromobile",
+//       TrackerId: luigiTrackerId,
+//       Locale: "en",
+//       Types: [
+//         {
+//           name: "Product",
+//           type: "product",
+//           size: 7,
+//         },
+//         {
+//           name: "Query",
+//           type: "query",
+//         },
+//         {
+//           name: "Category",
+//           type: "category",
+//         },
+//       ],
+//     },
+//     "#inputSearchLuigi"
+//   )
+// }
 
-const loadInputLuigi = () => {
-  const input = document.createElement('input');
-  input.id = 'inputSearchLuigi';
+// const loadCSS = (href) => {
+//   const link = document.createElement("link")
+//   link.rel = "stylesheet"
+//   link.href = href
+//   document.head.appendChild(link)
+// }
 
-  const divInputLuigi = document.getElementById('inputLuigi');
-  divInputLuigi.appendChild(input);
+// const loadInputLuigi = () => {
+//   const input = document.createElement("input")
+//   input.id = "inputSearchLuigi"
 
-};
+//   const divInputLuigi = document.getElementById("inputLuigi")
+//   divInputLuigi.appendChild(input)
+// }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  loadCSS('https://cdn.luigisbox.com/autocomplete.css');
-  loadInputLuigi();
-  LBInitAutocomplete();
-
-});
+// document.addEventListener("DOMContentLoaded", async () => {
+//   loadCSS("https://cdn.luigisbox.com/autocomplete.css")
+//   loadInputLuigi()
+//   LBInitAutocomplete()
+// })
