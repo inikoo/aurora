@@ -97,6 +97,8 @@
     <div id="buffer_zone" style="text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
     </div>
     <div id="search_header" style="padding-top:5px;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" >
+
+
         {if $store->get('Store Type')=='Dropshipping' and $logged_in}
         <div class="DS_top_buttons"  style="float:right;padding-right: 40px;font-weight: 800;font-size: 14px">
 
@@ -118,7 +120,9 @@
 
         </div>
         {/if}
-        <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px"><input id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i></div>
+        <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px">
+            <input class="hidden" id="inputLuigi"/> <input id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i>
+        </div>
         {if isset($settings.search_texts)}
             {foreach from=$settings.search_texts key=key item=header_text}
                 {assign 'key'  "su_id_`$key`" }
