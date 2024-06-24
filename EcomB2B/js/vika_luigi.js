@@ -86,7 +86,8 @@
                     if (event.key === 'Enter') {
                         const query = inputLuigi.value;
                         if (query) {
-                            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                            console.log('query:', query)
+                            window.location.href = `/search.sys?q=${encodeURIComponent(query)}`;
                         }
                     }
                 });
