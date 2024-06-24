@@ -715,6 +715,6 @@
 </div>
 
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl"}
-<script type="module" src="js/vika_luigi.js"></script>
+<script type="module" src="../../js/vika_luigi.js?v=0.11"></script>
 <div id="__search_test"></div>
 </body></html>
