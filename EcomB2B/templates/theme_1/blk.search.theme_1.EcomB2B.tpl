@@ -17,34 +17,21 @@
 
 <div id="block_{$key}" data-block_key="{$key}" block="{$data.type}" class="{if !$data.show}hide{/if}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
-
-<div class="container">
+    <div id="legacy_search">
+        <div class="container">
             <div class="content text-center mx-auto">
-
-
-                <input id="search_input" placeholder="search" style="width:80%;padding:5px 10px;font-size:140%" value=""/> <i id="search_icon" class="fa fa-search" style="margin-left:10px;font-size:140%;cursor:pointer" aria-hidden="true"></i>
-
-
-
+                <input id="search_input" placeholder="search" style="width:80%;padding:5px 10px;font-size:140%" value="" />
+                <i id="search_icon" class="fa fa-search" style="margin-left:10px;font-size:140%;cursor:pointer" aria-hidden="true"></i>
             </div>
-
+        </div>
+        <div class="container" style="clear: both;margin-top: 30px">
+            <div id="search_results">
             </div>
-            <div class="container" style="clear: both;margin-top: 30px">
+        </div>
+    </div>
 
-                <div id="search_results" >
+    <div id="new_search"></div>
 
-
-
-
-
-
-                </div>
-
-
-
-
-
-            </div>
 
 </div>
 
