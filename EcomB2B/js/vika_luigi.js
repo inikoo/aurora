@@ -74,16 +74,23 @@
         const loadInputLuigi = () => {
             // Hide the original input Aurora
             const originalInput = document.getElementById("header_search_input")
-            originalInput.classList.add("hide")
+            if(originalInput) {
+                originalInput.classList.add("hide")
+            }
 
             // Show input for Luigi
             const inputLuigi = document.getElementById("inputLuigi")
-            inputLuigi.classList.remove("hide")
+            if(inputLuigi) {
+                inputLuigi.classList.remove("hide")
+            }
         }
 
+        // Page: Result
         const showSearchResult = () => {
             const originalInput = document.getElementById("legacy_search")
-            originalInput.classList.add("hide")
+            if(originalInput) {
+                originalInput.classList.add("hide")
+            }
         }
 
         loadCSS()
