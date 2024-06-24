@@ -72,23 +72,31 @@
 
         // Show: Luigi Input
         const loadInputLuigi = () => {
-            // Hide the original input Aurora
+            // Input: Original
             const originalInput = document.getElementById("header_search_input")
-            if(originalInput) {
+            if (originalInput) {
                 originalInput.classList.add("hide")
             }
 
-            // Show input for Luigi
+            // Input: Luigi
             const inputLuigi = document.getElementById("inputLuigi")
-            if(inputLuigi) {
+            if (inputLuigi) {
                 inputLuigi.classList.remove("hide")
+                inputLuigi.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        const query = inputLuigi.value;
+                        if (query) {
+                            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                        }
+                    }
+                });
             }
         }
 
         // Page: Result
         const showSearchResult = () => {
             const originalInput = document.getElementById("legacy_search")
-            if(originalInput) {
+            if (originalInput) {
                 console.log('Original Input: ', originalInput)
                 originalInput?.classList.add("hide")
             }
