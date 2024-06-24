@@ -1,69 +1,114 @@
 (async () => {
-if (window.location.hostname === "www.aw-indonesia.com") {
-  console.log("Hello world!1!")
+    if (window.location.hostname === "www.aw-indonesia.com") {
+        console.log("Hello Indonesia!")
 
-  // Import Luigi
-  try {
-    await import("https://cdn.luigisbox.com/autocomplete.js")
-    console.log("Autocomplete library loaded")
-  }
-  catch (err) {
-    console.error("Failed to load the autocomplete library:", err);
-  }; // For autocomplete
+        // Import Luigi
+        try {
+            await import("https://cdn.luigisbox.com/autocomplete.js")
+            console.log("Import: Autocomplete")
+            await import("https://cdn.luigisbox.com/search.js")
+            console.log("Import: Search")
+        } catch (err) {
+            console.error("Failed to load Luigis:", err)
+            return
+        } // For autocomplete
 
-  const luigiTrackerId = "483878-588294"
-  const LBInitAutocomplete = async () => {
-    await AutoComplete(
-      {
-        Layout: "heromobile",
-        TrackerId: luigiTrackerId,
-        Locale: "en",
-        Types: [
-          {
-            name: "Product",
-            type: "product",
-            size: 7,
-          },
-          {
-            name: "Query",
-            type: "query",
-          },
-          {
-            name: "Category",
-            type: "category",
-          },
-        ],
-      },
-      "#inputLuigi"
-    )
+        const luigiTrackerId = "483878-588294"
 
-    console.log("Init autocomplete")
-  }
+        // Init: Auto Complete
+        const LBInitAutocomplete = async () => {
+            await AutoComplete(
+                {
+                    Layout: "heromobile",
+                    TrackerId: luigiTrackerId,
+                    Locale: "en",
+                    Types: [
+                        {
+                            name: "Product",
+                            type: "product",
+                            size: 7,
+                        },
+                        {
+                            name: "Query",
+                            type: "query",
+                        },
+                        {
+                            name: "Category",
+                            type: "category",
+                        },
+                    ],
+                },
+                "#inputLuigi"
+            )
 
-  // Import Luigi CSS
-  const loadCSS = () => {
-    const link = document.createElement("link")
-    link.rel = "stylesheet"
-    link.href = "https://cdn.luigisbox.com/autocomplete.css"
-    document.head.appendChild(link)
-  }
+            console.log("Init autocomplete")
+        }
 
-  // Create Luigi Input
-  const loadInputLuigi = () => {
+        // Init: Search
+        const LBInitSearch = async () => {
+            await Luigis.Search(
+                {
+                    TrackerId: luigiTrackerId,
+                    Locale: "en",
+                    Theme: "boo",
+                    Size: 10,
+                    UrlParamName: {
+                        QUERY: "q",
+                    },
+                },
+                "#inputLuigi",
+                "#new_search"
+            )
+            console.log("Init autocomplete")
+        }
 
-    // Hide the original input Aurora
-    const originalInput = document.getElementById("header_search_input")
-    originalInput.classList.add("hide");
+        // Import Luigi CSS
+        const loadCSS = () => {
+            const link = document.createElement("link")
+            link.rel = "stylesheet"
+            link.href = "https://cdn.luigisbox.com/autocomplete.css"
+            document.head.appendChild(link)
+        }
 
-    // Show input for Luigi
-    const inputLuigi = document.getElementById("inputLuigi")
-    inputLuigi.classList.remove("hide");
-  }
+        // Show: Luigi Input
+        const loadInputLuigi = () => {
+            // Input: Original
+            const originalInput = document.getElementById("header_search_input")
+            if (originalInput) {
+                originalInput.classList.add("hide")
+            }
 
-    loadCSS()
-    loadInputLuigi()
-    LBInitAutocomplete()
-} else {
-  console.log("Hello world!!")
-}
+            // Input: Luigi
+            const inputLuigi = document.getElementById("inputLuigi")
+            if (inputLuigi) {
+                inputLuigi.classList.remove("hide")
+                inputLuigi.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        const query = inputLuigi.value;
+                        if (query) {
+                            console.log('query:', query)
+                            window.location.href = `/search.sys?q=${encodeURIComponent(query)}`;
+                        }
+                    }
+                });
+            }
+        }
+
+        // Page: Result
+        const showSearchResult = () => {
+            const originalInput = document.getElementById("legacy_search")
+            if (originalInput) {
+                console.log('Original Input: ', originalInput)
+                originalInput?.classList.add("hide")
+            }
+        }
+
+        loadCSS()
+        loadInputLuigi()
+        showSearchResult()
+        LBInitAutocomplete()
+        LBInitSearch()
+    } else {
+        console.log("Hello world!!")
+    }
 })()
