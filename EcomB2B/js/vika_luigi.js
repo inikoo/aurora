@@ -89,7 +89,8 @@
         const showSearchResult = () => {
             const originalInput = document.getElementById("legacy_search")
             if(originalInput) {
-                originalInput.classList.add("hide")
+                console.log('Original Input: ', originalInput)
+                originalInput?.classList.add("hide")
             }
         }
 
