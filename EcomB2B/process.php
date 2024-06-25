@@ -35,6 +35,12 @@ if ($url == 'search_products_feed.xml') {
     exit;
 
 }
+elseif ($url == 'search_categories_feed.xml') {
+
+    include_once 'feeds/search_categories_feed.php';
+    exit;
+
+}
 elseif ($url == 'sitemap.xml') {
     include_once 'utils/public_object_functions.php';
 
