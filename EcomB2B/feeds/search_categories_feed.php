@@ -27,7 +27,8 @@ $website=get_object('Website',$website_key);
 $store=get_object('Store',$website->get('Store Key'));
 
 
-$sql="select `Page Key`,`Webpage Scope Key`,`Webpage Code`,`Webpage Name` from `Page Store Dimension`  where `Webpage State`='Online' and `Webpage Scope`='Category Products'  and `Webpage Website Key`=? ";
+$sql="select `Page Key`,`Webpage Scope Key`,`Webpage Code`,`Webpage Name` ,`Webpage Scope Key`  from `Page Store Dimension` 
+            where `Webpage State`='Online' and `Webpage Scope`='Category Products'  and `Webpage Website Key`=?   ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
@@ -41,13 +42,34 @@ $products=[];
 
 while ($row = $stmt->fetch()) {
 
-        $products[] = [
-            'title'=>$row['Webpage Name'],
-            'identity' => $row['Page Key'],
-            'web_url'=>$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
-        ];
+
+
+
+    $product = [
+        'title'=>$row['Webpage Name'],
+        'identity' => $row['Webpage Scope Key'],
+        'web_url'=>$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
+    ];
+
+
+    $sql2="select `Category Key` ,`Category Main Image Key` from `Category Dimension` where `Category Code`=? and `Category Scope`='Part' and `Category Main Image Key` is not null ";
+    $stmt2 = $db->prepare($sql2);
+    $stmt2->execute(
+        [
+            $row['Webpage Code']
+        ]
+    );
+
+    if ($row2 = $stmt2->fetch()) {
+        $product['image_url']='https://'.$website->get('Website URL').'/wi.php?id='.$row2['Category Main Image Key'].'&s=100x100';
+
+    }
+
+
+    $products[]=$product;
 
 }
+
 
 $xml_data = new SimpleXMLElement('<?xml version="1.0"?><data></data>');
 array_to_xml($products,$xml_data);
