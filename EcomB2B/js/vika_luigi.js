@@ -6,17 +6,15 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log('import meta url: ', import.meta?.url)
             const scriptSrc = new URL(import.meta.url);
             console.log('scriptSrc: ', scriptSrc)
-            const scriptElement = document.currentScript;
 
-            console.log('Script element', scriptElement)
-            if (scriptElement) {
+            if (scriptSrc?.searchParams) {
                 // Extract the src attribute value and parse the URL
-                const urlParams = new URL(scriptElement?.src || '').searchParams;
+                // const urlParams = new URL(scriptElement?.src || '').searchParams;
         
                 // Extract the color parameters
-                const color1 = urlParams.get('color1');
-                const color2 = urlParams.get('color2');
-                const color3 = urlParams.get('color3');
+                const color1 = scriptSrc.searchParams.get('color1');
+                const color2 = scriptSrc.searchParams.get('color2');
+                const color3 = scriptSrc.searchParams.get('color3');
         
                 // Now you can use the color1, color2, and color3 variables in your script
                 console.log('color1:', color1);
@@ -24,12 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log('color3:', color3);
         
                 // Apply these colors to some elements or use them in your logic
-                document.documentElement.style.setProperty('--luigiColor1', color1);
-                document.documentElement.style.setProperty('--luigiColor2', color2);
-                document.documentElement.style.setProperty('--luigiColor3', color3);
+                document.documentElement.style.setProperty('--luigiColor1', '#' + color1);
+                document.documentElement.style.setProperty('--luigiColor2', '#' + color2);
+                document.documentElement.style.setProperty('--luigiColor3', '#' + color3);
             }
 
-
+            console.log("===============")
             // Import Luigi
             try {
                 await import("https://cdn.luigisbox.com/autocomplete.js")
