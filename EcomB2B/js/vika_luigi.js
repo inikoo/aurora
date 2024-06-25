@@ -1,6 +1,26 @@
 (async () => {
     if (window.location.hostname === "www.aw-indonesia.com") {
         console.log("Hello Indonesia!")
+        // Get the current script element
+        const scriptElement = document.currentScript;
+
+        // Extract the src attribute value and parse the URL
+        const urlParams = new URL(scriptElement.src).searchParams;
+
+        // Extract the color parameters
+        const color1 = urlParams.get('color1');
+        const color2 = urlParams.get('color2');
+        const color3 = urlParams.get('color3');
+
+        // Now you can use the color1, color2, and color3 variables in your script
+        console.log('color1:', color1);
+        console.log('color2:', color2);
+        console.log('color3:', color3);
+
+        // Apply these colors to some elements or use them in your logic
+        document.documentElement.style.setProperty('--luigiColor1', color1);
+        document.documentElement.style.setProperty('--luigiColor2', color2);
+        document.documentElement.style.setProperty('--luigiColor3', color3);
 
         // Import Luigi
         try {
