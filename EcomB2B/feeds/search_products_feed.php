@@ -28,7 +28,7 @@ $store=get_object('Store',$website->get('Store Key'));
 
 $locale  = $store->get('Store Locale');
 
-$sql="select `Webpage Scope Key`,`Webpage Code` from `Page Store Dimension`  where `Webpage State`='Online' and `Webpage Scope`='Product'  and `Webpage Website Key`=? ";
+$sql="select `Webpage Scope Key`,`Webpage Code`,`Page Store Content Published Data`,`Webpage Meta Description`  from `Page Store Dimension` where `Webpage State`='Online' and `Webpage Scope`='Product'  and `Webpage Website Key`=? ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
@@ -41,6 +41,34 @@ $products=[];
 
 
 while ($row = $stmt->fetch()) {
+
+
+
+    $description='';
+
+
+
+    $content=json_decode($row['Page Store Content Published Data'],true);
+
+
+    if(isset($content['blocks'])) {
+
+        foreach ($content['blocks'] as $block) {
+
+            if ($block['type'] == 'product') {
+                $description = $block['text'];
+
+            }
+        }
+    }
+
+    if($description==''){
+        $description=$row['Webpage Meta Description'];
+    }
+
+
+
+
 
 
     $product=get_object('product',$row['Webpage Scope Key']);
@@ -61,12 +89,16 @@ while ($row = $stmt->fetch()) {
             'image_link_s'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=100x100',
             'image_link_m'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=200x200',
             'image_link_l'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=600x600',
-            'description'=>$product->get('Product Code'),
+            'description'=>$description,
             'product_code'=>$product->get('Product Code'),
             'ean'=>$product->get('Product Barcode Number'),
             'introduced_at'=>$product->get('Product Valid From'),
 
         ];
+
+
+
+
     }
 }
 
