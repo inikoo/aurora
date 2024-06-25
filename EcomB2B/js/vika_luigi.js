@@ -3,12 +3,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.location.hostname === "www.aw-indonesia.com") {
             console.log("Hello Indonesia!")
             // Get the current script element
+            console.log('import meta url: ', import.meta?.url)
+            const scriptSrc = new URL(import.meta.url);
+            console.log('scriptSrc: ', scriptSrc)
             const scriptElement = document.currentScript;
 
             console.log('Script element', scriptElement)
             if (scriptElement) {
                 // Extract the src attribute value and parse the URL
-                const urlParams = new URL(scriptElement.src).searchParams;
+                const urlParams = new URL(scriptElement?.src || '').searchParams;
         
                 // Extract the color parameters
                 const color1 = urlParams.get('color1');
