@@ -26,6 +26,7 @@ $website=get_object('Website',$website_key);
 
 $store=get_object('Store',$website->get('Store Key'));
 
+$locale  = $store->get('Store Locale');
 
 $sql="select `Webpage Scope Key`,`Webpage Code` from `Page Store Dimension`  where `Webpage State`='Online' and `Webpage Scope`='Product'  and `Webpage Website Key`=? ";
 $stmt = $db->prepare($sql);
@@ -51,12 +52,17 @@ while ($row = $stmt->fetch()) {
             'identity' => $row['Webpage Scope Key'],
             'web_url'=>'https://'.$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
             'availability'=>$product->get('Product Availability')>1?1:0,
-            'price'=>$product->get('Webpage Price'),
+            'price'=> money(
+                $product->data['Product Price'],
+                $store->data['Store Currency Code'],
+                $locale
+            ),
+            'formatted_price'=>$product->get('Webpage Price'),
             'image_link_s'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=100x100',
             'image_link_m'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=200x200',
             'image_link_l'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=600x600',
             'description'=>$product->get('Product Code'),
-            'code'=>$product->get('Product Code'),
+            'product_code'=>$product->get('Product Code'),
             'ean'=>$product->get('Product Barcode Number'),
             'introduced_at'=>$product->get('Product Valid From'),
 
