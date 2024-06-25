@@ -1,0 +1,12 @@
+.lb-search-text-color-primary-clickable {
+    color: var(--luigiColor3) !important;
+}
+
+.lb-search-bg-color-primary-clickable {
+    background: var(--luigiColor1) !important;
+}
+
+.luigi-ac-footer {
+    /* To hide copyright */
+    visibility: hidden !important;
+}
