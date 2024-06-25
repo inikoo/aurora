@@ -27,7 +27,7 @@ $website=get_object('Website',$website_key);
 $store=get_object('Store',$website->get('Store Key'));
 
 
-$sql="select `Page Key`,`Webpage Scope Key`,`Webpage Code` from `Page Store Dimension`  where `Webpage State`='Online' and `Webpage Scope`='Category Products'  and `Webpage Website Key`=? ";
+$sql="select `Page Key`,`Webpage Scope Key`,`Webpage Code`,`Webpage Name` from `Page Store Dimension`  where `Webpage State`='Online' and `Webpage Scope`='Category Products'  and `Webpage Website Key`=? ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
@@ -41,19 +41,12 @@ $products=[];
 
 while ($row = $stmt->fetch()) {
 
-
-    $webpage=get_object('webpae',$row['Page Key']);
-
-    if($webpage->id) {
-
         $products[] = [
-            'title'=>$webpage->get('Webpage Name'),
+            'title'=>$row['Webpage Name'],
             'identity' => $row['Page Key'],
             'web_url'=>$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
-
-
         ];
-    }
+
 }
 
 $xml_data = new SimpleXMLElement('<?xml version="1.0"?><data></data>');

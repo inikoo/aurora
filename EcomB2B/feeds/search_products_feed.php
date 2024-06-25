@@ -49,7 +49,7 @@ while ($row = $stmt->fetch()) {
         $products[] = [
             'title'=>$product->get('Product Name'),
             'identity' => $row['Webpage Scope Key'],
-            'web_url'=>$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
+            'web_url'=>'https://'.$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
             'availability'=>$product->get('Product Availability')>1?1:0,
             'price'=>$product->get('Webpage Price'),
             'image_link_s'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=100x100',
