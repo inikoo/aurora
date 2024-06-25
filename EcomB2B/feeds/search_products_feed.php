@@ -55,7 +55,7 @@ while ($row = $stmt->fetch()) {
             'image_link_s'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=100x100',
             'image_link_m'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=200x200',
             'image_link_l'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=600x600',
-            'description'=>$product->get('Product Name'),
+            'description'=>$product->get('Product Code'),
             'code'=>$product->get('Product Code'),
             'ean'=>$product->get('Product Barcode Number'),
             'introduced_at'=>$product->get('Product Valid From'),
