@@ -24,8 +24,8 @@
                     Locale: "en",
                     Types: [
                         {
-                            name: "Product",
-                            type: "product",
+                            name: "Item",
+                            type: "item",
                             size: 7,
                         },
                         {
@@ -52,6 +52,10 @@
                     Locale: "en",
                     Theme: "boo",
                     Size: 10,
+                    Facets: ['brand', 'category', 'color', 'price_amount'],
+                    DefaultFilters: {
+                        type: 'item'
+                    },
                     UrlParamName: {
                         QUERY: "q",
                     },
