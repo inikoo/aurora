@@ -715,6 +715,6 @@
 </div>
 
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tpl"}
-<script type="module" src="../../js/vika_luigi.js?v=5&color1=4b5058&color2=957a65&color3=e87928&logged_in=false"></script>
+<script type="module" src="../../js/vika_luigi.js?v=6&color1=4b5058&color2=957a65&color3=e87928&logged_in=false"></script>
 <div id="__search_test"></div>
 </body></html>

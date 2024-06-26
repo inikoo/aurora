@@ -17,7 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const color3 = scriptSrc.searchParams.get('color3');
                 const isLogin = scriptSrc.searchParams.get('logged_in') || 'xx'
 
-                const listFieldsRemoved = isLogin ? undefined : ['price', 'formatted_price', 'price_amount']
+                const listFieldsRemoved = isLogin ? null : ['price', 'formatted_price', 'price_amount']
+                console.log('list fields removed:', listFieldsRemoved)
                 
         
                 // Now you can use the color1, color2, and color3 variables in your script
