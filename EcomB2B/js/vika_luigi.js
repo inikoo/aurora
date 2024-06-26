@@ -1,3 +1,13 @@
+function stringToBoolean(str) {
+    if (str.toLowerCase() === 'true') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
         if (window.location.hostname === "www.aw-indonesia.com") {
@@ -17,16 +27,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const color1 = scriptSrc.searchParams.get('color1');
                 const color2 = scriptSrc.searchParams.get('color2');
                 const color3 = scriptSrc.searchParams.get('color3');
-                const isLogin = scriptSrc.searchParams.get('logged_in') || 'xx'
+                const isLogin = scriptSrc.searchParams.get('logged_in')
 
-                listFieldsRemoved = isLogin ? null : ['price', 'formatted_price', 'price_amount']
+                listFieldsRemoved = stringToBoolean(isLogin) ? null : ['price', 'formatted_price', 'price_amount']
                 
         
                 // Now you can use the color1, color2, and color3 variables in your script
                 console.log('color1:', color1);
                 console.log('color2:', color2);
                 console.log('color3:', color3);
-                console.log('isLogin:', isLogin);
+                console.log('isLogin:', isLogin, stringToBoolean(isLogin));
                 console.log('list fields removed:', listFieldsRemoved)
         
                 // Apply these colors to some elements or use them in your logic
