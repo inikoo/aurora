@@ -48,7 +48,7 @@ while ($row = $stmt->fetch()) {
     $product = [
         'title'=>$row['Webpage Name'],
         'identity' => $row['Webpage Scope Key'],
-        'web_url'=>$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
+        'web_url'=>'https://'.$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
     ];
 
 
