@@ -16,6 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const color2 = scriptSrc.searchParams.get('color2');
                 const color3 = scriptSrc.searchParams.get('color3');
                 const isLogin = scriptSrc.searchParams.get('logged_in') || 'xx'
+
+                const listFieldsRemoved = isLogin ? undefined : ['price', 'formatted_price', 'price_amount']
                 
         
                 // Now you can use the color1, color2, and color3 variables in your script
@@ -66,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 type: "category",
                             },
                         ],
-                        RemoveFields: ['price', 'formatted_price', 'price_amount'],
+                        RemoveFields: listFieldsRemoved,
                         attributes: ['product_code'],
                     },
                     "#inputLuigi"
@@ -90,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         UrlParamName: {
                             QUERY: "q",
                         },
-                        RemoveFields: ['price', 'formatted_price', 'price_amount']
+                        RemoveFields: listFieldsRemoved
                     },
                     "#inputLuigi",
                     "#new_search"

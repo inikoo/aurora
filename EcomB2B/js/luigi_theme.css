@@ -4,11 +4,13 @@
 }
 
 .luigi-ac-hero-color:hover {
-    background: color-mix(in srgb, var(--luigiColor2) 10%, black) !important;
+    background: color-mix(in srgb, var(--luigiColor2), 10% black) !important;
 }
 
 .luigi-ac-header {
     color: var(--luigiColor1) !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
 }
 
 .luigi-ac-highlight {
@@ -21,6 +23,11 @@
 
 .luigi-ac-others {
     background: color-mix(in srgb, var(--luigiColor2) 45%, white) !important;
+}
+
+.luigi-ac-item {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
 }
 
 .luigi-ac-item:hover {
