@@ -16,9 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const color2 = scriptSrc.searchParams.get('color2');
                 const color3 = scriptSrc.searchParams.get('color3');
                 const isLogin = scriptSrc.searchParams.get('logged_in') || 'xx'
-
-                const listFieldsRemoved = isLogin ? null : ['price', 'formatted_price', 'price_amount']
-                console.log('list fields removed:', listFieldsRemoved)
                 
         
                 // Now you can use the color1, color2, and color3 variables in your script
@@ -32,6 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.documentElement.style.setProperty('--luigiColor2', '#' + color2);
                 document.documentElement.style.setProperty('--luigiColor3', '#' + color3);
             }
+
+            
+
+            const listFieldsRemoved = isLogin ? undefined : ['price', 'formatted_price', 'price_amount']
+            console.log('list fields removed:', listFieldsRemoved)
 
             console.log("===============")
             // Import Luigi
