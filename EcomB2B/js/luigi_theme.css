@@ -4,7 +4,7 @@
 }
 
 .luigi-ac-hero-color:hover {
-    background: darken(var(--luigiColor2), 10%) !important;
+    background: color-mix(in srgb, var(--luigiColor2) 10%, black) !important;
 }
 
 .luigi-ac-header {
@@ -20,7 +20,7 @@
 }
 
 .luigi-ac-others {
-    background: lighten(var(--luigiColor2), 45%) !important;
+    background: color-mix(in srgb, var(--luigiColor2) 45%, white) !important;
 }
 
 .luigi-ac-item:hover {
