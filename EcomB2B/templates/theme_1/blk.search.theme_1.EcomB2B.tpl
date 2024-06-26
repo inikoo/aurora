@@ -30,7 +30,9 @@
         </div>
     </div>
 
-    <div id="new_search" class="container"></div>
+    <div class="container">
+        <div id="new_search"></div>
+    </div>
 
 
 </div>

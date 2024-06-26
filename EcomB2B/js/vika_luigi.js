@@ -15,11 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const color1 = scriptSrc.searchParams.get('color1');
                 const color2 = scriptSrc.searchParams.get('color2');
                 const color3 = scriptSrc.searchParams.get('color3');
+                const isLogin = scriptSrc.searchParams.get('logged_in') || false
         
                 // Now you can use the color1, color2, and color3 variables in your script
                 console.log('color1:', color1);
                 console.log('color2:', color2);
                 console.log('color3:', color3);
+                console.log('isLogin:', isLogin);
         
                 // Apply these colors to some elements or use them in your logic
                 document.documentElement.style.setProperty('--luigiColor1', '#' + color1);
@@ -63,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 type: "category",
                             },
                         ],
+                        AfterRender: () => deleteElement('.luigi-ac-price'),  // Delete price after autocomplete
                     },
                     "#inputLuigi"
                 )
@@ -131,6 +134,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log('Original Input: ', originalInput)
                     originalInput?.classList.add("hide")
                 }
+            }
+
+            const deleteElement = async (selector) => {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    element.remove();
+                });
             }
 
             loadCSS()
