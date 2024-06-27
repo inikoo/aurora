@@ -31,7 +31,7 @@
     </div>
 
     <div class="container">
-        <div id="new_search"></div>
+        <div id="luigi_result_search"></div>
     </div>
 
 

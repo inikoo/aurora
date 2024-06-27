@@ -57,7 +57,7 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved) => {
             RemoveFields: fieldsRemoved
         },
         "#inputLuigi",
-        "#new_search"
+        "#luigi_result_search"
     )
 
     console.log("Init Search")
@@ -161,8 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
                 setComponentHide('.content .input-icon')  // Hide original input in Page: Result
 
-                // Add 'enter' listener to the Input Autocomplete
+                // Add 'enter' listener to the Input Autocomplete (left sidebar)
                 const inputAutoComplete = document.querySelector('.luigi-ac-heromobile-input')
+                console.log('Input auto complete', inputAutoComplete)
                 if (inputAutoComplete) {
                     inputAutoComplete.addEventListener('keypress', function(event) {
                         if (event.key === 'Enter') {
