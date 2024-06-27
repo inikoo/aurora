@@ -7,7 +7,7 @@ function stringToBoolean(str) {
 }
 
 // Init: Auto Complete
-const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved) => {
+const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList) => {
     await import("https://cdn.luigisbox.com/autocomplete.js")
     await AutoComplete(
         {
@@ -19,6 +19,7 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved) => {
                     name: "Item",
                     type: "item",
                     size: 7,
+                    attributes: attributesList,
                 },
                 {
                     name: "Query",
@@ -30,7 +31,6 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved) => {
                 },
             ],
             RemoveFields: fieldsRemoved,
-            attributes: ['product_code'],
         },
         "#inputLuigi"
     )
@@ -88,7 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Hello Indonesia!")
 
             const luigiTrackerId = "483878-588294"
-            let listFieldsRemoved
+            let listFieldsRemoved  // To remove data
+            let attributesList  // To show attribute shown in product list
             let deviceType
 
 
@@ -105,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 deviceType = scriptSrc.searchParams.get('device_type')
 
                 listFieldsRemoved = stringToBoolean(isLogin) ? null : ['price', 'formatted_price', 'price_amount']                
+                attributesList = stringToBoolean(isLogin) ? ['product_code', 'formatted_price'] : ['product_code']                
         
                 console.log('Script paramter:', scriptSrc.searchParams);
                 console.log('list fields removed:', listFieldsRemoved)
@@ -147,11 +149,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 importStyleCSS()
                 showInputAutocomplete()
                 setComponentHide('#legacy_search')  // Hide original input in header
-                LBInitAutocomplete(luigiTrackerId, listFieldsRemoved)
+                LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
             } else if (deviceType === 'mobile') {
                 importStyleCSS()
-                LBInitAutocomplete(luigiTrackerId, listFieldsRemoved)
+                LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
 
                 const groupInputLuigi = document.getElementById('groupInputLuigi')
                 if (groupInputLuigi) groupInputLuigi.style.display = 'flex'
