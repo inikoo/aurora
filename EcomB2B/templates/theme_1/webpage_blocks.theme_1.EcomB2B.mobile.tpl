@@ -386,5 +386,6 @@
 
 </div>
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.mobile.tpl"}
+<script type="module" src="../../js/vika_luigi.js?v=11&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}"></script>
 </body>
 </html>
