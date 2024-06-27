@@ -207,6 +207,13 @@
 <div class="header header-logo-center header-light">
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
     <a href="/" title=":)" class="header-logo">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
+    
+    <div id="groupInputLuigi" class="header-icon" style="display: none; right: 54px; align-items: center; justify-content: center; gap: 0.75rem; outline: none;">
+        <span class="sr-only">{{ trans("Search") }}</span>
+        <i class="fa fa-search" style="margin-top: 0px"></i>
+        <input id="inputLuigi" type="text" style="color: transparent; padding: 10px; position: absolute; width: 100%; border: none; background: transparent; outline: none;">
+    </div>
+
     {if $logged_in}
         <a href="#" class="header-icon header-icon-4 open-sidebar-right "><i class="fa fa-shopping-cart"></i></a>
     {else}
