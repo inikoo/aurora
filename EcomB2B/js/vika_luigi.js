@@ -38,8 +38,8 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved) => {
     console.log("Init autocomplete")
 }
 
-// Init: Search
-const LBInitSearch = async (luigiTrackerId, fieldsRemoved) => {
+// Init: Search result
+const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved) => {
     await import("https://cdn.luigisbox.com/search.js")
     await Luigis.Search(
         {
@@ -59,6 +59,7 @@ const LBInitSearch = async (luigiTrackerId, fieldsRemoved) => {
         "#inputLuigi",
         "#new_search"
     )
+
     console.log("Init Search")
 }
 
@@ -69,6 +70,14 @@ const importStyleCSS = () => {
     link.rel = "stylesheet"
     link.href = "https://cdn.luigisbox.com/autocomplete.css"
     document.head.appendChild(link)
+}
+
+// Method: add 'hide' class to component
+const setComponentHide = (selector) => {
+    const selectedComponent = document.querySelector(selector)
+    if (selectedComponent) {
+        selectedComponent.classList.add("hide")
+    }
 }
 
 
@@ -110,12 +119,14 @@ document.addEventListener("DOMContentLoaded", () => {
             // Show: Luigi input autocomplete
             const showInputAutocomplete = async () => {
                 // Input: Original
-                const originalInput = document.getElementById("header_search_input")
-                if (originalInput) {
-                    originalInput.classList.add("hide")
-                }
+                // const originalInput = document.getElementById("header_search_input")
+                // if (originalInput) {
+                //     originalInput.classList.add("hide")
+                // }
+                setComponentHide('#header_search_input')
 
-                // Input: Luigi
+
+                // Show: Input for auto complete
                 const inputLuigi = document.getElementById("inputLuigi")
                 if (inputLuigi) {
                     inputLuigi.classList.remove("hide")
@@ -131,31 +142,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // Page: Result the search
-            const showSearchResult = () => {
-                const originalInput = document.getElementById("legacy_search")
-                if (originalInput) {
-                    console.log('Original Input: ', originalInput)
-                    originalInput?.classList.add("hide")
-                }
-            }
-            
 
             if(deviceType === 'desktop') {
                 importStyleCSS()
                 showInputAutocomplete()
-                showSearchResult()
+                setComponentHide('#legacy_search')  // Hide original input in header
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved)
-                LBInitSearch(luigiTrackerId, listFieldsRemoved)
+                LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
             } else if (deviceType === 'mobile') {
                 importStyleCSS()
-                showSearchResult()
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved)
 
                 const groupInputLuigi = document.getElementById('groupInputLuigi')
                 if (groupInputLuigi) groupInputLuigi.style.display = 'flex'
 
-                LBInitSearch(luigiTrackerId, listFieldsRemoved)
+                setComponentHide('.sidebar-left .menu-search')  // Hide original input in left sidebar
+
+                LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
+                setComponentHide('.content .input-icon')  // Hide original input in Page: Result
+
+                // Add 'enter' listener to the Input Autocomplete
+                const inputAutoComplete = document.querySelector('.luigi-ac-heromobile-input')
+                if (inputAutoComplete) {
+                    inputAutoComplete.addEventListener('keypress', function(event) {
+                        if (event.key === 'Enter') {
+                            const query = inputAutoComplete.value;
+                            if (query) {
+                                console.log('query:', query)
+                                window.location.href = `/search.sys?q=${encodeURIComponent(query)}`;
+                            }
+                        }
+                    });
+                }
             }
 
         } else {
