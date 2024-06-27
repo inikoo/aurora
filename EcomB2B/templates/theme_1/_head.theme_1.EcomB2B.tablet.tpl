@@ -193,6 +193,8 @@
         }
     </script>
 
+    <link rel="stylesheet" href="js/luigi_theme.css?v=2" type="text/css"/>
+
     <link rel="stylesheet" type="text/css" href="assets/tablet.min.css">
 
     {assign "with_forms" false}
