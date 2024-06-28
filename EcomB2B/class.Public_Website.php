@@ -371,7 +371,15 @@ class Public_Website
 
 
                     $pass=false;
-                    if($options=='GB' or  DNS_ACCOUNT_CODE == 'ES'    ){
+                    if($options=='GB' or (  DNS_ACCOUNT_CODE == 'ES'  and
+
+                            in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
+                                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH'
+                            ])
+
+
+
+                    )    ){
                         $pass=true;
                     }else{
 
