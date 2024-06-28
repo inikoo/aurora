@@ -31,6 +31,9 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList)
                 },
             ],
             RemoveFields: fieldsRemoved,
+            ShowAllCallback: () => {  // Called when 'Show All Product' clicked
+                onSearchQuery(document.querySelector('#inputLuigi')?.value)
+            }
         },
         "#inputLuigi"
     )
@@ -80,6 +83,15 @@ const setComponentHide = (selector) => {
     }
 }
 
+// Method: visit Page: Search with the query
+const onSearchQuery = (stringQuery) => {
+    if (stringQuery) {
+        console.log('query:', stringQuery)
+        window.location.href = `/search.sys?q=${encodeURIComponent(stringQuery)}`;
+    } else {
+        console.log('The query must be filled.',)
+    }
+}
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -117,30 +129,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.documentElement.style.setProperty('--luigiColor3', '#' + color3);
             }
 
-
             // Show: Luigi input autocomplete
             const showInputAutocomplete = async () => {
-                // Input: Original
-                // const originalInput = document.getElementById("header_search_input")
-                // if (originalInput) {
-                //     originalInput.classList.add("hide")
-                // }
                 setComponentHide('#header_search_input')
 
-
-                // Show: Input for auto complete
+                // Show: Input for autocomplete
                 const inputLuigi = document.getElementById("inputLuigi")
                 if (inputLuigi) {
                     inputLuigi.classList.remove("hide")
-                    inputLuigi.addEventListener('keypress', function(event) {
-                        if (event.key === 'Enter') {
-                            const query = inputLuigi.value;
-                            if (query) {
-                                console.log('query:', query)
-                                window.location.href = `/search.sys?q=${encodeURIComponent(query)}`;
-                            }
-                        }
-                    });
+                } else {
+                    console.log('Element #inputLuigi is not exist.')
                 }
             }
 
@@ -151,7 +149,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 setComponentHide('#legacy_search')  // Hide original input in header
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
-            } else if (deviceType === 'mobile') {
+            }
+            else if (deviceType === 'mobile') {
                 importStyleCSS()
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
 
@@ -162,21 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
                 setComponentHide('.content .input-icon')  // Hide original input in Page: Result
-
-                // Add 'enter' listener to the Input Autocomplete (left sidebar)
-                const inputAutoComplete = document.querySelector('.luigi-ac-heromobile-input')
-                console.log('Input auto complete', inputAutoComplete)
-                if (inputAutoComplete) {
-                    inputAutoComplete.addEventListener('keypress', function(event) {
-                        if (event.key === 'Enter') {
-                            const query = inputAutoComplete.value;
-                            if (query) {
-                                console.log('query:', query)
-                                window.location.href = `/search.sys?q=${encodeURIComponent(query)}`;
-                            }
-                        }
-                    });
-                }
+                setComponentHide('.page-content .content')
             }
 
         } else {
