@@ -141,15 +141,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
                 // Show: Input for auto complete
-                const inputLuigi = document.getElementById("inputLuigi")
-                if (inputLuigi) {
-                    inputLuigi.classList.remove("hide")
-                    inputLuigi.addEventListener('keypress', function(event) {
-                        if (event.key === 'Enter') {
-                            onSearchQuery(inputLuigi.value)
-                        }
-                    });
-                }
+                // const inputLuigi = document.getElementById("inputLuigi")
+                // if (inputLuigi) {
+                //     inputLuigi.classList.remove("hide")
+                //     inputLuigi.addEventListener('keypress', function(event) {
+                //         if (event.key === 'Enter') {
+                //             onSearchQuery(inputLuigi.value)
+                //         }
+                //     });
+                // }
             }
 
 
@@ -159,7 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 setComponentHide('#legacy_search')  // Hide original input in header
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
-            } else if (deviceType === 'mobile') {
+            }
+            else if (deviceType === 'mobile') {
                 importStyleCSS()
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
 
@@ -170,18 +171,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
                 setComponentHide('.content .input-icon')  // Hide original input in Page: Result
+                setComponentHide('.page-content .content')
 
                 // Add 'enter' listener to the Input Autocomplete (left sidebar)
-                const inputAutoComplete = document.querySelector('.luigi-ac-heromobile-input')
-                console.log('Input auto complete', inputAutoComplete)
-                if (inputAutoComplete) {
-                    inputAutoComplete.addEventListener('keypress', function(event) {
-                        if (event.key === 'Enter') {
-                            onSearchQuery(inputAutoComplete.value)
+                // const inputAutoComplete = document.querySelector('.luigi-ac-heromobile-input')
+                // console.log('Input auto complete', inputAutoComplete)
+                // if (inputAutoComplete) {
+                //     inputAutoComplete.addEventListener('keypress', function(event) {
+                //         if (event.key === 'Enter') {
+                //             onSearchQuery(inputAutoComplete.value)
                             
-                        }
-                    });
-                }
+                //         }
+                //     });
+                // }
             }
 
         } else {
