@@ -371,7 +371,7 @@ class Public_Website
 
 
                     $pass=false;
-                    if($options=='GB'){
+                    if($options=='GB' or  DNS_ACCOUNT_CODE == 'ES'    ){
                         $pass=true;
                     }else{
 
