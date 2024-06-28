@@ -31,6 +31,9 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList)
                 },
             ],
             RemoveFields: fieldsRemoved,
+            ShowAllCallback: () => {  // Called when 'Show All Product' clicked
+                onSearchQuery(document.querySelector('#inputLuigi')?.value)
+            }
         },
         "#inputLuigi"
     )
@@ -80,6 +83,15 @@ const setComponentHide = (selector) => {
     }
 }
 
+// Method: visit Page: Search with the query
+const onSearchQuery = (stringQuery) => {
+    if (stringQuery) {
+        console.log('query:', stringQuery)
+        window.location.href = `/search.sys?q=${encodeURIComponent(stringQuery)}`;
+    } else {
+        console.log('The query must be filled.',)
+    }
+}
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -134,11 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     inputLuigi.classList.remove("hide")
                     inputLuigi.addEventListener('keypress', function(event) {
                         if (event.key === 'Enter') {
-                            const query = inputLuigi.value;
-                            if (query) {
-                                console.log('query:', query)
-                                window.location.href = `/search.sys?q=${encodeURIComponent(query)}`;
-                            }
+                            onSearchQuery(inputLuigi.value)
                         }
                     });
                 }
@@ -169,11 +177,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (inputAutoComplete) {
                     inputAutoComplete.addEventListener('keypress', function(event) {
                         if (event.key === 'Enter') {
-                            const query = inputAutoComplete.value;
-                            if (query) {
-                                console.log('query:', query)
-                                window.location.href = `/search.sys?q=${encodeURIComponent(query)}`;
-                            }
+                            onSearchQuery(inputAutoComplete.value)
+                            
                         }
                     });
                 }
