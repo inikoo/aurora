@@ -129,33 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.documentElement.style.setProperty('--luigiColor3', '#' + color3);
             }
 
-
-            // Show: Luigi input autocomplete
-            const showInputAutocomplete = async () => {
-                // Input: Original
-                // const originalInput = document.getElementById("header_search_input")
-                // if (originalInput) {
-                //     originalInput.classList.add("hide")
-                // }
-                setComponentHide('#header_search_input')
-
-
-                // Show: Input for auto complete
-                // const inputLuigi = document.getElementById("inputLuigi")
-                // if (inputLuigi) {
-                //     inputLuigi.classList.remove("hide")
-                //     inputLuigi.addEventListener('keypress', function(event) {
-                //         if (event.key === 'Enter') {
-                //             onSearchQuery(inputLuigi.value)
-                //         }
-                //     });
-                // }
-            }
-
-
             if(deviceType === 'desktop') {
                 importStyleCSS()
-                showInputAutocomplete()
+                setComponentHide('#header_search_input')
                 setComponentHide('#legacy_search')  // Hide original input in header
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
@@ -172,18 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
                 setComponentHide('.content .input-icon')  // Hide original input in Page: Result
                 setComponentHide('.page-content .content')
-
-                // Add 'enter' listener to the Input Autocomplete (left sidebar)
-                // const inputAutoComplete = document.querySelector('.luigi-ac-heromobile-input')
-                // console.log('Input auto complete', inputAutoComplete)
-                // if (inputAutoComplete) {
-                //     inputAutoComplete.addEventListener('keypress', function(event) {
-                //         if (event.key === 'Enter') {
-                //             onSearchQuery(inputAutoComplete.value)
-                            
-                //         }
-                //     });
-                // }
             }
 
         } else {
