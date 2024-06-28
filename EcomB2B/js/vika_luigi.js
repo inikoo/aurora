@@ -129,9 +129,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.documentElement.style.setProperty('--luigiColor3', '#' + color3);
             }
 
+            // Show: Luigi input autocomplete
+            const showInputAutocomplete = async () => {
+                setComponentHide('#header_search_input')
+
+                // Show: Input for autocomplete
+                const inputLuigi = document.getElementById("inputLuigi")
+                if (inputLuigi) {
+                    inputLuigi.classList.remove("hide")
+                } else {
+                    console.log('Element #inputLuigi is not exist.')
+                }
+            }
+
+
             if(deviceType === 'desktop') {
                 importStyleCSS()
-                setComponentHide('#header_search_input')
+                showInputAutocomplete()
                 setComponentHide('#legacy_search')  // Hide original input in header
                 LBInitAutocomplete(luigiTrackerId, listFieldsRemoved, attributesList)
                 LBInitSearchResult(luigiTrackerId, listFieldsRemoved)
