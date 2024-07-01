@@ -28,7 +28,7 @@ $store=get_object('Store',$website->get('Store Key'));
 
 $locale  = $store->get('Store Locale');
 
-$sql="select `Webpage Scope Key`,`Webpage Code`,`Page Store Content Published Data`,`Webpage Meta Description`  from `Page Store Dimension` where `Webpage State`='Online' and `Webpage Scope`='Product'  and `Webpage Website Key`=? ";
+$sql="select `Webpage Scope Key`,`Webpage Code`,`Page Store Content Published Data`,`Webpage Meta Description`  from `Page Store Dimension` where `Webpage State`='Online'  and `Webpage Scope`='Product'  and `Webpage Website Key`=? ";
 $stmt = $db->prepare($sql);
 $stmt->execute(
     [
@@ -69,13 +69,35 @@ while ($row = $stmt->fetch()) {
 
 
 
-
-
     $product=get_object('product',$row['Webpage Scope Key']);
+
+    $category=null;
+
+    $family_id=$product->get('Product Family Category Key');
+
+
+    $sql4="select `Webpage Name`  from `Page Store Dimension` where  `Webpage Scope`='Category Products'  and `Webpage Scope Key`=? ";
+    $stmt4 = $db->prepare($sql4);
+    $stmt4->execute(
+        [
+            $family_id
+        ]
+    );
+
+
+
+    if ($row4 = $stmt4->fetch()) {
+
+
+
+        $category=$row4['Webpage Name'];
+    }
+
+
 
     if($product->id) {
 
-        $products[] = [
+        $product_data = [
             'title'=>$product->get('Product Name'),
             'identity' => $row['Webpage Scope Key'],
             'web_url'=>'https://'.$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
@@ -86,19 +108,25 @@ while ($row = $stmt->fetch()) {
                 $locale
             ),
             'formatted_price'=>$product->get('Webpage Price'),
-            'category'=>$product->get('Product Family Category Key'),
+
             'image_link_s'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=100x100',
             'image_link_m'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=200x200',
             'image_link_l'=>'https://'.$website->get('Website URL').'/wi.php?id='.$product->get('Product Main Image Key').'&s=600x600',
-            'description'=>$description,
             'product_code'=>$product->get('Product Code'),
             'ean'=>$product->get('Product Barcode Number'),
             'introduced_at'=>$product->get('Product Valid From'),
 
         ];
 
+        if($category){
+            $product_data['category']=$category;
+        }
 
+        if($description) {
+            $product_data['description'] = $description;
+        }
 
+        $products[] = $product_data;
 
     }
 }
