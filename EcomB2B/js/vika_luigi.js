@@ -13,7 +13,19 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList)
         {
             Layout: "heromobile",
             TrackerId: luigiTrackerId,
-            Locale: "en",
+            Locale: 'en',
+            Translations: {
+                en: {
+                    showBuyTitle: 'Shop Today', // Top Product: Button label
+                    priceFilter: {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                        locale: 'en',
+                        prefixed: true,
+                        symbol: '£'
+                    }
+                }
+            },
             Types: [
                 {
                     name: "Item",
@@ -65,7 +77,12 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved) => {
     await Luigis.Search(
         {
             TrackerId: luigiTrackerId,
-            Locale: "en",
+            Locale: 'en',
+            PriceFilter: {
+                decimals: 2,
+                prefixed: true,
+                symbol: '£'
+            },
             Theme: "boo",
             Size: 10,
             Facets: ['brand', 'category', 'color'],
@@ -119,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const luigiTrackerId = "483878-588294"
             let listFieldsRemoved  // To remove data
-            let attributesList  // To show attribute shown in product list
+            let attributesList = ['product_code'] // To show attribute shown in product list
             let deviceType
 
 
@@ -136,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 deviceType = scriptSrc.searchParams.get('device_type')
 
                 listFieldsRemoved = stringToBoolean(isLogin) ? null : ['price', 'formatted_price', 'price_amount']                
-                attributesList = stringToBoolean(isLogin) ? ['product_code', 'formatted_price'] : ['product_code']                
+                // attributesList = stringToBoolean(isLogin) ? [...attributesList, 'formatted_price'] : [...attributesList]                
         
                 console.log('Script paramter:', scriptSrc.searchParams);
                 console.log('list fields removed:', listFieldsRemoved)

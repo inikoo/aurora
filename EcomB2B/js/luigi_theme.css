@@ -59,6 +59,13 @@
     background: color-mix(in srgb, var(--luigiColor1) 10%, transparent) !important;
 }
 
+.luigi-ac-heromobile .luigi-ac-first-main .luigi-ac-text {
+    padding-top: 0px !important;
+}
+
+.luigi-ac-heromobile .luigi-ac-name {
+    height: fit-content !important;
+}
 
 /* Copyright */
 .luigi-ac-footer {
