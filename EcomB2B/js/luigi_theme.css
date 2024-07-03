@@ -1,28 +1,26 @@
+.luigi-ac-ribbon {
+    /* Border top of the Autocomplete */
+    background: var(--luigiColor1) !important;
+}
+
+
+/* Styling for Layout: Hero */
 .luigi-ac-hero-color {
-    background: var(--luigiColor2) !important;
-    transition: background 0.05s !important;
+    background: var(--luigiColor1) !important;
 }
-
-.luigi-ac-hero-color:hover {
-    background: color-mix(in srgb, var(--luigiColor2), 10% black) !important;
+.luigi-ac-others {
+    background: #F3F7FA !important;
 }
-
 .luigi-ac-header {
     color: var(--luigiColor1) !important;
     font-size: 1.2rem !important;
     font-weight: bold !important;
 }
-
 .luigi-ac-highlight {
-    background: color-mix(in srgb, var(--luigiColor2) 35%, transparent) !important;
-}
-
-.luigi-ac-button {
-    border-radius: 5px !important;
-}
-
-.luigi-ac-others {
-    background: #eeeeee !important;
+    background: color-mix(in srgb, var(--luigiColor3) 90%, transparent) !important;
+    color: #fff !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
 }
 
 .luigi-ac-item {
@@ -30,9 +28,37 @@
     padding-bottom: 5px !important;
 }
 
-.luigi-ac-item:hover {
-    background: color-mix(in srgb, var(--luigiColor2) 10%, transparent) !important;
+.luigi-ac-item.active, .luigi-ac-active {
+    background: #F3F7FA !important;
 }
+
+.luigi-ac-item:hover, .luigi-ac-other:hover {
+    background: color-mix(in srgb, var(--luigiColor1) 10%, transparent) !important;
+}
+/* End of styling for Layout: Hero */
+
+.luigi-ac-button-buy {
+    background: var(--luigiColor1) !important;
+    border-radius: 5px;
+}
+
+.luigi-ac-button-buy:hover {
+    background: color-mix(in srgb, var(--luigiColor1) 75%, black) !important;
+}
+
+
+.luigi-ac-button {
+    background: transparent !important;
+    transition: background 0.05s !important;
+    border-radius: 5px !important;
+    border: 1px solid var(--luigiColor1) !important;
+    color: var(--luigiColor1) !important;
+}
+
+.luigi-ac-button:hover {
+    background: color-mix(in srgb, var(--luigiColor1) 10%, transparent) !important;
+}
+
 
 /* Copyright */
 .luigi-ac-footer {
@@ -116,7 +142,7 @@
 }
 
 .lb-search-bg-color-primary-clickable:hover {
-    background: color-mix(in srgb, var(--luigiColor2) 40%, transparent) !important;
+    background: color-mix(in srgb, var(--luigiColor1) 20%, transparent) !important;
     
 }
 
