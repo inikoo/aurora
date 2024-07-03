@@ -33,7 +33,25 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList)
             RemoveFields: fieldsRemoved,
             ShowAllCallback: () => {  // Called when 'Show All Product' clicked
                 onSearchQuery(document.querySelector('#inputLuigi')?.value)
-            }
+            },
+            Actions: [  // Action for Top Product 'Add To Basket'
+                {
+                    forRow: function(row) {
+                        // console.log('row', row)
+                        // if(row['data-autocomplete-id'] == 1 && row.type === 'item') {
+                        //     console.log('aaaa', row.attributes['title.untouched'])
+                        // }
+                        return row['data-autocomplete-id'] == 1 && row.type === 'item'
+                    },
+                    // iconUrl: 'https://cdn-icons-png.freepik.com/256/275/275790.png',
+                    title: "Visit product's page",
+                    // action: function(e, result) {
+                    //     console.log(e, result)
+                    //     e.preventDefault();
+                    //     alert("Product added to cart");
+                    // }
+                }
+            ]
         },
         "#inputLuigi"
     )
