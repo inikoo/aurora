@@ -217,9 +217,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 setComponentHide('.sidebar-left .menu-search')  // Hide original input in left sidebar
 
-                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
-                setComponentHide('.content .input-icon')  // Hide original input in Page: Result
-                setComponentHide('.page-content .content')
+                // Conditional: Search result
+                if (window.location.pathname.includes('/search.sys')) {
+                    console.log('Hello!2')
+                    LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
+                    setComponentHide('.content .input-icon')  // Hide original input in Page: Result
+                    setComponentHide('.page-content .content')
+                }
             }
 
         } else {
