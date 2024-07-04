@@ -7,13 +7,13 @@ function stringToBoolean(str) {
 }
 
 // Init: Auto Complete
-const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes) => {
+const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes, localeList) => {
     await import("https://cdn.luigisbox.com/autocomplete.js")
     await AutoComplete(
         {
             Layout: "heromobile",
             TrackerId: luigiTrackerId,
-            Locale: 'en',
+            Locale: localeList.language,
             Translations: {
                 en: {
                     showBuyTitle: 'Shop Today', // Top Product: Button label
@@ -68,16 +68,16 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
 }
 
 // Init: Search result
-const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets) => {
+const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, localeList) => {
     await import("https://cdn.luigisbox.com/search.js")
     await Luigis.Search(
         {
             TrackerId: luigiTrackerId,
-            Locale: 'en',
+            Locale: localeList.language,
             PriceFilter: {
                 decimals: 2,
                 prefixed: true,
-                symbol: '£'
+                symbol: localeList.currencySymbol
             },
             Theme: "boo",
             Size: 10,
@@ -130,12 +130,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.location.hostname === "www.aw-indonesia.com") {
             console.log("Hello Indonesia!")
 
-            const luigiTrackerId = "483878-588294"
+            let luigiTrackerId
             let autoCompleteAttributesRemoved  // To remove data
             let searchAttributesRemoved  // To attribute for Search
             let autoCompleteAttributes = ['product_code'] // To show attribute shown in product list
             let deviceType
             let searchFacets
+            let localeList = {
+                language: 'en',
+                currencySymbol: '£'
+            }
 
 
             // Get the props
@@ -144,11 +148,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Read the parameter
             if (scriptSrc?.searchParams) {
-                const color1 = scriptSrc.searchParams.get('color1');
-                const color2 = scriptSrc.searchParams.get('color2');
-                const color3 = scriptSrc.searchParams.get('color3');
                 const isLogin = scriptSrc.searchParams.get('logged_in')
                 deviceType = scriptSrc.searchParams.get('device_type')
+                luigiTrackerId = scriptSrc.searchParams.get('trackerId')
+
+                // Set Locale language
+                if (scriptSrc.searchParams.get('language')) {
+                    localeList.language = scriptSrc.searchParams.get('language')
+                }
+
+                // Set Locale: currency
+                if (scriptSrc.searchParams.get('language')) {
+                    localeList.currencySymbol = scriptSrc.searchParams.get('currency_symbol')
+                }
 
                 if(stringToBoolean(isLogin)) {
                     autoCompleteAttributes = ['product_code', 'formatted_price']
@@ -164,16 +176,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     searchFacets = ['brand', 'category', 'color']
 
                 }
-
-                // autoCompleteAttributes = stringToBoolean(isLogin) ? [...autoCompleteAttributes, 'formatted_price'] : [...autoCompleteAttributes]                
+            
         
-                console.log('Script paramter:', scriptSrc.searchParams);
-                console.log('list fields removed:', autoCompleteAttributesRemoved)
+                // console.log('Script paramter:', scriptSrc.searchParams);
+                // console.log('list fields removed:', autoCompleteAttributesRemoved)
         
-                // Apply these colors to some elements or use them in your logic
-                document.documentElement.style.setProperty('--luigiColor1', '#' + color1);
-                document.documentElement.style.setProperty('--luigiColor2', '#' + color2);
-                document.documentElement.style.setProperty('--luigiColor3', '#' + color3);
+                // Set CSS variable
+                document.documentElement.style.setProperty('--luigiColor1', '#' + scriptSrc.searchParams.get('color1'));
+                document.documentElement.style.setProperty('--luigiColor2', '#' + scriptSrc.searchParams.get('color2'));
+                document.documentElement.style.setProperty('--luigiColor3', '#' + scriptSrc.searchParams.get('color3'));
             }
 
             // Show: Luigi input autocomplete
@@ -194,19 +205,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 importStyleCSS()
                 showInputAutocomplete()
                 setComponentHide('#legacy_search')  // Hide original input in header
-                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes)
-                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
+                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
             }
             else if (deviceType === 'mobile') {
                 importStyleCSS()
-                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
 
                 const groupInputLuigi = document.getElementById('groupInputLuigi')
                 if (groupInputLuigi) groupInputLuigi.style.display = 'flex'
 
                 setComponentHide('.sidebar-left .menu-search')  // Hide original input in left sidebar
 
-                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets)
+                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
                 setComponentHide('.content .input-icon')  // Hide original input in Page: Result
                 setComponentHide('.page-content .content')
             }
