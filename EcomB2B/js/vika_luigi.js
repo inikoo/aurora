@@ -127,7 +127,7 @@ const onSearchQuery = (stringQuery) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
-        if (window.location.hostname === "www.aw-indonesia.com") {
+        if (window.location.hostname === "www.aw-indonesia.com" || window.location.hostname === "www.ancientwisdom.biz"  ) {
             console.log("Hello Indonesia!")
 
             let luigiTrackerId
