@@ -7,7 +7,7 @@ function stringToBoolean(str) {
 }
 
 // Init: Auto Complete
-const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList) => {
+const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes) => {
     await import("https://cdn.luigisbox.com/autocomplete.js")
     await AutoComplete(
         {
@@ -32,7 +32,7 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList)
                     name: "Item",
                     type: "item",
                     size: 7,
-                    attributes: attributesList,
+                    attributes: autoCompleteAttributes,
                 },
                 {
                     name: "Query",
@@ -68,7 +68,7 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, attributesList)
 }
 
 // Init: Search result
-const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, facetsSearch) => {
+const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets) => {
     await import("https://cdn.luigisbox.com/search.js")
     await Luigis.Search(
         {
@@ -81,7 +81,7 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, facetsSearch) =
             },
             Theme: "boo",
             Size: 10,
-            Facets: facetsSearch,
+            Facets: searchFacets,
             DefaultFilters: {
                 type: 'item'
             },
@@ -131,10 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Hello Indonesia!")
 
             const luigiTrackerId = "483878-588294"
-            let attributesRemoved  // To remove data
-            let attributesList = ['product_code'] // To show attribute shown in product list
+            let autoCompleteAttributesRemoved  // To remove data
+            let searchAttributesRemoved  // To attribute for Search
+            let autoCompleteAttributes = ['product_code'] // To show attribute shown in product list
             let deviceType
-            let facetsSearch
+            let searchFacets
 
 
             // Get the props
@@ -150,18 +151,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 deviceType = scriptSrc.searchParams.get('device_type')
 
                 if(stringToBoolean(isLogin)) {
-                    attributesRemoved = null
-                    facetsSearch = ['price_amount', 'brand', 'category', 'color']
+                    autoCompleteAttributes = ['product_code', 'formatted_price']
+                    autoCompleteAttributesRemoved = ['price']
+
+                    searchAttributesRemoved = ['price']
+                    searchFacets = ['price_amount', 'brand', 'category', 'color']
                 } else {
-                    attributesRemoved = ['price', 'formatted_price', 'price_amount']                
-                    facetsSearch = ['brand', 'category', 'color']
+                    autoCompleteAttributes = ['product_code']
+                    autoCompleteAttributesRemoved = ['price', 'formatted_price', 'price_amount']         
+                    
+                    searchAttributesRemoved = ['price', 'formatted_price', 'price_amount']
+                    searchFacets = ['brand', 'category', 'color']
 
                 }
 
-                // attributesList = stringToBoolean(isLogin) ? [...attributesList, 'formatted_price'] : [...attributesList]                
+                // autoCompleteAttributes = stringToBoolean(isLogin) ? [...autoCompleteAttributes, 'formatted_price'] : [...autoCompleteAttributes]                
         
                 console.log('Script paramter:', scriptSrc.searchParams);
-                console.log('list fields removed:', attributesRemoved)
+                console.log('list fields removed:', autoCompleteAttributesRemoved)
         
                 // Apply these colors to some elements or use them in your logic
                 document.documentElement.style.setProperty('--luigiColor1', '#' + color1);
@@ -187,19 +194,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 importStyleCSS()
                 showInputAutocomplete()
                 setComponentHide('#legacy_search')  // Hide original input in header
-                LBInitAutocomplete(luigiTrackerId, attributesRemoved, attributesList)
-                LBInitSearchResult(luigiTrackerId, attributesRemoved, facetsSearch)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes)
+                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets)
             }
             else if (deviceType === 'mobile') {
                 importStyleCSS()
-                LBInitAutocomplete(luigiTrackerId, attributesRemoved, attributesList)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes)
 
                 const groupInputLuigi = document.getElementById('groupInputLuigi')
                 if (groupInputLuigi) groupInputLuigi.style.display = 'flex'
 
                 setComponentHide('.sidebar-left .menu-search')  // Hide original input in left sidebar
 
-                LBInitSearchResult(luigiTrackerId, attributesRemoved, facetsSearch)
+                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets)
                 setComponentHide('.content .input-icon')  // Hide original input in Page: Result
                 setComponentHide('.page-content .content')
             }
