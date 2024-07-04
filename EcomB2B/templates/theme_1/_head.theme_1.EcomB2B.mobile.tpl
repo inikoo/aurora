@@ -206,7 +206,7 @@
 
     </script>
 
-    <link rel="stylesheet" href="js/luigi_theme.css?v=5" type="text/css"/>
+    <link rel="stylesheet" href="js/luigi_theme.css?v=6" type="text/css"/>
 
 
     <link rel="stylesheet" type="text/css" href="/assets/mobile.min.css">

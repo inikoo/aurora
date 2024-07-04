@@ -72,6 +72,42 @@
     visibility: hidden !important;
 }
 
+
+.luigi-ac-heromobile .luigi-ac-first-main .luigi-ac-item .luigi-ac-attrs {
+    overflow: visible !important;
+}
+
+.luigi-ac-first-main .luigi-ac-attr--formatted_price {
+    margin-top: 5px;
+    font-size: 1.05rem !important;
+    display: block !important;
+    color: var(--luigiColor1) !important;
+}
+
+.luigi-ac-first-main .luigi-ac-button-buy {
+    padding: 5px 20px !important;
+}
+
+.luigi-ac-rest-main .luigi-ac-attr--formatted_price {
+    display: block !important;
+    color: var(--luigiColor1) !important;
+}
+
+.luigi-ac-heromobile .luigi-ac-first-main .luigi-ac-action-primary {
+    margin-top: 20px;
+    position: inherit !important;
+    width: 100% !important;
+}
+
+.luigi-ac-heromobile .luigi-ac-first-main .luigi-ac-item .luigi-ac-attrs {
+    max-height: 900px !important;
+    display: block !important;
+}
+
+.luigi-ac-heromobile .luigi-ac-first-main .luigi-ac-item {
+    padding: .4em 0.8em;
+}
+
 /* ====================================== Search result */
 
 .lb-search-text-color-primary {
