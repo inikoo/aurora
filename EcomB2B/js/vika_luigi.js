@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
                 LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
             }
-            else if (deviceType === 'mobile') {
+            else if (deviceType === 'mobile' || deviceType === 'tablet') {
                 importStyleCSS()
                 LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
 
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (window.location.pathname.includes('/search.sys')) {
                     console.log('Hello!2')
                     LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
-                    setComponentHide('.content .input-icon')  // Hide original input in Page: Result
+                    // setComponentHide('.content .input-icon')  // Hide original input in Page: Result
                     setComponentHide('.page-content .content')
                 }
             }
