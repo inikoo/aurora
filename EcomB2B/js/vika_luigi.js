@@ -80,7 +80,7 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, l
                 symbol: localeList.currencySymbol
             },
             Theme: "boo",
-            Size: 10,
+            Size: 9,
             Facets: searchFacets,
             DefaultFilters: {
                 type: 'item'
@@ -117,7 +117,7 @@ const setComponentHide = (selector) => {
 // Method: visit Page: Search with the query
 const onSearchQuery = (stringQuery) => {
     if (stringQuery) {
-        console.log('query:', stringQuery)
+        // console.log('query:', stringQuery)
         window.location.href = `/search.sys?q=${encodeURIComponent(stringQuery)}`;
     } else {
         console.log('The query must be filled.',)
@@ -128,7 +128,7 @@ const onSearchQuery = (stringQuery) => {
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
         if (window.location.hostname === "www.aw-indonesia.com" || window.location.hostname === "www.ancientwisdom.biz"  ) {
-            console.log("Hello Indonesia!")
+            console.log("Hello, world!")
 
             let luigiTrackerId
             let autoCompleteAttributesRemoved  // To remove data
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             // Get the props
-            console.log('import meta url: ', import.meta?.url)
+            // console.log('import meta url: ', import.meta?.url)
             const scriptSrc = new URL(import.meta.url);
 
             // Read the parameter
