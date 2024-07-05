@@ -197,16 +197,17 @@
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
     <a href="/" style="margin:initial;left:70px" class="header-logo">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
 
-    <div id="groupInputLuigi" class="header-icon" style="display: none; right: 54px; align-items: center; justify-content: center; gap: 0.75rem; outline: none;">
-        <span class="sr-only">{{ trans("Search") }}</span>
-        <i class="fa fa-search" style="margin-top: 0px"></i>
-        <input id="inputLuigi" type="text" style="color: transparent; padding: 10px; position: absolute; width: 100%; border: none; background: transparent; outline: none;">
-    </div>
+    
 
 
     {if $logged_in}
 
         <span class="control_panel"  >
+            <div id="groupInputLuigi" class="header-icon" style="display: none; left: -50px; align-items: center; justify-content: center; gap: 0.75rem; outline: none;">
+                <span class="sr-only">{{ trans("Search") }}</span>
+                <i class="fa fa-search" style="margin-top: 0px"></i>
+                <input id="inputLuigi" type="text" style="color: transparent; padding: 10px; position: absolute; width: 100%; border: none; background: transparent; outline: none;">
+            </div>
 
              {foreach from=$header_data.menu.control_panel item=control key=key}
                  {if $control['show']}
@@ -272,7 +273,14 @@
 
 
     {else}
-    <span class="control_panel"  >
+    <span class="control_panel">
+    
+        <div id="groupInputLuigi" class="header-icon" style="display: none; left: -50px; align-items: center; justify-content: center; gap: 0.75rem; outline: none;">
+            <span class="sr-only">{{ trans("Search") }}</span>
+            <i class="fa fa-search" style="margin-top: 0px"></i>
+            <input id="inputLuigi" type="text" style="color: transparent; padding: 10px; position: absolute; width: 100%; border: none; background: transparent; outline: none;">
+        </div>
+
         <a href="/login.sys" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
         <a href="/register.sys" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
 

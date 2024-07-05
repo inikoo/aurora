@@ -80,7 +80,7 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, l
                 symbol: localeList.currencySymbol
             },
             Theme: "boo",
-            Size: 9,
+            Size: 12,
             Facets: searchFacets,
             DefaultFilters: {
                 type: 'item'

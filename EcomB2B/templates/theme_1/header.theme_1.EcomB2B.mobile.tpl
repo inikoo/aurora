@@ -206,7 +206,7 @@
 
 <div class="header header-logo-center header-light">
     <a href="#" class="header-icon header-icon-1 hamburger-animated open-sidebar-left"></a>
-    <a href="/" title=":)" class="header-logo">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
+    <a href="/" title=":)" class="header-logo" style="padding-left: 70px">{if isset($settings['header_text_mobile_website'])}{$settings['header_text_mobile_website']}{/if}</a>
     
     <div id="groupInputLuigi" class="header-icon" style="display: none; right: 54px; align-items: center; justify-content: center; gap: 0.75rem; outline: none;">
         <span class="sr-only">{{ trans("Search") }}</span>
