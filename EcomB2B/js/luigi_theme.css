@@ -106,7 +106,7 @@
 }
 
 .luigi-ac-heromobile .luigi-ac-first-main .luigi-ac-item {
-    padding: .4em 0.8em;
+    padding: .4em 0.8em !important;
 }
 
 /* ====================================== Search result */
@@ -127,22 +127,23 @@
     top: -47px !important;
 }
 
+.lb-search .lb-checkbox {
+    padding: 1px 0 1px 10px !important;
+}
+
 .lb-search .lb-checkbox__text {
-    margin-left: 25px;
+    padding-top: 1.5px !important;
+    margin-left: 15px !important;
 }
 
 .lb-search .lb-result__description {
-    text-align: justify;
+    text-align: justify !important;
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
     -webkit-line-clamp: 3 !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
-    margin-bottom: 10px;
-}
-
-.lb-search .lb-checkbox__text {
-    margin-left: 20px !important; 
+    margin-bottom: 10px !important;
 }
 
 .lb-result__actions {
@@ -190,3 +191,8 @@
     
 }
 
+@media only screen and (max-width: 640px) {
+    .lb-search .lb-checkbox__text {
+        margin-left: 25px !important;
+    }
+}
