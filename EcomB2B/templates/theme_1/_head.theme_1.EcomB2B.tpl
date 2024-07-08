@@ -247,7 +247,7 @@
     {/if}
 
 
-    <link rel="stylesheet" href="js/luigi_theme.css?v=8" type="text/css"/>
+    <link rel="stylesheet" href="js/luigi_theme.css?v=9" type="text/css"/>
 
 
     <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
