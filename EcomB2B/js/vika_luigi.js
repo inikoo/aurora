@@ -166,8 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     autoCompleteAttributes = ['product_code', 'formatted_price']
                     autoCompleteAttributesRemoved = ['price']
 
-                    searchAttributesRemoved = ['price']
-                    searchFacets = ['price_amount', 'brand', 'category', 'color']
+                    searchAttributesRemoved = ['price', 'price_amount']
+                    // searchFacets = ['price_amount', 'brand', 'category', 'color']
+                    searchFacets = ['brand', 'category', 'color']
                 } else {
                     autoCompleteAttributes = ['product_code']
                     autoCompleteAttributesRemoved = ['price', 'formatted_price', 'price_amount']         
