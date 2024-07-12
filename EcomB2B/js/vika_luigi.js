@@ -69,7 +69,7 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
     inputElement.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
-            window.location.href = '/search?q=' + encodeURIComponent(inputElement.value);
+            window.location.href = '/search.sys?q=' + encodeURIComponent(inputElement.value);
         }
     });
 
@@ -86,6 +86,8 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
 
     console.log("Init autocomplete")
 }
+
+
 
 // Init: Search result
 const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, localeList) => {
