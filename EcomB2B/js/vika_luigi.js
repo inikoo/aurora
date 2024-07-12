@@ -64,6 +64,26 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
         "#inputLuigi"
     )
 
+    // Listening enter on inputLuigi
+    var inputElement = document.getElementById('inputLuigi');
+    inputElement.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            window.location.href = '/search?q=' + encodeURIComponent(inputElement.value);
+        }
+    });
+
+    // Create the new <i> element
+    const newIconSearch = document.createElement('i');
+    newIconSearch.id = 'luigi_search_icon';
+    newIconSearch.className = 'fa fa-search';
+    newIconSearch.style.position = 'absolute';
+    newIconSearch.style.right = '5px';
+    newIconSearch.style.top = '50%';
+    newIconSearch.style.transform = 'translateY(-50%)';
+    inputElement.insertAdjacentElement('afterend', newIconSearch);
+    setComponentHide('#header_search_icon')
+
     console.log("Init autocomplete")
 }
 
