@@ -405,6 +405,11 @@
 </div>
 
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tablet.tpl"}
+<script type="text/x-template" id="template-no-results">
+    <div class="lb-no-results">
+        Hmm, looks like no result found...
+    </div>
+</script>
 <script type="module" src="../../js/vika_luigi.js?v=32&trackerId=483878-588294&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
 <div id="__search_test"></div>
 </body>
