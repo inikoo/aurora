@@ -64,7 +64,12 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
         "#inputLuigi"
     )
 
-    // Listening enter on inputLuigi
+    console.log("Init autocomplete")
+}
+
+
+// Listening enter on inputLuigi
+const replaceSearchIcon = () => {
     var inputElement = document.getElementById('inputLuigi');
     inputElement.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
@@ -83,10 +88,7 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
     newIconSearch.style.transform = 'translateY(-50%)';
     inputElement.insertAdjacentElement('afterend', newIconSearch);
     setComponentHide('#header_search_icon')
-
-    console.log("Init autocomplete")
 }
-
 
 
 // Init: Search result
@@ -229,6 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 showInputAutocomplete()
                 setComponentHide('#legacy_search')  // Hide original input in header
                 LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
+                replaceSearchIcon()  // Listening the input field and replace icon search
                 LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
             }
             else if (deviceType === 'mobile' || deviceType === 'tablet') {
