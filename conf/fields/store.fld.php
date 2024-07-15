@@ -836,7 +836,7 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
         'class'      => 'operations',
         'fields'     => array(
 
-
+/*
             array(
                 'id'    => 'delete_store',
                 'class' => 'operation',
@@ -854,7 +854,7 @@ function get_store_fields(Store $object, User $user, PDO $db, $smarty): array {
                 'reference' => '',
                 'type'      => 'operation'
             ),
-
+*/
             array(
                 'id' => 'create_website',
 
