@@ -7,7 +7,7 @@ function stringToBoolean(str) {
 }
 
 // Init: Auto Complete
-const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes, localeList) => {
+const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes, localeList, deviceType) => {
     await import("https://cdn.luigisbox.com/autocomplete.js")
     await AutoComplete(
         {
@@ -49,7 +49,11 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
             Actions: [  // Action for Top Product 'Add To Basket'
                 {
                     forRow: function(row) {
-                        return row['data-autocomplete-id'] == 1 && row.type === 'item'  // Top product
+                        if (deviceType === 'desktop') {
+                            return row['data-autocomplete-id'] == 1 && row.type === 'item'  // Top product
+                        } else {
+                            return false
+                        }                        
                     },
                     // iconUrl: 'https://cdn-icons-png.freepik.com/256/275/275790.png',
                     title: "Visit product's page",
@@ -69,7 +73,7 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
 
 
 // Listening enter on inputLuigi
-const replaceSearchIcon = () => {
+const replaceSearchIcon = async () => {
     var inputElement = document.getElementById('inputLuigi');
     inputElement.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
@@ -88,6 +92,8 @@ const replaceSearchIcon = () => {
     newIconSearch.style.transform = 'translateY(-50%)';
     inputElement.insertAdjacentElement('afterend', newIconSearch);
     setComponentHide('#header_search_icon')
+
+    console.log('Hello.')
 }
 
 
@@ -230,13 +236,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 importStyleCSS()
                 showInputAutocomplete()
                 setComponentHide('#legacy_search')  // Hide original input in header
-                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList, deviceType)
                 replaceSearchIcon()  // Listening the input field and replace icon search
                 LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
             }
             else if (deviceType === 'mobile' || deviceType === 'tablet') {
                 importStyleCSS()
-                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList, deviceType)
 
                 const groupInputLuigi = document.getElementById('groupInputLuigi')
                 if (groupInputLuigi) groupInputLuigi.style.display = 'flex'
