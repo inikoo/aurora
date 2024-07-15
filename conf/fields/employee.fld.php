@@ -623,7 +623,7 @@ if (!$new) {
                 'type'      => 'operation'
             ),
 
-
+            /*
             array(
                 'id'        => 'delete_employee',
                 'class'     => 'operation',
@@ -633,6 +633,7 @@ if (!$new) {
                 'reference' => '',
                 'type'      => 'operation'
             ),
+            */
 
 
         )
