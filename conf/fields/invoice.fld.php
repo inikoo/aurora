@@ -207,75 +207,71 @@ $object_fields = array(
 );
 
 
-if ($invoice->get('Invoice Type') == 'Invoice') {
+if(false) {
+    if ($invoice->get('Invoice Type') == 'Invoice') {
+        $order = get_object('order', $object->get('Invoice Order Key'));
 
-    $order = get_object('order', $object->get('Invoice Order Key'));
-
-    //if ($order->get('Order State') != 'Dispatched'   ) {
-    $operations = array(
-        'label'      => _('Operations'),
-        'show_title' => true,
-        'class'      => 'operations',
-        'fields'     => array(
+        //if ($order->get('Order State') != 'Dispatched'   ) {
+        $operations = array(
+            'label'      => _('Operations'),
+            'show_title' => true,
+            'class'      => 'operations',
+            'fields'     => array(
 
 
-            array(
-                'id'        => 'delete_invoice',
-                'class'     => 'operation '.($object->get('Invoice Order Type')=='FulfilmentRent'?'hide':''),
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button"  
+                array(
+                    'id'        => 'delete_invoice',
+                    'class'     => 'operation '.($object->get('Invoice Order Type') == 'FulfilmentRent' ? 'hide' : ''),
+                    'value'     => '',
+                    'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button"  
                 data-labels=\'{ "text":"'._('Please ask an authorised user to delete this invoice').'","title":"'._('Restricted operation').'","footer":"'._('Authorised users').': "}\'  
                 onClick="'.($can_supervisor_accounting ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'IS\')').'"  style="margin-right:20px"></i> <span data-labels=\'{ "no_message":"'._(
-                        'A reason should be provided'
-                    ).'", "button_text":"'._('Delete').'",  "title":"'._(
-                        'Deleting invoice'
-                    ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this invoice').'" }\'  data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete invoice').' <i class="far fa-trash-alt new_button link"></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
-            ),
+                            'A reason should be provided'
+                        ).'", "button_text":"'._('Delete').'",  "title":"'._(
+                            'Deleting invoice'
+                        ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this invoice').'" }\'  data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                        .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete invoice').' <i class="far fa-trash-alt new_button link"></i></span>',
+                    'reference' => '',
+                    'type'      => 'operation'
+                ),
 
 
-        )
+            )
 
-    );
+        );
 
-    $object_fields[] = $operations;
-    //}
-} else {
-
-
-    $delete_ops = array(
-        'id'        => 'delete_refund',
-        'class'     => 'operation',
-        'value'     => '',
-        'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button" onClick="'.($can_supervisor_accounting ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'IS\')').'" 
+        $object_fields[] = $operations;
+        //}
+    } else {
+        $delete_ops = array(
+            'id'        => 'delete_refund',
+            'class'     => 'operation',
+            'value'     => '',
+            'label'     => '<i class="fa fa-fw fa-'.($can_supervisor_accounting ? 'lock-alt' : 'lock').' button" onClick="'.($can_supervisor_accounting ? 'toggle_unlock_delete_object(this)' : 'not_authorised_toggle_unlock_delete_object(this,\'IS\')').'" 
                             style="margin-right:20px"></i> <span data-labels=\'{ "no_message":"'._('A reason should be provided').'", "button_text":"'._('Delete').'",  "title":"'._(
-                'Deleting refund'
-            ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this refund').'" }\' data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-            .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
-        'reference' => '',
-        'type'      => 'operation'
-    );
+                    'Deleting refund'
+                ).'", "text":"'._("This operation cannot be undone").'",  "placeholder":"'._('Write the reason for deleting this refund').'" }\' data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                .'"}\' onClick="delete_object_with_note(this)" class="delete_object disabled">'._('Delete refund').' <i class="far fa-trash-alt new_button link "></i></span>',
+            'reference' => '',
+            'type'      => 'operation'
+        );
 
 
-    $operations = array(
-        'label'      => _('Operations'),
-        'show_title' => true,
-        'class'      => 'operations',
-        'fields'     => array(
+        $operations = array(
+            'label'      => _('Operations'),
+            'show_title' => true,
+            'class'      => 'operations',
+            'fields'     => array(
 
 
-            $delete_ops,
+                $delete_ops,
 
 
-        )
+            )
 
-    );
+        );
 
-    $object_fields[] = $operations;
-
-
+        $object_fields[] = $operations;
+    }
 }
-
 
