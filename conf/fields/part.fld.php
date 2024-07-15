@@ -862,6 +862,7 @@ if (!$new and (!$object->get('Part Raw Material Key') and $edit_production)) {
                 'type'      => 'operation'
             ),
 
+            /*
             array(
                 'id'        => 'delete_part',
                 'class'     => 'operation',
@@ -875,6 +876,7 @@ if (!$new and (!$object->get('Part Raw Material Key') and $edit_production)) {
                 'reference' => '',
                 'type'      => 'operation'
             ),
+            */
 
 
         )
