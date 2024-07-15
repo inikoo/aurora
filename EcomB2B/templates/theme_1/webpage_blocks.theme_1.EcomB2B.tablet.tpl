@@ -406,9 +406,9 @@
 
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tablet.tpl"}
 
-<script type="text/x-template" id="template-result-default">
-    <div class="lb-result-default" xxxx="attributes">
-        {{ attributes.title }} - {{ url }}
+<script type="text/x-template" id="template-results">
+    <div>
+        <result :result="result" v-for="(result, i) in results" :key="i" xxx="{result}"></result>
     </div>
 </script>
 
