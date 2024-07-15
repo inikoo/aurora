@@ -691,17 +691,19 @@ if ($object->get('Supplier Type') != 'Archived') {
         'type'      => 'operation'
     );
 
-    if ($user->get('User Type') == 'Staff'  or $user->get('User Type') == 'Contractor'  ) {
-        $fields[] = array(
+    if(false) {
+        if ($user->get('User Type') == 'Staff' or $user->get('User Type') == 'Contractor') {
+            $fields[] = array(
 
-            'id'        => 'delete_supplier',
-            'class'     => 'operation',
-            'value'     => '',
-            'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products").' <i class="fa fa-trash new_button "></i></span>',
-            'reference' => '',
-            'type'      => 'operation'
-        );
+                'id'        => 'delete_supplier',
+                'class'     => 'operation',
+                'value'     => '',
+                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._("Delete supplier & supplier's products").' <i class="fa fa-trash new_button "></i></span>',
+                'reference' => '',
+                'type'      => 'operation'
+            );
+        }
     }
 
     $operations = array(
