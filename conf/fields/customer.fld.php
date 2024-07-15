@@ -447,7 +447,7 @@ if ($new) {
                     'type'      => 'operation'
                 ),
 
-
+                /*
                 array(
 
                     'id'        => 'delete_customer',
@@ -458,7 +458,7 @@ if ($new) {
                     'reference' => '',
                     'type'      => 'operation'
                 ),
-
+                */
 
             )
 
@@ -961,29 +961,29 @@ if ($new) {
     }
 
 
+    if(false) {
+        $customer_fields[] = array(
+            'label'      => _('Operations'),
+            'show_title' => true,
+            'class'      => 'edit_fields',
+            'fields'     => array(
 
-    $customer_fields[] = array(
-        'label'      => _('Operations'),
-        'show_title' => true,
-        'class'      => 'edit_fields',
-        'fields'     => array(
 
+                array(
 
-            array(
+                    'id'        => 'delete_customer',
+                    'class'     => 'operation',
+                    'value'     => '',
+                    'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
+                        .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete customer').' <i class="far fa-trash-alt new_button link"></i></span>',
+                    'reference' => '',
+                    'type'      => 'operation'
+                ),
 
-                'id'        => 'delete_customer',
-                'class'     => 'operation',
-                'value'     => '',
-                'label'     => '<i class="fa fa-fw fa-lock button" onClick="toggle_unlock_delete_object(this)" style="margin-right:20px"></i> <span data-data=\'{ "object": "'.$object->get_object_name().'", "key":"'.$object->id
-                    .'"}\' onClick="delete_object(this)" class="delete_object disabled">'._('Delete customer').' <i class="far fa-trash-alt new_button link"></i></span>',
-                'reference' => '',
-                'type'      => 'operation'
-            ),
+            )
 
-        )
-
-    );
-
+        );
+    }
 
     $other_emails = $object->get_other_emails_data();
     if (count($other_emails) > 0) {
