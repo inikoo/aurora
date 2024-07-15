@@ -408,7 +408,7 @@
 
 <script type="text/x-template" id="template-results">
     <div>
-        <result :result="result" v-for="(result, i) in results" :key="i" xxx="{result}"></result>
+        <result :result="result" v-for="(result, i) in results" :key="i" :xxx="result"></result>
     </div>
 </script>
 
