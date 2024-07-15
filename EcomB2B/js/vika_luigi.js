@@ -7,7 +7,7 @@ function stringToBoolean(str) {
 }
 
 // Init: Auto Complete
-const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes, localeList) => {
+const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes, localeList, deviceType) => {
     await import("https://cdn.luigisbox.com/autocomplete.js")
     await AutoComplete(
         {
@@ -49,7 +49,11 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
             Actions: [  // Action for Top Product 'Add To Basket'
                 {
                     forRow: function(row) {
-                        return row['data-autocomplete-id'] == 1 && row.type === 'item'  // Top product
+                        if (deviceType === 'desktop') {
+                            return row['data-autocomplete-id'] == 1 && row.type === 'item'  // Top product
+                        } else {
+                            return false
+                        }                        
                     },
                     // iconUrl: 'https://cdn-icons-png.freepik.com/256/275/275790.png',
                     title: "Visit product's page",
@@ -67,6 +71,32 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
     console.log("Init autocomplete")
 }
 
+
+// Listening enter on inputLuigi
+const replaceSearchIcon = async () => {
+    var inputElement = document.getElementById('inputLuigi');
+    inputElement.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            window.location.href = '/search.sys?q=' + encodeURIComponent(inputElement.value);
+        }
+    });
+
+    // Create the new <i> element
+    const newIconSearch = document.createElement('i');
+    newIconSearch.id = 'luigi_search_icon';
+    newIconSearch.className = 'fa fa-search';
+    newIconSearch.style.position = 'absolute';
+    newIconSearch.style.right = '5px';
+    newIconSearch.style.top = '50%';
+    newIconSearch.style.transform = 'translateY(-50%)';
+    inputElement.insertAdjacentElement('afterend', newIconSearch);
+    setComponentHide('#header_search_icon')
+
+    console.log('Hello.')
+}
+
+
 // Init: Search result
 const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, localeList) => {
     await import("https://cdn.luigisbox.com/search.js")
@@ -80,7 +110,7 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, l
                 symbol: localeList.currencySymbol
             },
             Theme: "boo",
-            Size: 10,
+            Size: 12,
             Facets: searchFacets,
             DefaultFilters: {
                 type: 'item'
@@ -117,7 +147,7 @@ const setComponentHide = (selector) => {
 // Method: visit Page: Search with the query
 const onSearchQuery = (stringQuery) => {
     if (stringQuery) {
-        console.log('query:', stringQuery)
+        // console.log('query:', stringQuery)
         window.location.href = `/search.sys?q=${encodeURIComponent(stringQuery)}`;
     } else {
         console.log('The query must be filled.',)
@@ -128,7 +158,7 @@ const onSearchQuery = (stringQuery) => {
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
         if (window.location.hostname === "www.aw-indonesia.com" || window.location.hostname === "www.ancientwisdom.biz"  ) {
-            console.log("Hello Indonesia!")
+            console.log("Hello, world!")
 
             let luigiTrackerId
             let autoCompleteAttributesRemoved  // To remove data
@@ -143,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             // Get the props
-            console.log('import meta url: ', import.meta?.url)
+            // console.log('import meta url: ', import.meta?.url)
             const scriptSrc = new URL(import.meta.url);
 
             // Read the parameter
@@ -166,8 +196,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     autoCompleteAttributes = ['product_code', 'formatted_price']
                     autoCompleteAttributesRemoved = ['price']
 
-                    searchAttributesRemoved = ['price']
-                    searchFacets = ['price_amount', 'brand', 'category', 'color']
+                    searchAttributesRemoved = ['price', 'price_amount']
+                    // searchFacets = ['price_amount', 'brand', 'category', 'color']
+                    searchFacets = ['brand', 'category', 'color']
                 } else {
                     autoCompleteAttributes = ['product_code']
                     autoCompleteAttributesRemoved = ['price', 'formatted_price', 'price_amount']         
@@ -205,21 +236,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 importStyleCSS()
                 showInputAutocomplete()
                 setComponentHide('#legacy_search')  // Hide original input in header
-                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList, deviceType)
+                replaceSearchIcon()  // Listening the input field and replace icon search
                 LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
             }
-            else if (deviceType === 'mobile') {
+            else if (deviceType === 'mobile' || deviceType === 'tablet') {
                 importStyleCSS()
-                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList)
+                LBInitAutocomplete(luigiTrackerId, autoCompleteAttributesRemoved, autoCompleteAttributes, localeList, deviceType)
 
                 const groupInputLuigi = document.getElementById('groupInputLuigi')
                 if (groupInputLuigi) groupInputLuigi.style.display = 'flex'
 
                 setComponentHide('.sidebar-left .menu-search')  // Hide original input in left sidebar
 
-                LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
-                setComponentHide('.content .input-icon')  // Hide original input in Page: Result
-                setComponentHide('.page-content .content')
+                // Conditional: Search result
+                if (window.location.pathname.includes('/search.sys')) {
+                    console.log('Hello!2')
+                    LBInitSearchResult(luigiTrackerId, searchAttributesRemoved, searchFacets, localeList)
+                    // setComponentHide('.content .input-icon')  // Hide original input in Page: Result
+                    setComponentHide('.page-content .content')
+                }
             }
 
         } else {
