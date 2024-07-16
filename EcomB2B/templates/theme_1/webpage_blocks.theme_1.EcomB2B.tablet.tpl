@@ -406,6 +406,70 @@
 
 {include file="theme_1/scripts_webpage_blocks.theme_1.EcomB2B.tablet.tpl"}
 
+<script type="text/x-template" id="template-result-default">
+    <div class="lb-result lb-result--default">
+        <div class="lb-result__inner">
+            <a
+                :href="resultUrl"
+                :data-lb-id="dataLbId"
+                class="lb-result__aside"
+                @click="ga && ga.sendGAClick(type, url)"
+            >
+                <div class="lb-result__image-wrapper">
+                    <img
+                        :src="attributes.image_link"
+                        :alt="attributes.title"
+                        class="lb-result__image"
+                    >
+                </div>
+            </a>
+            <div class="lb-result__main">
+                <h2 class="lb-result__title">
+                    <a
+                        :href="resultUrl"
+                        :data-lb-id="dataLbId"
+                        class="lb-result__title-link lb-search-text-color-primary-clickable"
+                        @click="ga && ga.sendGAClick(type, url)"
+                    >
+                        {{ attributes.title }}
+                    </a>
+                </h2>
+
+                <p class="lb-result__description" v-html="attributes.description">
+                    {{ attributes.description }}
+                </p>
+                
+                <div class="lb-result__actions">
+                    <div
+                        v-if="attributes.formatted_price"
+                        class="lb-result__action-item lb-result__prices"
+                    >
+                        <div class="lb-result__price">
+                            {{ attributes.formatted_price }}
+                        </div>
+                    </div>
+
+                    <div class="lb-result__action-buttons">
+                        <a
+                            :href="resultUrl"
+                            :data-lb-id="dataLbId"
+                            class="lb-btn lb-result__btn-buy lb-result__action-item lb-search-bg-color-primary-clickable"
+                            @click="ga && ga.sendGAClick(type, url)"
+                        >
+                            {{ trans('resultDefault.actionButton')}}
+                        </a>
+                    </div>
+                </div>
+                <div
+                    v-if="attributes.availability === 0"
+                    class="lb-result__availability lb-result__availability--0"
+                >
+                    {{ trans('resultDefault.availability.0') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
 
 <script type="module" src="../../js/vika_luigi.js?v=32&trackerId=483878-588294&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
 <div id="__search_test"></div>
