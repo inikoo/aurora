@@ -84,7 +84,7 @@ $object_fields = array(
 
 
 
-if($delivery_note->get('Delivery Note State')=='Dispatched') {
+if($delivery_note->get('Delivery Note State')=='Dispatched' ) {
 
     $operations = array(
         'label'      => _('Operations'),

@@ -562,6 +562,7 @@ $operations = array(
             'type'      => 'operation'
         ),
 
+        /*
         array(
             'id'        => 'delete_website',
             'render'    => $can_delete,
@@ -572,7 +573,7 @@ $operations = array(
             'reference' => '',
             'type'      => 'operation'
         ),
-
+        */
 
     )
 

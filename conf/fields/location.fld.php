@@ -219,7 +219,7 @@ function get_location_object_fields($object, $user, $account, $db, $options): ar
     }
 
 
-    if (!$new) {
+    if (!$new and false) {
         $operations = array(
             'label'      => _('Operations'),
             'show_title' => true,

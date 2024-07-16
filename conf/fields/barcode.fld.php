@@ -72,6 +72,7 @@ $barcode_fields = array(
 
 );
 
+
 $operations = array(
     'label'      => _('Operations'),
     'show_title' => true,
@@ -91,6 +92,7 @@ $operations = array(
 
 );
 
+$operations=[];
 $barcode_fields[] = $operations;
 
 

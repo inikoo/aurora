@@ -19,6 +19,7 @@ if($options['Category Scope']=='Invoice'){
 
 }
 
+$can_delete=false;
 
 if (isset($options['new']) and $options['new']) {
     $new = true;

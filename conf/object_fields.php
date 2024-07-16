@@ -444,7 +444,7 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
                             )
 
                         );
-
+                        $operations=[];
                         $supplier_part_fields[] = $operations;
                     }
 
@@ -551,7 +551,7 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
                     )
 
                 );
-
+                $operations=[];
                 $supplier_part_fields[] = $operations;
             }
 
@@ -599,7 +599,7 @@ function get_object_fields($object, PDO $db, User $user, Smarty $smarty, $option
                     )
 
                 );
-
+                $operations=[];
                 $customer_part_fields[] = $operations;
             }
 
