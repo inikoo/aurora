@@ -145,6 +145,10 @@
 
 /* ====================================== Search result */
 
+.lb-checkbox label.lb-facet__label {
+    position: static !important;
+}
+
 .lb-search-text-color-primary {
     color: var(--luigiColor3) !important;
 }

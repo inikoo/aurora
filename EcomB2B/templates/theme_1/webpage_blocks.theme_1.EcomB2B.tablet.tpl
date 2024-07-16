@@ -435,7 +435,7 @@
                     </a>
                 </h2>
 
-                <p class="lb-result__description" v-html="attributes.description">
+                <p class="lb-result__description">
                     {{ attributes.description }}
                 </p>
                 
