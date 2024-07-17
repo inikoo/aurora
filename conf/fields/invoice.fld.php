@@ -207,7 +207,7 @@ $object_fields = array(
 );
 
 
-if(false) {
+
     if ($invoice->get('Invoice Type') == 'Invoice') {
         $order = get_object('order', $object->get('Invoice Order Key'));
 
@@ -273,5 +273,5 @@ if(false) {
 
         $object_fields[] = $operations;
     }
-}
+
 
