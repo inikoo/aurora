@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (window.location.hostname === "www.aw-indonesia.com" ||
             window.location.hostname === "www.ancientwisdom.biz" ||
-            (window.location.hostname === "www.aw-aromatics.com" && scriptSrc.searchParams.get('device_type') === 'tablet')
+            (window.location.hostname === "www.aw-aromaxxtics.com" && scriptSrc.searchParams.get('device_type') === 'tablet')
 
         ) {
 

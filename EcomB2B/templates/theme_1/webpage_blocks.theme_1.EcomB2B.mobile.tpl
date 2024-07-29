@@ -456,6 +456,6 @@
     </div>
 </script>
 
-<script type="module" src="../../js/vika_luigi.js?v=35&trackerId=483878-588294&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+<script type="module" src="../../js/vika_luigi.js?v=36&trackerId=483878-588294&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
 </body>
 </html>
