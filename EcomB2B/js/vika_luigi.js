@@ -157,6 +157,8 @@ const onSearchQuery = (stringQuery) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
+        const scriptSrc = new URL(import.meta.url);
+
         if (window.location.hostname === "www.aw-indonesia.com" ||
             window.location.hostname === "www.ancientwisdom.biz" ||
             (window.location.hostname === "www.aw-aromatics.com" && scriptSrc.searchParams.get('device_type') === 'tablet')
@@ -179,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Get the props
             // console.log('import meta url: ', import.meta?.url)
-            const scriptSrc = new URL(import.meta.url);
 
             // Read the parameter
             if (scriptSrc?.searchParams) {
