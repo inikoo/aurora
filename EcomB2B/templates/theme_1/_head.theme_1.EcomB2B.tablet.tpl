@@ -19,7 +19,7 @@
     {if  $account_code=='AW'  }
     {if $website->get('Website Code')=='AW.biz'}
         <script src="https://scripts.luigisbox.com/LBX-588294.js"></script>
-    {elseif $website->get('Website Code')=='AC'}
+    {elseif $website->get('Website Code')=='AWD'}
         <script src="https://scripts.luigisbox.com/LBX-621865.js"></script>
     {/if}
 
