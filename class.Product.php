@@ -1391,9 +1391,9 @@ class Product extends Asset
                 $this->update(array('Product Status' => 'Active'));
             }
         } elseif ($status == 'Discontinuing') {
-            if ($this->get('Product Status') == 'Active') {
+           // if ($this->get('Product Status') == 'Active') {
                 $this->update(array('Product Status' => 'Discontinuing'));
-            }
+           // }
         } elseif ($status == 'Discontinued') {
             $this->update(array('Product Status' => 'Discontinued'));
         }
