@@ -157,7 +157,12 @@ const onSearchQuery = (stringQuery) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
-        if (window.location.hostname === "www.aw-indonesia.com" || window.location.hostname === "www.ancientwisdom.biz"  ) {
+        if (window.location.hostname === "www.aw-indonesia.com" ||
+          window.location.hostname === "www.ancientwisdom.biz" ||
+          window.location.hostname === "www.aw-aromatics.com"
+
+        ) {
+
             console.log("Hello, world!")
 
             let luigiTrackerId

@@ -471,7 +471,51 @@
     </div>
 </script>
 
-<script type="module" src="../../js/vika_luigi.js?v=32&trackerId=483878-588294&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+
+
+{if  $account_code=='AW'  }
+{if $website->get('Website Code')=='AW.biz'}
+    <script type="module" src="../../js/vika_luigi.js?v=33&trackerId=483878-588294&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+{elseif $website->get('Website Code')=='AWD'}
+    <script type="module" src="../../js/vika_luigi.js?v=33&trackerId=483878-621865&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+{/if}
+{elseif  $account_code=='AROMA'  }
+{if $website->get('Website Code')=='Aroma'}
+    <script type="module" src="../../js/vika_luigi.js?v=33&trackerId=483878-621871&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+
+{elseif $website->get('Website Code')=='AC'}
+
+{/if}
+
+{elseif  $account_code=='AWEU'  }
+{if $website->get('Website Code')=='aw.eu'}
+
+{elseif $website->get('Website Code')=='AWD'}
+
+{elseif $website->get('Website Code')=='HR'}
+{elseif $website->get('Website Code')=='it.eu'}
+
+{elseif $website->get('Website Code')=='RO'}
+
+{elseif $website->get('Website Code')=='hu.eu'}
+
+{elseif $website->get('Website Code')=='fr.eu'}
+
+{elseif $website->get('Website Code')=='sk.com'}
+
+{elseif $website->get('Website Code')=='cz.eu'}
+
+{elseif $website->get('Website Code')=='pl.eu'}
+
+{elseif $website->get('Website Code')=='NL'}
+
+{elseif $website->get('Website Code')=='de.eu'}
+
+{elseif $website->get('Website Code')=='SE'}
+
+{/if}
+
+
 <div id="__search_test"></div>
 </body>
 </html>
