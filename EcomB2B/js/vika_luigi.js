@@ -158,8 +158,8 @@ const onSearchQuery = (stringQuery) => {
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
         if (window.location.hostname === "www.aw-indonesia.com" ||
-          window.location.hostname === "www.ancientwisdom.biz" ||
-          window.location.hostname === "www.aw-aromatics.com"
+            window.location.hostname === "www.ancientwisdom.biz" ||
+            (window.location.hostname === "www.aw-aromatics.com" && scriptSrc.searchParams.get('device_type') === 'tablet')
 
         ) {
 
