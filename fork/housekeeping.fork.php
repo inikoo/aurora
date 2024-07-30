@@ -637,7 +637,7 @@ function fork_housekeeping($job)
 
         case 'deal_created':
 
-            return false;
+
 
 
             $deal     = get_object('Deal', $data['deal_key']);
