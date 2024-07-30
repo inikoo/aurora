@@ -112,10 +112,12 @@
 
     function variant_selected_in_family(element){
 
+      console.log('xx')
+
       let parent = $(element).closest('.product_block.product_container')
 
 
-
+      console.log(parent)
 
       parent.find('.Product_Code').html($(element).data('code'))
       parent.find('.Mobil_Product_Price').html($(element).data('price'))
@@ -143,6 +145,7 @@
 
       parent.find('.variant_chooser_dialog').addClass('hide')
 
+      console.log('-----')
 
       parent.data('product_id',$(element).data('id'))
 
