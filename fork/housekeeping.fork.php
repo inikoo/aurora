@@ -637,6 +637,9 @@ function fork_housekeeping($job)
 
         case 'deal_created':
 
+            return false;
+
+
             $deal     = get_object('Deal', $data['deal_key']);
             $campaign = get_object('Campaign', $deal->get('Deal Campaign Key'));
             if ($deal->get('Deal Status') == 'Active' and !$deal->get('Deal Voucher Key')) {
