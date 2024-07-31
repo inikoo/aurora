@@ -2,11 +2,15 @@
 
   function show_gold_reward(discounts){
 
+
+    return;
     // $('.product_discounted_price').addClass('hide')
     // $('.original_price').removeClass('strikethrough').css('opacity', '1');
 
     console.log('debug v14')
     console.log(discounts)
+
+
 
     $.each(discounts, function (index, value) {
 
@@ -22,7 +26,7 @@
       //console.log('blockOriginal', blockOriginal)
 
       console.log(block)
-      //block.find('.gold_reward_product_price').removeClass('hide')
+      block.find('.gold_reward_product_price').removeClass('hide')
 
       block.find('.gold_reward_percentage').html(value.percentage)
       block.find('.gold_reward_price').html(value.price)
