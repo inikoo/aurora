@@ -66,11 +66,11 @@
                                data-list="Family"
                                onclick="go_product(this); return !ga.loaded;"
 
-                            ><img alt="{$item.name|escape:'quotes'}"   src="{$item.image_website}"/></a>
+                            ><img alt="{$item.name|escape:'quotes'}" src="{$item.image_website}" style="margin-bottom: auto" /></a>
                         </div>
 
 
-                        <div class="product_description">
+                        <div class="product_description" style="height: fit-content !important; margin-bottom: 5px">
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
                                 <h4 style="margin-bottom: 2px, border: 2px solid #d1d5db" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
 
@@ -120,7 +120,9 @@
                                         <tr class="product_price">
                                             <td style="border: 2px solid #d1d5db" >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td style="border: 2px solid #d1d5db" class="original_price ">{$item.price}</td>
-                                            <td style="border: 2px solid #d1d5db" class="original_price">{if isset($item.price_unit)}{$item.price_unit}{/if}</td>
+                                            {if isset($item.price_unit)}
+                                                <td style="border: 2px solid #d1d5db" class="original_price">{$item.price_unit}</td>
+                                            {/if}
                                         </tr>
                                         <tr class="product_discounted_price hide product_price"   >
                                             <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
