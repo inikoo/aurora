@@ -66,6 +66,13 @@
 
   }
 
+  function gr_show_discount_info(){
+
+    console.log('xxxx aaa xxx aa');
+
+  }
+
+
     function show_discounts(discounts){
 
 
