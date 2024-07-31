@@ -124,7 +124,7 @@
                                             <td style="width:75px">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
-                                                <td  style="text-align: :right"  class="original_price">{$item.price_unit}</td>
+                                                <td  style="text-align: right"  class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
 
