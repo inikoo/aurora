@@ -27,7 +27,9 @@
             <div class="product_wrap
                 {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if}
                 wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'}
-                 data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
+                 data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} "
+                style="height: 400px"
+            >
 
 
                 {if $item.type=='product'}
@@ -130,13 +132,12 @@
                                             <td class="_price"></td>
                                             <td ><span class="_unit_price"></span></td>
                                         </tr>
-
-
                                     </table>
-                                    <table id="price_block_{$item.product_id}" class="price_block" style="margin-top: 5px">
-                                        <tr class="product_xxxxx_price">
-                                            <td style="border: 2px solid #d1d5db" >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
-                                            <td style="border: 2px solid #d1d5db" class="original_price ">{$item.price}</td>
+
+                                    <table id="price_block_{$item.product_id}" class="price_block" >
+                                        <tr class="product_price">
+                                            <td style="border: 2px solid #d1d5db" >🪙</td>
+                                            <td style="border: 2px solid #d1d5db" class="original_price ">GR</td>
                                             {if $item.price_unit}
                                                 <td style="border: 2px solid #d1d5db" class="original_price">{$item.price_unit}</td>
                                             {/if}
@@ -146,11 +147,12 @@
                                             <td class="_price"></td>
                                             <td ><span class="_unit_price"></span></td>
                                         </tr>
-
-
                                     </table>
+                                </div>
 
-
+                                <div style="background-color: #4ade8044; border: 1px solid #16a34a; color: #16a34a;margin-left: 10px;margin-right: 10px;margin-bottom: 10px;width: fit-content;padding: 1px 7px;border-radius: 999px;">
+                                    🪙GR
+                                    <i class="fal fa-check-circle"></i>
                                 </div>
 
                                 {if $store->get('Store Type')=='Dropshipping'}
