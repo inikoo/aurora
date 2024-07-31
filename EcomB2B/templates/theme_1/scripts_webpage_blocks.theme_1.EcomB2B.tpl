@@ -28,6 +28,10 @@
         block.find('.original_unit_price').addClass('hide')
       }
 
+      if(value.applied){
+        block.find('.logo').addClass('green')
+      }
+
 
       /*
       block.find('.product_discounted_price').removeClass('hide')

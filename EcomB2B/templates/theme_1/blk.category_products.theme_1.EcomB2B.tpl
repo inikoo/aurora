@@ -138,7 +138,7 @@
                                         <tr class="product_price">
                                             <td style="border: 2px solid #d1d5db" >
                                                 <div style="background-color: #facc1533; border: 1px solid #eab308; color: #ca8a04;margin-left: 10px;margin-right: 10px;margin-bottom: 10px;width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
-                                                    <i class="fas fa-badge-percent"></i>
+                                                    <i class="fas fa-badge-percent  logo"></i>
                                                     <span class="gold_reward_percentage" ></span>
                                                 </div>
                                             </td>
