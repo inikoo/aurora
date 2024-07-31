@@ -73,7 +73,21 @@
                         <div class="product_description">
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
                                 <h4 style="margin-bottom: 2px" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
-                                <span class="code"><small>{$item.code}</small></span>
+
+
+                                <div style="display:flex;clear: both">
+                                    <div style="flex-grow: 1;font-size: smaller" class="code">
+                                        <small class="Product_Code">{$item.code}</small>
+                                    </div>
+                                    {if !empty($item.rrp)}
+                                        <div style="flex-grow: 1;font-size: smaller;text-align: right" class="code">
+                                            <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
+                                                : {$item.rrp}</small>
+                                        </div>
+                                    {/if}
+                                </div>
+
+
                             {else}
                                 <div class="name item_name Product_Name ">{$item.variants[0].name}</div>
 
@@ -114,20 +128,10 @@
                                             <td ><span class="_unit_price"></span></td>
                                         </tr>
 
-                                        <tr class="product_rrp" style="font-size: smaller;{if empty($item.rrp)  }display:none{/if}">
-                                            <td>{if empty($labels._product_rrp)} {t}RRP{/t} {else}{$labels._product_rrp}{/if}</td>
-                                            <td colspan="2">{$item.rrp}</td>
-
-
-                                        </tr>
 
                                     </table>
 
 
-                                    {if !empty($item.rrp) and false }
-                                        <div>
-                                        <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
-                                            : {$item.rrp}</small></div>{/if}
                                 </div>
 
                                 {if $store->get('Store Type')=='Dropshipping'}
