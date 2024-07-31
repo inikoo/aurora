@@ -122,9 +122,9 @@
                                     <table id="price_block_{$item.product_id}" class="price_block" >
                                         <tr >
                                             <td style="width:75px">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
-                                            <td style="width:75px" class="original_price ">{$item.price}</td>
+                                            <td class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
-                                                <td class="original_price">{$item.price_unit}</td>
+                                                <td  tyle="text-align: :right"  class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
 
@@ -135,8 +135,8 @@
                                                     <span class="gold_reward_percentage" ></span>
                                                 </div>
                                             </td>
-                                            <td style="width:75px" class="gold_reward_price "></td>
-                                            <td class="gold_reward_unit_price"></td>
+                                            <td class="gold_reward_price "></td>
+                                            <td style="text-align: :right"  class="gold_reward_unit_price"></td>
                                         </tr>
                                     </table>
                                 </div>
