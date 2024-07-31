@@ -72,7 +72,7 @@
 
                         <div class="product_description" style="height: fit-content !important; margin-bottom: 5px">
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
-                                <h4 style="margin-bottom: 2px, border: 2px solid #d1d5db" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
+                                <h4 style="text-align: center; width: 91%; background: #d1d5db55; position: absolute; bottom: 120%; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
 
 
                                 <div style="display:flex;clear: both; border: 2px solid #d1d5db">
@@ -117,7 +117,7 @@
                                     </div>
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
-                                        <tr class="product_price">
+                                        <tr class="product_xxxxx_price">
                                             <td style="border: 2px solid #d1d5db" >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td style="border: 2px solid #d1d5db" class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
