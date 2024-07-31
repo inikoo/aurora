@@ -11,11 +11,11 @@
     console.log(discounts)
 
 
-      $('.discount_info_applied').addClass('hide')
-      $('.original_price').removeClass('strikethrough')
-      $('.original_price_tr').css('opacity',.1)
-      $('.discount_info_unappeased').removeClass('hide')
-      $('.original_price_checked').addClass('hide')
+    //  $('.discount_info_applied').addClass('hide')
+    //  $('.original_price').removeClass('strikethrough')
+    //  $('.original_price_tr').css('opacity',.1)
+    //  $('.discount_info_unappeased').removeClass('hide')
+   //   $('.original_price_checked').addClass('hide')
 
 
       $.each(discounts, function (index, value) {
