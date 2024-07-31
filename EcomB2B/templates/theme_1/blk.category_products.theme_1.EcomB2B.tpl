@@ -124,11 +124,11 @@
                                             <td style="width:75px">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
-                                                <td  tyle="text-align: :right"  class="original_price">{$item.price_unit}</td>
+                                                <td  style="text-align: :right"  class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
 
-                                        <tr class="gold_reward_product_price hide">
+                                        <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
                                             <td style="width:75px" >
                                                 <div   style="padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
                                                     <i class="gold_reward_badge  fas fa-badge-percent"></i>
