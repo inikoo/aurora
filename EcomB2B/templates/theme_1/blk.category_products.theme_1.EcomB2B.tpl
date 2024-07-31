@@ -79,11 +79,11 @@
 
 
                                 <div style="display:flex;clear: both; border: 2px solid #d1d5db">
-                                    <div style="flex-grow: 1;font-size: smaller" class="code">
+                                    <div style="flex-grow: 1;" class="code">
                                         <small class="Product_Code">{$item.code}</small>
                                     </div>
                                     {if !empty($item.rrp)}
-                                        <div style="flex-grow: 1;font-size: smaller;text-align: right" class="code">
+                                        <div style="flex-grow: 1;text-align: right" class="code">
                                             <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
                                                 : {$item.rrp}</small>
                                         </div>

@@ -69,6 +69,7 @@ function category_products($data, $db, $customer_key, $order)
     $currency = $store->get('Store Currency Code');
 
 
+
     $labels = $website->get('Localised Labels');
 
 
