@@ -112,10 +112,11 @@
                         {if $logged_in}
 
                             {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
-                                <div class="product_prices">
+                                <div class="product_prices x1">
                                     <div style="display:none" class="product_price">
                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
-                                        : {$item.price} {if isset($item.price_unit)}
+                                        : {$item.price}
+                                        {if isset($item.price_unit)}
                                             <small>{$item.price_unit}</small>{/if}
                                     </div>
 
@@ -126,7 +127,7 @@
                                                 <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.6rem;"></i>
                                             </td>
                                             <td class="original_price ">{$item.price}</td>
-                                            {if $item.price_unit}
+                                            {if isset($item.price_unit)}
                                                 <td  style="text-align: right"  class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
@@ -137,7 +138,7 @@
                                                 <div onclick="gr_show_discount_info()"
                                                     id="discount_info_applied"
                                                     style="border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #16a34a;"
-                                                    class="hide discount_info_applied"    
+                                                    class="hide discount_info_applied"
                                                 >
                                                     <i class="gold_reward_badge  fas fa-badge-percent" style="color: green;"></i>
                                                     <span class="gold_reward_percentage"></span>

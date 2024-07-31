@@ -11,11 +11,17 @@
     console.log(discounts)
 
 
-    //  $('.discount_info_applied').addClass('hide')
-    //  $('.original_price').removeClass('strikethrough')
-    //  $('.original_price_tr').css('opacity',.1)
-    //  $('.discount_info_unappeased').removeClass('hide')
-   //   $('.original_price_checked').addClass('hide')
+      console.log(families.length)
+
+      if(families.length>0){
+           $('.discount_info_applied').addClass('hide')
+            $('.original_price').removeClass('strikethrough')
+           $('.original_price_tr').css('opacity',.8)
+            $('.discount_info_unappeased').removeClass('hide')
+             $('.original_price_checked').addClass('hide')
+      }
+
+
 
 
       $.each(discounts, function (index, value) {
@@ -50,7 +56,7 @@
       if(value.applied){
         block.find('.discount_info_applied').removeClass('hide')
         block.find('.original_price').addClass('strikethrough')
-        block.find('.original_price_tr').css('opacity',.6)
+        block.find('.original_price_tr').css('opacity',.8)
           block.find('.discount_info_unappeased').addClass('hide')
           block.find('.original_price_checked').addClass('hide')
 
