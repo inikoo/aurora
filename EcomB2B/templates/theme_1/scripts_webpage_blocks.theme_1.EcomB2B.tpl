@@ -16,10 +16,10 @@
 
 
 
-      let block = $('#price_block_gold_reward_'+index)
+      let block = $('.price_block_gold_reward_'+index)
       console.log('block', block)
-      let blockOriginal = $('#price_block_'+index)
-      console.log('blockoriginal', blockoriginal)
+      let blockOriginal = $('.price_block_'+index)
+      console.log('blockOriginal', blockOriginal)
 
       console.log(block)
       block.find('.gold_reward_percentage').html(value.percentage)
