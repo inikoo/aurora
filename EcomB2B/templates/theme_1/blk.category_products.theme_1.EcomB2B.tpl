@@ -136,7 +136,7 @@
                                                 </div>
                                             </td>
                                             <td class="gold_reward_price "></td>
-                                            <td style="text-align: :right"  class="gold_reward_unit_price"></td>
+                                            <td style="text-align: right"  class="gold_reward_unit_price"></td>
                                         </tr>
                                     </table>
                                 </div>
