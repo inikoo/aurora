@@ -6,6 +6,7 @@
     //$('.original_price').removeClass('strikethrough').css('opacity', '1');
 
     console.log('debug SSSS')
+    console.log(discounts)
 
     $.each(discounts, function (index, value) {
 
@@ -1724,7 +1725,7 @@
                                 });
 
                                 console.log('A1')
-                                 show_gold_reward(data.discounts)
+                                 show_gold_reward(data.gold_reward)
                                 //show_discounts(data.discounts)
 
 
