@@ -35,6 +35,7 @@
 
       if(value.applied){
         block.find('.gold_reward_badge').style.color('#2E8B57bb')
+        block.find('.original_price').style.textDecoration('line-through')  // Strike the original price
 
       }
 
@@ -46,7 +47,6 @@
     block.find('#gold_reward_badge').style.border('1px solid #eab308')
     if(value.applied){
         block.find('#gold_reward_badge .fa-badge-percent').style.color('#22c55e')
-        blockOriginal.find('.original_price').style.textDecoration('line-through')  // Strike the original price
     } else {
         block.find('#gold_reward_badge .fa-badge-percent').style.color('#ca8a04')
     }
