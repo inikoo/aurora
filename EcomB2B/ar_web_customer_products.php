@@ -30,22 +30,22 @@ switch ($tipo) {
     case 'category_products':
         $data = prepare_values(
             $_REQUEST, array(
-                         'webpage_key' => array(
-                             'type'     => 'key',
-                             'optional' => true
-                         ),
+                'webpage_key' => array(
+                    'type'     => 'key',
+                    'optional' => true
+                ),
 
-                         'with_category_products'   => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         ),
-                         'with_favourites_products' => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         ),
+                'with_category_products'   => array(
+                    'type'     => 'string',
+                    'optional' => true
+                ),
+                'with_favourites_products' => array(
+                    'type'     => 'string',
+                    'optional' => true
+                ),
 
 
-                     )
+            )
         );
 
         category_products($data, $db, $customer->id, $order ?? false);
@@ -64,9 +64,9 @@ switch ($tipo) {
 
 function category_products($data, $db, $customer_key, $order)
 {
-    $website = get_object('Website', $_SESSION['website_key']);
-    $store=get_object('Store',$website->get('Website Store Key'));
-$currency=$store->get('Store Currency');
+    $website  = get_object('Website', $_SESSION['website_key']);
+    $store    = get_object('Store', $website->get('Website Store Key'));
+    $currency = $store->get('Store Currency');
 
     $labels = $website->get('Localised Labels');
 
@@ -76,7 +76,7 @@ $currency=$store->get('Store Currency');
     $ordered_products       = array();
     $stock                  = array();
     $discounts              = array();
-    $gold_reward=array();
+    $gold_reward            = array();
 
 
     $sql = sprintf(
@@ -170,21 +170,20 @@ $currency=$store->get('Store Currency');
 
     // gold reward discounts
 
-    $gold_reward_data=null;
+    $gold_reward_data = null;
 
-    $sql="select `Deal Component Allowance Label`,`Deal Component Allowance` from `Deal Component Dimension` left join `Page Store Dimension`  on (`Webpage Scope Key`=`Deal Component Trigger Key`)  where `Webpage Scope`='Category Products'  and  `Deal Component Status`='Active' and `Deal Component Trigger`='Category'  and `Deal Component Terms Type`='Category Quantity Ordered' and `Page Key`=?  ";
+    $sql  =
+        "select `Deal Component Allowance Label`,`Deal Component Allowance` from `Deal Component Dimension` left join `Page Store Dimension`  on (`Webpage Scope Key`=`Deal Component Trigger Key`)  where `Webpage Scope`='Category Products'  and  `Deal Component Status`='Active' and `Deal Component Trigger`='Category'  and `Deal Component Terms Type`='Category Quantity Ordered' and `Page Key`=?  ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($data['webpage_key'])
     );
     while ($row = $stmt->fetch()) {
-
-        $gold_reward_data=[
-            'label'=>$row['Deal Component Allowance Label'],
-            'discount'=>$row['Deal Component Allowance']
+        $gold_reward_data = [
+            'label'    => $row['Deal Component Allowance Label'],
+            'discount' => $row['Deal Component Allowance']
         ];
     }
-
 
 
     $sql  =
@@ -202,37 +201,28 @@ $currency=$store->get('Store Currency');
         }
 
 
-
-        if($gold_reward_data){
-
-
-            $disc=1- $gold_reward_data['discount'];
+        if ($gold_reward_data) {
+            $disc = 1 - $gold_reward_data['discount'];
 
 
-            $price = money($disc* $row['Product Price'], $currency);
+            $price = money($disc * $row['Product Price'], $currency);
 
 
             if ($row['Product Units Per Case'] != 1) {
-                $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc* $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'];
+                $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'];
             } else {
                 $price_unit = '';
             }
 
             $gold_reward[$row['Product ID']] = [
-                'label'     => $gold_reward_data['label'],
-                'percentage'     => '&darr;'.percentage($gold_reward_data['discount'], 1,0),
+                'label'          => $gold_reward_data['label'],
+                'percentage'     => '&darr;'.percentage($gold_reward_data['discount'], 1, 0),
                 'price'          => $price,
-                'price_per_unit' => $price_unit
+                'price_per_unit' => $price_unit,
+                'applied'        => false
             ];
-
-
         }
-
     }
-
-
-
-
 
 
     if ($order) {
@@ -266,7 +256,9 @@ $currency=$store->get('Store Currency');
         // print_r(join(',', $families));
 
         if (count($families) > 0) {
-            $sql  = "select `Deal Component Allowance`,`Deal Component Terms Type`,`Deal Component Trigger Key`,`Deal Component Terms` from `Deal Component Dimension` where `Deal Component Status` = 'Active' and `Deal Component Trigger`='Category' and  `Deal Component Allowance Type`='Percentage Off' and `Deal Component Allowance Target`='Category'  and   `Deal Component Trigger Key` in (".join(
+            $sql  =
+                "select `Deal Component Allowance`,`Deal Component Terms Type`,`Deal Component Trigger Key`,`Deal Component Terms` from `Deal Component Dimension` where `Deal Component Status` = 'Active' and `Deal Component Trigger`='Category' and  `Deal Component Allowance Type`='Percentage Off' and `Deal Component Allowance Target`='Category'  and   `Deal Component Trigger Key` in ("
+                .join(
                     ',',
                     $families
                 ).")";
@@ -288,7 +280,7 @@ $currency=$store->get('Store Currency');
         //print_r($order_family_data);
 
         foreach ($family_data as $family_key => $_data) {
-            if (isset($order_family_data[$family_key]) and $order_family_data[$family_key]['qty'] > $_data['discount_min_quantity_order'] and isset($_data['percentage']) ) {
+            if (isset($order_family_data[$family_key]) and $order_family_data[$family_key]['qty'] > $_data['discount_min_quantity_order'] and isset($_data['percentage'])) {
                 $family_discounts[$family_key] = $_data['percentage'];
             }
         }
@@ -313,21 +305,19 @@ $currency=$store->get('Store Currency');
 
 
             if (isset($family_discounts[$row['Product Family Category Key']])) {
+                $disc = 1 - $family_discounts[$row['Product Family Category Key']];
 
-
-                $disc=1- $family_discounts[$row['Product Family Category Key']] ;
-
-                $price = money($disc* $row['Product Price'], $order->get('Order Currency'));
+                $price = money($disc * $row['Product Price'], $order->get('Order Currency'));
 
 
                 if ($row['Product Units Per Case'] != 1) {
-                    $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc* $row['Product Price'] / $row['Product Units Per Case'], $order->get('Order Currency'))).'/'.$row['Product Unit Label'];
+                    $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $order->get('Order Currency'))).'/'.$row['Product Unit Label'];
                 } else {
                     $price_unit = '';
                 }
 
                 $discounts[$row['Product ID']] = [
-                    'percentage'     => percentage($family_discounts[$row['Product Family Category Key']], 1,0),
+                    'percentage'     => percentage($family_discounts[$row['Product Family Category Key']], 1, 0),
                     'price'          => $price,
                     'price_per_unit' => $price_unit
                 ];
@@ -347,7 +337,7 @@ $currency=$store->get('Store Currency');
             'ordered_products'       => $ordered_products,
             'stock'                  => $stock,
             'discounts'              => $discounts,
-            'gold_reward'=>$gold_reward
+            'gold_reward'            => $gold_reward
 
 
         )
