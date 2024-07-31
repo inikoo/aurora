@@ -157,7 +157,14 @@ const onSearchQuery = (stringQuery) => {
 
 document.addEventListener("DOMContentLoaded", () => {
     (async () => {
-        if (window.location.hostname === "www.aw-indonesia.com" || window.location.hostname === "www.ancientwisdom.biz"  ) {
+        const scriptSrc = new URL(import.meta.url);
+
+        if (window.location.hostname === "www.aw-indonesia.com" ||
+            window.location.hostname === "www.ancientwisdom.biz" ||
+            (window.location.hostname === "www.aw-aromaxxtics.com" && scriptSrc.searchParams.get('device_type') === 'tablet')
+
+        ) {
+
             console.log("Hello, world!")
 
             let luigiTrackerId
@@ -174,7 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Get the props
             // console.log('import meta url: ', import.meta?.url)
-            const scriptSrc = new URL(import.meta.url);
 
             // Read the parameter
             if (scriptSrc?.searchParams) {

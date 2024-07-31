@@ -58,9 +58,13 @@ class shipping_for_order {
                 ]
             );
 
+            if(!$post_code){
+                $post_code='';
+            }
 
             $address = get_address_object();
-            $address = $address->withCountryCode($country_code)->withPostalCode($post_code);
+            $address = $address->withCountryCode($country_code)
+                ->withPostalCode($post_code);
 
             if ($zone->match($address)) {
 
