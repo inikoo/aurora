@@ -66,7 +66,9 @@ function category_products($data, $db, $customer_key, $order)
 {
     $website  = get_object('Website', $_SESSION['website_key']);
     $store    = get_object('Store', $website->get('Website Store Key'));
-    $currency = $store->get('Store Currency');
+    $currency = $store->get('Store Currency Code');
+
+
 
     $labels = $website->get('Localised Labels');
 
@@ -209,7 +211,7 @@ function category_products($data, $db, $customer_key, $order)
 
 
             if ($row['Product Units Per Case'] != 1) {
-                $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'];
+                $price_unit = '('.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'].')';
             } else {
                 $price_unit = '';
             }
