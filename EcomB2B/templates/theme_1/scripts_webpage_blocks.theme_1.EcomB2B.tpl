@@ -34,10 +34,14 @@
       }
 
       if(value.applied){
-        block.find('.gold_reward_badge').css('color', '#22c55e');
-        block.find('.gold_reward_percentage').css('color', '#22c55e');
+        block.find('.discount_info_applied').removeClass('hide')
+        
+        // block.find('.gold_reward_badge').css('color', '#22c55e');
+        // block.find('.gold_reward_percentage').css('color', '#22c55e');
         block.find('.original_price').addClass('strikethrough')
         block.find('.original_price_tr').css('opacity',.6)
+      } else {
+        block.find('.discount_info_unapplied').removeClass('hide')
 
       }
 
