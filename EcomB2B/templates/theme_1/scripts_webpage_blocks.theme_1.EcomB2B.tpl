@@ -23,12 +23,12 @@
 
       console.log(block)
       block.find('.gold_reward_percentage').html(value.percentage)
-      block.find('.original_price').html(value.price)
-      block.find('.original_unit_price').html(value.price_per_unit)
+      block.find('.gold_reward_price').html(value.price)
+      block.find('.gold_reward_unit_price').html(value.price_per_unit)
 
 
       if(value.price_per_unit==''){
-        block.find('.original_unit_price').addClass('hide')
+        block.find('.gold_reward_unit_price').addClass('hide')
       }
 
 

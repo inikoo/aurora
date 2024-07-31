@@ -120,7 +120,7 @@
                                     </div>
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
-                                        <tr class="product_xxxxx_price">
+                                        <tr >
                                             <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
@@ -128,15 +128,15 @@
                                             {/if}
                                         </tr>
 
-                                        <tr id="price_block_gold_reward_{$item.product_id}" class="product_price">
+                                        <tr class="gold_reward_product_price">
                                             <td >
-                                                <div id="gold_reward_badge" style="width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
+                                                <div   style="width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
                                                     <i class="fas fa-badge-percent"></i>
                                                     <span class="gold_reward_percentage" ></span>
                                                 </div>
                                             </td>
-                                            <td class="original_price "></td>
-                                            <td class="original_unit_price"></td>
+                                            <td class="gold_reward_price "></td>
+                                            <td class="gold_reward_unit_price"></td>
                                         </tr>
                                     </table>
                                 </div>
