@@ -34,8 +34,11 @@
       }
 
 
+     // block.find('.gold_reward_badge').style.backgroundColor('#facc1533')
+     // block.find('.gold_reward_badge').style.border('1px solid #eab308')
+
+
       /*
-    block.find('#gold_reward_badge').style.backgroundColor('#facc1533')
     block.find('#gold_reward_badge').style.border('1px solid #eab308')
     if(value.applied){
         block.find('#gold_reward_badge .fa-badge-percent').style.color('#22c55e')

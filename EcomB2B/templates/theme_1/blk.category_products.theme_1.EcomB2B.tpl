@@ -131,7 +131,7 @@
                                         <tr class="gold_reward_product_price hide">
                                             <td >
                                                 <div   style="width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
-                                                    <i class="fas fa-badge-percent"></i>
+                                                    <i class="gold_reward_badge  fas fa-badge-percent"></i>
                                                     <span class="gold_reward_percentage" ></span>
                                                 </div>
                                             </td>
