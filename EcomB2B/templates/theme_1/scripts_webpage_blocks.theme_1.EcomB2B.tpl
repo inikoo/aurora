@@ -7,7 +7,7 @@
     // $('.product_discounted_price').addClass('hide')
     // $('.original_price').removeClass('strikethrough').css('opacity', '1');
 
-    console.log('debug v14')
+    console.log('debug v15')
     console.log(discounts)
 
 
