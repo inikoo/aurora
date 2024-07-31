@@ -65,7 +65,8 @@ switch ($tipo) {
 function category_products($data, $db, $customer_key, $order)
 {
     $website = get_object('Website', $_SESSION['website_key']);
-
+    $store=get_object('Store',$website->get('Website Store Key'));
+$currency=$store->get('Store Currency');
 
     $labels = $website->get('Localised Labels');
 
@@ -75,6 +76,7 @@ function category_products($data, $db, $customer_key, $order)
     $ordered_products       = array();
     $stock                  = array();
     $discounts              = array();
+    $gold_reward=array();
 
 
     $sql = sprintf(
@@ -166,8 +168,27 @@ function category_products($data, $db, $customer_key, $order)
     }
 
 
+    // gold reward discounts
+
+    $gold_reward_data=null;
+
+    $sql="select `Deal Component Allowance Label`,`Deal Component Allowance` from `Deal Component Dimension` left join `Page Store Dimension`  on (`Webpage Scope Key`=`Deal Component Trigger Key`)  where `Webpage Scope`='Category Products'  and  `Deal Component Status`='Active' and `Deal Component Trigger`='Category'  and `Deal Component Terms Type`='Category Quantity Ordered' and `Page Key`=?  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($data['webpage_key'])
+    );
+    while ($row = $stmt->fetch()) {
+
+        $gold_reward_data=[
+            'label'=>$row['Deal Component Allowance Label'],
+            'discount'=>$row['Deal Component Allowance']
+        ];
+    }
+
+
+
     $sql  =
-        "select `Product Availability State`,`Product Availability`,`Product ID`,`Product Price`,`Product Family Category Key` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
+        "select `Product Availability State`,`Product Availability`,`Product ID`,`Product Price`,`Product Family Category Key`,`Product Price`,`Product Units Per Case`,`Product Unit Label` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($data['webpage_key'])
@@ -179,7 +200,39 @@ function category_products($data, $db, $customer_key, $order)
                 get_stock_label($labels, $show_stock_value, $row['Product Availability State'], $row['Product Availability'])
             );
         }
+
+
+
+        if($gold_reward_data){
+
+
+            $disc=1- $gold_reward_data['discount'];
+
+
+            $price = money($disc* $row['Product Price'], $currency);
+
+
+            if ($row['Product Units Per Case'] != 1) {
+                $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc* $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'];
+            } else {
+                $price_unit = '';
+            }
+
+            $gold_reward[$row['Product ID']] = [
+                'label'     => $gold_reward_data['label'],
+                'percentage'     => '&darr;'.percentage($gold_reward_data['discount'], 1,0),
+                'price'          => $price,
+                'price_per_unit' => $price_unit
+            ];
+
+
+        }
+
     }
+
+
+
+
 
 
     if ($order) {
@@ -293,7 +346,8 @@ function category_products($data, $db, $customer_key, $order)
             'out_of_stock_reminders' => $out_of_stock_reminders,
             'ordered_products'       => $ordered_products,
             'stock'                  => $stock,
-            'discounts'              => $discounts
+            'discounts'              => $discounts,
+            'gold_reward'=>$gold_reward
 
 
         )
