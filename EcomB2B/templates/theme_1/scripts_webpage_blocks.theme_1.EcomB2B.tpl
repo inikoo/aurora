@@ -35,6 +35,7 @@
 
       if(value.applied){
         block.find('.gold_reward_badge').css('color', '#AFE1AFcc');
+        block.find('.gold_reward_percentage').css('color', '#AFE1AFcc');
         block.find('.original_price').addClass('strikethrough')
         block.find('.original_price_tr').css('opacity',.7)
 
