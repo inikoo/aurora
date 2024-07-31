@@ -130,7 +130,7 @@
 
                                         <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
                                             <td style="width:75px" >
-                                                <div   style="padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
+                                                <div   style="border-radius: 4px; font-size: 0.7rem">
                                                     <i class="gold_reward_badge  fas fa-badge-percent"></i>
                                                     <span class="gold_reward_percentage" ></span>
                                                 </div>
