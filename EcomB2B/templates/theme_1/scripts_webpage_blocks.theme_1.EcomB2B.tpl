@@ -16,7 +16,7 @@
 
 
 
-      let block = $('.price_block_gold_reward_'+index)
+      let block = $('.price_block_'+index)
       console.log('block', block)
       //let blockOriginal = $('.price_block_'+index)
       //console.log('blockOriginal', blockOriginal)
