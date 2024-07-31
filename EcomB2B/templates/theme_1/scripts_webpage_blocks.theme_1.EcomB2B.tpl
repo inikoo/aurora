@@ -33,8 +33,12 @@
         block.find('.gold_reward_unit_price').addClass('hide')
       }
 
+      if(value.applied){
+        block.find('.gold_reward_badge').style.color('#2E8B57bb')
 
-     // block.find('.gold_reward_badge').style.backgroundColor('#facc1533')
+      }
+
+     // block.find('.gold_reward_badge').style.backgroundColor('#2E8B57')
      // block.find('.gold_reward_badge').style.border('1px solid #eab308')
 
 
