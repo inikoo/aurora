@@ -2,8 +2,8 @@
 
   function show_gold_reward(discounts){
 
-    //$('.product_discounted_price').addClass('hide')
-    //$('.original_price').removeClass('strikethrough').css('opacity', '1');
+    // $('.product_discounted_price').addClass('hide')
+    // $('.original_price').removeClass('strikethrough').css('opacity', '1');
 
     console.log('debug SSSS')
     console.log(discounts)
@@ -17,6 +17,7 @@
 
 
       let block=$('#price_block_gold_reward_'+index)
+      let blockOriginal=$('#price_block_'+index)
 
       console.log(block)
       block.find('.gold_reward_percentage').html(value.percentage)
@@ -28,9 +29,15 @@
         block.find('.original_unit_price').addClass('hide')
       }
 
-      if(value.applied){
-        block.find('.logo').addClass('green')
-      }
+    // Section: Badges
+    block.find('#gold_reward_badge').style.backgroundColor('#facc1533')
+    block.find('#gold_reward_badge').style.border('1px solid #eab308')
+    if(value.applied){
+        block.find('#gold_reward_badge .fa-badge-percent').style.color('#22c55e')
+        blockOriginal.find('.original_price').style.textDecoration('line-through')  // Strike the original price
+    } else {
+        block.find('#gold_reward_badge .fa-badge-percent').style.color('#ca8a04')
+    }
 
 
       /*

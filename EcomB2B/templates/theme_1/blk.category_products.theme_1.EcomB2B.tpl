@@ -78,7 +78,7 @@
                                 <h4 style="height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
 
 
-                                <div style="display:flex;clear: both; border: 2px solid #d1d5db">
+                                <div style="display:flex;clear: both;">
                                     <div style="flex-grow: 1;font-size: smaller" class="code">
                                         <small class="Product_Code">{$item.code}</small>
                                     </div>
@@ -121,33 +121,23 @@
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
                                         <tr class="product_xxxxx_price">
-                                            <td style="border: 2px solid #d1d5db" >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
-                                            <td style="border: 2px solid #d1d5db" class="original_price ">{$item.price}</td>
+                                            <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
+                                            <td class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
-                                                <td style="border: 2px solid #d1d5db" class="original_price">{$item.price_unit}</td>
+                                                <td class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
-                                        <tr class="product_discounted_price hide product_price"   >
-                                            <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
-                                            <td class="_price"></td>
-                                            <td ><span class="_unit_price"></span></td>
-                                        </tr>
-                                    </table>
 
-                                    <table id="price_block_gold_reward_{$item.product_id}" class="gold_reward_block" >
-                                        <tr class="product_price">
-                                            <td style="border: 2px solid #d1d5db" >
-                                                <div style="background-color: #facc1533; border: 1px solid #eab308; color: #ca8a04;margin-left: 10px;margin-right: 10px;margin-bottom: 10px;width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
-                                                    <i class="fas fa-badge-percent  logo"></i>
+                                        <tr id="price_block_gold_reward_{$item.product_id}" class="product_price">
+                                            <td >
+                                                <div id="gold_reward_badge" style="width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
+                                                    <i class="fas fa-badge-percent"></i>
                                                     <span class="gold_reward_percentage" ></span>
                                                 </div>
                                             </td>
-                                            <td style="border: 2px solid #d1d5db" class="original_price "></td>
-
-                                            <td style="border: 2px solid #d1d5db" class="original_unit_price"></td>
-
+                                            <td class="original_price "></td>
+                                            <td class="original_unit_price"></td>
                                         </tr>
-
                                     </table>
                                 </div>
 
