@@ -78,14 +78,14 @@
                                 <h4 style="height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
 
 
-                                <div style="display:flex;clear: both;">
-                                    <div style="flex-grow: 1;" class="code">
+                                <div style="display:flex;clear: both;font-size: smaller">
+                                    <div style="font-size: smaller;flex-grow: 1;" class="code">
                                         <small class="Product_Code">{$item.code}</small>
                                     </div>
                                     {if !empty($item.rrp)}
-                                        <div style="flex-grow: 1;text-align: right" class="code">
-                                            <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
-                                                : {$item.rrp}</small>
+                                        <div style="font-size: smaller;flex-grow: 1;text-align: right" class="code">
+                                            <span style="font-size: smaller">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
+                                                : {$item.rrp}</span>
                                         </div>
                                     {/if}
                                 </div>
