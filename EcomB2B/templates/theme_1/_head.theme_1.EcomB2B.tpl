@@ -537,7 +537,6 @@
     {/if}
 
     
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
         {if $website->get('Website Text Font')!=''}
