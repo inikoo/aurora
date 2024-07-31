@@ -22,6 +22,8 @@
       //console.log('blockOriginal', blockOriginal)
 
       console.log(block)
+      block.find('.gold_reward_product_price').removeClass('hide')
+
       block.find('.gold_reward_percentage').html(value.percentage)
       block.find('.gold_reward_price').html(value.price)
       block.find('.gold_reward_unit_price').html(value.price_per_unit)
