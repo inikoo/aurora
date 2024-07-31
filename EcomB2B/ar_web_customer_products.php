@@ -222,7 +222,8 @@ function category_products($data, $db, $customer_key, $order)
                 'percentage' => '&darr;' . percentage($gold_reward_data['discount'], 1, 0),
                 'price' => $price,
                 'price_per_unit' => $price_unit,
-                'applied' => false
+                'applied' => false,
+                'applied_to_family'=>null
             ];
         }
     }
@@ -232,7 +233,11 @@ function category_products($data, $db, $customer_key, $order)
 
 
         $sql = sprintf(
-            'SELECT P.`Product ID`,`Fraction Discount`,`Deal Info`,`Product Price`,`Product Unit Label`,`Product Units Per Case` FROM `Order Transaction Deal Bridge` OTDB left join `Product Dimension` P on (P.`Product ID`=OTDB.`Product ID`)  WHERE `Order Key`=%d ',
+            'SELECT P.`Product ID`,`Fraction Discount`,`Deal Info`,`Product Price`,`Product Unit Label`,`Deal Campaign Code`,`Product Units Per Case` ,OTDB.`Category Key` 
+            FROM `Order Transaction Deal Bridge` OTDB
+            left join `Product Dimension` P on (P.`Product ID`=OTDB.`Product ID`) 
+            left join `Deal Campaign Dimension` C on (OTDB.`Deal Campaign Key`=C.`Deal Campaign Key`)
+             WHERE `Order Key`=%d ',
             $order->id
         );
 
@@ -243,6 +248,12 @@ function category_products($data, $db, $customer_key, $order)
 
 
                 if (isset($gold_reward[$row['Product ID']])  and  $row['Fraction Discount'] and  $row['Fraction Discount']>0 ) {
+
+
+                    $apply_to_family=false;
+                    if($row['Deal Campaign Code']=='VL'){
+                        $apply_to_family=$row['Category Key'];
+                    }
 
 
                     $disc = 1 - $row['Fraction Discount'];
@@ -263,7 +274,8 @@ function category_products($data, $db, $customer_key, $order)
                         'percentage' => '&darr;' . percentage($row['Fraction Discount'], 1, 0),
                         'price' => $price,
                         'price_per_unit' => $price_unit,
-                        'applied' => true
+                        'applied' => true,
+                        'applied_to_family'=>$apply_to_family
                     ];
 
 
@@ -276,7 +288,7 @@ function category_products($data, $db, $customer_key, $order)
     }
 
 
-    //print_r($discounts);
+   // print_r($gold_reward);exit;
 
 
     echo json_encode(
