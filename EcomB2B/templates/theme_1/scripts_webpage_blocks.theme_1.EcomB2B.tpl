@@ -5,7 +5,7 @@
     // $('.product_discounted_price').addClass('hide')
     // $('.original_price').removeClass('strikethrough').css('opacity', '1');
 
-    console.log('debug v11')
+    console.log('debug v12')
     console.log(discounts)
 
     $.each(discounts, function (index, value) {
@@ -34,8 +34,8 @@
       }
 
       if(value.applied){
-        block.find('.gold_reward_badge').style.color('#2E8B57bb')
-        block.find('.original_price').style.textDecoration('line-through')  // Strike the original price
+        block.find('.gold_reward_badge').css('color', 'red');
+        block.find('.original_price').addClass('strikethrough')
 
       }
 
