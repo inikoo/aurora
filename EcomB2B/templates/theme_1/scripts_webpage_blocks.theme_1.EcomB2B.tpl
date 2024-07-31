@@ -18,8 +18,8 @@
 
       let block = $('.price_block_gold_reward_'+index)
       console.log('block', block)
-      let blockOriginal = $('.price_block_'+index)
-      console.log('blockOriginal', blockOriginal)
+      //let blockOriginal = $('.price_block_'+index)
+      //console.log('blockOriginal', blockOriginal)
 
       console.log(block)
       block.find('.gold_reward_percentage').html(value.percentage)
@@ -31,7 +31,8 @@
         block.find('.original_unit_price').addClass('hide')
       }
 
-    // Section: Badges
+
+      /*
     block.find('#gold_reward_badge').style.backgroundColor('#facc1533')
     block.find('#gold_reward_badge').style.border('1px solid #eab308')
     if(value.applied){
@@ -40,7 +41,7 @@
     } else {
         block.find('#gold_reward_badge .fa-badge-percent').style.color('#ca8a04')
     }
-
+*/
 
       /*
       block.find('.product_discounted_price').removeClass('hide')
