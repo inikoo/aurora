@@ -70,7 +70,8 @@
                         </div>
 
 
-                        <div class="product_description" style="height: fit-content !important; margin-bottom: 5px">
+                        <div class="product_description" style="position: relative; height: fit-content !important; margin-top: 20px; margin-bottom: 5px">
+
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
                                 <h4 style="text-align: center; width: 91%; background: #d1d5db55; position: absolute; bottom: 120%; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
 
