@@ -121,21 +121,21 @@
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
                                         <tr >
-                                            <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
-                                            <td class="original_price ">{$item.price}</td>
+                                            <td style="width:75px">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
+                                            <td style="width:75px" class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
                                                 <td class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
 
                                         <tr class="gold_reward_product_price hide">
-                                            <td >
-                                                <div   style="width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
+                                            <td style="width:75px" >
+                                                <div   style="padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
                                                     <i class="gold_reward_badge  fas fa-badge-percent"></i>
                                                     <span class="gold_reward_percentage" ></span>
                                                 </div>
                                             </td>
-                                            <td class="gold_reward_price "></td>
+                                            <td style="width:75px" class="gold_reward_price "></td>
                                             <td class="gold_reward_unit_price"></td>
                                         </tr>
                                     </table>
