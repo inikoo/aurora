@@ -37,7 +37,7 @@
         block.find('.gold_reward_badge').css('color', '#AFE1AF');
         block.find('.gold_reward_percentage').css('color', '#AFE1AF');
         block.find('.original_price').addClass('strikethrough')
-        block.find('.original_price_tr').css('opacity',.7)
+        block.find('.original_price_tr').css('opacity',.6)
 
       }
 
