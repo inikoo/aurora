@@ -136,8 +136,14 @@
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
                                         <tr class="product_price">
-                                            <td style="border: 2px solid #d1d5db" >🪙</td>
-                                            <td style="border: 2px solid #d1d5db" class="original_price ">GR</td>
+                                            <td style="border: 2px solid #d1d5db" >
+                                                <div style="background-color: #facc1533; border: 1px solid #eab308; color: #ca8a04;margin-left: 10px;margin-right: 10px;margin-bottom: 10px;width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
+                                                    <i class="fas fa-badge-percent"></i>
+                                                    <span style="">GR</span>
+                                                    <i class="fal fa-check-circle"></i>
+                                                </div>
+                                            </td>
+                                            <td style="border: 2px solid #d1d5db" class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
                                                 <td style="border: 2px solid #d1d5db" class="original_price">{$item.price_unit}</td>
                                             {/if}
@@ -150,10 +156,7 @@
                                     </table>
                                 </div>
 
-                                <div style="background-color: #4ade8044; border: 1px solid #16a34a; color: #16a34a;margin-left: 10px;margin-right: 10px;margin-bottom: 10px;width: fit-content;padding: 1px 7px;border-radius: 999px;">
-                                    🪙GR
-                                    <i class="fal fa-check-circle"></i>
-                                </div>
+                                
 
                                 {if $store->get('Store Type')=='Dropshipping'}
                                     <div class="portfolio_row  portfolio_row_{$item.product_id} "
