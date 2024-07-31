@@ -133,6 +133,7 @@
                                                 <div  onClick="gr_show_discount_info()"    style="border-radius: 4px; font-size: 0.7rem">
                                                     <i class="gold_reward_badge  fas fa-badge-percent"></i>
                                                     <span class="gold_reward_percentage" ></span>
+                                                    <i  style="color: seagreen"  class="gold_reward_applied hide  fas fa-check-circle"></i>
                                                 </div>
                                             </td>
                                             <td class="gold_reward_price "></td>
