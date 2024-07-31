@@ -189,8 +189,15 @@ function category_products($data, $db, $customer_key, $order)
     }
 
 
+    $gold_reward_families=[];
+
+    $families=[];
+
     $sql =
-        "select `Product Availability State`,`Product Availability`,`Product ID`,`Product Price`,`Product Family Category Key`,`Product Price`,`Product Units Per Case`,`Product Unit Label` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
+        "select `Product Availability State`,`Product Availability`,`Product ID`,`Product Price`,`Product Family Category Key`,`Product Price`,`Product Units Per Case`,`Product Unit Label` 
+        from `Website Webpage Scope Map` 
+        left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) 
+        where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($data['webpage_key'])
@@ -202,6 +209,8 @@ function category_products($data, $db, $customer_key, $order)
                 get_stock_label($labels, $show_stock_value, $row['Product Availability State'], $row['Product Availability'])
             );
         }
+
+        $families[$row['Product Family Category Key']]=$row['Product Family Category Key'];
 
 
         if ($gold_reward_data) {
@@ -223,13 +232,18 @@ function category_products($data, $db, $customer_key, $order)
                 'price' => $price,
                 'price_per_unit' => $price_unit,
                 'applied' => false,
-                'applied_to_family'=>null
             ];
+
+
+
         }
     }
 
 
+
+
     if ($order) {
+
 
 
         $sql = sprintf(
@@ -251,7 +265,7 @@ function category_products($data, $db, $customer_key, $order)
 
 
                     $apply_to_family=false;
-                    if($row['Deal Campaign Code']=='VL'){
+                    if($row['Deal Campaign Code']=='VL'  ){
                         $apply_to_family=$row['Category Key'];
                     }
 
@@ -275,8 +289,12 @@ function category_products($data, $db, $customer_key, $order)
                         'price' => $price,
                         'price_per_unit' => $price_unit,
                         'applied' => true,
-                        'applied_to_family'=>$apply_to_family
+
                     ];
+
+                    if($apply_to_family){
+                        $gold_reward_families[$apply_to_family]=$apply_to_family;
+                    }
 
 
                 }
@@ -285,10 +303,57 @@ function category_products($data, $db, $customer_key, $order)
             }
         }
 
+        $gr_member=false;
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' ",
+            $order->data['Order Customer Key'],
+            $order->id,
+            prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -30 days")).' 00:00:00')
+        );
+
+
+        if ($result = $db->query($sql)) {
+            if ($_row = $result->fetch()) {
+                //print_r($_row);
+                if ($_row['num'] > 0) {
+                  $gr_member=true;
+                }
+            }
+        }
+
+
+        if($gr_member and count($families)>0 ){
+
+
+
+            $sql=sprintf("select `Deal Component Trigger Key` from `Deal Component Dimension` where `Deal Component Status`='Active'  and `Deal Component Trigger`='Category' and `Deal Component Trigger Key` in (%s) and `Deal Component Terms Type`='Order Interval'  ",
+                join(',',$families)
+            );
+
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            while ($row = $stmt->fetch()) {
+
+                $apply_to_family=$row['Deal Component Trigger Key'];
+                $gold_reward_families[$apply_to_family]=$apply_to_family;
+
+            }
+
+
+
+
+        }
+
+
+       // print_r($gold_reward_families);exit;
+
+
+
     }
 
 
-   // print_r($gold_reward);exit;
+
 
 
     echo json_encode(
@@ -299,7 +364,8 @@ function category_products($data, $db, $customer_key, $order)
             'ordered_products' => $ordered_products,
             'stock' => $stock,
             'discounts' => [],
-            'gold_reward' => $gold_reward
+            'gold_reward' => $gold_reward,
+            'gold_reward_families'=>$gold_reward_families
 
 
         )

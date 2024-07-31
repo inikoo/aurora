@@ -119,11 +119,11 @@
                                             <small>{$item.price_unit}</small>{/if}
                                     </div>
 
-                                    <table id="price_block_{$item.product_id}" class="price_block" >
+                                    <table id="price_block_{$item.product_id}" class="price_block discount_info_family_{$item.family_key}  " >
                                         <tr class="original_price_tr" >
                                             <td style="width:75px">
                                                 {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
-                                                <i class="original_price_checked hide fal fa-check" style="color: #727272;font-size: 0.6rem;"></i>
+                                                <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.6rem;"></i>
                                             </td>
                                             <td class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}
@@ -133,7 +133,7 @@
 
 
                                         <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
-                                            <td style="width:75px"  data-family_key="{$item.family_key}" class="discount_info_family_{$item.family_key}"  >
+                                            <td style="width:75px"  data-family_key="{$item.family_key}"   >
                                                 <div onclick="gr_show_discount_info()"
                                                     id="discount_info_applied"
                                                     style="border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #16a34a;"
@@ -146,7 +146,7 @@
 
                                                 <div onclick="gr_show_discount_info()"
                                                     style="border-radius: 4px; font-size: 0.7rem;background-color: #75757545;padding: 1px 6px;width: fit-content;border: 1px solid #8f8f8f;color: #282828;"
-                                                    class="hide discount_info_unappeased  "
+                                                    class=" discount_info_unappeased  "
                                                 >
                                                     <i class="gold_reward_badge  fas fa-badge-percent" style="color: #3f3f3f;"></i>
                                                     <span class="gold_reward_percentage"></span>

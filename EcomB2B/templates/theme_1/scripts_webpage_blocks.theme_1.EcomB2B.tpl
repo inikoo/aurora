@@ -1,18 +1,24 @@
 <script>
 
-  function show_gold_reward(discounts){
+  function show_gold_reward(discounts,families){
 
 
-    return;
+
     // $('.product_discounted_price').addClass('hide')
     // $('.original_price').removeClass('strikethrough').css('opacity', '1');
 
-    console.log('debug v15')
+    console.log('debug v16')
     console.log(discounts)
 
 
+      $('.discount_info_applied').addClass('hide')
+      $('.original_price').removeClass('strikethrough')
+      $('.original_price_tr').css('opacity',.1)
+      $('.discount_info_unappeased').removeClass('hide')
+      $('.original_price_checked').addClass('hide')
 
-    $.each(discounts, function (index, value) {
+
+      $.each(discounts, function (index, value) {
 
 
       console.log(index)
@@ -37,41 +43,45 @@
         block.find('.gold_reward_unit_price').addClass('hide')
       }
 
+
+
+
+
       if(value.applied){
         block.find('.discount_info_applied').removeClass('hide')
-        
-        // block.find('.gold_reward_badge').css('color', '#22c55e');
-        // block.find('.gold_reward_percentage').css('color', '#22c55e');
         block.find('.original_price').addClass('strikethrough')
         block.find('.original_price_tr').css('opacity',.6)
-      } else {
-        block.find('.original_price_checked').removeClass('hide')
-        block.find('.discount_info_unappeased').removeClass('hide')
+          block.find('.discount_info_unappeased').addClass('hide')
+          block.find('.original_price_checked').addClass('hide')
 
+      }else{
+          block.find('.discount_info_applied').addClass('hide')
+         block.find('.original_price').removeClass('strikethrough')
+          block.find('.original_price_tr').css('opacity',1)
+          block.find('.discount_info_unappeased').removeClass('hide')
+          block.find('.original_price_checked').removeClass('hide')
       }
 
-     // block.find('.gold_reward_badge').style.backgroundColor('#2E8B57')
-     // block.find('.gold_reward_badge').style.border('1px solid #eab308')
 
 
-      /*
-    block.find('#gold_reward_badge').style.border('1px solid #eab308')
-    if(value.applied){
-        block.find('#gold_reward_badge .fa-badge-percent').style.color('#22c55e')
-    } else {
-        block.find('#gold_reward_badge .fa-badge-percent').style.color('#ca8a04')
-    }
-*/
 
-      /*
-      block.find('.product_discounted_price').removeClass('hide')
-      block.find('.original_price').addClass('strikethrough discrete').css('opacity', '0.6');
 
-      block.find('._percentage').html(value.percentage)
-      block.find('._price').html(value.price)
-      block.find('._unit_price').html(value.price_per_unit)
-        */
+
+
+
     });
+
+      $.each(families, function (index, value) {
+
+              $('.discount_info_family_' + value + ' .discount_info_applied').removeClass('hide')
+              $('.discount_info_family_' + value + ' .original_price').addClass('strikethrough')
+              $('.discount_info_family_' + value + ' .original_price_tr').css('opacity', .6)
+              $('.discount_info_family_' + value + ' .discount_info_unappeased').addClass('hide')
+              $('.discount_info_family_' + value + ' .original_price_checked').addClass('hide')
+
+
+
+      });
 
   }
 
@@ -1779,8 +1789,8 @@
                                 });
 
                                 console.log('A1')
-                                 show_gold_reward(data.gold_reward)
-                                //show_discounts(data.discounts)
+                                 show_gold_reward(data.gold_reward,data.gold_reward_families)
+
 
 
                             });
