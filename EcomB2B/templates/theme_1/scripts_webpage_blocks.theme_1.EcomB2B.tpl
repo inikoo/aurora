@@ -34,6 +34,9 @@
 
     function show_discounts(discounts){
 
+
+        return true;
+
         $('.product_discounted_price').addClass('hide')
         $('.original_price').removeClass('strikethrough').css('opacity', '1');
 

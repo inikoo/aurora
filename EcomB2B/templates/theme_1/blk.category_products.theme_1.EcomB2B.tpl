@@ -134,7 +134,7 @@
                                         </tr>
                                     </table>
 
-                                    <table id="price_block_{$item.product_id}" class="price_block" >
+                                    <table id="price_block_gold_reward_{$item.product_id}" class="gold_reward_block" >
                                         <tr class="product_price">
                                             <td style="border: 2px solid #d1d5db" >
                                                 <div style="background-color: #facc1533; border: 1px solid #eab308; color: #ca8a04;margin-left: 10px;margin-right: 10px;margin-bottom: 10px;width: fit-content;padding: 1px 7px;border-radius: 4px; font-size: 0.7rem">
@@ -148,11 +148,7 @@
                                                 <td style="border: 2px solid #d1d5db" class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
-                                        <tr class="product_discounted_price hide product_price"   >
-                                            <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
-                                            <td class="_price"></td>
-                                            <td ><span class="_unit_price"></span></td>
-                                        </tr>
+
                                     </table>
                                 </div>
 
