@@ -17,7 +17,7 @@ include_once 'ar_web_common_logged_in.php';
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
         'state' => 405,
-        'resp'  => 'Non acceptable request (t)'
+        'resp' => 'Non acceptable request (t)'
     );
     echo json_encode($response);
     exit;
@@ -31,16 +31,16 @@ switch ($tipo) {
         $data = prepare_values(
             $_REQUEST, array(
                 'webpage_key' => array(
-                    'type'     => 'key',
+                    'type' => 'key',
                     'optional' => true
                 ),
 
-                'with_category_products'   => array(
-                    'type'     => 'string',
+                'with_category_products' => array(
+                    'type' => 'string',
                     'optional' => true
                 ),
                 'with_favourites_products' => array(
-                    'type'     => 'string',
+                    'type' => 'string',
                     'optional' => true
                 ),
 
@@ -55,7 +55,7 @@ switch ($tipo) {
     default:
         $response = array(
             'state' => 405,
-            'resp'  => 'Tipo not found '.$tipo
+            'resp' => 'Tipo not found ' . $tipo
         );
         echo json_encode($response);
         exit;
@@ -64,21 +64,20 @@ switch ($tipo) {
 
 function category_products($data, $db, $customer_key, $order)
 {
-    $website  = get_object('Website', $_SESSION['website_key']);
-    $store    = get_object('Store', $website->get('Website Store Key'));
+    $website = get_object('Website', $_SESSION['website_key']);
+    $store = get_object('Store', $website->get('Website Store Key'));
     $currency = $store->get('Store Currency Code');
-
 
 
     $labels = $website->get('Localised Labels');
 
 
-    $favourite              = array();
+    $favourite = array();
     $out_of_stock_reminders = array();
-    $ordered_products       = array();
-    $stock                  = array();
-    $discounts              = array();
-    $gold_reward            = array();
+    $ordered_products = array();
+    $stock = array();
+    $discounts = array();
+    $gold_reward = array();
 
 
     $sql = sprintf(
@@ -112,6 +111,8 @@ function category_products($data, $db, $customer_key, $order)
                 $ordered_products[$row['Product ID']] = $row['Order Quantity'];
             }
         }
+
+
     }
 
     if (isset($data['with_category_products']) and $data['with_category_products'] == 'Yes') {
@@ -149,7 +150,7 @@ function category_products($data, $db, $customer_key, $order)
                     get_stock_label($labels, $show_stock_value, $row['Product Availability State'], $row['Product Availability'])
                 );
             } else {
-                $stock_label               = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Out of stock'));
+                $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Out of stock'));
                 $stock[$row['Product ID']] = array(
                     'OutofStock',
                     $stock_label
@@ -174,7 +175,7 @@ function category_products($data, $db, $customer_key, $order)
 
     $gold_reward_data = null;
 
-    $sql  =
+    $sql =
         "select `Deal Component Allowance Label`,`Deal Component Allowance` from `Deal Component Dimension` left join `Page Store Dimension`  on (`Webpage Scope Key`=`Deal Component Trigger Key`)  where `Webpage Scope`='Category Products'  and  `Deal Component Status`='Active' and `Deal Component Trigger`='Category'  and `Deal Component Terms Type`='Category Quantity Ordered' and `Page Key`=?  ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
@@ -182,13 +183,13 @@ function category_products($data, $db, $customer_key, $order)
     );
     while ($row = $stmt->fetch()) {
         $gold_reward_data = [
-            'label'    => $row['Deal Component Allowance Label'],
+            'label' => $row['Deal Component Allowance Label'],
             'discount' => $row['Deal Component Allowance']
         ];
     }
 
 
-    $sql  =
+    $sql =
         "select `Product Availability State`,`Product Availability`,`Product ID`,`Product Price`,`Product Family Category Key`,`Product Price`,`Product Units Per Case`,`Product Unit Label` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
@@ -211,120 +212,67 @@ function category_products($data, $db, $customer_key, $order)
 
 
             if ($row['Product Units Per Case'] != 1) {
-                $price_unit = '('.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'].')';
+                $price_unit = '(' . preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)) . '/' . $row['Product Unit Label'] . ')';
             } else {
                 $price_unit = '';
             }
 
             $gold_reward[$row['Product ID']] = [
-                'label'          => $gold_reward_data['label'],
-                'percentage'     => '&darr;'.percentage($gold_reward_data['discount'], 1, 0),
-                'price'          => $price,
+                'label' => $gold_reward_data['label'],
+                'percentage' => '&darr;' . percentage($gold_reward_data['discount'], 1, 0),
+                'price' => $price,
                 'price_per_unit' => $price_unit,
-                'applied'        => false
+                'applied' => false
             ];
         }
     }
 
 
     if ($order) {
-        $family_data      = [];
-        $families         = [];
-        $family_discounts = [];
 
 
-        $sql  =
-            "select `Product Family Category Key` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            [
-                $data['webpage_key']
-            ]
+        $sql = sprintf(
+            'SELECT P.`Product ID`,`Fraction Discount`,`Deal Info`,`Product Price`,`Product Unit Label`,`Product Units Per Case` FROM `Order Transaction Deal Bridge` OTDB left join `Product Dimension` P on (P.`Product ID`=OTDB.`Product ID`)  WHERE `Order Key`=%d ',
+            $order->id
         );
-        while ($row = $stmt->fetch()) {
-            if ($row['Product Family Category Key']) {
-                $families[$row['Product Family Category Key']]    = $row['Product Family Category Key'];
-                $family_data[$row['Product Family Category Key']] = [
-                    'category_key'                => $row['Product Family Category Key'],
-                    'discount_min_quantity_order' => null,
 
-                ];
-            }
-        }
 
-        $order_family_data = $order->get_family_order_distribution();
 
-        // print_r($order->get_family_order_distribution());
-        // print_r(join(',', $families));
+        if ($result = $db->query($sql)) {
+            foreach ($result as $row) {
 
-        if (count($families) > 0) {
-            $sql  =
-                "select `Deal Component Allowance`,`Deal Component Terms Type`,`Deal Component Trigger Key`,`Deal Component Terms` from `Deal Component Dimension` where `Deal Component Status` = 'Active' and `Deal Component Trigger`='Category' and  `Deal Component Allowance Type`='Percentage Off' and `Deal Component Allowance Target`='Category'  and   `Deal Component Trigger Key` in ("
-                .join(
-                    ',',
-                    $families
-                ).")";
-            $stmt = $db->prepare($sql);
-            $stmt->execute();
-            while ($row = $stmt->fetch()) {
-                if ($row['Deal Component Terms Type'] == 'Category Quantity Ordered') {
-                    if (is_null($family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'])) {
-                        $family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'] = $row['Deal Component Terms'];
-                    } elseif ($family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'] > $row['Deal Component Terms']) {
-                        $family_data[$row['Deal Component Trigger Key']]['discount_min_quantity_order'] = $row['Deal Component Terms'];
+
+                if (isset($gold_reward[$row['Product ID']])  and  $row['Fraction Discount'] and  $row['Fraction Discount']>0 ) {
+
+
+                    $disc = 1 - $row['Fraction Discount'];
+
+
+                    $price = money($disc * $row['Product Price'], $currency);
+
+
+                    if ($row['Product Units Per Case'] != 1) {
+                        $price_unit = '(' . preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)) . '/' . $row['Product Unit Label'] . ')';
+                    } else {
+                        $price_unit = '';
                     }
-                    $family_data[$row['Deal Component Trigger Key']]['percentage'] = $row['Deal Component Allowance'];
-                }
-            }
-        }
 
 
-        //print_r($order_family_data);
-
-        foreach ($family_data as $family_key => $_data) {
-            if (isset($order_family_data[$family_key]) and $order_family_data[$family_key]['qty'] > $_data['discount_min_quantity_order'] and isset($_data['percentage'])) {
-                $family_discounts[$family_key] = $_data['percentage'];
-            }
-        }
-
-
-        //print_r($family_discounts);
+                    $gold_reward[$row['Product ID']] = [
+                        'info' => $row['Deal Info'],
+                        'percentage' => '&darr;' . percentage($row['Fraction Discount'], 1, 0),
+                        'price' => $price,
+                        'price_per_unit' => $price_unit,
+                        'applied' => true
+                    ];
 
 
-        $sql  =
-            "select `Product Availability State`,`Product Availability`,`Product ID`,`Product Price`,`Product Family Category Key`,`Product Units Per Case`,`Product Unit Label` from `Website Webpage Scope Map`  left join `Product Dimension` P on (P.`Product ID`=`Website Webpage Scope Scope Key`) where `Website Webpage Scope Scope`='Product' and `Website Webpage Scope Webpage Key`=? ";
-        $stmt = $db->prepare($sql);
-        $stmt->execute(
-            array($data['webpage_key'])
-        );
-        while ($row = $stmt->fetch()) {
-            if ($do_stock) {
-                $stock[$row['Product ID']] = array(
-                    $row['Product Availability State'],
-                    get_stock_label($labels, $show_stock_value, $row['Product Availability State'], $row['Product Availability'])
-                );
-            }
-
-
-            if (isset($family_discounts[$row['Product Family Category Key']])) {
-                $disc = 1 - $family_discounts[$row['Product Family Category Key']];
-
-                $price = money($disc * $row['Product Price'], $order->get('Order Currency'));
-
-
-                if ($row['Product Units Per Case'] != 1) {
-                    $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $order->get('Order Currency'))).'/'.$row['Product Unit Label'];
-                } else {
-                    $price_unit = '';
                 }
 
-                $discounts[$row['Product ID']] = [
-                    'percentage'     => percentage($family_discounts[$row['Product Family Category Key']], 1, 0),
-                    'price'          => $price,
-                    'price_per_unit' => $price_unit
-                ];
+
             }
         }
+
     }
 
 
@@ -333,13 +281,13 @@ function category_products($data, $db, $customer_key, $order)
 
     echo json_encode(
         array(
-            'state'                  => 200,
-            'favourite'              => $favourite,
+            'state' => 200,
+            'favourite' => $favourite,
             'out_of_stock_reminders' => $out_of_stock_reminders,
-            'ordered_products'       => $ordered_products,
-            'stock'                  => $stock,
-            'discounts'              => $discounts,
-            'gold_reward'            => $gold_reward
+            'ordered_products' => $ordered_products,
+            'stock' => $stock,
+            'discounts' => [],
+            'gold_reward' => $gold_reward
 
 
         )
@@ -357,25 +305,25 @@ function get_stock_label($labels, $show_stock_value, $stock_state, $availability
         case 'Excess':
             $stock_label = (!empty($labels['_stock_Excess']) ? $labels['_stock_Excess'] : _('Plenty of stock'));
             if ($show_stock_value == 'Yes') {
-                $stock_label .= ' ('.number($availability).')';
+                $stock_label .= ' (' . number($availability) . ')';
             }
             break;
         case 'Normal':
             $stock_label = (!empty($labels['_stock_Normal']) ? $labels['_stock_Normal'] : _('Plenty of stock'));
             if ($show_stock_value == 'Yes') {
-                $stock_label .= ' ('.number($availability).')';
+                $stock_label .= ' (' . number($availability) . ')';
             }
             break;
         case 'Low':
             $stock_label = (!empty($labels['_stock_Low']) ? $labels['_stock_Low'] : _('Limited stock'));
             if ($show_stock_value == 'Yes') {
-                $stock_label .= ' ('.number($availability).')';
+                $stock_label .= ' (' . number($availability) . ')';
             }
             break;
         case 'VeryLow':
             $stock_label = (!empty($labels['_stock_OutofStock']) ? $labels['_stock_OutofStock'] : _('Very low stock'));
             if ($show_stock_value == 'Yes' or $show_stock_value == 'Only_if_very_low') {
-                $stock_label .= ' ('.number($availability).')';
+                $stock_label .= ' (' . number($availability) . ')';
             }
             break;
 
