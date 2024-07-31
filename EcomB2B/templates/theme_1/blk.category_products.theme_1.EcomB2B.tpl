@@ -72,10 +72,10 @@
 
                         <div class="product_description">
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
-                                <h4 style="margin-bottom: 2px" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
+                                <h4 style="margin-bottom: 2px, border: 2px solid #d1d5db" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
 
 
-                                <div style="display:flex;clear: both">
+                                <div style="display:flex;clear: both; border: 2px solid #d1d5db">
                                     <div style="flex-grow: 1;font-size: smaller" class="code">
                                         <small class="Product_Code">{$item.code}</small>
                                     </div>
@@ -118,9 +118,9 @@
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
                                         <tr class="product_price">
-                                            <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
-                                            <td class="original_price ">{$item.price}</td>
-                                            <td class="original_price">{if isset($item.price_unit)}{$item.price_unit}{/if}</td>
+                                            <td style="border: 2px solid #d1d5db" >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
+                                            <td style="border: 2px solid #d1d5db" class="original_price ">{$item.price}</td>
+                                            <td style="border: 2px solid #d1d5db" class="original_price">{if isset($item.price_unit)}{$item.price_unit}{/if}</td>
                                         </tr>
                                         <tr class="product_discounted_price hide product_price"   >
                                             <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
