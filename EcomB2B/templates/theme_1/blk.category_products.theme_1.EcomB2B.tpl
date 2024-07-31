@@ -120,7 +120,7 @@
                                     </div>
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
-                                        <tr >
+                                        <tr class="original_price_tr" >
                                             <td style="width:75px">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td class="original_price ">{$item.price}</td>
                                             {if $item.price_unit}

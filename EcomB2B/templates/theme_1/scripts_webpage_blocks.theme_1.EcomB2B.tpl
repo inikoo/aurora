@@ -36,6 +36,7 @@
       if(value.applied){
         block.find('.gold_reward_badge').css('color', 'red');
         block.find('.original_price').addClass('strikethrough')
+        block.find('.original_price_tr').css('opacity',.7)
 
       }
 
