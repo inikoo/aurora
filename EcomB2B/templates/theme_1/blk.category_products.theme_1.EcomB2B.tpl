@@ -150,7 +150,6 @@
 
                                                     <i style="color: #3b3b3b;/*! font-size: 0.5rem; */opacity: 0.7;"
                                                         class="gold_reward_applied fal fa-question-circle"></i>
-                                                    <i style="color: #f00;font-size: 0.5rem;opacity: 0.5;" class="gold_reward_applied fal fa-times"></i>
                                                 </div>
                                             </td>
                                             <td class="gold_reward_price "></td>
