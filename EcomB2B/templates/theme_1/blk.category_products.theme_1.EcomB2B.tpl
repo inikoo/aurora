@@ -66,7 +66,7 @@
                                data-list="Family"
                                onclick="go_product(this); return !ga.loaded;"
 
-                            ><img alt="{$item.name|escape:'quotes'}" src="{$item.image_website}" style="margin-bottom: auto" /></a>
+                            ><img alt="{$item.name|escape:'quotes'}" src="{$item.image_website}" style="margin: auto" /></a>
                         </div>
 
 
@@ -120,7 +120,7 @@
                                         <tr class="product_price">
                                             <td style="border: 2px solid #d1d5db" >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
                                             <td style="border: 2px solid #d1d5db" class="original_price ">{$item.price}</td>
-                                            {if isset($item.price_unit)}
+                                            {if $item.price_unit}
                                                 <td style="border: 2px solid #d1d5db" class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
