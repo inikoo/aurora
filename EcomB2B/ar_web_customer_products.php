@@ -209,7 +209,7 @@ function category_products($data, $db, $customer_key, $order)
 
 
             if ($row['Product Units Per Case'] != 1) {
-                $price_unit = ''.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'];
+                $price_unit = '('.preg_replace('/PLN/', 'zł ', money($disc * $row['Product Price'] / $row['Product Units Per Case'], $currency)).'/'.$row['Product Unit Label'].')';
             } else {
                 $price_unit = '';
             }
