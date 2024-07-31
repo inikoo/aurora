@@ -66,7 +66,8 @@ function category_products($data, $db, $customer_key, $order)
 {
     $website  = get_object('Website', $_SESSION['website_key']);
     $store    = get_object('Store', $website->get('Website Store Key'));
-    $currency = $store->get('Store Currency');
+    $currency = $store->get('Store Currency Code');
+
 
     $labels = $website->get('Localised Labels');
 
