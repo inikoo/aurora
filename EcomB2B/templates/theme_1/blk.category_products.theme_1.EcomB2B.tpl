@@ -144,7 +144,7 @@
                                             </td>
                                             <td style="border: 2px solid #d1d5db" class="original_price "></td>
 
-                                            <td style="border: 2px solid #d1d5db" class="original_price"></td>
+                                            <td style="border: 2px solid #d1d5db" class="original_unit_price"></td>
 
                                         </tr>
 

@@ -16,9 +16,18 @@
 
 
 
-      let block=$('#price_block_'+index)
+      let block=$('#price_block_gold_reward_'+index)
 
       console.log(block)
+      block.find('.gold_reward_percentage').html(value.percentage)
+      block.find('.original_price').html(value.price)
+      block.find('.original_unit_price').html(value.price_per_unit)
+
+
+      if(value.price_per_unit==''){
+        block.find('.original_unit_price').addClass('hide')
+      }
+
 
       /*
       block.find('.product_discounted_price').removeClass('hide')
