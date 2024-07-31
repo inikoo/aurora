@@ -1,5 +1,35 @@
 <script>
 
+  function show_gold_reward(discounts){
+
+    //$('.product_discounted_price').addClass('hide')
+    //$('.original_price').removeClass('strikethrough').css('opacity', '1');
+
+    console.log('debug SSSS')
+
+    $.each(discounts, function (index, value) {
+
+
+      console.log(index)
+      console.log(value)
+
+
+
+      let block=$('#price_block_'+index)
+
+      console.log(block)
+
+      /*
+      block.find('.product_discounted_price').removeClass('hide')
+      block.find('.original_price').addClass('strikethrough discrete').css('opacity', '0.6');
+
+      block.find('._percentage').html(value.percentage)
+      block.find('._price').html(value.price)
+      block.find('._unit_price').html(value.price_per_unit)
+        */
+    });
+
+  }
 
     function show_discounts(discounts){
 
@@ -1694,8 +1724,8 @@
                                 });
 
                                 console.log('A1')
-
-                                show_discounts(data.discounts)
+                                 show_gold_reward(data.discounts)
+                                //show_discounts(data.discounts)
 
 
                             });
