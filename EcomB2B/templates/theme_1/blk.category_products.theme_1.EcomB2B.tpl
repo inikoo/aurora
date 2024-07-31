@@ -133,7 +133,7 @@
 
 
                                         <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
-                                            <td style="width:75px" class="discount_info_family_{$item.family_key}"  >
+                                            <td style="width:75px"  data-family_key="{$item.family_key}" class="discount_info_family_{$item.family_key}"  >
                                                 <div onclick="gr_show_discount_info()"
                                                     id="discount_info_applied"
                                                     style="border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #16a34a;"
