@@ -41,7 +41,7 @@
         block.find('.original_price').addClass('strikethrough')
         block.find('.original_price_tr').css('opacity',.6)
       } else {
-        block.find('.discount_info_unapplied').removeClass('hide')
+        block.find('.discount_info_unappeased').removeClass('hide')
 
       }
 
