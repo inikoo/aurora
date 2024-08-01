@@ -41,6 +41,11 @@
                 </div>
             {/if}
             {if isset($discounts) and count($discounts.deals)>0 }
+
+                <div id="new_deal_info">
+                    Hello
+                </div>
+
                 <div class="discounts top_body">
                     {foreach from=$discounts.deals item=deal_data }
                         <div class="discount_card" key="{$deal_data.key}">
