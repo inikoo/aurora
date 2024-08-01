@@ -524,6 +524,33 @@ if ($cacheable == 'Yes') {
 header('Vary: Accept-Encoding, X-Device, X-State');
 $smarty->assign('zaraz', $zaraz);
 
+$first_order_bonus=null;
+
+if($logged_in){
+
+    if(!empty($_SESSION['customer_key'])   ){
+
+
+        // get first order bpnus
+        $sql="select `Deal Name Label` from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) where `Deal Status`='Active' and `Deal Store Key`=? linit 1  ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                $website->get('Website Store Key')
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $first_order_bonus=[
+                'label'=>$row['Deal Name Label']
+            ];
+
+        }
+
+    }
+
+}
+
+
 $smarty->display($template);
 
 
