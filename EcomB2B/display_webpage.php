@@ -547,6 +547,27 @@ if($logged_in){
 
         }
 
+        $first_order_bonus_applicable=false;
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND  `Order State` NOT IN ('Cancelled','InBasket') ",
+            $_SESSION['customer_key']
+        );
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['num'] ==0) {
+                    $first_order_bonus_applicable=true;
+                }
+            }
+        }
+
+        if(!$first_order_bonus_applicable){
+            $first_order_bonus=null;
+        }
+
+
+
        // print_r($first_order_bonus);
        // exit('xx');
 
@@ -554,6 +575,7 @@ if($logged_in){
 
 }
 
+$smarty->assign('first_order_bonus', $first_order_bonus);
 
 $smarty->display($template);
 
