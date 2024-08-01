@@ -10,7 +10,11 @@
 *}
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
-<div id="top_bar">Hello</div>
+<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;">
+    <span>Hello,</span>
+    <span style="font-weight: 600">World!</span>
+</div>
+
 <div id="top_header" class="{$website->get('header_background_type')}">
     <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
             {if !empty($settings['logo_website_website'])}
