@@ -10,17 +10,18 @@
 *}
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
-<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;">
+<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;display: grid;grid-template-columns: repeat(2, minmax(0, 1fr));">
     <div class="greetings">
         {if $logged_in}
-        <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
-        <span style="font-weight: 600" id="greetings_name" >friend</span>
+            <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
+            <span style="font-weight: 600" id="greetings_name" >friend</span>
         {else}
             <a href="/login.sys" class="button"  id="login_header_button" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
             <a href="/register.sys" class="button"  id="register_header_button" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
         {/if}
     </div>
-    <div class="action_buttons">
+
+    <div class="action_buttons" style="display: flex; justify-content: flex-end; column-gap: 16px">
 
         {if $logged_in}
 
@@ -35,11 +36,11 @@
 
         <div class="hide">
 
-        <a id="customer_products_button" href="custom_design_products.sys" class="button" style="padding:4px 8px 4px 2px  ; margin-left: 0px;margin-right: 0px;">
+        <a id="customer_products_button" href="custom_design_products.sys" class="button" style="padding:4px 8px 4px 2px  ;">
             <i class=" far fa-user-shield  "  title="{if empty($labels._Customer_Products)}{t}My products{/t}{else}{$labels._Customer_Products}{/if}" aria-hidden="true"></i>
         </a>
 
-        <a id="customer_offers_button" href="customer_discounts.sys" class="button" style="padding:4px 8px 4px 2px  ; margin-left: 0px;margin-right: 0px;">
+        <a id="customer_offers_button" href="customer_discounts.sys" class="button" style="padding:4px 8px 4px 2px  ;">
             <i class=" far fa-user-tag  "  title="{if empty($labels._Customer_Discounts)}{t}My discounts{/t}{else}{$labels._Customer_Discounts}{/if}" aria-hidden="true"></i>
         </a>
 
