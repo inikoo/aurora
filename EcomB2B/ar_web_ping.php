@@ -121,7 +121,7 @@ if (!empty($_REQUEST['store_type'])) {
                 'total' => $total,
                 'items' => $items,
                 'label' => $label,
-                'customer_name'=>$customer->name
+                'customer_name'=>$customer->get('Customer Name')
             )
         );
     }
