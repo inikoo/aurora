@@ -1699,7 +1699,7 @@
                                     $('#top_bar_greetings_name').html(data.customer_name)
 
                                     if(data.first_order_bonus){
-                                        // $('#first_order_bonus_banner').removeClass('hide')
+                                        $('#first_order_bonus_banner').removeClass('hide')
                                         // $('#first_order_bonus_banner').html(first_order_bonus.html)
 
                                         $('#first_order_bonus_banner').find('#coupon_title').html(data.first_order_bonus.label);
