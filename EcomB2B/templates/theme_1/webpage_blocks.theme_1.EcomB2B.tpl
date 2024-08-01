@@ -40,7 +40,15 @@
                     <div style="clear:both"></div>
                 </div>
             {/if}
+
+            <div id="top_header_offer"  style="height: 150px;border:1px solid #ececec">
+                :)
+            </div>
+
             {if isset($discounts) and count($discounts.deals)>0 }
+
+
+
                 <div class="discounts top_body">
                     {foreach from=$discounts.deals item=deal_data }
                         <div class="discount_card" key="{$deal_data.key}">
