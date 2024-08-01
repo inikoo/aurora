@@ -63,10 +63,21 @@
                         </div>
 
 
-                        <div class="product_description afdsd">
+                        <div class="product_description" style="position: relative; height: fit-content !important; margin-bottom: 5px">
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
-                                <h4 style="font-size: 15px;margin-bottom: 2px" class="name item_name {if $item.name|strlen > 40}small{elseif $item.name|strlen > 60} very_small{/if} ">{$item.name}</h4>
-                                <span class="code"><small>{$item.code}</small></span>
+                                <h4 style="font-size: 15px;height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
+                                
+                                <div style="display:flex;clear: both;font-size: smaller">
+                                    <div style="font-size: smaller;flex-grow: 1;" class="code">
+                                        <small class="Product_Code">{$item.code}</small>
+                                    </div>
+                                    {if !empty($item.rrp)}
+                                        <div style="font-size: smaller;flex-grow: 1;text-align: right" class="code">
+                                            <span style="font-size: smaller">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
+                                                : {$item.rrp}</span>
+                                        </div>
+                                    {/if}
+                                </div>
                             {else}
                                 <div class="name item_name Product_Name ">{$item.variants[0].name}</div>
 
@@ -107,13 +118,6 @@
                                             <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
                                             <td class="_price"></td>
                                             <td ><span class="_unit_price"></span></td>
-                                        </tr>
-
-                                        <tr class="product_rrp" style="font-size: smaller;{if empty($item.rrp)  }display:none{/if}">
-                                            <td>{if empty($labels._product_rrp)} {t}RRP{/t} {else}{$labels._product_rrp}{/if}</td>
-                                            <td colspan="2">{$item.rrp}</td>
-
-
                                         </tr>
 
                                     </table>
