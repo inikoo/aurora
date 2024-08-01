@@ -10,6 +10,7 @@
 *}
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
+<div id="top_bar">Hello</div>
 <div id="top_header" class="{$website->get('header_background_type')}">
     <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
             {if !empty($settings['logo_website_website'])}

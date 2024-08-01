@@ -49,9 +49,7 @@
         block.find('.gold_reward_unit_price').addClass('hide')
       }
 
-
-
-
+        
 
       if(value.applied){
         block.find('.discount_info_applied').removeClass('hide')
