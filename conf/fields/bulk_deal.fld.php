@@ -30,8 +30,6 @@ if (isset($options['new']) and $options['new']) {
 }
 
 
-$edit=false;
-
 $object_fields = array(
     array(
         'label'      => _('Id'),
