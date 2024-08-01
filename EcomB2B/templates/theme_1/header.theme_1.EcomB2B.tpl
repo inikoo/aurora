@@ -18,7 +18,9 @@
         {/if}
     </div>
 
-    <div class="action_buttons" style="display: flex; justify-content: flex-end; column-gap: 20px; grid-column: span 2 / span 2">
+    <div class="action_buttons" style="display: flex; justify-content: flex-end;
+    {if $store->get('Store Type')=='Dropshipping'}column-gap: 20px;{else}column-gap: 30px;{/if}
+     grid-column: span 2 / span 2">
 
         {if $logged_in}
 
