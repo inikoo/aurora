@@ -62,7 +62,7 @@
 
             <a href="/balance.sys"  class="super_button " >
                 <i class="fa fa-piggy-bank  " title="{t}Top up{/t}" aria-hidden="true"></i>
-                <span class="Customer_Balance"></span>
+                <span id="top_bar_customer_balance" class="Customer_Balance"></span>
             </a>
 
         {else}

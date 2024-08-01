@@ -1692,7 +1692,7 @@
                             $.post( "ar_web_ping.php", { store_type: "{$store->get('Store Type')}", webpage_key:{$webpage->id} ,device: 'desktop'  } ,
                                 function( data ) {
                                     {if $store->get('Store Type')=='Dropshipping'}
-                                    $('.DS_top_buttons .Customer_Balance').html(data.customer_balance)
+                                    $('#top_bar_customer_balance').html(data.customer_balance)
                                     {else}
                                     $('#header_order_totals').find('.ordered_products_number').html(data.items);
                                     $('#header_order_totals').find('.order_amount').html(data.total);
