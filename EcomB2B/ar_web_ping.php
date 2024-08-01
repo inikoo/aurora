@@ -115,13 +115,57 @@ if (!empty($_REQUEST['store_type'])) {
                 $items = $order->get('Products');
             }
         }
+
+
+        $first_order_bonus=null;
+
+        $sql="select `Deal Name Label` from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) where `Deal Status`='Active' and `Deal Campaign Code`='FO' and `Deal Store Key`=? limit 1  ";
+        $stmt = $db->prepare($sql);
+
+        $stmt->execute(
+            array(
+                $website->get('Website Store Key')
+            )
+        );
+        if ($row = $stmt->fetch()) {
+            $first_order_bonus=[
+                'label'=>$row['Deal Name Label']
+            ];
+
+        }
+
+        $first_order_bonus_applicable=false;
+
+        $sql = sprintf(
+            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND  `Order State` NOT IN ('Cancelled','InBasket') ",
+            $_SESSION['customer_key']
+        );
+
+
+
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if ($row['num'] ==0) {
+                    $first_order_bonus_applicable=true;
+                }
+            }
+        }
+
+        if(!$first_order_bonus_applicable){
+            $first_order_bonus=null;
+        }
+
+
         echo json_encode(
             array(
                 'state' => 200,
                 'total' => $total,
                 'items' => $items,
                 'label' => $label,
-                'customer_name'=>$customer->get('Customer Name')
+                'customer_name'=>$customer->get('Customer Name'),
+                'customer_reference'=>sprintf('%05d',$customer->id),
+                'first_order_bonus'=>$first_order_bonus
             )
         );
     }
