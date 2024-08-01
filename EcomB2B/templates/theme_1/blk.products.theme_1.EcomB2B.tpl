@@ -109,11 +109,16 @@
                                     </div>
 
                                     <table id="price_block_{$item.product_id}" class="price_block" >
-                                        <tr class="product_price">
-                                            <td >{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</td>
+                                        <tr class="product_price original_price_tr" >
+                                            <td style="width:75px">
+                                                {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
+                                            </td>
                                             <td class="original_price ">{$item.price}</td>
-                                            <td class="original_price">{if isset($item.price_unit)}{$item.price_unit}{/if}</td>
+                                            {if isset($item.price_unit)}
+                                                <td  style="text-align: right"  class="original_price">{$item.price_unit}</td>
+                                            {/if}
                                         </tr>
+
                                         <tr class="product_discounted_price hide product_price"   >
                                             <td style="font-size: smaller"><i class="far fa-arrow-down"></i> <span class="_percentage"></span></td>
                                             <td class="_price"></td>
