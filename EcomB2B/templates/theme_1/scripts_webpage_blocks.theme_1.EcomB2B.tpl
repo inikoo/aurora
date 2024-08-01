@@ -1698,6 +1698,12 @@
                                     $('#header_order_totals').find('.order_amount').html(data.total);
                                     $('#top_bar_greetings_name').html(data.customer_name)
 
+                                    if(data.first_order_bonus){
+                                      $('#first_order_bonus_banner').removeClass('hide')
+                                      $('#first_order_bonus_banner').css('height','120px')
+                                      $('#first_order_bonus_banner').html(first_order_bonus.html)
+                                    }
+
 
                                     {/if}
                             }, "json");

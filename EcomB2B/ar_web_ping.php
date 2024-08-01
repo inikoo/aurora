@@ -129,7 +129,8 @@ if (!empty($_REQUEST['store_type'])) {
         );
         if ($row = $stmt->fetch()) {
             $first_order_bonus=[
-                'label'=>$row['Deal Name Label']
+                'label'=>$row['Deal Name Label'],
+                'html'=>'<h3> '.$row['Deal Name Label'].' </h3>'
             ];
 
         }

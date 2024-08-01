@@ -41,10 +41,8 @@
                 </div>
             {/if}
 
-
-
-
-            <div id="first_order_bonus_banner"  style="height: 150px;border:1px solid #ececec">
+        =
+            <div id="first_order_bonus_banner"  class="hide" style="height: 0px;border:1px solid #ececec">
 
             </div>
 
