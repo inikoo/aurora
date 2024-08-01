@@ -54,13 +54,13 @@
             <i class=" far fa-shopping-cart  "  ></i> {if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}
         </a>
 
-            <a href="/client_order_new.sys"  class="super_button" style="color:black;;margin-left: 30px">
+            <a href="/client_order_new.sys"  class="super_button" >
                 <i class="fa fa-shopping-cart  " title="{t}New order{/t}" aria-hidden="true"></i>
                 <span >{t}New order{/t}</span>
             </a>
 
 
-            <a href="/balance.sys"  class="super_button " style="color:black;;margin-left: 20px">
+            <a href="/balance.sys"  class="super_button " >
                 <i class="fa fa-piggy-bank  " title="{t}Top up{/t}" aria-hidden="true"></i>
                 <span class="Customer_Balance"></span>
             </a>
