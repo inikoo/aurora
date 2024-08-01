@@ -524,60 +524,7 @@ if ($cacheable == 'Yes') {
 header('Vary: Accept-Encoding, X-Device, X-State');
 $smarty->assign('zaraz', $zaraz);
 
-$first_order_bonus=null;
 
-if($logged_in){
-
-    if(!empty($_SESSION['customer_key'])   ){
-
-
-        // get first order bpnus
-        $sql="select `Deal Name Label` from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) where `Deal Status`='Active' and `Deal Store Key`=? limit 1  ";
-        $stmt = $db->prepare($sql);
-
-        $stmt->execute(
-            array(
-                $website->get('Website Store Key')
-            )
-        );
-        if ($row = $stmt->fetch()) {
-            $first_order_bonus=[
-                'label'=>$row['Deal Name Label']
-            ];
-
-        }
-
-        $first_order_bonus_applicable=false;
-
-        $sql = sprintf(
-            "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND  `Order State` NOT IN ('Cancelled','InBasket') ",
-            $_SESSION['customer_key']
-        );
-
-
-
-
-        if ($result = $db->query($sql)) {
-            if ($row = $result->fetch()) {
-                if ($row['num'] ==0) {
-                    $first_order_bonus_applicable=true;
-                }
-            }
-        }
-
-        if(!$first_order_bonus_applicable){
-            $first_order_bonus=null;
-        }
-
-
-
-
-
-    }
-
-}
-
-$smarty->assign('first_order_bonus', $first_order_bonus);
 
 $smarty->display($template);
 
