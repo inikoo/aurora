@@ -119,7 +119,7 @@ if (!empty($_REQUEST['store_type'])) {
 
         $first_order_bonus=null;
 
-        $sql="select `Deal Name Label`,`Deal Allowance Label`,`Deal Terms` from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) where `Deal Status`='Active' and `Deal Campaign Code`='FO' and `Deal Store Key`=? limit 1  ";
+        $sql="select `Deal Name Label`,`Deal Allowance Label`,`Deal Terms`,`Deal Description`,`Deal Term Allowances Label` from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) where `Deal Status`='Active' and `Deal Campaign Code`='FO' and `Deal Store Key`=? limit 1  ";
         $stmt = $db->prepare($sql);
 
         $stmt->execute(
@@ -131,7 +131,9 @@ if (!empty($_REQUEST['store_type'])) {
             $first_order_bonus=[
                 'label'=>$row['Deal Name Label'],
                 'allowance_label'=>$row['Deal Allowance Label'],
-                'terms'=>explode(';',$row['Deal Terms'])
+                'terms'=>explode(';',$row['Deal Terms']),
+                'description'=>$row['Deal Description'],
+                'description_alt'=>$row['Deal Term Allowances Label']
 
             ];
 
