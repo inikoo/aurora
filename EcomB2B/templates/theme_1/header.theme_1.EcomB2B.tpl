@@ -10,7 +10,7 @@
 *}
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
-<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;display: grid;grid-template-columns: repeat(2, minmax(0, 1fr));">
+<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;display: grid;grid-template-columns: repeat(3, minmax(0, 1fr));">
     <div class="greetings">
         {if $logged_in}
             <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
@@ -23,7 +23,7 @@
         {/if}
     </div>
 
-    <div class="action_buttons" style="display: flex; justify-content: flex-end; column-gap: 16px">
+    <div class="action_buttons" style="display: flex; justify-content: flex-end; column-gap: 16px; grid-column: span 2 / span 2">
 
         {if $logged_in}
 
