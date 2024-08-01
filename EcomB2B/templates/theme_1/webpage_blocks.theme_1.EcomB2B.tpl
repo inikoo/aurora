@@ -41,22 +41,7 @@
                 </div>
             {/if}
 
-            <div id="first_order_bonus_banner"  class="hide" style="background: #E0B0FF;height: 120px;display: flex;justify-content: start;align-items: center;padding: 0 20px;">
-                <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);">
-                    <div style="height: 75px; width: 200px; border-radius: 5px; background: #EEEEEE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid">
-                        <div class="coupon_title" style="display: flex; align-items: end; justify-content: center; font-weight: 700">
 
-                        </div>
-                        <div style="display: flex; align-items: center">
-                            <hr style="border: 1px dashed #9ca3af; width: 80%">
-                        </div>
-                        <div class="coupon_description" style="display: flex; align-items: start; justify-content: center; font-size: 0.7rem">
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
 
 
             {if isset($discounts) and count($discounts.deals)>0 }
