@@ -1696,7 +1696,9 @@
                                     {else}
                                     $('#header_order_totals').find('.ordered_products_number').html(data.items);
                                     $('#header_order_totals').find('.order_amount').html(data.total);
-                                    $('#header_order_totals').find('i').attr('title', data.label);
+                                    $('#top_bar_greetings_name').html(data.customer_name)
+
+
                                     {/if}
                             }, "json");
 
