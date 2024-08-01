@@ -1,0 +1,1 @@
+ALTER TABLE `Website Dimension` ADD COLUMN `Website Features` json NULL AFTER `Website Locale`;

@@ -190,6 +190,8 @@ class Website extends DB_Table {
             }
         }
 
+        $base_data['Website Features'] = '{}';
+
         $keys   = '(';
         $values = 'values(';
         foreach ($base_data as $key => $value) {
