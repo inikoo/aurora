@@ -28,27 +28,19 @@
         {if $logged_in}
 
 
-        <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
-            <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
-
         <a href="#"  class="button logout" style="margin-left: 0px;">
             <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
             <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
         </a>
 
-        <div class="hide">
 
-        <a id="customer_products_button" href="custom_design_products.sys" class="button" style="padding:4px 8px 4px 2px  ;">
-            <i class=" far fa-user-shield  "  title="{if empty($labels._Customer_Products)}{t}My products{/t}{else}{$labels._Customer_Products}{/if}" aria-hidden="true"></i>
-        </a>
 
-        <a id="customer_offers_button" href="customer_discounts.sys" class="button" style="padding:4px 8px 4px 2px  ;">
-            <i class=" far fa-user-tag  "  title="{if empty($labels._Customer_Discounts)}{t}My discounts{/t}{else}{$labels._Customer_Discounts}{/if}" aria-hidden="true"></i>
-        </a>
+            <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
+                <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
 
-        </div>
 
-        {if $store->get('Store Type')=='Dropshipping'}
+
+            {if $store->get('Store Type')=='Dropshipping'}
 
         <a id="portfolio_button" href="portfolio.sys" class="button">
             <i class=" far fa-store-alt  "  ></i> {if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}
@@ -78,6 +70,7 @@
 
             <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px;padding-right: 8px;padding-left: 8px">
                 <i class=" far fa-heart"  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
+                <span>{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}</span>
             </a>
 
             <a  id="header_order_totals" href="basket.sys" class="button" style="margin-right:5px">
