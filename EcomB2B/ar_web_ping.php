@@ -120,7 +120,8 @@ if (!empty($_REQUEST['store_type'])) {
                 'state' => 200,
                 'total' => $total,
                 'items' => $items,
-                'label' => $label
+                'label' => $label,
+                'customer_name'=>$customer->name
             )
         );
     }
