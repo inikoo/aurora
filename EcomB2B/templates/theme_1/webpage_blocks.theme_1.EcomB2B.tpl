@@ -41,11 +41,13 @@
                 </div>
             {/if}
 
-            {if $first_order_bonus}
+
+
+
             <div id="first_order_bonus_banner"  style="height: 150px;border:1px solid #ececec">
-              FOB
+
             </div>
-            {/if}
+
 
             {if isset($discounts) and count($discounts.deals)>0 }
 
