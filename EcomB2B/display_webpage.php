@@ -554,6 +554,9 @@ if($logged_in){
             $_SESSION['customer_key']
         );
 
+
+
+
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 if ($row['num'] ==0) {
@@ -568,8 +571,7 @@ if($logged_in){
 
 
 
-       // print_r($first_order_bonus);
-       // exit('xx');
+
 
     }
 
