@@ -25,9 +25,6 @@
         {if $logged_in}
 
 
-
-
-
         <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
             <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
 
@@ -61,10 +58,22 @@
         <a id="orders_button" href="clients_orders.sys" class="button">
             <i class=" far fa-shopping-cart  "  ></i> {if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}
         </a>
+
         {else}
+
+            <a  id="header_order_totals" href="basket.sys" class="button" style="margin-right:5px">
+                <span class="ordered_products_number">0</span>
+                <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}"
+                   aria-hidden="true"></i>
+                <span class="order_amount" style="padding-right:10px" title="">{$zero_money}</span>
+            </a>
+
+
             <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px;padding-right: 8px;padding-left: 8px">
                 <i class=" far fa-heart"  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
             </a>
+
+
         {/if}
 
         {/if}
