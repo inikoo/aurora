@@ -15,89 +15,72 @@
         {if $logged_in}
             <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
             <span style="font-weight: 600" id="top_bar_greetings_name" >friend</span>
+        {/if}
+    </div>
+
+    <div class="action_buttons" style="display: flex; justify-content: flex-end; column-gap: 20px; grid-column: span 2 / span 2">
+
+        {if $logged_in}
+
+            {if $store->get('Store Type')=='Dropshipping'}
+                <a href="#"  class="button logout" style="margin-left: 0px;">
+                    <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
+                    <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
+                </a>
+
+                <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
+                    <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span>
+                </a>
+
+                <a id="portfolio_button" href="portfolio.sys" class="button">
+                    <i class=" far fa-store-alt  "  ></i> {if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}
+                </a>
+
+                <a id="customers_button" href="clients.sys" class="button">
+                    <i class=" fal fa-users  "  ></i> {if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}
+                </a>
+
+                <a id="orders_button" href="clients_orders.sys" class="button">
+                    <i class=" far fa-shopping-cart  "  ></i> {if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}
+                </a>
+
+                <a href="/client_order_new.sys"  class="super_button" >
+                    <i class="fa fa-shopping-cart  " title="{t}New order{/t}" aria-hidden="true"></i>
+                    <span >{t}New order{/t}</span>
+                </a>
+
+                <a href="/balance.sys"  class="super_button " >
+                    <i class="fa fa-piggy-bank  " title="{t}Top up{/t}" aria-hidden="true"></i>
+                    <span id="top_bar_customer_balance" class="Customer_Balance"></span>
+                </a>
+
+            {else}
+                <a href="#"  class="button logout" style="margin-left: 0px;">
+                    <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
+                    <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
+                </a>
+
+                <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
+                    <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span>
+                </a>
+
+                <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px;padding-right: 8px;padding-left: 8px">
+                    <i class=" far fa-heart"  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
+                    <span>{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}</span>
+                </a>
+
+                <a id="header_order_totals" href="basket.sys" class="button" style="margin-right:5px">
+                    <span class="ordered_products_number">0</span>
+                    <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}" aria-hidden="true"></i>
+                    <span class="order_amount" style="padding-right:10px" title="">{$zero_money}</span>
+                </a>
+            {/if}
+        
         {else}
             <div style="display: flex;column-gap: 16px;">
                 <a href="/login.sys" class="button"  id="login_header_button" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
                 <a href="/register.sys" class="button"  id="register_header_button" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
             </div>
-        {/if}
-    </div>
-
-    <div class="action_buttons" style="display: flex; justify-content: flex-end; column-gap: 16px; grid-column: span 2 / span 2">
-
-        {if $logged_in}
-
-
-
-
-            {if $store->get('Store Type')=='Dropshipping'}
-
-                <a href="#"  class="button logout" style="margin-left: 0px;">
-                    <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
-                    <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
-                </a>
-
-
-
-                <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
-                    <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
-
-
-
-                <a id="portfolio_button" href="portfolio.sys" class="button">
-            <i class=" far fa-store-alt  "  ></i> {if empty($labels._Portfolio)}{t}Portfolio{/t}{else}{$labels._Portfolio}{/if}
-        </a>
-
-        <a id="customers_button" href="clients.sys" class="button">
-            <i class=" fal fa-users  "  ></i> {if empty($labels._Customers)}{t}Customers{/t}{else}{$labels._Customers}{/if}
-        </a>
-
-        <a id="orders_button" href="clients_orders.sys" class="button">
-            <i class=" far fa-shopping-cart  "  ></i> {if empty($labels._Orders)}{t}Orders{/t}{else}{$labels._Orders}{/if}
-        </a>
-
-            <a href="/client_order_new.sys"  class="super_button" >
-                <i class="fa fa-shopping-cart  " title="{t}New order{/t}" aria-hidden="true"></i>
-                <span >{t}New order{/t}</span>
-            </a>
-
-
-            <a href="/balance.sys"  class="super_button " >
-                <i class="fa fa-piggy-bank  " title="{t}Top up{/t}" aria-hidden="true"></i>
-                <span id="top_bar_customer_balance" class="Customer_Balance"></span>
-            </a>
-
-        {else}
-
-                <a href="#"  class="button logout" style="margin-left: 0px;">
-                    <i class="far fa-spinner fa-spin  fa-flip-horizontal  " title="{t}Log out{/t}" aria-hidden="true"></i>
-                    <span>{if empty($labels._Logout)}{t}Log out{/t}{else}{$labels._Logout}{/if}</span>
-                </a>
-
-
-
-                <a id="profile_button" href="profile.sys" class="button" style="margin-left: 0px"><i class="far fa-user fa-flip-horizontal  " title="{t}Profile{/t}" aria-hidden="true"></i>
-                    <span>{if empty($labels._Profile)}{t}Profile{/t}{else}{$labels._Profile}{/if}</span></a>
-
-
-
-                <a id="favorites_button" href="favourites.sys" class="button" style="margin-left: 0px;margin-right: 0px;padding-right: 8px;padding-left: 8px">
-                <i class=" far fa-heart"  title="{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}" aria-hidden="true"></i>
-                <span>{if empty($labels._Favourites)}{t}My favourites{/t}{else}{$labels._Favourites}{/if}</span>
-            </a>
-
-            <a  id="header_order_totals" href="basket.sys" class="button" style="margin-right:5px">
-                <span class="ordered_products_number">0</span>
-                <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}"
-                   aria-hidden="true"></i>
-                <span class="order_amount" style="padding-right:10px" title="">{$zero_money}</span>
-            </a>
-
-
-
-
-        {/if}
-
         {/if}
 
     </div>
