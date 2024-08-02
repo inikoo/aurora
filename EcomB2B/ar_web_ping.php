@@ -166,16 +166,23 @@ if (!empty($_REQUEST['store_type'])) {
 
 
         $sql = sprintf(
-            "SELECT count(*) AS num , max(`Order Dispatched Date`)  as disoatch_date  FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d  AND `Order State`='Dispatched' AND `Order Dispatched Date`>=%s ",
+            "SELECT count(*) AS num , max(`Order Dispatched Date`)  as dispatch_date  FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d  AND `Order State`='Dispatched' AND `Order Dispatched Date`>=%s ",
             $customer->id,
             $order->id,
-            prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -30 days 00:00:00")))
+            prepare_mysql(date('Y-m-d 00:00:00', strtotime(gmdate('Y-m-d H:i:s')." -30 days")))
         );
 
-        //print "$sql\n";
-        if ($result = $db->query($sql)) {
-            if ($_row = $result->fetch()) {
 
+
+        if ($result = $db->query($sql)) {
+            if ($row = $result->fetch()) {
+                if($row['num']>0 and $row['dispatch_date']!='') {
+                    $is_gold_reward_member = true;
+                    $gold_reward_member = [
+                        'label' => _('Gold Reward Member'),
+                        'until' => strftime("%a %e %b %Y", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
+                    ];
+                }
             }
         }
 
