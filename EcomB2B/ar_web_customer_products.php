@@ -304,9 +304,11 @@ function category_products($data, $db, $customer_key, $order)
         }
 
         $gr_member=false;
+
+
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' ",
-            $order->data['Order Customer Key'],
+            $order->get('Order Customer Key'),
             $order->id,
             prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -30 days")).' 00:00:00')
         );
