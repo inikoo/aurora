@@ -13,6 +13,11 @@ include_once 'ar_web_common_logged_in.php';
 /** @var PDO $db */
 /** @var Customer $customer */
 
+if (isset($_REQUEST['debug']) and  $_REQUEST['debug']=='a' ) {
+    print $website_locale;
+    exit;
+}
+
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
