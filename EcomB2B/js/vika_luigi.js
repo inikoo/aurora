@@ -83,17 +83,22 @@ const replaceSearchIcon = async () => {
     });
 
     // Create the new <i> element
-    const newIconSearch = document.createElement('i');
-    newIconSearch.id = 'luigi_search_icon';
-    newIconSearch.className = 'fa fa-search';
-    newIconSearch.style.position = 'absolute';
-    newIconSearch.style.right = '5px';
-    newIconSearch.style.top = '50%';
-    newIconSearch.style.transform = 'translateY(-50%)';
-    inputElement.insertAdjacentElement('afterend', newIconSearch);
-    setComponentHide('#header_search_icon')
+    // const newIconSearch = document.createElement('i');
+    // newIconSearch.id = 'luigi_search_icon';
+    // newIconSearch.className = 'fal fa-search';
+    // newIconSearch.style.position = 'absolute';
+    // newIconSearch.style.right = '10px';
+    // newIconSearch.style.top = '50%';
+    // newIconSearch.style.transform = 'translateY(-50%)';
+    // newIconSearch.style.fontSize = '20px';
+    // inputElement.insertAdjacentElement('afterend', newIconSearch);
+    const luigiSearchIcon = document.querySelector('#luigi_search_icon')
+    if (luigiSearchIcon) {
+        luigiSearchIcon.classList.remove("hide")
+        setComponentHide('#header_search_icon')
+    }
 
-    console.log('Hello.')
+    console.log('Hello icon.')
 }
 
 

@@ -88,14 +88,54 @@
     </div>
 </div>
 
-<div id="top_header" class="{$website->get('header_background_type')} aabb">
+<div id="top_header" class="{$website->get('header_background_type')}">
     <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
-            {if !empty($settings['logo_website_website'])}
-                <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}"/></a>
-            {/if}
+        {if !empty($settings['logo_website_website'])}
+            <a href="https://{$website->get('Website URL')}">
+                <img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if}; max-height: 100%;max-width: 100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}">
+            </a>
+        {/if}
     </div>
-    <div id="main_header" style="flex-grow:2;position: relative">
+    
+    <div id="buffer_zone" style="text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;"> </div>
 
+    
+    <div id="search_header" style="text-align: right; flex-grow: 0; flex-shrink: 0; flex-basis:350px; position: relative; display: flex; align-items: center;">
+        <div class="hide">
+            {if isset($settings.search_texts)}
+                {foreach from=$settings.search_texts key=key item=header_text}
+                    {assign 'key'  "su_id_`$key`" }
+                    {if $header_text.type=='N b'}
+                        <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                            <span class="bold" type="{$header_text.type}">{$header_text.text}</span>
+                        </div>
+                    {elseif $header_text.type=='N- b'}
+                        <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                            <small  class="bold" type="{$header_text.type}">{$header_text.text}</small>
+                        </div>
+                    {elseif $header_text.type=='N'}
+                        <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                            <span type="{$header_text.type}">{$header_text.text}</span>
+                        </div>
+                    {elseif $header_text.type=='N-'}
+                        <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                            <small type="{$header_text.type}">{$header_text.text}</small>
+                        </div>
+                    {/if}
+                {/foreach}
+            {/if}
+        </div>
+        
+        <div id="search_hanger" style="">
+            <input class="hide" id="inputLuigi" style="border-radius: 7px;height: 35px;padding-left: 10px;" placeholder="Search"/>
+            <i class="hide" id="luigi_search_icon" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);font-size: 20px;" class="fal fa-search"></i>
+            <input id="header_search_input"/>
+            <i id="header_search_icon" class="button fa fa-search"></i>
+        </div>
+        
+    </div>
+
+    <div id="main_header" style="flex-grow:2; position: relative; display: flex; flex-direction: column;align-items: end; justify-content: center;">
         {if isset($settings.search_texts)}
             {foreach from=$settings.header_texts key=key item=header_text}
                 {assign 'key'  "u_id_`$key`" }
@@ -172,39 +212,8 @@
 
     </div>
 
-    <div id="buffer_zone" style="text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;" >
-    </div>
-    <div id="search_header" style="padding-top:5px;text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:350px;position: relative" >
-
-
-
-        <div id="search_hanger" style="position: absolute;left:10px;top:{if isset($settings.search_top)}{$settings.search_top}{else}0{/if}px">
-            <input class="hide" id="inputLuigi"/> <input id="header_search_input"/> <i id="header_search_icon" class="button fa fa-search"></i>
-        </div>
-        {if isset($settings.search_texts)}
-            {foreach from=$settings.search_texts key=key item=header_text}
-                {assign 'key'  "su_id_`$key`" }
-                {if $header_text.type=='N b'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <span class="bold" type="{$header_text.type}">{$header_text.text}</span>
-                    </div>
-                {elseif $header_text.type=='N- b'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <small  class="bold" type="{$header_text.type}">{$header_text.text}</small>
-                    </div>
-                {elseif $header_text.type=='N'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <span type="{$header_text.type}">{$header_text.text}</span>
-                    </div>
-                {elseif $header_text.type=='N-'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <small type="{$header_text.type}">{$header_text.text}</small>
-                    </div>
-                {/if}
-            {/foreach}
-        {/if}
-    </div>
 </div>
+
 <div id="bottom_header">
     {foreach from=$header_data.menu.columns item=column key=key}
         {if $column.show}
