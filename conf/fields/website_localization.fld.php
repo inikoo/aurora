@@ -878,7 +878,15 @@ $object_fields = array(
                 'required'   => true,
                 'type'       => 'value'
             ),
-
+            array(
+                'id'         => 'Localised_Labels_gold_reward_member_until',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_gold_reward_member_until']) ? _('Until') : $labels['_gold_reward_member_until']),
+                'label'      => 'GR <b>'.until.'</b> ...',
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
 
         )
