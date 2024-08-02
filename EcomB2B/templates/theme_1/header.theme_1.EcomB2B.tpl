@@ -247,16 +247,22 @@
         <div style="position: relative; height: inherit; display: flex; align-items: center; justify-content: center">
             {if isset($features_data.features) and  $features_data.features|count > 0 }
                 {foreach $features_data.features as $feature_key  => $feature}
-                    <div style="position: absolute; text-align: center; width: 100%; opacity: 0; animation: animate-spin-to-down {$features_data.features|count * 3}s ease-out {$feature_key * 3}s infinite">
-                        <span class="debug_label" style="font-size: 1.3rem"> {$feature.label} </span>
-                    </div> 
+                    <a href="{$feature.url}" style="position: absolute; text-align: center; width: 100%; opacity: 0; animation: animate-spin-to-down {$features_data.features|count * 3}s ease-out {$feature_key * 3}s infinite"
+                        onMouseOver="this.style.textDecoration='underline'"
+                        onMouseOut="this.style.textDecoration='none'"
+                    >
+                        {if isset($feature.icon)}
+                            <i class="{$feature.icon}" style="font-size: 1.1rem;"></i>
+                        </if>
+                        <span class="debug_label" style="font-size: 1.3rem;"> {$feature.label} </span>
+                    </a> 
                 {/foreach}
             {/if}
         </div>
 
 
         <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex; align-items: center;">
-            <div class="hide" style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid;color: white;">
+            <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: none;color: white;">
                 <div class="coupon_title" style="display: flex; align-items: end; justify-content: center; font-weight: 700">
                     FOB First Order Bonus
                 </div>
