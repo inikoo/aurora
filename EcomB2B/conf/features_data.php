@@ -29,6 +29,9 @@ try {
                     'url'   => "https://www.ancientwisdom.biz/catalogue.sys",
                 ],
             ]
+        ],
+        'www.awartisan.es'=>[
+
         ]
     ];
 
