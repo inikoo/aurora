@@ -303,7 +303,7 @@
 </div>
 
 
-<div id="header_features" class="{if $features_data|count > 0}hide debug_version3a{else} hide debug_version3b {/if}"     >
+<div id="header_features" class="{if $features_data|count > 0} debug_version3a{else} hide debug_version3b {/if}"     >
     <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
 
         <div>
