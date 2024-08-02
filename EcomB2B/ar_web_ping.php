@@ -175,8 +175,6 @@ from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campai
 
 
 
-        $labels = $website->get('Localised Labels');
-
 
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
@@ -184,7 +182,7 @@ from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campai
                     $is_gold_reward_member = true;
                     $gold_reward_member = [
                         'label' => (!empty($labels['_gold_reward_member']) ? $labels['_gold_reward_member'] : _('Gold Reward Member')),
-                        'until' => _('until').': '.strftime("%a %e %b", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
+                        'until' => (isset($labels['_gold_reward_member_until']) ? $labels['_gold_reward_member_until'] : _('until')).': '.strftime("%a %e %b", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
                     ];
                 }
             }
