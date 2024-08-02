@@ -10,7 +10,9 @@
 *}
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
-<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;display: grid;grid-template-columns: repeat(9, minmax(0, 1fr));">
+<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;
+{if $store->get('Store Type')=='Dropshipping'} display: grid;grid-template-columns: repeat(9, minmax(0, 1fr)); {else} display: flex; justify-content: space-between {/if}      "
+>
     <div class="greetings" style="grid-column: span 4 / span 4; display: flex">
         {if $logged_in}
             <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
