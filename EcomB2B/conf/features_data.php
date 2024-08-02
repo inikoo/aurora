@@ -1,6 +1,6 @@
 <?php
 
-$features_json = [];
+$_features_data = [];
 try {
     $features_data = [
         'www.ancientwisdom.biz' => [
@@ -37,10 +37,10 @@ try {
 
 
     if (isset($features_data[$website->get('Website URL')])) {
-        $features_json = $features_data[$website->get('Website URL')];
+        $_features_data = $features_data[$website->get('Website URL')];
     }
 } catch (Exception $e) {
     //
 }
 
-$smarty->assign('features_json', $features_json);
+$smarty->assign('features_data', $_features_data);

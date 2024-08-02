@@ -225,7 +225,8 @@
     {/foreach}
 </div>
 
-<div id="header_features" class="hide">
+
+<div id="header_features" class="{if $features_data|count > 0}hide{else} debug_a {/if} hide"     >
     <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
         <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
         <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
