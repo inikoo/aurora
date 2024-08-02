@@ -214,6 +214,19 @@
 
 </div>
 
+<div id="review_pagexx" class="hide">
+
+    <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
+    <div id="badge-ribbon"></div>
+    <script>
+        reviewsBadgeRibbon("badge-ribbon", {
+            store: "ancient-wisdom-marketing-ltd",
+            size: "small",
+        });
+    </script>
+
+</div>
+
 <div id="bottom_header">
     {foreach from=$header_data.menu.columns item=column key=key}
         {if $column.show}
@@ -223,10 +236,9 @@
         </a>
         {/if}
     {/foreach}
-
-
-
 </div>
+
+
 <div id="_menu_blocks">
 {foreach from=$header_data.menu.columns item=column key=key}
     {if $column.show}
