@@ -226,7 +226,7 @@
 </div>
 
 
-<div id="header_features" class="{if $features_data|count > 0}hide{else} debug_a {/if} hide"     >
+<div id="header_features" class="{if $features_data|count > 0}hide{else} debug_version2 {/if} hide"     >
     <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
 
         {if isset($features_data.reviews)}
