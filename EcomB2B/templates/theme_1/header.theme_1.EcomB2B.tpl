@@ -25,6 +25,12 @@
                 <span id="top_bar_is_gold_reward_member_until" style="white-space: nowrap;display: inline-block;font-size: 0.7rem;margin-left: 2px;"></span>
             </span>
 
+            <span id="top_bar_is_first_order_bonus" class="hide" style="margin-left: 20px;">
+                <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
+                <span id="top_bar_is_first_order_bonus_label" style="padding: 1px 2px  1px 3px;color: #ffbf00;font-weight: 600;"></span>
+                <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
+            </span>
+
         {/if}
     </div>
 

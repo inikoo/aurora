@@ -1704,14 +1704,13 @@
                                     $('#top_bar_is_gold_reward_member_until').html(data.gold_reward_member_data.until)
                                   }
 
+                                  if(data.is_first_order_bonus){
+                                    $('#top_bar_is_first_order_bonus').removeClass('hide')
+                                    $('#top_bar_is_first_order_bonus_label').html(data.gold_reward_member_data.label)
+                                  }
 
-                                    if(data.first_order_bonus){
-                                        // $('#first_order_bonus_banner').removeClass('hide')
-                                        // $('#first_order_bonus_banner').html(first_order_bonus.html)
 
-                                        $('#first_order_bonus_banner').find('.coupon_title').html(data.first_order_bonus.label);
-                                        $('#first_order_bonus_banner').find('.coupon_description').html(data.first_order_bonus.allowance_label);
-                                    }
+
 
 
                                     {/if}
