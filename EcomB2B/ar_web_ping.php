@@ -143,7 +143,7 @@ if (!empty($_REQUEST['store_type'])) {
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND  `Order State` NOT IN ('Cancelled','InBasket') ",
-            $_SESSION['customer_key']
+            $customer->id
         );
 
 
@@ -202,6 +202,8 @@ if (!empty($_REQUEST['store_type'])) {
                 'first_order_bonus'=>$first_order_bonus,
                 'is_gold_reward_member'=>$is_gold_reward_member,
                 'gold_reward_member_data'=>$gold_reward_member,
+                'is_first_order_bonus'=>$first_order_bonus_applicable,
+                'first_order_bonus_data'=>$first_order_bonus
             )
         );
     }
