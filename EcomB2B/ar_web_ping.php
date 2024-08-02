@@ -180,7 +180,7 @@ if (!empty($_REQUEST['store_type'])) {
                     $is_gold_reward_member = true;
                     $gold_reward_member = [
                         'label' => _('Gold Reward Member'),
-                        'until' => 'until'.': '.strftime("%a %e %b %Y", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
+                        'until' => _('until').': '.strftime("%a %e %b %Y", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
                     ];
                 }
             }
