@@ -226,34 +226,34 @@
 </div>
 
 
-<div id="header_features" class="{if $features_data|count > 0}hide{else} debug_version3 {/if} hide"     >
+<div id="header_features" class="{if $features_data|count > 0}hide debug_version3a{else} hide debug_version3b {/if}"     >
     <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
 
-        {if isset($features_data.reviews)}
-            {if $features_data.reviews.type=='reviews.io'}
-
-                <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
-                <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
-                <script>
-                  reviewsBadgeRibbon("badge-ribbon", {
-                    store: "{$features_data.reviews.data}",
-                    size: "small",
-                  });
-                </script>
-             {/if}
-
-        {/if}
-
-
-
         <div>
+            {if isset($features_data.reviews)}
+                {if $features_data.reviews.type=='reviews.io'}
+                    <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
+                    <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
+                    <script>
+                      reviewsBadgeRibbon("badge-ribbon", {
+                        store: "{$features_data.reviews.data}",
+                        size: "small",
+                      });
+                    </script>
+                 {/if}
+            {/if}
+        </div>
+
+        <div style="position: relative;">
             {if isset($features_data.features) and  $features_data.features|count > 0 }
                 {foreach $features_data.features as $feature_key  => $feature}
-                  * {$feature_key} *   <span class="debug_label"> {$feature.label} </span> <span class="debug_url"> {$feature.url} </span> <span class="debug_icon"> {$feature.icon} </span>
+                    <div style="position: absolute; top: 0px; left: 0px; width: 100%; animation: animate-spin-to-down {$features_data.features|count}s ease-out {$feature_key + 2}s infinite">
+                        <span class="debug_label"> {$feature.label} </span>
+                    </div> 
                 {/foreach}
             {/if}
-
         </div>
+
 
         <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex;align-items: center;">
             <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid;color: white;">

@@ -304,6 +304,7 @@
 
 
     <link rel="stylesheet" href="js/luigi_theme.css?v=10" type="text/css"/>
+    <link rel="stylesheet" href="js/animations.css" type="text/css"/>
 
 
     <link rel="stylesheet" href="assets/desktop.min.css" type="text/css"/>
