@@ -14,7 +14,10 @@ include_once 'ar_web_common_logged_in.php';
 /** @var Customer $customer */
 
 if (isset($_REQUEST['debug']) and  $_REQUEST['debug']=='a' ) {
-    print $website_locale;
+    print $website_locale.' ';
+    print money(3.44,'EUR').' ';
+    print money(7.44,'EUR','sk_SK').' ';
+    print money(8.44,'EUR','fr_FR').' ';
     exit;
 }
 
