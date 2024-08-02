@@ -232,56 +232,6 @@
 </div>
 
 
-<div id="header_features" class="{if $features_data|count > 0}hide debug_version3a{else} hide debug_version3b {/if}"     >
-    <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
-
-        <div>
-            {if isset($features_data.reviews)}
-                {if $features_data.reviews.type=='reviews.io'}
-                    <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
-                    <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
-                    <script>
-                      reviewsBadgeRibbon("badge-ribbon", {
-                        store: "{$features_data.reviews.data}",
-                        size: "small",
-                      });
-                    </script>
-                 {/if}
-            {/if}
-        </div>
-
-        <div style="position: relative; height: inherit; display: flex; align-items: center; justify-content: center">
-            {if isset($features_data.features) and  $features_data.features|count > 0 }
-                {foreach $features_data.features as $feature_key  => $feature}
-                    <a href="{$feature.url}" style="position: absolute; text-align: center; width: 100%; opacity: 0; animation: animate-spin-to-down {$features_data.features|count * 3}s ease-out {$feature_key * 3}s infinite"
-                        onMouseOver="this.style.textDecoration='underline'"
-                        onMouseOut="this.style.textDecoration='none'"
-                    >
-                        {if isset($feature.icon)}
-                            <i class="{$feature.icon}" style="font-size: 1.1rem;"></i>
-                        {/if}
-                        <span class="debug_label" style="font-size: 1.3rem;"> {$feature.label} </span>
-                    </a> 
-                {/foreach}
-            {/if}
-        </div>
-
-
-        <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex; align-items: center;">
-            <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: none;color: white;">
-                <div class="coupon_title" style="display: flex; align-items: end; justify-content: center; font-weight: 700">
-                    FOB First Order Bonus
-                </div>
-                <div style="display: flex; align-items: center">
-                    <hr style="border: 1px dashed #ffffff77; width: 80%">
-                </div>
-                <div class="coupon_description" style="display: flex; align-items: start; justify-content: center; font-size: 0.7rem">
-                    10% off
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 <div id="_menu_blocks">
@@ -348,3 +298,53 @@
 {/foreach}
 </div>
 
+
+<div id="header_features" class="{if $features_data|count > 0}hide debug_version3a{else} hide debug_version3b {/if}"     >
+    <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
+
+        <div>
+            {if isset($features_data.reviews)}
+                {if $features_data.reviews.type=='reviews.io'}
+                    <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
+                    <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
+                    <script>
+                      reviewsBadgeRibbon("badge-ribbon", {
+                        store: "{$features_data.reviews.data}",
+                        size: "small",
+                      });
+                    </script>
+                 {/if}
+            {/if}
+        </div>
+
+        <div style="position: relative; height: inherit; display: flex; align-items: center; justify-content: center; overflow: hidden">
+            {if isset($features_data.features) and  $features_data.features|count > 0 }
+                {foreach $features_data.features as $feature_key  => $feature}
+                    <div style="position: absolute; text-align: center; width: 100%; opacity: 0; animation: animate-spin-to-down {$features_data.features|count * 3}s ease-out {$feature_key * 3}s infinite">
+                        {if isset($feature.icon)}
+                            <i class="{$feature.icon}" style="font-size: 1.1rem;"></i>
+                        {/if}
+                        <a href="{$feature.url}" class="debug_label" style="font-size: 1.3rem;" onMouseOver="this.style.textDecoration='underline'" onMouseOut="this.style.textDecoration='none'">
+                            {$feature.label}
+                        </a>
+                    </div> 
+                {/foreach}
+            {/if}
+        </div>
+
+
+        <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex; align-items: center;">
+            <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: none;color: white;">
+                <div class="coupon_title" style="display: flex; align-items: end; justify-content: center; font-weight: 700">
+                    FOB First Order Bonus
+                </div>
+                <div style="display: flex; align-items: center">
+                    <hr style="border: 1px dashed #ffffff77; width: 80%">
+                </div>
+                <div class="coupon_description" style="display: flex; align-items: start; justify-content: center; font-size: 0.7rem">
+                    10% off
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
