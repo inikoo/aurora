@@ -14,7 +14,7 @@
     <div class="greetings" style="grid-column: span 4 / span 4; display: flex">
         {if $logged_in}
             <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
-            <span style="font-weight: 600;max-width: 200px;text-overflow: ellipsis;display: inline-block;overflow: hidden;white-space: nowrap;margin-left: 5px" id="top_bar_greetings_name" ></span>
+            <span style="font-weight: 600;max-width: 180px;text-overflow: ellipsis;display: inline-block;overflow: hidden;white-space: nowrap;margin-left: 5px" id="top_bar_greetings_name" ></span>
 
             <span id="top_bar_is_gold_reward_member" class="hide" style="margin-left: 20px;">
                 <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
