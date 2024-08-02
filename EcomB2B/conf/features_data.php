@@ -6,7 +6,7 @@ try {
         'www.ancientwisdom.biz' => [
             'reviews'  => [
                 'type' => 'reviews.io',
-                'code' => '<script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>'
+                'data' => 'ancient-wisdom-marketing-ltd'
             ],
             'features' => [
                 [

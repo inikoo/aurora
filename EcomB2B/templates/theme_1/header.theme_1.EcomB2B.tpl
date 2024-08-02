@@ -228,14 +228,23 @@
 
 <div id="header_features" class="{if $features_data|count > 0}hide{else} debug_a {/if} hide"     >
     <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
-        <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
-        <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
-        <script>
-            reviewsBadgeRibbon("badge-ribbon", {
-                store: "ancient-wisdom-marketing-ltd",
-                size: "small",
-            });
-        </script>
+
+        {if isset($features_data.reviews)}
+            {if $features_data.reviews.type=='reviews.io'}
+
+                <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
+                <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
+                <script>
+                  reviewsBadgeRibbon("badge-ribbon", {
+                    store: "{$features_data.reviews.data}",
+                    size: "small",
+                  });
+                </script>
+             {/if}
+
+        {/if}
+
+
 
         <div></div>
 
