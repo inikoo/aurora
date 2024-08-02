@@ -1699,12 +1699,9 @@
                                     $('#top_bar_greetings_name').html(data.customer_name)
 
                                   if(data.is_gold_reward_member){
-
+                                    $('#top_bar_is_gold_reward_member').removeClass('hide')
                                     $('#top_bar_is_gold_reward_member_label').html(data.gold_reward_member_data.label)
                                     $('#top_bar_is_gold_reward_member_until').html(data.gold_reward_member_data.until)
-
-
-
                                   }
 
 
