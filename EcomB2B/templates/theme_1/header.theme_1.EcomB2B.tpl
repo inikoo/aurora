@@ -88,11 +88,11 @@
     </div>
 </div>
 
-<div id="top_header" class="{$website->get('header_background_type')}" style="padding-right: 30px;width: auto;">
+<div id="top_header" class="{$website->get('header_background_type')}" style="height: 90px; padding-right: 30px;width: auto;">
     <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
         {if !empty($settings['logo_website_website'])}
             <a href="https://{$website->get('Website URL')}">
-                <img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if}; max-height: 100%;max-width: 100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}">
+                <img id="website_logo" style="max-height: 100%;max-width: 100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}">
             </a>
         {/if}
     </div>
@@ -128,7 +128,7 @@
         
         <div id="search_hanger" style="">
             <input class="hide" id="inputLuigi" style="border-radius: 7px;height: 35px;padding-left: 10px;" placeholder="Search"/>
-            <i class="hide" id="luigi_search_icon" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);font-size: 20px;" class="fal fa-search"></i>
+            <i id="luigi_search_icon" class="hide fal fa-search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);font-size: 20px;" class="fal fa-search"></i>
             <input id="header_search_input"/>
             <i id="header_search_icon" class="button fa fa-search"></i>
         </div>
