@@ -525,6 +525,8 @@ header('Vary: Accept-Encoding, X-Device, X-State');
 $smarty->assign('zaraz', $zaraz);
 
 
+include_once __DIR__.'/conf/features_data.php';
+
 
 $smarty->display($template);
 
