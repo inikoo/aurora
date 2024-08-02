@@ -227,18 +227,29 @@
 
 <div id="header_features" class="hide">
     <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
+        <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
+        <div id="badge-ribbon" style="display: flex;align-items: center;"></div>
+        <script>
+            reviewsBadgeRibbon("badge-ribbon", {
+                store: "ancient-wisdom-marketing-ltd",
+                size: "small",
+            });
+        </script>
+
         <div></div>
-        <div class="hide">
-            <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
-            <div id="badge-ribbon"></div>
-            <script>
-                reviewsBadgeRibbon("badge-ribbon", {
-                    store: "ancient-wisdom-marketing-ltd",
-                    size: "small",
-                });
-            </script>
+
+        <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex;align-items: center;">
+            <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid;color: white;">
+                <div class="coupon_title"
+                    style="display: flex; align-items: end; justify-content: center; font-weight: 700">FOB First Order Bonus
+                </div>
+                <div style="display: flex; align-items: center">
+                    <hr style="border: 1px dashed #ffffff77; width: 80%">
+                </div>
+                <div class="coupon_description"
+                    style="display: flex; align-items: start; justify-content: center; font-size: 0.7rem">10% off</div>
+            </div>
         </div>
-        <div></div>
     </div>
 </div>
 
