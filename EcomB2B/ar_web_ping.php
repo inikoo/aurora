@@ -164,7 +164,7 @@ if (!empty($_REQUEST['store_type'])) {
         $gold_reward_member=[];
         $is_gold_reward_member=false;
 
-        /*
+
         $sql = sprintf(
             "SELECT count(*) AS num , max(`Order Dispatched Date`)  as dispatch_date  FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d  AND `Order State`='Dispatched' AND `Order Dispatched Date`>=%s ",
             $customer->id,
@@ -180,13 +180,13 @@ if (!empty($_REQUEST['store_type'])) {
                     $is_gold_reward_member = true;
                     $gold_reward_member = [
                         'label' => _('Gold Reward Member'),
-                        'until' => __('until').': '.strftime("%a %e %b %Y", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
+                        'until' => 'until'.': '.strftime("%a %e %b %Y", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
                     ];
                 }
             }
         }
 
-*/
+
 
 
         echo json_encode(
