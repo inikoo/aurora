@@ -88,7 +88,7 @@
     </div>
 </div>
 
-<div id="top_header" class="{$website->get('header_background_type')}">
+<div id="top_header" class="{$website->get('header_background_type')}" style="padding-right: 30px;width: auto;">
     <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
         {if !empty($settings['logo_website_website'])}
             <a href="https://{$website->get('Website URL')}">
@@ -100,7 +100,7 @@
     <div id="buffer_zone" style="text-align: right;flex-grow: 0;flex-shrink: 0; flex-basis:100px;"> </div>
 
     
-    <div id="search_header" style="text-align: right; flex-grow: 0; flex-shrink: 0; flex-basis:350px; position: relative; display: flex; align-items: center;">
+    <div id="search_header" style="text-align: right; flex-grow: 0; flex-shrink: 0; flex-basis:350px; position: relative; display: flex; align-items: center;justify-content: end">
         <div class="hide">
             {if isset($settings.search_texts)}
                 {foreach from=$settings.search_texts key=key item=header_text}
@@ -149,7 +149,7 @@
                             {/if}</h1>
                     </div>
                 {elseif $header_text.type=='H1+'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                         <h1 class="big" type="{$header_text.type}">{if !empty($header_text.link)}
                                 <a href="{$header_text.link}">{$header_text.text}</a>
                             {else}
@@ -157,7 +157,7 @@
                             {/if}</h1>
                     </div>
                 {elseif $header_text.type=='H1'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                         <h1 type="{$header_text.type}">{if !empty($header_text.link)}
                                 <a href="{$header_text.link}">{$header_text.text}</a>
                             {else}
@@ -165,7 +165,7 @@
                             {/if}</h1>
                     </div>
                 {elseif $header_text.type=='H2'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                         <h2 type="{$header_text.type}">{if !empty($header_text.link)}
                                 <a href="{$header_text.link}">{$header_text.text}</a>
                             {else}
@@ -173,8 +173,8 @@
                             {/if}</h2>
                     </div>
                 {elseif $header_text.type=='H3'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
-                        <h3  type="{$header_text.type}">
+                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                        <h3  type="{$header_text.type}" style="margin-bottom: 0px">
                             {if !empty($header_text.link)}
                                 <a href="{$header_text.link}">{$header_text.text}</a>
                             {else}
@@ -183,7 +183,7 @@
                          </h3>
                     </div>
                 {elseif $header_text.type=='N++'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                         <span  type="{$header_text.type}">{if !empty($header_text.link)}
                                 <a href="{$header_text.link}">{$header_text.text}</a>
                             {else}
@@ -191,7 +191,7 @@
                             {/if}</span>
                     </div>
                 {elseif $header_text.type=='N'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                         <span  type="{$header_text.type}">{if !empty($header_text.link)}
                                 <a href="{$header_text.link}">{$header_text.text}</a>
                             {else}
@@ -199,7 +199,7 @@
                             {/if}</span>
                     </div>
                 {elseif $header_text.type=='N-'}
-                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="position: absolute;left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
+                    <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
                         <small  type="{$header_text.type}">{if !empty($header_text.link)}
                                 <a href="{$header_text.link}">{$header_text.text}</a>
                             {else}
