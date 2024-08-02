@@ -72,9 +72,9 @@
                 </a>
 
                 <a id="header_order_totals" href="basket.sys" class="button" style="">
-                    <span class="ordered_products_number">0</span>
-                    <i style="padding-right:5px;padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}" aria-hidden="true"></i>
-                    <span class="order_amount" title="">{$zero_money}</span>
+                    <span class="hide ordered_products_number">0</span>
+                    <i style="font-size: 1rem; padding-right:5px; padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}" aria-hidden="true"></i>
+                    <span class="order_amount" title="" style="font-weight: 600; font-size: 1.1rem;">{$zero_money}</span>
                 </a>
             {/if}
         
@@ -255,8 +255,8 @@
         </div>
 
 
-        <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex;align-items: center;">
-            <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid;color: white;">
+        <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex; align-items: center;">
+            <div class="hide" style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid;color: white;">
                 <div class="coupon_title" style="display: flex; align-items: end; justify-content: center; font-weight: 700">
                     FOB First Order Bonus
                 </div>
