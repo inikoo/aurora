@@ -825,7 +825,7 @@ trait OrderDiscountOperations
                             FROM `Order Transaction Fact` OTF   
                                 LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)   
                              left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
-                            WHERE `Subject`="Product" AND `Order Key`=%d AND `Category Key`=%d ',
+                            WHERE (is_variant="No") and  `Subject`="Product" AND `Order Key`=%d AND `Category Key`=%d ',
                             $this->id,
                             $deal_component_data['Deal Component Allowance Target Key']
                         );
@@ -835,7 +835,7 @@ trait OrderDiscountOperations
                         break;
                     case('Product'):
                         $where = sprintf(
-                            "where `Order Key`=%d and `Product ID`=%d",
+                            "where  (is_variant='No') and  `Order Key`=%d and `Product ID`=%d",
                             $this->id,
                             $deal_component_data['Deal Component Allowance Target Key']
                         );
@@ -848,7 +848,7 @@ trait OrderDiscountOperations
                         );
                         break;
                     default:
-                        $where = sprintf("where false");
+                        $where = sprintf("where (is_variant='No') and  false");
 
                         $sql = sprintf(
                             "select OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` ,0 as `Category Key` 
@@ -859,10 +859,11 @@ trait OrderDiscountOperations
                 }
                 $percentage = $deal_component_data['Deal Component Allowance'];
 
-
-                //print_r($deal_component_data);
+//print $sql;
+             //   print_r($deal_component_data);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
+                      //  print_r($row);
                         $otf_key = $row['Order Transaction Fact Key'];
                         $implemented=false;
                         if (isset($this->allowance['Percentage Off'][$otf_key])) {
