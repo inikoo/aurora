@@ -166,10 +166,10 @@ if (!empty($_REQUEST['store_type'])) {
 
 
         $sql = sprintf(
-            "SELECT `Order Dispatched Date`  FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d  AND `Order State`='Dispatched' order by `Order Dispatched Date` desc  ",
+            "SELECT count(*) AS num , max(`Order Dispatched Date`)  as disoatch_date  FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d  AND `Order State`='Dispatched' AND `Order Dispatched Date`>=%s ",
             $customer->id,
             $order->id,
-          //  prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
+            prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -30 days 00:00:00")))
         );
 
         //print "$sql\n";
