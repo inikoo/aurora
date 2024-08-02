@@ -247,8 +247,8 @@
         <div style="position: relative; height: inherit; display: flex; align-items: center; justify-content: center">
             {if isset($features_data.features) and  $features_data.features|count > 0 }
                 {foreach $features_data.features as $feature_key  => $feature}
-                    <div style="position: absolute; text-align: center; width: 100%; animation: animate-spin-to-down {$features_data.features|count * 3}s ease-out {$feature_key * 3}s infinite">
-                        <span class="debug_label"> {$feature.label} </span>
+                    <div style="position: absolute; text-align: center; width: 100%; opacity: 0; animation: animate-spin-to-down {$features_data.features|count * 3}s ease-out {$feature_key * 3}s infinite">
+                        <span class="debug_label" style="font-size: 1.3rem"> {$feature.label} </span>
                     </div> 
                 {/foreach}
             {/if}
