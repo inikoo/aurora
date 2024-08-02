@@ -807,10 +807,13 @@ trait OrderDiscountOperations
             case('Percentage Off'):
                 switch ($deal_component_data['Deal Component Allowance Target']) {
                     case('Order'):
-                        $where = sprintf("where `Order Key`=%d", $this->id);
+                        $where = sprintf("where  (is_variant='No') and  `Order Key`=%d", $this->id);
 
                         $sql = sprintf(
-                            "select `Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,0 as `Category Key` from  `Order Transaction Fact` OTF  $where"
+                            "select OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Transaction Gross Amount`,0 as `Category Key` 
+                            from  `Order Transaction Fact` OTF 
+                            left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+                               $where"
                         );
 
                         break;
@@ -818,7 +821,11 @@ trait OrderDiscountOperations
 
 
                         $sql = sprintf(
-                            'SELECT `Order Transaction Fact Key`,`Product ID` ,`Product Key`,`Category Key` ,`Order Transaction Gross Amount` FROM `Order Transaction Fact` OTF   LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)    WHERE `Subject`="Product" AND `Order Key`=%d AND `Category Key`=%d ',
+                            'SELECT `Order Transaction Fact Key`,OTF.`Product ID` ,OTF.`Product Key`,`Category Key` ,`Order Transaction Gross Amount` 
+                            FROM `Order Transaction Fact` OTF   
+                                LEFT JOIN `Category Bridge`  ON (`Subject Key`=`Product ID`)   
+                             left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+                            WHERE (is_variant="No") and  `Subject`="Product" AND `Order Key`=%d AND `Category Key`=%d ',
                             $this->id,
                             $deal_component_data['Deal Component Allowance Target Key']
                         );
@@ -828,28 +835,35 @@ trait OrderDiscountOperations
                         break;
                     case('Product'):
                         $where = sprintf(
-                            "where `Order Key`=%d and `Product ID`=%d",
+                            "where  (is_variant='No') and  `Order Key`=%d and `Product ID`=%d",
                             $this->id,
                             $deal_component_data['Deal Component Allowance Target Key']
                         );
 
                         $sql = sprintf(
-                            "select `Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,0 as `Category Key` from  `Order Transaction Fact` OTF  $where"
+                            "select OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount`,0 as `Category Key` 
+                            from  `Order Transaction Fact` OTF 
+                              left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+                             $where"
                         );
                         break;
                     default:
-                        $where = sprintf("where false");
+                        $where = sprintf("where (is_variant='No') and  false");
 
                         $sql = sprintf(
-                            "select `Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` ,0 as `Category Key`  from  `Order Transaction Fact` OTF  $where"
+                            "select OTF.`Product ID`,OTF.`Product Key`,`Order Transaction Fact Key`,`Order Transaction Gross Amount` ,0 as `Category Key` 
+                            from `Order Transaction Fact` OTF 
+                               left join `Product Dimension` P on (P.`Product ID`=OTF.`Product ID`)
+                             $where"
                         );
                 }
                 $percentage = $deal_component_data['Deal Component Allowance'];
 
-
-                //print_r($deal_component_data);
+//print $sql;
+             //   print_r($deal_component_data);
                 if ($result = $this->db->query($sql)) {
                     foreach ($result as $row) {
+                      //  print_r($row);
                         $otf_key = $row['Order Transaction Fact Key'];
                         $implemented=false;
                         if (isset($this->allowance['Percentage Off'][$otf_key])) {
@@ -1355,7 +1369,8 @@ trait OrderDiscountOperations
 
                 $sql = sprintf(
                     "SELECT * FROM `Deal Component Dimension`  LEFT JOIN `Deal Dimension` D ON (D.`Deal Key`=`Deal Component Deal Key`)  
-                  WHERE `Deal Component Trigger`='Category' AND `Deal Component Trigger Key` =%d   and `Deal Component Trigger Scope Type`='Products'  AND `Deal Component Status`='Active' ",
+                  WHERE `Deal Component Trigger`='Category' AND `Deal Component Trigger Key` =%d   and `Deal Component Trigger Scope Type`='Products' 
+                    AND `Deal Component Status`='Active' ",
                     $category_key
                 );
 
