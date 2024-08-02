@@ -422,17 +422,27 @@ class Public_Product
 
             case 'Price':
 
-                $price = money($this->data['Product Price'], $this->data['Store Currency Code']);
+                $price = money(
+                    $this->data['Product Price'],
+                    $this->data['Store Currency Code'],
+                    $this->data['Store Locale']
+
+                );
 
 
                 return $price;
-                break;
+
 
             case 'Price Per Unit':
 
 
                 if ($this->data['Product Units Per Case'] != 1) {
-                    $price = '('.preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'].')';
+                    $price = '('.preg_replace('/PLN/', 'zł ', money
+                        ($this->data['Product Price'] / $this->data['Product Units Per Case'],
+                            $this->data['Store Currency Code'],
+                            $this->data['Store Locale']
+
+                        )).'/'.$this->data['Product Unit Label'].')';
                 } else {
                     $price = '';
                 }
@@ -443,7 +453,11 @@ class Public_Product
             case 'Price Per Unit Bis':
 
 
-                return preg_replace('/PLN/', 'zł ', money($this->data['Product Price'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code'])).'/'.$this->data['Product Unit Label'];
+                return preg_replace('/PLN/', 'zł ', money(
+                    $this->data['Product Price'] / $this->data['Product Units Per Case'],
+                    $this->data['Store Currency Code'],
+                        $this->data['Store Locale']
+                    )).'/'.$this->data['Product Unit Label'];
 
 
             case 'Webpage RRP':
@@ -458,7 +472,11 @@ class Public_Product
                 }
 
 
-                $rrp = preg_replace('/PLN/', 'zł ', money($this->data['Product RRP'] / $this->data['Product Units Per Case'], $this->data['Store Currency Code']));
+                $rrp = preg_replace('/PLN/', 'zł ', money(
+                    $this->data['Product RRP'] / $this->data['Product Units Per Case'],
+                    $this->data['Store Currency Code'],
+                    $this->data['Store Locale']
+                ));
                 if ($this->get('Product Units Per Case') != 1) {
                     $rrp .= '/'.$this->data['Product Unit Label'];
                 }
