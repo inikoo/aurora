@@ -161,6 +161,26 @@ if (!empty($_REQUEST['store_type'])) {
             $first_order_bonus=null;
         }
 
+        $gold_reward_member=[];
+        $is_gold_reward_member=false;
+
+
+        $sql = sprintf(
+            "SELECT `Order Dispatched Date`  FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d  AND `Order State`='Dispatched' order by `Order Dispatched Date` desc  ",
+            $customer->id,
+            $order->id,
+          //  prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
+        );
+
+        //print "$sql\n";
+        if ($result = $db->query($sql)) {
+            if ($_row = $result->fetch()) {
+
+            }
+        }
+
+
+
 
         echo json_encode(
             array(
@@ -170,7 +190,9 @@ if (!empty($_REQUEST['store_type'])) {
                 'label' => $label,
                 'customer_name'=>$customer->get('Customer Name'),
                 'customer_reference'=>sprintf('%05d',$customer->id),
-                'first_order_bonus'=>$first_order_bonus
+                'first_order_bonus'=>$first_order_bonus,
+                'is_gold_reward_member'=>$is_gold_reward_member,
+                'gold_reward_member_data'=>$gold_reward_member,
             )
         );
     }
