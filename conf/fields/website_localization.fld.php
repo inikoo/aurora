@@ -884,6 +884,24 @@ $object_fields = array(
         )
     ),
 
+    array(
+        'label'      => _('Greetings'),
+        'show_title' => true,
+        'fields'     => array(
+            array(
+                'id'         => 'Localised_Labels_gold_hello',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_hello']) ? _('Hello') : $labels['_hello']),
+                'label'      => 'hello',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+
+
+        )
+    ),
 
 );
 
