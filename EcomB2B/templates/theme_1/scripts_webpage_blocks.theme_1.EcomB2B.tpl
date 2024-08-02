@@ -1705,8 +1705,8 @@
                                   }
 
                                   if(data.is_first_order_bonus){
-                                  //  $('#top_bar_is_first_order_bonus').removeClass('hide')
-                                  //  $('#top_bar_is_first_order_bonus_label').html(data.first_order_bonus_data.label)
+                                    $('#top_bar_is_first_order_bonus').removeClass('hide')
+                                    $('#top_bar_is_first_order_bonus_label').html(data.first_order_bonus_data.label)
                                   }
 
 
