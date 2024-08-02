@@ -214,19 +214,6 @@
 
 </div>
 
-<div id="review_pagexx" class="hide">
-
-    <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
-    <div id="badge-ribbon"></div>
-    <script>
-        reviewsBadgeRibbon("badge-ribbon", {
-            store: "ancient-wisdom-marketing-ltd",
-            size: "small",
-        });
-    </script>
-
-</div>
-
 <div id="bottom_header">
     {foreach from=$header_data.menu.columns item=column key=key}
         {if $column.show}
@@ -236,6 +223,23 @@
         </a>
         {/if}
     {/foreach}
+</div>
+
+<div id="header_features" class="hide">
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
+        <div></div>
+        <div class="hide">
+            <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
+            <div id="badge-ribbon"></div>
+            <script>
+                reviewsBadgeRibbon("badge-ribbon", {
+                    store: "ancient-wisdom-marketing-ltd",
+                    size: "small",
+                });
+            </script>
+        </div>
+        <div></div>
+    </div>
 </div>
 
 
