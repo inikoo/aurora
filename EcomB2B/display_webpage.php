@@ -285,6 +285,7 @@ $website_locale = $website->get('Website Locale');
 //}
 $language = set_locate($website_locale);
 
+
 $smarty->assign('language', $language);
 
 
@@ -328,7 +329,8 @@ if ($one_signal != '') {
 date_default_timezone_set($store->get('Store Timezone'));
 
 
-$smarty->assign('zero_money', money(0, $store->get('Store Currency Code')));
+
+$smarty->assign('zero_money', money(0, $store->get('Store Currency Code')),$website_locale);
 $smarty->assign('website', $website);
 $smarty->assign('store', $store);
 $smarty->assign('footer_data', $website->get('Footer Data'));
