@@ -875,7 +875,7 @@ $object_fields = array(
                 'edit'       => ($supervisor_edit ? 'string' : ''),
                 'right_code' => 'WS-'.$store_key,
                 'value'      => (empty($labels['_gold_reward_member']) ? _('Gold Reward Member') : $labels['_gold_reward_member']),
-                'label'      => _('Pick an option'),
+                'label'      => 'Gold reward member',
                 'required'   => true,
                 'type'       => 'value'
             ),

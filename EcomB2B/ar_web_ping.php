@@ -174,12 +174,16 @@ if (!empty($_REQUEST['store_type'])) {
 
 
 
+        $labels = $website->get('Localised Labels');
+
+
+
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 if($row['num']>0 and $row['dispatch_date']!='') {
                     $is_gold_reward_member = true;
                     $gold_reward_member = [
-                        'label' => _('Gold Reward Member'),
+                        'label' => (!empty($labels['_gold_reward_member']) ? $labels['_gold_reward_member'] : _('Gold Reward Member')),
                         'until' => _('until').': '.strftime("%a %e %b", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
                     ];
                 }
