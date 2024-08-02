@@ -128,7 +128,7 @@
                                             </td>
                                             <td class="original_price ">{$item.price}</td>
                                             {if isset($item.price_unit)}
-                                                <td  style="text-align: right"  class="original_price">{$item.price_unit}</td>
+                                                <td  style="text-align: right; font-size: 0.7rem"  class="original_price">{$item.price_unit}</td>
                                             {/if}
                                         </tr>
 
@@ -157,7 +157,7 @@
                                                 </div>
                                             </td>
                                             <td class="gold_reward_price "></td>
-                                            <td style="text-align: right"  class="gold_reward_unit_price"></td>
+                                            <td style="text-align: right; font-size: 0.7rem"  class="gold_reward_unit_price"></td>
                                         </tr>
                                     </table>
                                 </div>
