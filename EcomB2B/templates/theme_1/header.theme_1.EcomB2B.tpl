@@ -318,9 +318,9 @@
                         {if isset($feature.icon)}
                             <i class="{$feature.icon}" style="font-size: 1.1rem;"></i>
                         {/if}
-                        <a href="{$feature.url}" class="debug_label" style="font-size: 1.3rem;" onMouseOver="this.style.textDecoration='underline'" onMouseOut="this.style.textDecoration='none'">
+                        <span class="debug_label" style="font-size: 1.3rem;">
                             {$feature.label}
-                        </a>
+                        </span>
                     </div> 
                 {/foreach}
             {/if}
