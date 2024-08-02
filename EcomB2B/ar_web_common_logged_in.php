@@ -112,12 +112,16 @@ if ($website->get('Website Type') != 'EcomDS') {
 }
 
 // temporal stuff until we regenerate old cookies
-if (!empty($_SESSION['website_locale'])) {
-    $website_locale = $_SESSION['website_locale'];
-} else {
+
+//if (!empty($_SESSION['website_locale'])) {
+//    $website_locale = $_SESSION['website_locale'];
+//} else {
     $_SESSION['website_locale'] = $website->get('Website Locale');
     $website_locale             = $website->get('Website Locale');
-}
+//}
+
+
+
 $locale = set_locate($website_locale);
 
 
