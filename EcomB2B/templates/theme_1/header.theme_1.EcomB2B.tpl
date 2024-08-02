@@ -127,7 +127,7 @@
         </div>
         
         <div id="search_hanger" style="">
-            <input class="hide" id="inputLuigi" style="border-radius: 7px;height: 35px;padding-left: 10px;" placeholder="Search"/>
+            <input class="hide" id="inputLuigi" style="border: 1px solid #d1d5db; border-radius: 7px;height: 35px;padding-left: 10px;" placeholder="Search"/>
             <i id="luigi_search_icon" class="hide fal fa-search" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%);font-size: 20px;" class="fal fa-search"></i>
             <input id="header_search_input"/>
             <i id="header_search_icon" class="button fa fa-search"></i>
@@ -180,7 +180,7 @@
                             {else}
                                 {$header_text.text}
                             {/if}
-                         </h3>
+                        </h3>
                     </div>
                 {elseif $header_text.type=='N++'}
                     <div id="{$key}" class="header_text" data-link="{$header_text.link}" style="left:{$header_text.left}px;top:{$header_text.top}px;color:{$header_text.color}">
@@ -214,19 +214,6 @@
 
 </div>
 
-<div id="review_pagexx" class="hide">
-
-    <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
-    <div id="badge-ribbon"></div>
-    <script>
-        reviewsBadgeRibbon("badge-ribbon", {
-            store: "ancient-wisdom-marketing-ltd",
-            size: "small",
-        });
-    </script>
-
-</div>
-
 <div id="bottom_header">
     {foreach from=$header_data.menu.columns item=column key=key}
         {if $column.show}
@@ -236,6 +223,35 @@
         </a>
         {/if}
     {/foreach}
+</div>
+
+<div id="header_features" class="hide">
+    <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
+        <script src="https://widget.reviews.io/badge-ribbon/dist.js"></script>
+        <div id="badge-ribbon" style="display: flex;align-items: center;margin-top: -8px;"></div>
+        <script>
+            reviewsBadgeRibbon("badge-ribbon", {
+                store: "ancient-wisdom-marketing-ltd",
+                size: "small",
+            });
+        </script>
+
+        <div></div>
+
+        <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex;align-items: center;">
+            <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid;color: white;">
+                <div class="coupon_title" style="display: flex; align-items: end; justify-content: center; font-weight: 700">
+                    FOB First Order Bonus
+                </div>
+                <div style="display: flex; align-items: center">
+                    <hr style="border: 1px dashed #ffffff77; width: 80%">
+                </div>
+                <div class="coupon_description" style="display: flex; align-items: start; justify-content: center; font-size: 0.7rem">
+                    10% off
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
