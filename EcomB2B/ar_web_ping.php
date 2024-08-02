@@ -199,7 +199,6 @@ if (!empty($_REQUEST['store_type'])) {
                 'label' => $label,
                 'customer_name'=>$customer->get('Customer Name'),
                 'customer_reference'=>sprintf('%05d',$customer->id),
-                'first_order_bonus'=>$first_order_bonus,
                 'is_gold_reward_member'=>$is_gold_reward_member,
                 'gold_reward_member_data'=>$gold_reward_member,
                 'is_first_order_bonus'=>$first_order_bonus_applicable,
