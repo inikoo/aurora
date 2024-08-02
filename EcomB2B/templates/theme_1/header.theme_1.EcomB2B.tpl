@@ -10,15 +10,17 @@
 *}
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
-<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;display: grid;grid-template-columns: repeat(3, minmax(0, 1fr));">
-    <div class="greetings">
+<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;display: grid;grid-template-columns: repeat(9, minmax(0, 1fr));">
+    <div class="greetings" style="grid-column: span 4 / span 4">
         {if $logged_in}
             <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
             <span style="font-weight: 600" id="top_bar_greetings_name" >friend</span>
 
-            <span id="top_bar_is_gold_reward_member" class="hide">
-                <span id="top_bar_is_gold_reward_member_label"></span>
-                <span id="top_bar_is_gold_reward_member_until"></span>
+            <span id="top_bar_is_gold_reward_member" class="hide" style="margin-left: 20px;">
+                <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
+                <span id="top_bar_is_gold_reward_member_label" style="padding: 1px 7px;color: #ffbf00;font-weight: 600;"></span>
+                <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
+                <span id="top_bar_is_gold_reward_member_until" style="white-space: nowrap;display: inline-block;font-size: 0.7rem;margin-left: 5px;"></span>
             </span>
 
         {/if}
@@ -26,7 +28,7 @@
 
     <div class="action_buttons" style="display: flex; justify-content: flex-end;
     {if $store->get('Store Type')=='Dropshipping'}column-gap: 20px;{else}column-gap: 45px;{/if}
-     grid-column: span 2 / span 2">
+     grid-column: span 5 / span 5">
 
         {if $logged_in}
 
