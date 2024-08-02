@@ -1698,6 +1698,16 @@
                                     $('#header_order_totals').find('.order_amount').html(data.total);
                                     $('#top_bar_greetings_name').html(data.customer_name)
 
+                                  if(data.is_gold_reward_member){
+
+                                    $('#top_bar_is_gold_reward_member_label').html(data.gold_reward_member_data.label)
+                                    $('#top_bar_is_gold_reward_member_until').html(data.gold_reward_member_data.until)
+
+
+
+                                  }
+
+
                                     if(data.first_order_bonus){
                                         // $('#first_order_bonus_banner').removeClass('hide')
                                         // $('#first_order_bonus_banner').html(first_order_bonus.html)

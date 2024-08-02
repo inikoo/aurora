@@ -15,6 +15,12 @@
         {if $logged_in}
             <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
             <span style="font-weight: 600" id="top_bar_greetings_name" >friend</span>
+
+            <span id="top_bar_is_gold_reward_member" class="hide">
+                <span id="top_bar_is_gold_reward_member_label"></span>
+                <span id="top_bar_is_gold_reward_member_until"></span>
+            </span>
+
         {/if}
     </div>
 
