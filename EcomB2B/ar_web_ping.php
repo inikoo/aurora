@@ -177,7 +177,6 @@ if (!empty($_REQUEST['store_type'])) {
         $labels = $website->get('Localised Labels');
 
 
-
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 if($row['num']>0 and $row['dispatch_date']!='') {
@@ -189,7 +188,6 @@ if (!empty($_REQUEST['store_type'])) {
                 }
             }
         }
-
 
 
 

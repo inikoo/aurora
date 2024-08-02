@@ -869,7 +869,6 @@ $object_fields = array(
         'label'      => _('Discounts'),
         'show_title' => true,
         'fields'     => array(
-
             array(
                 'id'         => 'Localised_Labels_gold_reward_member',
                 'edit'       => ($supervisor_edit ? 'string' : ''),
