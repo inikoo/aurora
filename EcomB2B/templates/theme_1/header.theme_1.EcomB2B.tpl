@@ -248,8 +248,8 @@
 
         <div>
             {if isset($features_data.features) and  $features_data.features|count > 0 }
-                {foreach $features_data.features as $feature}
-                    <span class="debug_label"> {$feature.label} </span> <span class="debug_url"> {$feature.url} </span> <span class="debug_icon"> {$feature.icon} </span>
+                {foreach $features_data.features as $feature_key  => $feature}
+                  * {$feature_key} *   <span class="debug_label"> {$feature.label} </span> <span class="debug_url"> {$feature.url} </span> <span class="debug_icon"> {$feature.icon} </span>
                 {/foreach}
             {/if}
 
