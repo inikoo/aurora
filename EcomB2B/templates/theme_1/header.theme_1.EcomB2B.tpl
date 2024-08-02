@@ -246,7 +246,14 @@
 
 
 
-        <div></div>
+        <div>
+            {if isset($features_data.features) and  $features_data.features|count > 0 }
+                {foreach $features_data.features as $feature}
+                    <span class="debug_label"> {$feature.label} </span> <span class="debug_url"> {$feature.url} </span> <span class="debug_icon"> {$feature.icon} </span>
+                {/foreach}
+            {/if}
+
+        </div>
 
         <div style="filter: drop-shadow(0px 2px 0px #C8C8C800);padding: 10px 0px 10px 50px; display: flex;align-items: center;">
             <div style="height: 75px; width: 200px; border-radius: 5px; background: #9A4EAE; mask-image: radial-gradient(circle at 8px 50%, transparent 8px, red 8.5px); mask-position: -8px center;grid-template-rows: repeat(3, minmax(0, 1fr));display: grid;color: white;">

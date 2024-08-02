@@ -22,6 +22,7 @@ try {
                 [
                     'label' => 'Volume Discounts',
                     'icon'  => 'fal fa-badge-percent',
+                    'url'=>''
                 ],
                 [
                     'label' => 'Over 5000 Products',
