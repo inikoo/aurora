@@ -308,7 +308,7 @@ function category_products($data, $db, $customer_key, $order)
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND `Order Key`!=%d AND `Order Dispatched Date`>=%s AND `Order State`='Dispatched' ",
-            $order->get('Order Customer Key'),
+            $customer_key,
             $order->id,
             prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -30 days")).' 00:00:00')
         );
