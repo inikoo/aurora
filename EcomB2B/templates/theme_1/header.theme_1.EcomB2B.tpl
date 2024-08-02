@@ -253,7 +253,7 @@
                     >
                         {if isset($feature.icon)}
                             <i class="{$feature.icon}" style="font-size: 1.1rem;"></i>
-                        </if>
+                        {/if}
                         <span class="debug_label" style="font-size: 1.3rem;"> {$feature.label} </span>
                     </a> 
                 {/foreach}
