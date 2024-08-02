@@ -88,7 +88,7 @@
     </div>
 </div>
 
-<div id="top_header" class="{$website->get('header_background_type')}">
+<div id="top_header" class="{$website->get('header_background_type')} aabb">
     <div id="header_logo" style="flex-grow: 0;flex-shrink: 0;text-align: center">
             {if !empty($settings['logo_website_website'])}
                 <a href="https://{$website->get('Website URL')}"><img id="website_logo" style="margin-top:{if isset($settings['logo_top_margin'])}{$settings['logo_top_margin']}{else}0px{/if};max-height: 100%;max-width:  100%;vertical-align: middle;" alt="" src="{$settings['logo_website_website']}"/></a>

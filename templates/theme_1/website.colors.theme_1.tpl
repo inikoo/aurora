@@ -611,7 +611,7 @@
 
         <span id="webpage_data" style="display:none" data-website_key="{$website->id}"></span>
 
-        <div id="top_header" style="width: 100%; display: flex;"  >
+        <div id="top_header" style="width: 100%; display: flex;" class="aacc" >
 
           <div id="header_logo" style="flex-grow:1;flex-grow: 0;flex-shrink: 0;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 

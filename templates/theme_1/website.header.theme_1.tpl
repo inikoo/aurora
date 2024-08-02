@@ -136,7 +136,7 @@
         <span id="webpage_data" style="display:none" data-website_key="{$website->id}"></span>
 
 
-        <div id="top_header" style="width: 100%; display: flex;"  class="{$website->get('header_background_type')}" >
+        <div id="top_header" style="width: 100%; display: flex;"  class="{$website->get('header_background_type')} aadd" >
             <div id="header_logo" style="flex-grow:1;flex-grow: 0;flex-shrink: 0; border-right:1px dashed #ccc;flex-grow: 0;flex-shrink: 0; ;text-align: center">
 
 
