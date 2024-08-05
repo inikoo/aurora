@@ -36,7 +36,7 @@
                 {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if}
                 wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'}
                  data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} "
-                style="height: 400px"
+                style="height: {if !$data.item_headers}auto !important{else}400px{/if}"
             >
 
 
@@ -83,9 +83,8 @@
                         <div class="product_description" style="position: relative; height: fit-content !important; margin-bottom: 5px">
 
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
-                                <h4 style="height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
-
-
+                                <h4 style="font-size: 15px;height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
+                                
                                 <div style="display:flex;clear: both;font-size: smaller">
                                     <div style="font-size: smaller;flex-grow: 1;" class="code">
                                         <small class="Product_Code">{$item.code}</small>
@@ -100,17 +99,16 @@
 
 
                             {else}
-                                <div class="name item_name Product_Name ">{$item.variants[0].name}</div>
+                                <h4 class="name item_name Product_Name" style="font-size: 15px;height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.variants[0].name}</h4>
 
-                                <div style="display:flex;clear: both">
-                                    <div style="flex-grow: 1;font-size: smaller" class="code">
+                                <div style="display:flex;clear: both;font-size: smaller">
+                                    <div style="font-size: smaller;flex-grow: 1;" class="code">
                                         <small class="Product_Code">{$item.variants[0].code}</small>
                                     </div>
                                     {if !empty($item.rrp)}
-                                        <div style="flex-grow: 1;font-size: smaller;text-align: right" class="code">
+                                        <div style="font-size: smaller;flex-grow: 1;text-align: right" class="code">
                                             <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
                                                 : {$item.rrp}</small>
-
                                         </div>
                                     {/if}
                                 </div>
@@ -231,25 +229,27 @@
                                 {foreach from=$item.variants item=variant name=variant}
                                     <div id="ordering_variant_{$variant.id}"
                                          class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
-                                        <div style="display: flex">
-                                            <div class="product_prices  ">
-                                                <div class="product_price" style="font-size: small">
-                                                    {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
-                                                    : {$variant.price} {if isset($variant.price_unit_bis)}
-                                                        <div><small>{$variant.price_unit_bis}</small></div>{/if}
+                                        <div style="flex-grow:1; padding: 0px 10px; box-sizing: border-box">
+                                            <div onclick="open_variant_chooser(this,{$item.product_id})"
+                                                style="width: 100%; cursor:pointer; position:relative; padding:3px 0px 3px 10px; border:1px solid #ccc; border-radius: 3px; display: inline-block; box-sizing: border-box">
+                                                <span class="open_variant_chooser">{$variant.label}</span>
+                                                <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
+                                                    <span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span>
                                                 </div>
-
+                                                <i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i>
                                             </div>
+                                        </div>
 
-                                            <div style="flex-grow:1">
-                                            <span onclick="open_variant_chooser(this,{$item.product_id})"
-                                                  class="open_variant_chooser"
-                                                  style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
-                                                {$variant.label}
-                                            <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
-                                                <span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span></div><i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i></span></div>
-
-
+                                        <div class="product_prices" style="margin: 6px 0px">
+                                            <div class="product_price" style="font-size: small;display: flex; column-gap: 3px;">
+                                                <div>{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:</div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; flex-grow: 1;">
+                                                    <span>{$variant.price}</span>
+                                                    {if isset($variant.price_unit_bis)}
+                                                        <small>{$variant.price_unit_bis}</small>
+                                                    {/if}
+                                                </div>
+                                            </div>
                                         </div>
 
 
