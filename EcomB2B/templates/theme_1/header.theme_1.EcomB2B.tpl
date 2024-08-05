@@ -10,17 +10,25 @@
 *}
 
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}" ></span>
-<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;display: grid;grid-template-columns: repeat(9, minmax(0, 1fr));">
+<div id="top_bar" style="background-color: rgb(75, 80, 88); color: white; padding: 4px 16px;
+{if $store->get('Store Type')=='Dropshipping'} display: grid;grid-template-columns: repeat(9, minmax(0, 1fr)); {else} display: flex; justify-content: space-between {/if}      "
+>
     <div class="greetings" style="grid-column: span 4 / span 4; display: flex">
         {if $logged_in}
             <span>{if empty($labels._hello)}{t}Hello{/t}{else}{$labels._hello}{/if},</span>
-            <span style="font-weight: 600;max-width: 200px;text-overflow: ellipsis;display: inline-block;overflow: hidden;white-space: nowrap;margin-left: 5px" id="top_bar_greetings_name" >friend</span>
+            <span style="font-weight: 600;max-width: 180px;text-overflow: ellipsis;display: inline-block;overflow: hidden;white-space: nowrap;margin-left: 5px" id="top_bar_greetings_name" ></span>
 
             <span id="top_bar_is_gold_reward_member" class="hide" style="margin-left: 20px;">
                 <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
-                <span id="top_bar_is_gold_reward_member_label" style="padding: 1px 7px;color: #ffbf00;font-weight: 600;"></span>
+                <span id="top_bar_is_gold_reward_member_label" style="padding: 1px 2px  1px 3px;color: #ffbf00;font-weight: 600;"></span>
                 <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
-                <span id="top_bar_is_gold_reward_member_until" style="white-space: nowrap;display: inline-block;font-size: 0.7rem;margin-left: 5px;"></span>
+                <span id="top_bar_is_gold_reward_member_until" style="white-space: nowrap;display: inline-block;font-size: 0.7rem;margin-left: 2px;"></span>
+            </span>
+
+            <span id="top_bar_is_first_order_bonus" class="hide" style="margin-left: 20px;">
+                <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
+                <span id="top_bar_is_first_order_bonus_label" style="padding: 1px 2px  1px 3px;color: #ffbf00;font-weight: 600;"></span>
+                <i class="fal fa-sparkles" style="color: #ffebb1;"></i>
             </span>
 
         {/if}
@@ -89,7 +97,7 @@
         {else}
             <div style="display: flex;column-gap: 16px;">
                 <a href="/login.sys" class="button"  id="login_header_button" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
-                <a href="/register.sys" class="button"  id="register_header_button" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
+                <a style="margin-left: 30px" href="/register.sys" class="button"  id="register_header_button" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
             </div>
         {/if}
 
@@ -301,7 +309,7 @@
 </div>
 
 
-<div id="header_features" class="{if $features_data|count > 0}hide debug_version3a{else} hide debug_version3b {/if}"     >
+<div id="header_features" class="{if $features_data|count > 0} hide debug_version3a{else} hide debug_version3b {/if}"     >
     <div style="height: 45px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
 
         <div>

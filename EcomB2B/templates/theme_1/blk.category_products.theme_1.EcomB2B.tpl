@@ -24,6 +24,14 @@
 
         {counter start=-1 print=false assign="counter"}
         {foreach from=$data.items item=item  name=items}
+
+
+            {if isset($item.family_key)}
+            {assign "item_family_key" $item.family_key}
+            {else}
+            {assign "item_family_key" "xxx"}
+            {/if}
+
             <div class="product_wrap
                 {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if}
                 wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'}
@@ -118,7 +126,7 @@
                                             <small>{$item.price_unit}</small>{/if}
                                     </div>
 
-                                    <table id="price_block_{$item.product_id}" class="price_block discount_info_family_{$item.family_key}  " >
+                                    <table id="price_block_{$item.product_id}" class="price_block discount_info_family_{$item_family_key}  " >
                                         <tr class="original_price_tr" >
                                             <td style="width:75px">
                                                 {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -132,7 +140,7 @@
 
 
                                         <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
-                                            <td style="width:75px"  data-family_key="{$item.family_key}"   >
+                                            <td style="width:75px"  data-family_key="{$item_family_key}"   >
                                                 <div onclick="gr_show_discount_info()"
                                                     id="discount_info_applied"
                                                     style="border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #16a34a;"

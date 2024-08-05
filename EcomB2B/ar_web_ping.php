@@ -119,7 +119,8 @@ if (!empty($_REQUEST['store_type'])) {
 
         $first_order_bonus=null;
 
-        $sql="select `Deal Name Label`,`Deal Allowance Label`,`Deal Terms`,`Deal Description`,`Deal Term Allowances Label` from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) where `Deal Status`='Active' and `Deal Campaign Code`='FO' and `Deal Store Key`=? limit 1  ";
+        $sql="select `Deal Name Label`,`Deal Allowance Label`,`Deal Terms`,`Deal Description`,`Deal Term Allowances Label` 
+from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campaign Key`=D.`Deal Campaign Key`) where `Deal Status`='Active' and `Deal Campaign Code`='FO' and `Deal Store Key`=? limit 1  ";
         $stmt = $db->prepare($sql);
 
         $stmt->execute(
@@ -143,7 +144,7 @@ if (!empty($_REQUEST['store_type'])) {
 
         $sql = sprintf(
             "SELECT count(*) AS num FROM `Order Dimension` WHERE `Order Customer Key`=%d AND  `Order State` NOT IN ('Cancelled','InBasket') ",
-            $_SESSION['customer_key']
+            $customer->id
         );
 
 
@@ -174,18 +175,18 @@ if (!empty($_REQUEST['store_type'])) {
 
 
 
+
         if ($result = $db->query($sql)) {
             if ($row = $result->fetch()) {
                 if($row['num']>0 and $row['dispatch_date']!='') {
                     $is_gold_reward_member = true;
                     $gold_reward_member = [
-                        'label' => _('Gold Reward Member'),
-                        'until' => __('until').': '.strftime("%a %e %b %Y", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
+                        'label' => (!empty($labels['_gold_reward_member']) ? $labels['_gold_reward_member'] : _('Gold Reward Member')),
+                        'until' => (isset($labels['_gold_reward_member_until']) ? $labels['_gold_reward_member_until'] : _('until')).': '.strftime("%a %e %b", strtotime($row['dispatch_date'] . ' + 30 days  +0:00')),
                     ];
                 }
             }
         }
-
 
 
 
@@ -197,14 +198,13 @@ if (!empty($_REQUEST['store_type'])) {
                 'label' => $label,
                 'customer_name'=>$customer->get('Customer Name'),
                 'customer_reference'=>sprintf('%05d',$customer->id),
-                'first_order_bonus'=>$first_order_bonus,
                 'is_gold_reward_member'=>$is_gold_reward_member,
                 'gold_reward_member_data'=>$gold_reward_member,
+                'is_first_order_bonus'=>$first_order_bonus_applicable,
+                'first_order_bonus_data'=>$first_order_bonus
             )
         );
     }
-
-} else {
 
 }
 
