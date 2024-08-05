@@ -36,7 +36,7 @@
                 {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if}
                 wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'}
                  data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} "
-                style="height: 400px"
+                style="height: {if !$data.item_headers}auto !important{else}400px{/if}"
             >
 
 
@@ -241,7 +241,7 @@
                                         </div>
 
                                         <div class="product_prices" style="margin: 6px 0px">
-                                            <div class="product_price" style="font-size: small;display: flex;">
+                                            <div class="product_price" style="font-size: small;display: flex; column-gap: 3px;">
                                                 <div>{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:</div>
                                                 <div style="display: flex; justify-content: space-between; align-items: center; flex-grow: 1;">
                                                     <span>{$variant.price}</span>
