@@ -229,6 +229,17 @@
                                 {foreach from=$item.variants item=variant name=variant}
                                     <div id="ordering_variant_{$variant.id}"
                                          class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
+                                        <div style="flex-grow:1; padding: 0px 10px; box-sizing: border-box">
+                                            <div onclick="open_variant_chooser(this,{$item.product_id})"
+                                                style="width: 100%; cursor:pointer; position:relative; padding:3px 0px 3px 10px; border:1px solid #ccc; width: 105px; display: inline-block; box-sizing: border-box">
+                                                <span class="open_variant_chooser">{$variant.label}</span>
+                                                <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
+                                                    <span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span>
+                                                </div>
+                                                <i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i>
+                                            </div>
+                                        </div>
+
                                         <div style="display: flex">
                                             <div class="product_prices  ">
                                                 <div class="product_price" style="font-size: small">
@@ -238,14 +249,6 @@
                                                 </div>
 
                                             </div>
-
-                                            <div style="flex-grow:1">
-                                            <span onclick="open_variant_chooser(this,{$item.product_id})"
-                                                  class="open_variant_chooser"
-                                                  style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
-                                                {$variant.label}
-                                            <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
-                                                <span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span></div><i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i></span></div>
 
 
                                         </div>
