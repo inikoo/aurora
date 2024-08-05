@@ -75,9 +75,8 @@
                         <div class="product_description" style="position: relative; height: fit-content !important; margin-bottom: 5px">
 
                             {if !isset($item.number_visible_variants)  or   $item.number_visible_variants==0}
-                                <h4 style="height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
-
-
+                                <h4 style="font-size: 15px;height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.name}</h4>
+                                
                                 <div style="display:flex;clear: both;font-size: smaller">
                                     <div style="font-size: smaller;flex-grow: 1;" class="code">
                                         <small class="Product_Code">{$item.code}</small>
@@ -92,17 +91,16 @@
 
 
                             {else}
-                                <div class="name item_name Product_Name ">{$item.variants[0].name}</div>
+                                <h4 class="name item_name Product_Name" style="font-size: 15px;height: 42px; display: flex; text-align: center; background: #ffffff; margin-bottom: 2px; border: 1px solid #d1d5db; border-radius: 3px; padding: 3px 6px;justify-items: center;place-content: center;align-items: center;" class="name item_name {if $item.name|strlen < 40}smallish{elseif $item.name|strlen < 60} small{else}very_small{/if}  ">{$item.variants[0].name}</h4>
 
-                                <div style="display:flex;clear: both">
-                                    <div style="flex-grow: 1;font-size: smaller" class="code">
+                                <div style="display:flex;clear: both;font-size: smaller">
+                                    <div style="font-size: smaller;flex-grow: 1;" class="code">
                                         <small class="Product_Code">{$item.variants[0].code}</small>
                                     </div>
                                     {if !empty($item.rrp)}
-                                        <div style="flex-grow: 1;font-size: smaller;text-align: right" class="code">
+                                        <div style="font-size: smaller;flex-grow: 1;text-align: right" class="code">
                                             <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
                                                 : {$item.rrp}</small>
-
                                         </div>
                                     {/if}
                                 </div>
