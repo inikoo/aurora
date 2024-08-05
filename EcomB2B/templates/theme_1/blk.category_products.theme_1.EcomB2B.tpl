@@ -240,17 +240,16 @@
                                             </div>
                                         </div>
 
-                                        <div style="display: flex">
-                                            <div class="product_prices  ">
-                                                <div class="product_price" style="font-size: small">
-                                                    {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
-                                                    : {$variant.price} {if isset($variant.price_unit_bis)}
-                                                        <div><small>{$variant.price_unit_bis}</small></div>{/if}
+                                        <div class="product_prices" style="margin: 6px 0px">
+                                            <div class="product_price" style="font-size: small;display: flex;">
+                                                <div>{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:</div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; flex-grow: 1;">
+                                                    <span>{$variant.price}</span>
+                                                    {if isset($variant.price_unit_bis)}
+                                                        <small>{$variant.price_unit_bis}</small>
+                                                    {/if}
                                                 </div>
-
                                             </div>
-
-
                                         </div>
 
 
