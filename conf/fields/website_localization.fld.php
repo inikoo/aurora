@@ -888,6 +888,27 @@ $object_fields = array(
                 'type'       => 'value'
             ),
 
+            array(
+                'id'         => 'Localised_Labels_more_info',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_more_info']) ? _('More info') : $labels['_more_info']),
+                'label'      => 'More info',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+
+
+            array(
+                'id'         => 'Localised_Labels_gold_reward_url',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['Localised_Labels_gold_reward_url']) ? '' : $labels['Localised_Labels_gold_reward_url']),
+                'label'      => 'GR url include https://...',
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
             array(
                 'id'         => 'Localised_Labels_gold_reward_active',
@@ -905,6 +926,16 @@ $object_fields = array(
                 'right_code' => 'WS-'.$store_key,
                 'value'      => (empty($labels['_gold_reward_active']) ? 'Become a Gold Reward Member today' : $labels['_gold_reward_active']),
                 'label'      => 'GR inactive',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labels_first_order_bonus_url',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['Localised_Labels_first_order_bonus_url']) ? '' : $labels['Localised_Labels_first_order_bonus_url']),
+                'label'      => 'FOB url include https://... ',
                 'required'   => true,
                 'type'       => 'value'
             ),
