@@ -889,6 +889,49 @@ $object_fields = array(
             ),
 
 
+            array(
+                'id'         => 'Localised_Labels_gold_reward_active',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_gold_reward_active']) ? 'Gold Reward Discount applied' : $labels['_gold_reward_active']),
+                'label'      => 'GR active',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labels_gold_reward_active',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_gold_reward_active']) ? 'Become a Gold Reward Member today' : $labels['_gold_reward_active']),
+                'label'      => 'GR inactive',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labels_first_order_bonus_active',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_first_order_bonus_active']) ? 'First Order Discount applied' : $labels['_first_order_bonus_active']),
+                'label'      => 'FOB active',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+            array(
+                'id'         => 'Localised_Labels_first_order_bonus_active',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_first_order_bonus_active']) ? 'First Order Discount level not reached.' : $labels['_first_order_bonus_active']),
+                'label'      => 'FOB inactive',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+
+
+
+
         )
     ),
 
