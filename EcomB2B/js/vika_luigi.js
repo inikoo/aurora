@@ -164,11 +164,10 @@ document.addEventListener("DOMContentLoaded", () => {
     (async () => {
         const scriptSrc = new URL(import.meta.url);
 
-        if (window.location.hostname === "www.aw-indonesia.com" ||
-            window.location.hostname === "www.ancientwisdom.biz" ||
-            (window.location.hostname === "www.aw-dropship.com" && scriptSrc.searchParams.get('device_type') === 'tablet')
-
-        ) {
+        // if (window.location.hostname === "www.aw-indonesia.com" ||
+        //     window.location.hostname === "www.ancientwisdom.biz" ||
+        //     (window.location.hostname === "www.aw-dropship.com" && scriptSrc.searchParams.get('device_type') === 'tablet')
+        // ) {
 
             console.log("Hello, world L!")
 
@@ -269,8 +268,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-        } else {
-            console.log("Hello world!!")
-        }
+        // } else {
+        //     console.log("Hello world!!")
+        // }
     })()
 })
