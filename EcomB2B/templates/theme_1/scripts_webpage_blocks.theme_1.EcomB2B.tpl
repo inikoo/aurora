@@ -7,7 +7,7 @@
 
     Swal.fire({
 
-                text: $(this).data('pop_up').text
+                text: $(this).data('pop_up').text,
                 icon: "success"
               });
 
@@ -21,7 +21,7 @@
 
     Swal.fire({
 
-                text: $(this).data('pop_up').text
+                text: $(this).data('pop_up').text,
                 icon: "info"
               });
 
