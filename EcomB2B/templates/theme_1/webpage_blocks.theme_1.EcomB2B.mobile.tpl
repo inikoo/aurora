@@ -472,7 +472,7 @@
 
 {elseif  $account_code=='AWEU'  }
     {if $website->get('Website Code')=='aw.eu'}
-    
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622491&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='AWD'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622636&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='HR'}
