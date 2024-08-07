@@ -8,7 +8,9 @@
     Swal.fire({
 
                 text: $(this).data('pop_up').text,
-                icon: "success"
+                icon: "success",
+                footer: '<a href="'+$(this).data('pop_up').link+'">'+$(this).data('pop_up').link_label+'</a>'
+
               });
 
 
@@ -22,7 +24,9 @@
     Swal.fire({
 
                 text: $(this).data('pop_up').text,
-                icon: "info"
+                icon: "info",
+                footer: '<a href="'+$(this).data('pop_up').link+'">'+$(this).data('pop_up').link_label+'</a>'
+
               });
 
   });
