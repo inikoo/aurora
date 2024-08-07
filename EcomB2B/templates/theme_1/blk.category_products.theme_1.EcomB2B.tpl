@@ -152,7 +152,7 @@
                                                 </div>
 
                                                 <div
-                                                    style="border-radius: 4px; font-size: 0.7rem;background-color: #75757545;padding: 1px 6px;width: fit-content;border: 1px solid #8f8f8f;color: #282828;"
+                                                    style="cursor: pointer; border-radius: 4px; font-size: 0.7rem;background-color: #75757545;padding: 1px 6px;width: fit-content;border: 1px solid #8f8f8f;color: #282828;"
                                                     class=" discount_info_unappeased  "
                                                 >
                                                     <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
