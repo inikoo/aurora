@@ -480,19 +480,19 @@
         <script type="module" src="../../js/vika_luigi.js?v=38&trackerId=483878-588294&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
 
     {elseif $website->get('Website Code')=='AWD'}
-
+        <script type="module" src="../../js/vika_luigi.js?v=38&trackerId=483878-621865&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {/if}
 
-
-    {elseif  $account_code=='AROMA'  }
+{elseif  $account_code=='AROMA'  }
     {if $website->get('Website Code')=='Aroma'}
         <script type="module" src="../../js/vika_luigi.js?v=38&trackerId=483878-621871&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
 
     {elseif $website->get('Website Code')=='AC'}
+
     {/if}
 
 
-    {elseif  $account_code=='AWEU'  }
+{elseif  $account_code=='AWEU'  }
     {if $website->get('Website Code')=='aw.eu'}
     {elseif $website->get('Website Code')=='AWD'}
     {elseif $website->get('Website Code')=='HR'}
@@ -508,21 +508,21 @@
     {elseif $website->get('Website Code')=='SE'}
     {/if}
 
-    {elseif  $account_code=='ES'  }
-    {if $website->get('Website Code')=='ADE'}
-        <script src="https://scripts.luigisbox.com/LBX-622183.js"></script>
-    {elseif $website->get('Website Code')=='EU'}
-        <script src="https://scripts.luigisbox.com/LBX-622130.js"></script>
-    {elseif $website->get('Website Code')=='PT'}
-        <script src="https://scripts.luigisbox.com/LBX-622079.js"></script>
-    {elseif $website->get('Website Code')=='ES'}
-        <script src="https://scripts.luigisbox.com/LBX-622012.js"></script>
-    {elseif $website->get('Website Code')=='FR'}
-        <script src="https://scripts.luigisbox.com/LBX-621970.js"></script>
-    {elseif $website->get('Website Code')=='DSE'}
-        <script src="https://scripts.luigisbox.com/LBX-622153.js"></script>
+{elseif  $account_code=='ES'  }
+        {if $website->get('Website Code')=='ADE'}
+            <script src="https://scripts.luigisbox.com/LBX-622183.js"></script>
+        {elseif $website->get('Website Code')=='EU'}
+            <script src="https://scripts.luigisbox.com/LBX-622130.js"></script>
+        {elseif $website->get('Website Code')=='PT'}
+            <script src="https://scripts.luigisbox.com/LBX-622079.js"></script>
+        {elseif $website->get('Website Code')=='ES'}
+            <script src="https://scripts.luigisbox.com/LBX-622012.js"></script>
+        {elseif $website->get('Website Code')=='FR'}
+            <script src="https://scripts.luigisbox.com/LBX-621970.js"></script>
+        {elseif $website->get('Website Code')=='DSE'}
+            <script src="https://scripts.luigisbox.com/LBX-622153.js"></script>
+        {/if}
     {/if}
-{/if}
 
 <div id="__search_test"></div>
 </body>
