@@ -147,7 +147,7 @@
                                                             <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
                                                             <span class="gold_reward_percentage"></span>
                                                         </div>
-                                                        <i style="color: seagreen;font-size: 0.5rem;" class="gold_reward_applied fal fa-check"></i>
+                                                        <i style="color: seagreen;font-size: 0.5rem;" class="hide gold_reward_applied_check fal fa-check"></i>
                                                     </div>
                                                 </div>
 
@@ -158,8 +158,7 @@
                                                     <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
                                                     <span class="gold_reward_percentage"></span>
 
-                                                    <i style="color: #3b3b3b;/*! font-size: 0.5rem; */opacity: 0.7;"
-                                                        class="hide gold_reward_applied fal fa-question-circle"></i>
+                                                    <i style="color: #3b3b3b;/*! font-size: 0.5rem; */opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
                                                 </div>
                                             </td>
                                             <td class="gold_reward_price "></td>

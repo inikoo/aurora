@@ -82,6 +82,7 @@
 
       if(value.applied){
         block.find('.discount_info_applied').removeClass('hide').data('pop_up',value.pop_up)
+        block.find('.gold_reward_applied_check').removeClass('hide')
 
 
         block.find('.original_price').addClass('strikethrough')
@@ -91,6 +92,7 @@
 
       }else{
         block.find('.discount_info_unappeased').removeClass('hide').data('pop_up',value.pop_up)
+        block.find('.gold_reward_applied_check').addClass('hide')
 
 
 
