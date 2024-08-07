@@ -486,43 +486,52 @@
 {elseif  $account_code=='AROMA'  }
     {if $website->get('Website Code')=='Aroma'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621871&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
-
     {elseif $website->get('Website Code')=='AC'}
-
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621949&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {/if}
-
 
 {elseif  $account_code=='AWEU'  }
     {if $website->get('Website Code')=='aw.eu'}
     {elseif $website->get('Website Code')=='AWD'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622636&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='HR'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622391&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='it.eu'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622449&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='RO'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622387&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='hu.eu'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622237&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='fr.eu'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622603&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='sk.com'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622511&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='cz.eu'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622467&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='pl.eu'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622535&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='NL'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622609&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='de.eu'}
     {elseif $website->get('Website Code')=='SE'}
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622292&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {/if}
 
 {elseif  $account_code=='ES'  }
-        {if $website->get('Website Code')=='ADE'}
-            <script src="https://scripts.luigisbox.com/LBX-622183.js"></script>
-        {elseif $website->get('Website Code')=='EU'}
-            <script src="https://scripts.luigisbox.com/LBX-622130.js"></script>
-        {elseif $website->get('Website Code')=='PT'}
-            <script src="https://scripts.luigisbox.com/LBX-622079.js"></script>
-        {elseif $website->get('Website Code')=='ES'}
-            <script src="https://scripts.luigisbox.com/LBX-622012.js"></script>
-        {elseif $website->get('Website Code')=='FR'}
-            <script src="https://scripts.luigisbox.com/LBX-621970.js"></script>
-        {elseif $website->get('Website Code')=='DSE'}
-            <script src="https://scripts.luigisbox.com/LBX-622153.js"></script>
-        {/if}
+    {if $website->get('Website Code')=='ADE'}
+        <script src="https://scripts.luigisbox.com/LBX-622183.js"></script>
+    {elseif $website->get('Website Code')=='EU'}
+        <script src="https://scripts.luigisbox.com/LBX-622130.js"></script>
+    {elseif $website->get('Website Code')=='PT'}
+        <script src="https://scripts.luigisbox.com/LBX-622079.js"></script>
+    {elseif $website->get('Website Code')=='ES'}
+        <script src="https://scripts.luigisbox.com/LBX-622012.js"></script>
+    {elseif $website->get('Website Code')=='FR'}
+        <script src="https://scripts.luigisbox.com/LBX-621970.js"></script>
+    {elseif $website->get('Website Code')=='DSE'}
+        <script src="https://scripts.luigisbox.com/LBX-622153.js"></script>
     {/if}
+{/if}
 
 <div id="__search_test"></div>
 </body>
