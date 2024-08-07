@@ -1,5 +1,17 @@
 <script>
 
+
+  function gr_show_discount_info(){
+
+    console.log($(this).data('pop_up'))
+
+   // swal.fire({
+   //             title: data.title, text: data.msg
+   //           });
+
+
+  }
+
   function show_gold_reward(discounts,families){
 
 
@@ -52,13 +64,19 @@
         
 
       if(value.applied){
-        block.find('.discount_info_applied').removeClass('hide')
+        block.find('.discount_info_applied').removeClass('hide').data('pop_up',value.pop_up)
+
+
         block.find('.original_price').addClass('strikethrough')
         block.find('.original_price_tr').css('opacity',.8)
           block.find('.discount_info_unappeased').addClass('hide')
           block.find('.original_price_checked').addClass('hide')
 
       }else{
+        block.find('.discount_info_unappeased').removeClass('hide').data('pop_up',value.pop_up)
+
+
+
           block.find('.discount_info_applied').addClass('hide')
          block.find('.original_price').removeClass('strikethrough')
           block.find('.original_price_tr').css('opacity',1)
@@ -89,12 +107,7 @@
 
   }
 
-  function gr_show_discount_info(){
 
-
-
-
-  }
 
 
     function show_discounts(discounts){
