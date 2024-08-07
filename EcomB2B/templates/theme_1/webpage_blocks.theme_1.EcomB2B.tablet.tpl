@@ -477,15 +477,15 @@
 
 {if  $account_code=='AW'  }
     {if $website->get('Website Code')=='AW.biz'}
-        <script type="module" src="../../js/vika_luigi.js?v=38&trackerId=483878-588294&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-588294&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
 
     {elseif $website->get('Website Code')=='AWD'}
-        <script type="module" src="../../js/vika_luigi.js?v=38&trackerId=483878-621865&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621865&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {/if}
 
 {elseif  $account_code=='AROMA'  }
     {if $website->get('Website Code')=='Aroma'}
-        <script type="module" src="../../js/vika_luigi.js?v=38&trackerId=483878-621871&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621871&device_type=tablet&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
 
     {elseif $website->get('Website Code')=='AC'}
 
