@@ -800,7 +800,7 @@
 
 {elseif  $account_code=='AROMA'  }
     {if $website->get('Website Code')=='Aroma'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621871&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621871&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {elseif $website->get('Website Code')=='AC'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621949&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=£"></script>
     {/if}
@@ -813,7 +813,7 @@
     {elseif $website->get('Website Code')=='HR'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622391&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=hr&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='it.eu'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622449&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=it&currency_symbol=€"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622449&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=it&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='RO'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622387&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=ro&currency_symbol=lei"></script>
     {elseif $website->get('Website Code')=='hu.eu'}
@@ -836,17 +836,17 @@
 
 {elseif  $account_code=='ES'  }
     {if $website->get('Website Code')=='ADE'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622183&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=de&currency_symbol=€"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622183&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=de&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='EU'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622130&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=€"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622130&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='PT'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622079&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=pt&currency_symbol=€"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622079&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=pt&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='ES'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622012&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=es&currency_symbol=€"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622012&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=es&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='FR'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621970&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=fr&currency_symbol=€"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621970&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=fr&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='DSE'}
-        <scrxipt type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622153&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=€"></scrxipt>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622153&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=€"></script>
     {/if}
 {/if}
 
