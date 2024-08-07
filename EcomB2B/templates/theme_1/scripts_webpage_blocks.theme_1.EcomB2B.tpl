@@ -90,6 +90,7 @@
           block.find('.discount_info_unappeased').addClass('hide')
           block.find('.original_price_checked').addClass('hide')
 
+
       }else{
         block.find('.discount_info_unappeased').removeClass('hide').data('pop_up',value.pop_up)
         block.find('.gold_reward_applied_check').addClass('hide')
@@ -120,6 +121,7 @@
               $('.discount_info_family_' + value + ' .discount_info_unappeased').addClass('hide')
               $('.discount_info_family_' + value + ' .original_price_checked').addClass('hide')
 
+        $('.discount_info_family_' + value + ' .gold_reward_applied_check').removeClass('hide')
 
 
       });
