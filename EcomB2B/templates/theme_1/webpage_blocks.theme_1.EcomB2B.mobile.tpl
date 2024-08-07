@@ -511,7 +511,7 @@
     {elseif $website->get('Website Code')=='FR'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-621970&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=fr&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='DSE'}
-        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622153&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=de&currency_symbol=€"></script>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622153&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=€"></script>
     {/if}
 {/if}
 </body>
