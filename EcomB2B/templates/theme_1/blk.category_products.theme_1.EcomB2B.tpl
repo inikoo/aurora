@@ -144,10 +144,10 @@
                                                 <div style="display:flex; align-items: center;column-gap: 3px;">
                                                     <div onclick="gr_show_discount_info()"
                                                         id="discount_info_applied"
-                                                        style="border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #16a34a;"
+                                                        style="cursor: pointer; border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #0b7933;"
                                                         class="hide discount_info_applied"
                                                     >
-                                                        <i class="gold_reward_badge  fas fa-star" style="color: green;"></i>
+                                                        <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
                                                         <span class="gold_reward_percentage"></span>
                                                     </div>
                                                     <i style="color: seagreen;font-size: 0.5rem;" class="gold_reward_applied fal fa-check"></i>
