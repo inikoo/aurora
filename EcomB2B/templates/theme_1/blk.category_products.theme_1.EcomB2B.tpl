@@ -141,13 +141,15 @@
 
                                         <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
                                             <td style="width:75px"  data-family_key="{$item_family_key}"   >
-                                                <div onclick="gr_show_discount_info()"
-                                                    id="discount_info_applied"
-                                                    style="border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #16a34a;"
-                                                    class="hide discount_info_applied"
-                                                >
-                                                    <i class="gold_reward_badge  fas fa-badge-percent" style="color: green;"></i>
-                                                    <span class="gold_reward_percentage"></span>
+                                                <div style="display:flex; align-items: center;column-gap: 3px;">
+                                                    <div onclick="gr_show_discount_info()"
+                                                        id="discount_info_applied"
+                                                        style="border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #16a34a;"
+                                                        class="hide discount_info_applied"
+                                                    >
+                                                        <i class="gold_reward_badge  fas fa-star" style="color: green;"></i>
+                                                        <span class="gold_reward_percentage"></span>
+                                                    </div>
                                                     <i style="color: seagreen;font-size: 0.5rem;" class="gold_reward_applied fal fa-check"></i>
                                                 </div>
 
@@ -155,7 +157,7 @@
                                                     style="border-radius: 4px; font-size: 0.7rem;background-color: #75757545;padding: 1px 6px;width: fit-content;border: 1px solid #8f8f8f;color: #282828;"
                                                     class=" discount_info_unappeased  "
                                                 >
-                                                    <i class="gold_reward_badge  fas fa-badge-percent" style="color: #3f3f3f;"></i>
+                                                    <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
                                                     <span class="gold_reward_percentage"></span>
 
                                                     <i style="color: #3b3b3b;/*! font-size: 0.5rem; */opacity: 0.7;"
