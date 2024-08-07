@@ -1,16 +1,22 @@
 <script>
 
 
-  function gr_show_discount_info(){
+  $(document).on("click",".discount_info_applied", function () {
 
     console.log($(this).data('pop_up'))
 
-   // swal.fire({
-   //             title: data.title, text: data.msg
-   //           });
+
+  });
 
 
-  }
+  $(document).on("click",".discount_info_unappeased", function () {
+
+    console.log($(this).data('pop_up'))
+
+
+  });
+
+
 
   function show_gold_reward(discounts,families){
 
