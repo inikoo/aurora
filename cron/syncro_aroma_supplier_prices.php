@@ -318,7 +318,7 @@ while ($row4 = $stmt4->fetch()) {
     }
 
 
-    if (isset($supplier_part) and is_object($supplier_part)  ) {
+    if (isset($supplier_part) and is_object($supplier_part)  and false ) {
 
         $sql = sprintf('select * from aroma.`Image Dimension` left join aroma.`Image Subject Bridge` on (`Image Key`=`Image Subject Image Key`)  where `Image Subject Object`="Part" and  `Image Subject Object Key`=?  ');
 
