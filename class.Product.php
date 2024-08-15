@@ -199,22 +199,6 @@ class Product extends Asset
                 return $this->webpage->get('Webpage Name');
 
 
-            case 'Webpage Price':
-
-                $price = money(
-                    $this->data['Product Price'],
-                    $this->data['Store Currency Code']
-                );
-
-                if ($this->data['Product Units Per Case'] != 1) {
-                    $price .= ' ('.money(
-                            $this->data['Product Price'] / $this->data['Product Units Per Case'],
-                            $this->data['Store Currency Code']
-                        ).'/'.$this->data['Product Unit Label'].')';
-                }
-
-
-                return $price;
 
 
             case 'Webpage RRP':
@@ -268,6 +252,27 @@ class Product extends Asset
 
                 return _('Out of stock');
 
+
+
+            case 'Webpage Price':
+
+                $price = money(
+                    $this->data['Product Price'],
+                    $this->data['Store Currency Code'],
+                    $this->data['Store Locale'],
+                );
+                if ($this->data['Product Units Per Case'] == 1) {
+                    $price .= '/'.$this->data['Product Unit Label'];
+                } elseif ($this->data['Product Units Per Case'] > 1) {
+                    $price .= ' ('.money(
+                            $this->data['Product Price'] / $this->data['Product Units Per Case'],
+                            $this->data['Store Currency Code'],
+                            $this->data['Store Locale'],
+                        ).'/'.$this->data['Product Unit Label'].')';
+                }
+
+
+                return $price;
 
             case 'Price':
 

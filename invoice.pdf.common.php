@@ -166,7 +166,7 @@ if ($pastpay) {
 
                 'GBP' =>
                     [
-                        'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe Sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to PastPay’s account – IBAN: BE32 9140 4491 0002 SWIFT: FXBBBEBBXXX, including the invoice number in the payment reference. If you have any questions regarding the payment of the invoice, please contact us directly at payments@pastpay.com."
+                        'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe Sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to PastPay’s account – Bank: Revolut Ltd -  Account number 79163777 ,  Sort code 04-00-75 , Recipient: PastPay Europe SP Z O O   including the invoice number in the payment reference. If you have any questions regarding the payment of the invoice, please contact us directly at payments@pastpay.com."
 
 
                     ],
@@ -210,7 +210,7 @@ if ($pastpay) {
 
                 'GBP' =>
                     [
-                        'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe Sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to PastPay’s account – IBAN: BE32 9140 4491 0002 SWIFT: FXBBBEBBXXX, including the invoice number in the payment reference. If you have any questions regarding the payment of the invoice, please contact us directly at payments@pastpay.com."
+                        'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe Sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to PastPay’s account – Bank: Revolut Ltd -  Account number 79163777 ,  Sort code 04-00-75 , Recipient: PastPay Europe SP Z O O   including the invoice number in the payment reference. If you have any questions regarding the payment of the invoice, please contact us directly at payments@pastpay.com."
 
 
                     ],
@@ -252,7 +252,7 @@ if ($pastpay) {
             $_pastpay_notes = [
             'GBP' =>
                     [
-                        'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe Sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to PastPay’s account – IBAN: BE45 9140 4673 2689 SWIFT: FXBBBEBBXXX, including the invoice number in the payment reference. If you have any questions regarding the payment of the invoice, please contact us directly at payments@pastpay.com."
+                        'en_GB' => "Important! Transfer clause: The creditor of the claim in this invoice is PastPay Europe Sp. z o.o.(address: ul. Legionów 33/3, 43-300 Bielsko-Biała, NIP: 5472223365) which acquired the claim due to transfer of receivables contract with the webshop. Please pay the amount of the invoice to PastPay’s account – Bank: Revolut Ltd -  Account number 79163777 ,  Sort code 04-00-75 , Recipient: PastPay Europe SP Z O O   including the invoice number in the payment reference. If you have any questions regarding the payment of the invoice, please contact us directly at payments@pastpay.com."
 
                     ],
                 ];

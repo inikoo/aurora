@@ -1,5 +1,38 @@
 <script>
 
+
+  $(document).on("click",".discount_info_applied", function () {
+
+    console.log($(this).data('pop_up'))
+
+    swal.fire({
+
+                text: $(this).data('pop_up').text,
+                icon: "success",
+                footer: '<a href="'+$(this).data('pop_up').link+'">'+$(this).data('pop_up').link_label+'</a>'
+
+              });
+
+
+  });
+
+
+  $(document).on("click",".discount_info_unappeased", function () {
+
+    console.log($(this).data('pop_up'))
+
+    swal.fire({
+
+                text: $(this).data('pop_up').text,
+                icon: "info",
+                footer: '<a href="'+$(this).data('pop_up').link+'">'+$(this).data('pop_up').link_label+'</a>'
+
+              });
+
+  });
+
+
+
   function show_gold_reward(discounts,families){
 
 
@@ -52,13 +85,22 @@
         
 
       if(value.applied){
-        block.find('.discount_info_applied').removeClass('hide')
+        block.find('.discount_info_applied').removeClass('hide').data('pop_up',value.pop_up)
+        block.find('.gold_reward_applied_check').removeClass('hide')
+
+
         block.find('.original_price').addClass('strikethrough')
         block.find('.original_price_tr').css('opacity',.8)
           block.find('.discount_info_unappeased').addClass('hide')
           block.find('.original_price_checked').addClass('hide')
 
+
       }else{
+        block.find('.discount_info_unappeased').removeClass('hide').data('pop_up',value.pop_up)
+        block.find('.gold_reward_applied_check').addClass('hide')
+
+
+
           block.find('.discount_info_applied').addClass('hide')
          block.find('.original_price').removeClass('strikethrough')
           block.find('.original_price_tr').css('opacity',1)
@@ -83,18 +125,14 @@
               $('.discount_info_family_' + value + ' .discount_info_unappeased').addClass('hide')
               $('.discount_info_family_' + value + ' .original_price_checked').addClass('hide')
 
+        $('.discount_info_family_' + value + ' .gold_reward_applied_check').removeClass('hide')
 
 
       });
 
   }
 
-  function gr_show_discount_info(){
 
-
-
-
-  }
 
 
     function show_discounts(discounts){

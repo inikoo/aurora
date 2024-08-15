@@ -90,14 +90,14 @@
                 <a id="header_order_totals" href="basket.sys" class="button" style="">
                     <span class="hide ordered_products_number">0</span>
                     <i style="font-size: 1rem; padding-right:5px; padding-left:5px" class="fa fa-shopping-cart fa-flip-horizontal  "  title="{if empty($labels._Basket)}{t}Basket{/t}{else}{$labels._Basket}{/if}" aria-hidden="true"></i>
-                    <span class="order_amount" title="" style="font-weight: 600; font-size: 1.1rem;"></span>
+                    <span class="order_amount" title="" style="font-weight: 600; font-size: 1.1rem;">{$zero_money}</span>
                 </a>
             {/if}
         
         {else}
             <div style="display: flex;column-gap: 16px;">
                 <a href="/login.sys" class="button"  id="login_header_button" ><i class="fa fa-sign-in" aria-hidden="true"></i> <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></a>
-                <a href="/register.sys" class="button"  id="register_header_button" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
+                <a style="margin-left: 30px" href="/register.sys" class="button"  id="register_header_button" ><i class="fa fa-user-plus" aria-hidden="true"></i> <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></a>
             </div>
         {/if}
 

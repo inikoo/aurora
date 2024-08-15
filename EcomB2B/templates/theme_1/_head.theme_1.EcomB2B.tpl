@@ -18,6 +18,8 @@
       window.dataLayer = window.dataLayer || [];
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     {if  $account_code=='AW'  }
     {if $website->get('Website Code')=='AW.biz'}
