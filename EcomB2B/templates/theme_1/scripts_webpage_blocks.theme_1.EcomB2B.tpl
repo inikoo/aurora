@@ -1,3 +1,5 @@
+
+
 <script>
 
 
@@ -5,7 +7,7 @@
 
     console.log($(this).data('pop_up'))
 
-    swal.fire({
+    Swal.fire({
 
                 text: $(this).data('pop_up').text,
                 icon: "success",
@@ -21,7 +23,7 @@
 
     console.log($(this).data('pop_up'))
 
-    swal.fire({
+    Swal.fire({
 
                 text: $(this).data('pop_up').text,
                 icon: "info",

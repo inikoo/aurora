@@ -110,9 +110,9 @@ while ($row4 = $stmt4->fetch()) {
             'Part SKO Barcode'                   => $row4['Part SKO Barcode'],
 
             'Part Barcode'                 => $row4['Part Barcode Number'],
-            'Part Part Unit Weight'        => $row4['Part Unit Weight'],
+           // 'Part Part Unit Weight'        => $row4['Part Unit Weight'],
             'Part Part Unit Dimensions'    => get_dimensions($row4['Part Unit Dimensions']),
-            'Part Part Package Weight'     => $row4['Part Package Weight'],
+           // 'Part Part Package Weight'     => $row4['Part Package Weight'],
             'Part Part Package Dimensions' => get_dimensions($row4['Part Package Dimensions']),
             
             'Part Part Tariff Code'                  => $row4['Part Tariff Code'],
@@ -124,7 +124,7 @@ while ($row4 = $stmt4->fetch()) {
             'Part Part Proper Shipping Name'         => $row4['Part Proper Shipping Name'],
             'Part Part Hazard Identification Number' => $row4['Part Hazard Identification Number'],
             'Part Part Origin Country Code'               => $row4['Part Origin Country Code'],
-		'Part CPNP Number'=>$row4['Part CPNP Number'],
+		    'Part CPNP Number'=>$row4['Part CPNP Number'],
             'Part Part Materials'                         => get_materials($row4['Part Materials']),
             'editor' => $editor
         );
@@ -205,6 +205,8 @@ while ($row4 = $stmt4->fetch()) {
 
     } else {
 
+        continue;
+
         $supplier_part_data = array(
             'Supplier Part Reference'                     => $row4['Supplier Part Reference'],
             'Supplier Part Description'                   => $row4['Supplier Part Description'],
@@ -247,10 +249,10 @@ while ($row4 = $stmt4->fetch()) {
         );
 
 
-        $supplier_part = $supplier->create_supplier_part_record($supplier_part_data, 'Yes');
+        //$supplier_part = $supplier->create_supplier_part_record($supplier_part_data, 'Yes');
 
 
-        if ($supplier_part) {
+        if ($supplier_part ) {
 
             $supplier->update_supplier_parts();
 
@@ -276,7 +278,8 @@ while ($row4 = $stmt4->fetch()) {
             print 'New '.$supplier_part_data['Supplier Part Reference']."\n";
 
 
-        } else {
+        }
+        else {
 
             if ($supplier->error_code == 'duplicate_supplier_part_reference') {
 
