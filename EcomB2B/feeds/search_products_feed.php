@@ -102,7 +102,7 @@ while ($row = $stmt->fetch()) {
             'identity' => $row['Webpage Scope Key'],
             'web_url'=>'https://'.$website->get('Website URL').'/'.strtolower($row['Webpage Code']),
             'availability'=>$product->get('Product Availability')>1?1:0,
-            'availability_qty'=>$product->get('Product Availability'),
+            'stock_qty'=>$product->get('Product Availability'),
             'price'=> money(
                 $product->data['Product Price'],
                 $store->data['Store Currency Code'],
