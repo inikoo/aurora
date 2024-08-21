@@ -18,7 +18,7 @@
 
 
     {if $account_code=='INDO'}
-        hello
+        {include file="new_login.desktop.tpl"}
     {else}
     <div id="login_form_container" class="login_form" >
         <form action="" id="login_form" class="sky-form">
