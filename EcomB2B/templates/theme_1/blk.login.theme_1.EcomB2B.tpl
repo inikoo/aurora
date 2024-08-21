@@ -17,6 +17,9 @@
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
 
+    {if $account_code=='INDO'}
+        hello
+    {else}
     <div id="login_form_container" class="login_form" >
         <form action="" id="login_form" class="sky-form">
             <header>{$data.labels._title}</header>
@@ -99,6 +102,7 @@
             </div>
         </form>
     </div>
+    {/if}
 
 </div>
 
