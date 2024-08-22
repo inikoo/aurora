@@ -540,6 +540,23 @@
     {/if}
 
     
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            important: true,
+            prefix: 'tw-',
+            corePlugins: {
+                preflight: false,
+            },
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e87928',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
         {if $website->get('Website Text Font')!=''}
