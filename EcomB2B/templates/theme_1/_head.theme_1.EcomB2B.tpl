@@ -551,7 +551,9 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#e87928',
+                        color1: '#4b5058',
+                        color2: '#957a65',
+                        color3: '#e87928',
                     }
                 }
             }

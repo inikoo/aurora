@@ -1,5 +1,5 @@
 
-<div style="background: white; width: 85%; margin: auto; padding: 20px 50px; color: #4b5058">
+<div class="tw-text-color3" style="background: white; width: 85%; margin: auto; padding: 20px 50px;">
     <div id="login_form_container" class="xxlogin_form" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 55px">
         <form action="" id="login_form" class="xxsky-form" novalidate="novalidate">
             <header style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 40px; letter-spacing: 0.08em">{$data.labels._title} NEW VERSION</header>
@@ -30,7 +30,7 @@
                 </section>
             </fieldset>
             <div style="width: 100%">
-                <button id="login_button" type="submit" style="background: #4b5058; color: white; font-weight: 700; display: block; border-radius: 5px; width: 100%; padding: 10px 14px; font-size: 17px; text-align: center; cursor: pointer; margin-bottom: 10px;">
+                <button id="login_button" type="submit" class="tw-bg-color1" style="color: white; font-weight: 700; display: block; border-radius: 5px; width: 100%; padding: 10px 14px; font-size: 17px; text-align: center; cursor: pointer; margin-bottom: 10px;">
                     {$data.labels._log_in_label}
                 </button>
                 <div style="margin: auto">
@@ -45,19 +45,19 @@
             
             <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 40px">
                 <a href="/register.sys">
-                    <button id="register_button" type="submit" style="background: white; border: 1px solid #4b5058; color: #4b5058; font-weight: 700; display: block; border-radius: 5px; width: fit-content; padding: 8px 14px; font-size: 17px; text-align: center; cursor: pointer; margin-bottom: 2px;">
+                    <button id="register_button" type="submit" class="tw-bg-white hover:tw-bg-gray-50" style="border: 1px solid #4b5058; color: #4b5058; font-weight: 700; display: block; border-radius: 5px; width: fit-content; padding: 8px 14px; font-size: 17px; text-align: center; cursor: pointer; margin-bottom: 2px;">
                         {$data.labels._register_label}
                     </button>
                 </a>
-                <div class="tw-text-red-500" style="font-style: italic; font-size: 0.85rem; letter-spacing: 0.025em">* For trade customers only.</div>
+                <div class="tw-italic" style="font-size: 0.85rem; letter-spacing: 0.025em">* For trade customers only.</div>
             </div>
 
             <div>
-                <div class="tw-text-primary" style="text-align: center;">
-                    Register and get <span style="color: #e87928; font-weight: 600;">10% OFF</span> on your first order, also:
+                <div class="" style="text-align: center;">
+                    Register and get <span class="tw-text-color3" style="font-weight: 600;">10% OFF</span> on your first order, also:
                 </div>
                 
-                <div style="background: #ececec; width: 80%; margin: auto; padding: 5px 10px">
+                <div class="tw-bg-gray-100 tw-mx-auto tw-py-[5px] tw-px-[10px] tw-w-[80%]">
                     <ul style="list-style-position: inside; margin: 0px">
                         <li style="padding: 2px 0">View Wholesale Prices.</li>
                         <li style="padding: 2px 0">See The Available Stock.</li>
@@ -73,4 +73,40 @@
         </div>
     </div>
 
+
+    <div id="recovery_form_container" class="login_form hide" >
+        <form action="" id="password_recovery_form" class="sky-form "  >
+            <header>{$data.labels._title_recovery}</header>
+
+            <fieldset>
+                <section>
+                    <label class="label"{$data.labels._email_recovery_label}</label>
+                    <label class="input">
+                        <i class="icon-append far fa-envelope"></i>
+                        <input type="email" name="email" id="recovery_email">
+                    </label>
+                </section>
+            </fieldset>
+
+            <footer>
+                <button id="recovery_button" type="submit" name="submit" class="button">{$data.labels._submit_label} <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
+                <button id="close_recovery" class="button button-secondary modal-closer">{$data.labels._close_label}</button>
+            </footer>
+
+            <div class="message" >
+                <i class="fa fa-check"></i>
+                <span class="password_recovery_msg hide" id="password_recovery_success_msg"  >{$data.labels._password_recovery_success_msg}</span>
+                <span class="password_recovery_msg error hide" id="password_recovery_email_not_register_error_msg"  >{$data.labels._password_recovery_email_not_register_error_msg}</span>
+                <span class="password_recovery_msg error hide" id="password_recovery_unknown_error_msg" >{$data.labels._password_recovery_unknown_error_msg}</span>
+                <span class="password_recovery_msg error hide" id="password_recovery_waiting_approval_error_msg" >{if empty($data.labels._password_recovery_unknown_error_msg)}{t}Account waiting for approval{/t}{else}{$data.labels._password_recovery_unknown_error_msg}{/if}</span>
+
+
+
+                <br>
+                <a href="login"  class="modal-closer" id="password_recovery_go_back" >{$data.labels._password_recovery_go_back}</a>
+
+
+            </div>
+        </form>
+    </div>
 </div>
