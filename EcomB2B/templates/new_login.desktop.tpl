@@ -4,7 +4,7 @@
         <div class="tw-grid tw-grid-cols-2 tw-gap-x-[55px]">
             <form action="" id="login_form" class="xxsky-form" novalidate="novalidate">
                 <header style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 40px; letter-spacing: 0.08em">{$data.labels._title} NEW VERSION</header>
-                <fieldset style="border: none; padding: 0">
+                <fieldset class="tw-mb-5 tw-border-none tw-p-0">
                     <section class="tw-mt-5 tw-w-full tw-inline-block" style="">
                         <label class="" style="display: inline-block; font-weight: 600; margin-bottom: 10px;">{$data.labels._email_label}</label>
                         <input id="handle" type="email" name="email" class="valid tw-border tw-border-gray-400 tw-block tw-w-full tw-rounded" style="padding: 10px 14px; box-sizing: border-box">
@@ -28,6 +28,7 @@
                         </div>
                     </section>
                 </fieldset>
+
                 <div class="tw-w-full">
                     <button id="login_button" type="submit" class="tw-bg-color1 hover:tw-gray-600 tw-border-none tw-cursor-pointer tw-mb-2.5 tw-text-white tw-block tw-rounded-md tw-w-full tw-text-center" style="font-weight: 700; padding: 10px 14px; font-size: 17px;">
                         {$data.labels._log_in_label}
