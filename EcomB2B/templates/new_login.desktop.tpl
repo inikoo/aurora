@@ -1,6 +1,6 @@
 <div id="login_form_container" class="login_form" >
     <form action="" id="login_form" class="sky-form">
-        <header>{$data.labels._title} NEW VERSION</header>
+        <header class="tw-bg-red-200">{$data.labels._title} NEW VERSION</header>
 
         <fieldset>
             <section>
