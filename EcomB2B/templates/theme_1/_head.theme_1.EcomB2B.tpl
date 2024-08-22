@@ -539,10 +539,7 @@
         {/if}
     {/if}
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { prefix: 'tw-' }
-    </script>
+    
 
     <style>
         {if $website->get('Website Text Font')!=''}
