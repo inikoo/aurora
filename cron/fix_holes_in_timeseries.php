@@ -30,10 +30,10 @@ $editor = array(
 
 $timeseries = get_time_series_config();
 
-$date1 = '2024-05-01';
+$date1 = '2023-05-01';
 $date2 = '2024-08-26';
 
-$account = new Account(1);
+$account = new Account();
 $timeseries_data = $timeseries['Account'];
 
 foreach ($timeseries_data as $time_series_data) {
