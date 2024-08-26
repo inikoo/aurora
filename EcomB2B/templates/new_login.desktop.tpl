@@ -3,7 +3,7 @@
     <div id="login_form_container" class="xxlogin_form ">
         <div class="tw-grid tw-grid-cols-2 tw-gap-x-[55px]">
             <form action="" id="login_form" class="xxsky-form" novalidate="novalidate">
-                <header style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 40px; letter-spacing: 0.08em">{$data.labels._title} NEW VERSION</header>
+                <header style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 40px; letter-spacing: 0.08em">{$data.labels._title}</header>
                 <fieldset class="tw-mb-5 tw-border-none tw-p-0">
                     <section class="tw-mt-5 tw-w-full tw-inline-block" style="">
                         <label class="" style="display: inline-block; font-weight: 600; margin-bottom: 10px;">{$data.labels._email_label}</label>
@@ -40,7 +40,7 @@
                 </div>
             </form>
             <div class="xxlogin_form" style="display: flex; flex-direction: column;">
-                <div style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 30px; letter-spacing: 0.08em">Don't have an account yet?</div>
+                <div style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 30px; letter-spacing: 0.08em">{if empty($data.labels._register_title)}Don't have an account yet?{else}{$data.labels._register_title}{/if}</div>
             
                 <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 40px">
                     <a href="/register.sys" class="hover:tw-no-underline">
@@ -48,22 +48,24 @@
                             {$data.labels._register_label}
                         </button>
                     </a>
-                    <div class="tw-italic" style="font-size: 0.85rem; letter-spacing: 0.025em">* For trade customers only.</div>
+                    <div class="tw-italic" style="font-size: 0.85rem; letter-spacing: 0.025em">{if empty($data.labels._register_trade_only)}* For trade customers only.{else}{$data.labels._register_trade_only}{/if}</div>
                 </div>
                 <div>
                     <div class="" style="text-align: center;">
-                        Register and get <span class="tw-text-color3" style="font-weight: 600;">10% OFF</span> on your first order, also:
+                        <span >{if empty($data.labels._register_call_action_a)}Register and get{else}{$data.labels._register_call_action_a}{/if}</span>
+                        <span  class="tw-text-color3" style="font-weight: 600;">{if empty($data.labels._register_call_action_b)}10% OFF{else}{$data.labels._register_call_action_b}{/if}</span>
+                        <span  >{if empty($data.labels._register_call_action_c)}on your first order, also:{else}{$data.labels._register_call_action_c}{/if}</span>
                     </div>
             
                     <div class="tw-bg-gray-100 tw-mx-auto tw-py-[5px] tw-px-[10px] tw-w-[80%]">
                         <ul style="list-style-position: inside; margin: 0px">
-                            <li style="padding: 2px 0">View Wholesale Prices.</li>
-                            <li style="padding: 2px 0">See The Available Stock.</li>
-                            <li style="padding: 2px 0">See What Products are Now on Offer.</li>
-                            <li style="padding: 2px 0">Crate Your Favourite Product List.</li>
-                            <li style="padding: 2px 0">Receive Exclusive Offers.</li>
-                            <li style="padding: 2px 0">Get The Back In Stock Notification.</li>
-                            <li style="padding: 2px 0">Become a Gold Reward Member.</li>
+                            <li  style="padding: 2px 0">{if empty($data.labels._register_feat_1)}View Wholesale Prices.{else}{$data.labels._register_feat_1}{/if}</li>
+                            <li  style="padding: 2px 0">{if empty($data.labels._register_feat_2)}See The Available Stock.{else}{$data.labels._register_feat_2}{/if}</li>
+                            <li  style="padding: 2px 0">{if empty($data.labels._register_feat_3)}See What Products are Now on Offer.{else}{$data.labels._register_feat_3}{/if}</li>
+                            <li  style="padding: 2px 0">{if empty($data.labels._register_feat_4)}Crate Your Favourite Product List.{else}{$data.labels._register_feat_4}{/if}</li>
+                            <li  style="padding: 2px 0">{if empty($data.labels._register_feat_5)}Receive Exclusive Offers.{else}{$data.labels._register_feat_5}{/if}</li>
+                            <li style="padding: 2px 0">{if empty($data.labels._register_feat_6)}Get The Back In Stock Notification.{else}{$data.labels._register_feat_6}{/if}</li>
+                            <li style="padding: 2px 0">{if empty($data.labels._register_feat_7)}Become a Gold Reward Member.{else}{$data.labels._register_feat_7}{/if}</li>
                         </ul>
             
                     </div>

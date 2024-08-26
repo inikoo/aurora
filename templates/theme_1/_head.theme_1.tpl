@@ -26,6 +26,11 @@
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { prefix: 'tw-' }
+    </script>
+
     <link href="/css/jquery-ui.css" rel="stylesheet">
 
     <link href="/node_modules/froala-editor/css/froala_editor.css?v=2a" rel="stylesheet"/>
