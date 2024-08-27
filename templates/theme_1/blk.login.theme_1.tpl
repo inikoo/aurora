@@ -65,141 +65,114 @@
 
     <div class="tw-text-color1 tw-bg-white tw-w-[85%] tw-mx-auto tw-py-[20px] tw-px-[50px]">
 
-                    <div id="login_form_container" class="xxlogin_form" style="xposition:relative">
-
-
-
-
-                        <div class="tw-grid tw-grid-cols-2 tw-gap-x-[55px]">
-                        <form id="sky-form" class="sky-form">
-
-                            <header id="_title" contenteditable="true">{$data.labels._title}</header>
-
-
-
-                            <fieldset>
-
-                                <section>
-
-                                    <div class="row">
-
-                                        <label class="label col col-4" id="_email_label" contenteditable="true">{$data.labels._email_label}</label>
-
-                                        <div class="col col-8">
-
-                                            <label class="input" editor="handle_input_editor" style="cursor:pointer" onclick="show_edit_input(this)">
-
-                                                <i class="icon-append icon-user"></i>
-
-                                                <input type="email" name="email">
-
-                                            </label>
-
-                                        </div>
-
-                                    </div>
-
-                                </section>
-
-
-
-                                <section>
-
-                                    <div class="row">
-
-                                        <label class="label col col-4" id="_password_label" contenteditable="true">{$data.labels._password_label}</label>
-
-                                        <div class="col col-8">
-
-                                            <label class="input" editor="password_input_editor" style="cursor:pointer" onclick="show_edit_input(this)">
-
-                                                <i class="icon-append icon-lock"></i>
-
-                                                <input type="password" name="password">
-
-                                            </label>
-
-                                            <div ><span href=""  id="_forgot_password_label" contenteditable="true">{$data.labels._forgot_password_label}</span>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </section>
-
-
-
-                                <section class="hide">
-
-                                    <div class="row">
-
-                                        <div class="col col-4"></div>
-
-                                        <div class="col col-8">
-
-                                            <label class="checkbox"><input type="checkbox" name="remember" checked><i></i></label> <span id="_keep_logged_in_label" style="margin-left:22px;top:-22px" class="fake_form_checkbox" contenteditable="true">{$data.labels._keep_logged_in_label}</span>
-
-                                        </div>
-
-                                    </div>
-
-                                </section>
-
-                            </fieldset>
-
-                            <footer>
-
-                                <div class="fright">
-                                    <button type="submit" class="button" id="_log_in_label" contenteditable="true">{$data.labels._log_in_label}</button>
-
-
-                                    <a href="register.html" class="button button-secondary" id="_register_label" contenteditable="true">{$data.labels._register_label}</a>
-
-
-                                </div>
-
-
-
-                            </footer>
-
-                        </form>
-
-                        <div class="xxlogin_form" style="display: flex; flex-direction: column;">
-                            <div id="_register_title" contenteditable="true" style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 30px; letter-spacing: 0.08em">{if empty($data.labels._register_title)}Don't have an account yet?{else}{$data.labels._register_title}{/if}</div>
-
-                            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 40px">
-
-                                    <button contenteditable="true" id="_register_label" type="submit" class="tw-bg-white hover:tw-bg-gray-100" style="border: 1px solid #4b5058; color: #4b5058; font-weight: 700; display: block; border-radius: 5px; width: fit-content; padding: 7px 14px; font-size: 17px; text-align: center; cursor: pointer; margin-bottom: 2px;">
-                                        {$data.labels._register_label}
-                                    </button>
-
-                                <div id="_register_trade_only" contenteditable="true" class="tw-italic" style="font-size: 0.85rem; letter-spacing: 0.025em">{if empty($data.labels._register_trade_only)}* For trade customers only.{else}{$data.labels._register_trade_only}{/if}</div>
-                            </div>
-                            <div>
-                                <div class="" style="text-align: center;">
-                                    <span id="_register_call_action_a" contenteditable="true">{if empty($data.labels._register_call_action_a)}Register and get{else}{$data.labels._register_call_action_a}{/if}</span>
-                                    <span id="_register_call_action_b" contenteditable="true" class="tw-text-color3" style="font-weight: 600;">{if empty($data.labels._register_call_action_b)}10% OFF{else}{$data.labels._register_call_action_b}{/if}</span>
-                                    <span  id="_register_call_action_c" contenteditable="true">{if empty($data.labels._register_call_action_c)}on your first order, also:{else}{$data.labels._register_call_action_c}{/if}</span>
-                                </div>
-
-                                <div class="tw-bg-gray-100 tw-mx-auto tw-py-[5px] tw-px-[10px] tw-w-[80%]">
-                                    <ul style="list-style-position: inside; margin: 0px">
-                                        <li id="_register_feat_1" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_1)}View Wholesale Prices.{else}{$data.labels._register_feat_1}{/if}</li>
-                                        <li id="_register_feat_2" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_2)}See The Available Stock.{else}{$data.labels._register_feat_2}{/if}</li>
-                                        <li id="_register_feat_3" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_3)}See What Products are Now on Offer.{else}{$data.labels._register_feat_3}{/if}</li>
-                                        <li id="_register_feat_4" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_4)}Crate Your Favourite Product List.{else}{$data.labels._register_feat_4}{/if}</li>
-                                        <li id="_register_feat_5" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_5)}Receive Exclusive Offers.{else}{$data.labels._register_feat_5}{/if}</li>
-                                        <li id="_register_feat_6" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_6)}Get The Back In Stock Notification.{else}{$data.labels._register_feat_6}{/if}</li>
-                                        <li id="_register_feat_7" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_7)}Become a Gold Reward Member.{else}{$data.labels._register_feat_7}{/if}</li>
-                                    </ul>
-
+        <div id="login_form_container" class="xxlogin_form" style="xposition:relative">
+            <div class="tw-grid tw-grid-cols-2 tw-gap-x-[55px]">
+                <form id="sky-form" class="sky-form">
+                    <header id="_title" contenteditable="true">{$data.labels._title}</header>
+                    <fieldset>
+                        <section>
+                            <div class="row">
+                                <label class="label col col-4" id="_email_label"
+                                    contenteditable="true">{$data.labels._email_label}</label>
+                                <div class="col col-8">
+                                    <label class="input" editor="handle_input_editor" style="cursor:pointer"
+                                        onclick="show_edit_input(this)">
+                                        <i class="icon-append icon-user"></i>
+                                        <input type="email" name="email">
+                                    </label>
                                 </div>
                             </div>
-                        </div>
-                        </div>
+                        </section>
 
+                        <section>
+                            <div class="row">
+                                <label class="label col col-4" id="_password_label" contenteditable="true">{$data.labels._password_label}</label>
+                                <div class="col col-8">
+                                    <label class="input" editor="password_input_editor" style="cursor:pointer" onclick="show_edit_input(this)">
+                                        <i class="icon-append icon-lock"></i>
+                                        <input type="password" name="password">
+                                    </label>
+
+                                    <div>
+                                        <span href="" id="_forgot_password_label" contenteditable="true">{$data.labels._forgot_password_label}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="hide">
+                            <div class="row">
+                                <div class="col col-4"></div>
+                                <div class="col col-8">
+                                    <label class="checkbox"><input type="checkbox" name="remember" checked><i></i></label>
+                                    <span id="_keep_logged_in_label" style="margin-left:22px;top:-22px" class="fake_form_checkbox" contenteditable="true">
+                                        {$data.labels._keep_logged_in_label}
+                                    </span>
+                                </div>
+                            </div>
+                        </section>
+                    </fieldset>
+
+                    <footer>
+                        <div class="fright">
+                            <button type="submit" class="button" id="_log_in_label" contenteditable="true">{$data.labels._log_in_label}</button>
+                            <a href="register.html" class="button button-secondary" id="_register_label" contenteditable="true">{$data.labels._register_label}</a>
+                        </div>
+                    </footer>
+
+                    <div style="margin: 10px auto">
+                        <div class="tw-text-center" style="">Need Help Loging in? Hit the chat button or call us:</div>
+                        <div class="tw-text-center" style="font-weight: 600;">+44 (0) 1142 729 165</div>
                     </div>
+                </form>
+
+                <div class="xxlogin_form" style="display: flex; flex-direction: column;">
+                    <div id="_register_title" contenteditable="true"
+                        style="font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 30px; letter-spacing: 0.08em">
+                        {if empty($data.labels._register_title)}Don't have an account
+                        yet?{else}{$data.labels._register_title}{/if}</div>
+
+                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 40px">
+
+                        <button contenteditable="true" id="_register_label" type="submit"
+                            class="tw-bg-white hover:tw-bg-gray-100"
+                            style="border: 1px solid #4b5058; color: #4b5058; font-weight: 700; display: block; border-radius: 5px; width: fit-content; padding: 7px 14px; font-size: 17px; text-align: center; cursor: pointer; margin-bottom: 2px;">
+                            {$data.labels._register_label}
+                        </button>
+
+                        <div id="_register_trade_only" contenteditable="true" class="tw-italic" style="font-size: 0.85rem; letter-spacing: 0.025em">
+                            {if empty($data.labels._register_trade_only)}* For trade customers only.{else}{$data.labels._register_trade_only}{/if}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="" style="text-align: center;">
+                            <span id="_register_call_action_a" contenteditable="true">
+                                {if empty($data.labels._register_call_action_a)}Register and get{else}{$data.labels._register_call_action_a}{/if}
+                            </span>
+                            <span id="_register_call_action_b" contenteditable="true" class="tw-text-color3" style="font-weight: 600;">
+                                {if empty($data.labels._register_call_action_b)}10% OFF{else}{$data.labels._register_call_action_b}{/if}
+                            </span>
+                            <span id="_register_call_action_c" contenteditable="true">
+                                {if empty($data.labels._register_call_action_c)}on your first order, also:{else}{$data.labels._register_call_action_c}{/if}
+                            </span>
+                        </div>
+
+                        <div class="tw-bg-gray-100 tw-mx-auto tw-py-[5px] tw-px-[10px] tw-w-[80%]">
+                            <ul style="list-style-position: inside; margin: 0px">
+                                <li id="_register_feat_1" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_1)}View Wholesale Prices.{else}{$data.labels._register_feat_1}{/if}</li>
+                                <li id="_register_feat_2" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_2)}See The Available Stock.{else}{$data.labels._register_feat_2}{/if}</li>
+                                <li id="_register_feat_3" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_3)}See What Products are Now on Offer.{else}{$data.labels._register_feat_3}{/if}</li>
+                                <li id="_register_feat_4" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_4)}Crate Your Favourite Product List.{else}{$data.labels._register_feat_4}{/if}</li>
+                                <li id="_register_feat_5" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_5)}Receive Exclusive Offers.{else}{$data.labels._register_feat_5}{/if}</li>
+                                <li id="_register_feat_6" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_6)}Get The Back In Stock Notification.{else}{$data.labels._register_feat_6}{/if}</li>
+                                <li id="_register_feat_7" contenteditable="true" style="padding: 2px 0">{if empty($data.labels._register_feat_7)}Become a Gold Reward Member.{else}{$data.labels._register_feat_7}{/if}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
 
                     <div id="recovery_form_container" class="login_form hide" style="position:relative">
