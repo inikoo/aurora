@@ -18,6 +18,7 @@ require_once 'class.Store.php';
 
 require_once 'utils/date_functions.php';
 require_once 'conf/timeseries.php';
+require_once 'utils/new_fork.php';
 
 $editor = array(
     'Author Name'  => '',
@@ -31,7 +32,43 @@ $editor = array(
 $timeseries = get_time_series_config();
 
 
-$date = gmdate('Y-m-d', strtotime('yesterday'));
+$date = gmdate('Y-m-d', strtotime('yesterday +0000'));
+
+
+
+
+
+    new_housekeeping_fork(
+        'au_isf', array(
+        'date' => $date
+    ), DNS_ACCOUNT_CODE, $db
+    );
+
+
+
+
+
+
+$account = new Account();
+$timeseries_data = $timeseries['Account'];
+
+foreach ($timeseries_data as $time_series_data) {
+
+
+    $time_series_data['Timeseries Parent']     = 'Account';
+    $time_series_data['Timeseries Parent Key'] = $account->id;
+
+
+    $editor['Date']             = gmdate('Y-m-d H:i:s');
+    $time_series_data['editor'] = $editor;
+
+    $object_timeseries = new Timeseries('find', $time_series_data, 'create');
+    $account->update_timeseries_record($object_timeseries, $date, $date);
+
+
+}
+
+
 
 
 $sql = sprintf(

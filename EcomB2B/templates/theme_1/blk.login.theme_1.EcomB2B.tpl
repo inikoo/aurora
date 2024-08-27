@@ -17,7 +17,7 @@
      style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
 
-    {if $account_code=='INDO'}
+    {if true}
         {include file="new_login.desktop.tpl"}
     {else}
     <div id="login_form_container" class="login_form" >

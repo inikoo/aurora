@@ -25,8 +25,7 @@ $from = date("Y-m-d", strtotime($warehouse->get('Warehouse Valid From')));
 $to   = date("Y-m-d", strtotime('now'));
 
 $from ='2024-03-01';
-$from ='2024-03-04';
-
+$from ='2024-05-01';
 
 
 $sql  = "SELECT `Date` FROM kbase.`Date Dimension` WHERE `Date`>=? AND `Date`<=? ORDER BY `Date` DESC";

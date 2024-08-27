@@ -54,7 +54,7 @@ if ($result = $db->query($sql)) {
             $to   = gmdate('Y-m-d');
 
             if ($time_series_data['Timeseries Frequency'] == 'Daily') {
-                $from = gmdate('Y-m-d', strtotime('yesterday'));
+                $from = gmdate('Y-m-d', strtotime('yesterday +0000'));
 
             }elseif ($time_series_data['Timeseries Frequency'] == 'Monthly') {
                 $from = gmdate('Y-m-01');
@@ -129,7 +129,7 @@ if ($result = $db->query($sql)) {
 
 
 
-$date = gmdate('Y-m-d', strtotime('yesterday'));
+$date = gmdate('Y-m-d', strtotime('yesterday +0000'));
 $date = gmdate('Y-m-d', strtotime('today -2 months'));
 
 
@@ -154,7 +154,7 @@ if ($result = $db->query($sql)) {
             $to   = gmdate('Y-m-d');
 
             if ($time_series_data['Timeseries Frequency'] == 'Daily') {
-                $from = gmdate('Y-m-d', strtotime('yesterday'));
+                $from = gmdate('Y-m-d', strtotime('yesterday +0000'));
 
             }elseif ($time_series_data['Timeseries Frequency'] == 'Monthly') {
                 $from = gmdate('Y-m-01');
