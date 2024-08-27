@@ -170,7 +170,7 @@
 <table width="100%" style="font-family: sans-serif;" cellpadding="0">
     <tr>
         <td width="50%" style="vertical-align:bottom;border: 0mm solid #888888;">
-            {if !$hide_payment_status}
+            {if  !($hide_payment_status or $pastpay)}
             <div style="text-align: right">
                 {t}Payment State{/t}: <b>{$invoice->get('Payment State')}</b>
             </div>
