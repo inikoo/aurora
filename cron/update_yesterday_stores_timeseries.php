@@ -18,6 +18,7 @@ require_once 'class.Store.php';
 
 require_once 'utils/date_functions.php';
 require_once 'conf/timeseries.php';
+require_once 'utils/new_fork.php';
 
 $editor = array(
     'Author Name'  => '',
