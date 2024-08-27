@@ -116,13 +116,13 @@
                     <footer>
                         <div class="fright">
                             <button type="submit" class="button" id="_log_in_label" contenteditable="true">{$data.labels._log_in_label}</button>
-                            <a href="register.html" class="button button-secondary" id="_register_label" contenteditable="true">{$data.labels._register_label}</a>
+
                         </div>
                     </footer>
 
                     <div style="margin: 10px auto">
-                        <div class="tw-text-center" style="">Need Help Loging in? Hit the chat button or call us:</div>
-                        <div class="tw-text-center" style="font-weight: 600;">+44 (0) 1142 729 165</div>
+                        <div contenteditable="true" id="_register_help" class="tw-text-center" style="">{if empty($data.labels._register_help)}Need Help Logging in? Hit the chat button or call us:{else}{$data.labels._register_help}{/if}</div>
+                        <div contenteditable="true" id="_register_phone" class="tw-text-center" style="font-weight: 600;">{if empty($data.labels._register_phone)}+44 (0) 1142 729 165{else}{$data.labels._register_phone}{/if}</div>
                     </div>
                 </form>
 

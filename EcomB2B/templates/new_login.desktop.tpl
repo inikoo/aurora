@@ -33,9 +33,9 @@
                     <button id="login_button" type="submit" class="tw-bg-color1 hover:tw-gray-600 tw-border-none tw-cursor-pointer tw-mb-2.5 tw-text-white tw-block tw-rounded-md tw-w-full tw-text-center" style="font-weight: 700; padding: 10px 14px; font-size: 17px;">
                         {$data.labels._log_in_label}
                     </button>
-                    <div style="margin: auto">
-                        <div class="tw-text-center" style="">Need Help Loging in? Hit the chat button or call us:</div>
-                        <div class="tw-text-center" style="font-weight: 600;">+44 (0) 1142 729 165</div>
+                    <div style="margin: 10px auto">
+                        <div class="tw-text-center" style="">{if empty($data.labels._register_help)}Need Help Logging in? Hit the chat button or call us:{else}{$data.labels._register_help}{/if}</div>
+                        <div  class="tw-text-center" style="font-weight: 600;">{if empty($data.labels._register_phone)}+44 (0) 1142 729 165{else}{$data.labels._register_phone}{/if}</div>
                     </div>
                 </div>
             </form>
