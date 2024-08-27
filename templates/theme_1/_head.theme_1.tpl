@@ -28,7 +28,13 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { prefix: 'tw-' }
+        tailwind.config = {
+            important: true,
+            prefix: 'tw-',
+            corePlugins: {
+                preflight: false,
+            }
+        }
     </script>
 
     <link href="/css/jquery-ui.css" rel="stylesheet">
