@@ -366,7 +366,7 @@ switch ($time) {
         new_housekeeping_fork(
             'au_long_operations', array(
             'type' => 'redo_day_ISF',
-            'date' => gmdate('Y-m-d', strtotime('Yesterday'))
+            'date' => gmdate('Y-m-d', strtotime('yesterday +0000'))
 
         ), $account->get('Account Code')
         );

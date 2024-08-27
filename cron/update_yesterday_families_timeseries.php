@@ -31,7 +31,7 @@ $editor = array(
 $timeseries = get_time_series_config();
 
 
-$date = gmdate('Y-m-d', strtotime('yesterday'));
+$date = gmdate('Y-m-d', strtotime('yesterday +0000'));
 ////'In Process','Active','Suspended','Discontinued'
 
 $sql = sprintf(
