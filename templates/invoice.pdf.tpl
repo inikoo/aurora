@@ -474,6 +474,7 @@
     </tr>
     </thead>
     <tbody>
+    {if !$pastpay}
     {foreach from=$payments item=payment name=payments}
         <tr class="{if $smarty.foreach.payments.last}last{/if}">
             <td style="text-align:left">{if $payment->get('Payment Type')=='Credit'}{t}Credit{/t}{else}{$payment->get('Method')}{if $payment->get('Payment Type')=='Refund'} ({t}Refund{/t}){/if}{/if}</td>
@@ -483,6 +484,7 @@
             <td style="text-align:right">{$payment->get('Transaction Amount')}</td>
         </tr>
     {/foreach}
+    {/if}
     </tbody>
 </table>
 <br>

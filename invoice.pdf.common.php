@@ -323,7 +323,7 @@ $mpdf->SetTitle(_('Invoice').' '.$invoice->data['Invoice Public ID']);
 $mpdf->SetAuthor($store->data['Store Name']);
 
 
-if ($invoice->data['Invoice Paid'] == 'Yes') {
+if ($invoice->data['Invoice Paid'] == 'Yes' and !$pastpay) {
     $mpdf->SetWatermarkText(_('Paid'));
     $mpdf->showWatermarkText  = true;
     $mpdf->watermark_font     = 'DejaVuSansCondensed';
@@ -850,6 +850,7 @@ if ($result = $db->query($sql)) {
 $smarty->assign('tax_data', $tax_data);
 $smarty->assign('account', $account);
 $smarty->assign('pastpay_notes', $pastpay_notes);
+$smarty->assign('pastpay', $pastpay);
 
 $extra_comments = '';
 if ($account->get('Account Country Code') == 'SVK') {
