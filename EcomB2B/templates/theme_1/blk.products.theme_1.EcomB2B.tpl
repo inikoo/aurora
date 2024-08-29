@@ -157,8 +157,8 @@
 
 
                                         {if !empty($item.next_shipment_timestamp)  }
-                                            <div class="  out_of_stock_row  out_of_stock {if  $item.next_shipment_timestamp<$smarty.now}hide{/if} "
-                                                 style="opacity:1;font-style: italic;;position:absolute;bottom:15px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 226px">
+                                            <div product_theme="" class="  out_of_stock_row  out_of_stock {if  $item.next_shipment_timestamp<$smarty.now}hide{/if} "
+                                                 style="opacity:1;font-style: italic;;position:absolute;bottom:30px;height: 6px;line-height: 16px;padding:0px;padding-top:0px;font-size: 8px;width: 226px">
                                                 <span style="padding-left: 10px">{t}Expected{/t}: {$item.next_shipment_timestamp|date_format:"%x"}</span>
                                             </div>
                                         {/if}
@@ -239,7 +239,7 @@
 
                                                 {if !empty($variant.next_shipment_timestamp)  }
                                                     <div class="  out_of_stock_row  out_of_stock {if  $variant.next_shipment_timestamp<$smarty.now}hide{/if} "
-                                                         style="opacity:1;font-style: italic;;position:absolute;bottom:15px;height: 16px;line-height: 16px;padding:0px;padding-top:3px;font-size: 12px;width: 226px">
+                                                         style="opacity:1;font-style: italic;;position:absolute;bottom:30px;height: 6px;line-height: 16px;padding:0px;padding-top:0px;font-size: 8px;width: 226px">
                                                         <span style="padding-left: 10px">{t}Expected{/t}: {$variant.next_shipment_timestamp|date_format:"%x"}</span>
                                                     </div>
                                                 {/if}
