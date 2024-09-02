@@ -205,8 +205,7 @@ if ($order == 'stock') {
     $order = '`Product '.$period_tag.' Acc Invoiced Amount`';
 
 } elseif ($order == 'margin') {
-    $order = '`Product '.$period_tag.' Margin`';
-
+    $order = '(`Product Price`-`Product Cost`/`Product Price`)  ';
 
 } elseif ($order == 'sold') {
     $order = '`Product '.$period_tag.' Acc Quantity Invoiced`';

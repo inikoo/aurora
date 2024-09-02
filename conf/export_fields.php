@@ -1903,6 +1903,12 @@ function get_export_fields($element, $account_currency_code = ''): array
             ),
 
             array(
+                'name'    => 100*'(`Product Price`-`Product Cost`)/`Product Price`',
+                'label'   => _('Margin'),
+                'checked' => 1
+            ),
+
+            array(
                 'name'    => '`Product Unit Type`',
                 'label'   => _('Unit label'),
                 'checked' => 1
