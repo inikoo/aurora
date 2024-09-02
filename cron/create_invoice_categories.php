@@ -36,10 +36,22 @@ print date('l jS \of F Y h:i:s A')."\n";
 $account = new Account();
 
 
-$account->update_orders();
+//$account->update_orders();
 
 
 $root = get_object('Category', 4);
+
+
+$data = array(
+    'Category Code'      => 'ankorstore',
+    'Category Label'     => 'ankorstore',
+    'Category Scope'     => 'Invoice',
+    'Category Subject'   => 'Invoice',
+    'editor' => $editor
+);
+$root->create_category($data);
+
+exit;
 
 
 $sql = sprintf("SELECT * FROM `Store Dimension` where `Store Key` in (22,23)  ");
