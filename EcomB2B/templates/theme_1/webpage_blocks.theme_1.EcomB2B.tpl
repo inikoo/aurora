@@ -45,27 +45,47 @@
 
 
             {if isset($discounts) and count($discounts.deals)>0 }
+                <div class="discounts top_body tw-relative tw-isolate tw-overflow-hidden tw-bg-white tw-box-border tw-flex tw-gap-x-6 tw-px-5 tw-py-4">
+                    <div class="tw-absolute tw-inset-x-0 tw-top-0 -tw-z-10 tw-transform-gpu tw-overflow-hidden tw-blur-3xl" aria-hidden="true">
+                        <div class="tw-relative tw-left-[calc(50%+3rem)] tw-aspect-[1155/678] tw-w-[36.125rem] -tw-translate-x-1/2 tw-bg-gradient-to-tr tw-from-yellow-500 tw-to-pink-500 tw-opacity-50"
+                            style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)">
+                        </div>
+                    </div>
 
-
-
-                <div class="discounts top_body">
                     {foreach from=$discounts.deals item=deal_data }
-                        <div class="discount_card" key="{$deal_data.key}">
-                            <div class="discount_icon">{$deal_data.icon}</div>
-                            <span class="discount_name">{$deal_data.name}</span>
-                            {if  $deal_data.until!=''}
-                                <small class="padding_left_10"><span id="_offer_valid_until" class="website_localized_label">
-                                {if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}
-                                </small>
-                            {/if}
-                            <br/>
-                            <span class="discount_term">{$deal_data.term}</span>
-                            <span class="discount_allowance">{$deal_data.allowance}</span>
+                        <div class="tw-max-w-[600px] tw-bg-white tw-box-border tw-border-solid tw-border tw-border-gray-300 tw-px-4 tw-py-3 tw-rounded-md discount_card tw-p-0 tw-shrink" key="1718">
+                            <div class="discount_icon tw-text-[25px]">
+                                {$deal_data.icon}
+                            </div>
+
+                            <div class="tw-flex tw-flex-col">
+                                <div class="discount_allowance tw-font-semibold tw-text-[30px] tw-leading-6">
+                                    {$deal_data.allowance}
+                                </div>
+
+                                <div class="tw-mt-2 tw-flex tw-flex-wrap tw-gap-x-2">
+                                    <div class="discount_name tw-font-medium tw-text-[1rem]">
+                                        {$deal_data.name}
+                                    </div>
+
+                                    {if  $deal_data.until!=''}
+                                        <small class="tw-opacity-80">
+                                            <span id="_offer_valid_until" class="website_localized_label">{if !empty($labels._offer_valid_until)}{$labels._offer_valid_until}{else}{t}Valid until{/t}{/if}</span>: {$deal_data.until_formatted}
+                                        </small>
+                                    {/if}
+                                </div>
+
+                                <div class="discount_term tw-text-[0.8rem]">
+                                    {$deal_data.term}
+                                </div>
+                            </div>
                         </div>
                     {/foreach}
-                    <div style="clear:both"></div>
+
                 </div>
             {/if}
+
+
             {assign "with_iframe" false}
             {assign "with_login" false}
             {assign "with_register" false}
