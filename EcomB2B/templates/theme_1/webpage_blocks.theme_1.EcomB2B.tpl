@@ -53,7 +53,10 @@
                     </div>
 
                     {foreach from=$discounts.deals item=deal_data }
-                        <div class="tw-max-w-[600px] tw-bg-white tw-box-border tw-border-solid tw-border tw-border-gray-300 tw-px-4 tw-py-3 tw-rounded-md discount_card tw-p-0 tw-shrink" key="1718">
+                        <div
+                            class="tw-max-w-[600px] tw-box-border tw-bg-[#f59e0b11] tw-border tw-border-solid tw-border-[#f59e0b] tw-text-[#f59e0b] tw-px-4 tw-py-3 tw-rounded-md discount_card tw-p-0 tw-shrink"
+                            key="1718"
+                        >
                             <div class="discount_icon tw-text-[25px]">
                                 {$deal_data.icon}
                             </div>
