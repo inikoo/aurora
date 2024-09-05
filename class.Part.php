@@ -3563,11 +3563,8 @@ class Part extends Asset
                 $date   = $row['date'];
 
                 if ($number > 0) {
-                    print_r(array(
-                        'Part Status'      => 'In Use',
-                        'Part Active From' => $date
-                    ));
-                    /*
+
+
                     $this->update(
                         array(
                             'Part Status'      => 'In Use',
@@ -3575,7 +3572,7 @@ class Part extends Asset
                         ),
                         'no_history'
                     );
-                    */
+
                 }
             }
         }
