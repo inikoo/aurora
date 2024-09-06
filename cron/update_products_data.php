@@ -34,16 +34,24 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $product = get_object('Product',$row['Product ID']);
-        print $product->get('Product Code')."\r";
+
+
+        if($product->get('Product Materials')!=''){
+            print $product->get('Product Code')."\r";
+            $product->fast_update(array('Product Unit XHTML Materials' => $product->get('Materials')));
+        }
+
 
 
         //$file_as = get_file_as($product->get('Code'));
-        $product->updating_packing_data();
+       // $product->updating_packing_data();
 
         //$product->fast_update(['Product Code File As'=>$file_as]);
 
     }
 }
+
+exit;
 
 //update_products_status_availability_state($db);
 //update_products_data($db);
