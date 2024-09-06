@@ -37,7 +37,7 @@ if ($result = $db->query($sql)) {
 
 
         if($product->get('Product Materials')!=''){
-            print $product->get('Product Code')."\r";
+            print $product->get('Product Code')."\n";
             $product->fast_update(array('Product Unit XHTML Materials' => $product->get('Materials')));
         }
 
