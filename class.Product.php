@@ -4057,6 +4057,13 @@ class Product extends Asset
 
                                ));
 
+            if($this->get('Product Materials')!=''){
+
+                $this->fast_update(array('Product Unit XHTML Materials' => $this->get('Materials')));
+            }else{
+                $this->fast_update(array('Product Unit XHTML Materials' => ''));
+            }
+
             $this->update_updated_markers('Data');
 
             $sql = "SELECT `Image Subject Image Key` FROM `Image Subject Bridge` WHERE `Image Subject Object`='Part' AND `Image Subject Object Key`=? and `Image Subject Object Image Scope`='Marketing' ORDER BY `Image Subject Order` ";
