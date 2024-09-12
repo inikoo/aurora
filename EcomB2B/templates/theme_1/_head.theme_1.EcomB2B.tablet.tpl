@@ -427,6 +427,26 @@
         {/if}
     {/if}
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            important: true,
+            prefix: 'tw-',
+            corePlugins: {
+                preflight: false,
+            },
+            theme: {
+                extend: {
+                    colors: {
+                        color1: '#4b5058',
+                        color2: '#957a65',
+                        color3: '#e87928',
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
 
 
