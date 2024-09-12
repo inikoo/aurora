@@ -3,7 +3,7 @@
 
     function show_gold_reward_mobile(discounts,families){
 
-        console.log('debug M v1')
+        console.log('debug M v3')
         console.log(discounts)
         console.log(families)
 

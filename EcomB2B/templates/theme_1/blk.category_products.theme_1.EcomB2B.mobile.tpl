@@ -28,7 +28,11 @@
                 </div>
             {/if}
 
-
+            {if isset($item.family_key)}
+                {assign "item_family_key" $item.family_key}
+            {else}
+                {assign "item_family_key" "xxx"}
+            {/if}
 
 
             <div style=" display: flex;margin-bottom:20px" class="product_block product_container"
@@ -79,7 +83,7 @@
                             {/if}
                         </div>
                         
-                        <div id="price_block_{$item.product_id}" class="yyy price_block discount_info_family_ " >
+                        <div id="price_block_{$item.product_id}" class="yyy price_block discount_info_family_{$item_family_key} " >
                             <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                                 <div>
                                     {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -92,7 +96,7 @@
                             </div>
 
                             <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center pr-2">
-                                <div data-family_key=""   >
+                                <div data-family_key="{$item_family_key}"   >
                                     <div class="hide discount_info_applied">
                                         <div style="display:flex; align-items: center;column-gap: 3px;">
                                             <div class="tw-cursor-pointer tw-text-[0.9rem] tw-text-[#0b7933] tw-py-[1px] tw-w-fit">
