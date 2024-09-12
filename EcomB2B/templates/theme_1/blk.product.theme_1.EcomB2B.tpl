@@ -80,7 +80,7 @@
                     <div class="product_prices log_in tw-h-fit" style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px">
                         <div class="product_price tw-text-gray-500">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
 
-                        <div class="tw-flex tw-gap-x-2">
+                        <div id="price_block_xxx_{$product->id}"  class="tw-flex tw-gap-x-2">
                             <div class="hide discount_info_applied">
                                 <div class="tw-flex tw-items-center tw-gap-x-1.5">
                                     <div class="tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
