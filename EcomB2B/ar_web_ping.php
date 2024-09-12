@@ -188,6 +188,13 @@ from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campai
             }
         }
 
+        if($order->data['Order Store Key']==1 and DNS_ACCOUNT_CODE=='AW'){
+            $is_gold_reward_member = true;
+            $gold_reward_member = [
+                'label' => 'Gold reward amnesty week',
+                'until' => _('until').': '.strftime("%a %e %b", strtotime('2024-09-18')),
+            ];
+        }
 
 
         echo json_encode(
