@@ -253,6 +253,7 @@
                                 $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
                             }
                         });
+                      console.log('M1')
                     });
                 })
             })
@@ -279,6 +280,7 @@
                                 $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
                             }
                         });
+                      console.log('M2')
                     });
                 })
             })
@@ -305,6 +307,7 @@
                                 $('.stock_level_' + index).removeClass('Excess Normal Low VeryLow OutofStock Error OnDemand').addClass(value[0]).attr('title', value[1])
                             }
                         });
+                      console.log('M3')
                     });
                 })
             })
@@ -1687,6 +1690,7 @@
                         $('.product_stock_label_' + index).html(value[1])
                     }
                 });
+              console.log('M4')
 
 
             });
