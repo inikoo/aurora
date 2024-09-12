@@ -77,58 +77,33 @@
 
             <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                 {if $logged_in}
-                    <div class="product_prices log_in tw-h-fit" style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px">
-                        <div class="product_price tw-text-gray-500">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
 
-                        <div id="price_block_xxx_{$product->id}"  class="tw-flex tw-gap-x-2">
-                            <div class="hide discount_info_applied">
-                                <div class="tw-flex tw-items-center tw-gap-x-1.5">
-                                    <div class="tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
-                                        <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
-                                        <span class="gold_reward_percentage">↓10%</span>
-                                    </div>
-                                    <i style="color: seagreen;font-size: 0.5rem;" class="gold_reward_applied_check fal fa-check"></i>
-                                </div>
-                            </div>
-
-                            <div class="hide discount_info_unappeased tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]" style="border: 1px solid #8f8f8f;">
-                                <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
-                                <span class="gold_reward_percentage">↓10%</span>
-                                <i style="color: #3b3b3b;opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
-                            </div>
-
-                            <div class="hide product_price">{$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
-                        </div>
-                        
-                    </div>
-
-                    <div id="price_block_{$product->id}" class="hide price_block discount_info_family_ " >
-                        <div class="original_price_tr" >
+                    <div id="price_block_{$product->id}" class="price_block discount_info_family_ " >
+                        <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                             <div>
-                                <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.6rem;"></i>
+                                <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
                                 {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:
                             </div>
-                            <div class="original_price ">{$product->get('Price')}</div>
+                            <div class="original_price tw-text-[1.1rem]">{$product->get('Price')}</div>
                             {if isset($product->get('Price Per Unit'))}
                                 <div  style="text-align: right; font-size: 0.7rem"  class="original_price">{$product->get('Price Per Unit')}</div>
                             {/if}
                         </div>
 
-
-                        <div style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
+                        <div style="color: rgb(243, 121, 52);"  class="hide gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
                             <div data-family_key=""   >
                                 <div class="hide discount_info_applied">
                                     <div style="display:flex; align-items: center;column-gap: 3px;">
-                                        <div class="tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
+                                        <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                                        <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
                                             <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
                                             <span class="gold_reward_percentage"></span>
                                         </div>
-                                        <i style="color: seagreen;font-size: 0.5rem;" class="hide gold_reward_applied_check fal fa-check"></i>
                                     </div>
                                 </div>
 
                                 <div class="discount_info_unappeased">
-                                    <div class="tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
+                                    <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
                                         style="border: 1px solid #8f8f8f;"
                                     >
                                         <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
@@ -137,7 +112,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="gold_reward_price "></div>
+                            <div class="gold_reward_price tw-text-[1.1rem]"></div>
                             <div style="text-align: right; font-size: 0.7rem"  class="gold_reward_unit_price"></div>
                         </div>
                     </div>
