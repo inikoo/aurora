@@ -59,17 +59,20 @@
                     </div>
                 {/if}
 
+            </div>
+
+
+            <div class="tw-flex tw-justify-between">
+                <div style="clear:both ">
+                    {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
+                        {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span>
+                    {/if}
+                </div>
+                
                 {if $logged_in}
                     {if $store->get('Store Type')!='Dropshipping'}
                         <i style="float: right;font-size: 22px" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
                     {/if}
-                {/if}
-            </div>
-
-
-            <div style="clear:both ">
-                {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
-                    {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span>
                 {/if}
             </div>
 
@@ -81,8 +84,8 @@
                     <div id="price_block_{$product->id}" class="price_block discount_info_family_ " >
                         <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                             <div>
+                                {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
                                 <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
-                                {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:
                             </div>
                             <div class="original_price tw-text-[1.1rem]">{$product->get('Price')}</div>
                             {if isset($product->get('Price Per Unit'))}
@@ -94,11 +97,11 @@
                             <div data-family_key=""   >
                                 <div class="hide discount_info_applied">
                                     <div style="display:flex; align-items: center;column-gap: 3px;">
-                                        <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
                                         <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
                                             <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
                                             <span class="gold_reward_percentage"></span>
                                         </div>
+                                        <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
                                     </div>
                                 </div>
 
