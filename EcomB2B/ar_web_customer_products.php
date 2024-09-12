@@ -332,6 +332,8 @@ function category_products($data, $db, $customer_key, $order)
         );
 
 
+
+
         if ($result = $db->query($sql)) {
             if ($_row = $result->fetch()) {
                 //print_r($_row);
@@ -339,6 +341,10 @@ function category_products($data, $db, $customer_key, $order)
                     $gr_member = true;
                 }
             }
+        }
+
+        if($order->data['Order Store Key']==1 and DNS_ACCOUNT_CODE=='AW'){
+            $gr_member = true;
         }
 
 
