@@ -343,7 +343,10 @@ function category_products($data, $db, $customer_key, $order)
             }
         }
 
-        if($order->data['Order Store Key']==1 and DNS_ACCOUNT_CODE=='AW'){
+
+
+
+        if($store->id==1 and DNS_ACCOUNT_CODE=='AW'){
             $gr_member = true;
         }
 
