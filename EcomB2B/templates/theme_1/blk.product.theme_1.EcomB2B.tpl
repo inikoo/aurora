@@ -105,7 +105,7 @@
                                     </div>
                                 </div>
 
-                                <div class="discount_info_unappeased">
+                                <div class="hide discount_info_unappeased">
                                     <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
                                         style="border: 1px solid #8f8f8f;"
                                     >
