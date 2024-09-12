@@ -35,89 +35,70 @@
 
 
 
-  function show_gold_reward(discounts,families){
-
-
+function show_gold_reward(discounts,families){
 
     // $('.product_discounted_price').addClass('hide')
     // $('.original_price').removeClass('strikethrough').css('opacity', '1');
 
     console.log('debug v16')
-    console.log(discounts)
+    console.log('dc', discounts)
 
 
-      console.log(families.length)
+    console.log('famleng', families.length)
 
-      if(families.length>0){
-           $('.discount_info_applied').addClass('hide')
-            $('.original_price').removeClass('strikethrough')
-           $('.original_price_tr').css('opacity',.8)
-            $('.discount_info_unappeased').removeClass('hide')
-             $('.original_price_checked').addClass('hide')
-      }
-
-
+    if(families.length>0){
+        $('.discount_info_applied').addClass('hide')
+        $('.original_price').removeClass('strikethrough')
+        $('.original_price_tr').css('opacity',.8)
+        $('.discount_info_unappeased').removeClass('hide')
+        $('.original_price_checked').addClass('hide')
+    }
 
 
-      $.each(discounts, function (index, value) {
+    $.each(discounts, function (index, value) {
+
+        console.log(index)
+        console.log(value)
+
+        let block = $('#price_block_'+index)
+        console.log('block', block)
+
+        // let blockOriginal = $('.price_block_'+index)
+        // console.log('blockOriginal', blockOriginal)
+
+        console.log(block)
+        block.find('.gold_reward_product_price').removeClass('hide')
+
+        block.find('.gold_reward_percentage').html(value.percentage)
+        block.find('.gold_reward_price').html(value.price)
+        block.find('.gold_reward_unit_price').html(value.price_per_unit)
 
 
-      console.log(index)
-      console.log(value)
+        if(value.price_per_unit==''){
+            block.find('.gold_reward_unit_price').addClass('hide')
+        }
 
+        if(value.applied){
+            block.find('.discount_info_applied').removeClass('hide').data('pop_up',value.pop_up)
+            block.find('.gold_reward_applied_check').removeClass('hide')
 
+            block.find('.original_price').addClass('strikethrough')
+            block.find('.original_price_tr').css('opacity',.8)
+            block.find('.discount_info_unappeased').addClass('hide')
+            block.find('.original_price_checked').addClass('hide')
 
-      let block = $('#price_block_'+index)
-      console.log('block', block)
-      //let blockOriginal = $('.price_block_'+index)
-      //console.log('blockOriginal', blockOriginal)
+        }else{
+            block.find('.discount_info_unappeased').removeClass('hide').data('pop_up', value.pop_up)
+            block.find('.gold_reward_applied_check').addClass('hide')
 
-      console.log(block)
-      block.find('.gold_reward_product_price').removeClass('hide')
-
-      block.find('.gold_reward_percentage').html(value.percentage)
-      block.find('.gold_reward_price').html(value.price)
-      block.find('.gold_reward_unit_price').html(value.price_per_unit)
-
-
-      if(value.price_per_unit==''){
-        block.find('.gold_reward_unit_price').addClass('hide')
-      }
-
-        
-
-      if(value.applied){
-        block.find('.discount_info_applied').removeClass('hide').data('pop_up',value.pop_up)
-        block.find('.gold_reward_applied_check').removeClass('hide')
-
-
-        block.find('.original_price').addClass('strikethrough')
-        block.find('.original_price_tr').css('opacity',.8)
-          block.find('.discount_info_unappeased').addClass('hide')
-          block.find('.original_price_checked').addClass('hide')
-
-
-      }else{
-        block.find('.discount_info_unappeased').removeClass('hide').data('pop_up',value.pop_up)
-        block.find('.gold_reward_applied_check').addClass('hide')
-
-
-
-          block.find('.discount_info_applied').addClass('hide')
-         block.find('.original_price').removeClass('strikethrough')
-          block.find('.original_price_tr').css('opacity',1)
-          block.find('.discount_info_unappeased').removeClass('hide')
-          block.find('.original_price_checked').removeClass('hide')
-      }
-
-
-
-
-
-
-
-
+            block.find('.discount_info_applied').addClass('hide')
+            block.find('.original_price').removeClass('strikethrough')
+            block.find('.original_price_tr').css('opacity', 1)
+            block.find('.discount_info_unappeased').removeClass('hide')
+            block.find('.original_price_checked').removeClass('hide')
+        }
     });
+
 
       $.each(families, function (index, value) {
 
