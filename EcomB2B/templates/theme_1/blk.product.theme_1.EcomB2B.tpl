@@ -86,7 +86,7 @@
                             </div>
                             <div class="original_price tw-text-[1.1rem]">{$product->get('Price')}</div>
                             {if isset($product->get('Price Per Unit'))}
-                                <div  style="text-align: right; font-size: 0.7rem"  class="original_price">{$product->get('Price Per Unit')}</div>
+                                <div  style="text-align: right; font-size: 0.85rem"  class="original_price">{$product->get('Price Per Unit')}</div>
                             {/if}
                         </div>
 
@@ -113,7 +113,7 @@
                                 </div>
                             </div>
                             <div class="gold_reward_price tw-text-[1.1rem]"></div>
-                            <div style="text-align: right; font-size: 0.7rem"  class="gold_reward_unit_price"></div>
+                            <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
                         </div>
                     </div>
 
