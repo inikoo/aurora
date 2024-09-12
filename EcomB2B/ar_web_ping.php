@@ -192,7 +192,7 @@ from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campai
             $is_gold_reward_member = true;
             $gold_reward_member = [
                 'label' => 'Gold reward amnesty week',
-                'until' => 'GR for all until '.strftime("%a %e %b", strtotime('2024-09-18')),
+                'until' => 'GR for all! until '.strftime("%a %e %b", strtotime('2024-09-18')),
             ];
         }
 
