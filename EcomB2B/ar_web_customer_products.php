@@ -171,21 +171,46 @@ function category_products($data, $db, $customer_key, $order)
 
     // gold reward discounts
 
-    $gold_reward_data = null;
+
+
+    $family_key = null;
 
     $sql  =
-        "select `Deal Component Allowance Label`,`Deal Component Allowance` from `Deal Component Dimension` left join `Page Store Dimension`  on (`Webpage Scope Key`=`Deal Component Trigger Key`)  where `Webpage Scope`='Category Products'  and  `Deal Component Status`='Active' and `Deal Component Trigger`='Category'  and `Deal Component Terms Type`='Category Quantity Ordered' and `Page Key`=?  ";
+        "select `Webpage Scope`,`Webpage Scope Key` from `Page Store Dimension`   where `Page Key`=?  ";
     $stmt = $db->prepare($sql);
     $stmt->execute(
         array($data['webpage_key'])
     );
     while ($row = $stmt->fetch()) {
+        if($row['Webpage Scope']=='Category Products'){
+            $family_key = $row['Webpage Scope Key'];
+        }elseif($row['Webpage Scope']=='Product'){
+
+
+            $product=get_object('Product',$row['Webpage Scope Key']);
+
+            $family_key = $product->get('Product Family Category Key');
+
+        }
+
+    }
+
+
+    $gold_reward_data = null;
+
+    $sql  =
+        "select `Deal Component Allowance Label`,`Deal Component Allowance` from `Deal Component Dimension`  where  `Deal Component Status`='Active' and `Deal Component Trigger`='Category'  and `Deal Component Terms Type`='Category Quantity Ordered' and `Deal Component Trigger Key`=?  ";
+    $stmt = $db->prepare($sql);
+    $stmt->execute(
+        array($family_key)
+    );
+    while ($row = $stmt->fetch()) {
+
         $gold_reward_data = [
             'label'    => $row['Deal Component Allowance Label'],
             'discount' => $row['Deal Component Allowance']
         ];
     }
-
 
     $gold_reward_families = [];
 
