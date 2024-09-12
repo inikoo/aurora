@@ -81,12 +81,14 @@
                         <div class="product_price tw-text-gray-500">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
 
                         <div class="tw-flex tw-gap-x-2">
-                            <div class="hide discount_info_applied tw-flex tw-items-center tw-gap-x-1.5">
-                                <div class="tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
-                                    <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
-                                    <span class="gold_reward_percentage">↓10%</span>
+                            <div class="hide discount_info_applied">
+                                <div class="tw-flex tw-items-center tw-gap-x-1.5">
+                                    <div class="tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
+                                        <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
+                                        <span class="gold_reward_percentage">↓10%</span>
+                                    </div>
+                                    <i style="color: seagreen;font-size: 0.5rem;" class="gold_reward_applied_check fal fa-check"></i>
                                 </div>
-                                <i style="color: seagreen;font-size: 0.5rem;" class="gold_reward_applied_check fal fa-check"></i>
                             </div>
 
                             <div class="hide discount_info_unappeased tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]" style="border: 1px solid #8f8f8f;">
