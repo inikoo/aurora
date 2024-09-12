@@ -42,18 +42,21 @@
             <h1 style="padding-top:5px;margin:2px 0;font-size:150%" itemprop="name" class="Product_Name">
                 {if $product->get('number_visible_variants')==0}{$product->get('Name')}{else}{$variants[0]->get('Name')}{/if}
             </h1>
-            <div class="highlight_box" >
+            <div class="highlight_box tw-flex tw-justify-between">
                 <div style="float:left;margin-right:4px;min-width:200px">
-                    {t}Product code{/t}: <span class="code Product_Code"> {if $product->get('number_visible_variants')==0}{$product->get('Code')}{else}{$variants[0]->get('Code')}{/if}</span>
+                    <span class="code Product_Code"> {if $product->get('number_visible_variants')==0}{$product->get('Code')}{else}{$variants[0]->get('Code')}{/if}</span>
                 </div>
+                
+                {if $logged_in  and $product->get('number_visible_variants')>0 }
+                    <div>
+                        {if $rrp!=''}<div>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+                    </div>
+                {/if}
+
                 {if $logged_in}
                     {if $store->get('Store Type')!='Dropshipping'}
-                    <i style="float: right;font-size: 22px" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
+                        <i style="float: right;font-size: 22px" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="sim_button favourite_{$product->id} favourite  far  fa-heart" aria-hidden="true"></i>
                     {/if}
-
-
-
-
                 {/if}
             </div>
 
@@ -63,21 +66,33 @@
                     {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span>
                 {/if}
             </div>
-    {if $logged_in  and $product->get('number_visible_variants')>0 }
-    <div>
-                {if $rrp!=''}<div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
-            </div>
-    {/if}
 
             {if $product->get('number_visible_variants')==0}
 
-            <div class="ordering-container  log_in" style="display: flex;margin-top:15px;">
+            <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                 {if $logged_in}
-                <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px">
-                    <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
+                    <div class="product_prices log_in tw-h-fit" style="margin-left:0px;padding-left:0px;font-size: 120%;width:250px">
+                        <div class="product_price tw-text-gray-500">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
 
-                    {if $rrp!='' and $product->get('number_visible_variants')==0 }<div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
-                </div>
+                        <div class="tw-flex tw-gap-x-2">
+                            <div class="hide discount_info_applied tw-flex tw-items-center tw-gap-x-1.5">
+                                <div class="tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
+                                    <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
+                                    <span class="gold_reward_percentage">↓10%</span>
+                                </div>
+                                <i style="color: seagreen;font-size: 0.5rem;" class="gold_reward_applied_check fal fa-check"></i>
+                            </div>
+
+                            <div class="hide discount_info_unappeased tw-cursor-pointer tw-rounded tw-text-[0.7rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]" style="border: 1px solid #8f8f8f;">
+                                <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                <span class="gold_reward_percentage">↓10%</span>
+                                <i style="color: #3b3b3b;opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                            </div>
+
+                            <div class="product_price">{$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
+                        </div>
+                        
+                    </div>
                     {if $product->get('Web State')=='Out of Stock'}
                         <div style="height:40px;line-height:40px;padding:0px 20px"   class="   out_of_stock ">
                             <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
@@ -105,14 +120,14 @@
 
                             </div>
                         {else}
-                        <div style="margin-left:10px;">
-                            <div class="order_row empty  order_row_{$product->id} ">
-                                <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
-                                <span class="order_button label sim_button">
-                                    <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
-                                </span>
+                            <div class="tw-mt-5 tw-w-1/2">
+                                <div class="order_row empty order_row_{$product->id} ">
+                                    <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
+                                    <span class="order_button label sim_button">
+                                        <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
                         {/if}
                     {/if}
                 {else}
