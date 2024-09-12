@@ -79,7 +79,7 @@
                             {/if}
                         </div>
                         
-                        <div id="price_block_{$item.product_id}" class="hide price_block discount_info_family_ " >
+                        <div id="price_block_{$item.product_id}" class="yyy price_block discount_info_family_ " >
                             <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                                 <div>
                                     {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
