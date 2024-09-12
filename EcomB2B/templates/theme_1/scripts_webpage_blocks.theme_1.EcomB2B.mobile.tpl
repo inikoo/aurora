@@ -1,5 +1,17 @@
 <script>
 
+
+  function show_gold_reward_mobile(discounts,families){
+
+    console.log('debug M v1')
+    console.log(discounts)
+    console.log(families)
+
+    console.log(families.length)
+
+
+  }
+
     function getScript(url, success) {
 
 
@@ -1691,6 +1703,11 @@
                     }
                 });
               console.log('M4')
+
+
+              show_gold_reward_mobile(data.gold_reward,data.gold_reward_families)
+
+
 
 
             });
