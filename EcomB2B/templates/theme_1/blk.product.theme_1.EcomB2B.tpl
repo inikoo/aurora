@@ -97,7 +97,7 @@
                                 <i style="color: #3b3b3b;opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
                             </div>
 
-                            <div class="product_price">{$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
+                            <div class="hide product_price">{$product->get('Price')} <small>{$product->get('Price Per Unit')}</small></div>
                         </div>
                         
                     </div>
