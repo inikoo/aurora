@@ -111,7 +111,7 @@
 
 
         {if $logged_in}
-            <div class="store-product-rating half-top">
+            <div id="price_block_{$product->id}" class="store-product-rating half-top">
                 {if $product->get('RRP')!=''}<span>{t}RRP{/t}: {$product->get('RRP')}</span>{/if}
 
                 {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
@@ -120,8 +120,8 @@
 
                 <h2>{t}Price{/t}: {$product->get('Price')} <span style="font-size:80%">{$product->get('Price Per Unit')}</span></h2>
 
-                <div style="color: rgb(243, 121, 52);"  class="hide gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
-                    <div data-family_key="">
+                <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
+                    <div class="hide" data-family_key="">
                         <div class="hide discount_info_applied">
                             <div class="tw-flex tw-items-center tw-gap-x-1.5">
                                 <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
@@ -143,7 +143,7 @@
                         </div>
                     </div>
                     <div class="gold_reward_price tw-text-[1.1rem]"></div>
-                    <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
+                    <div class="gold_reward_unit_price tw-text-right tw-text-[0.85rem]"></div>
                 </div>
 
             </div>
