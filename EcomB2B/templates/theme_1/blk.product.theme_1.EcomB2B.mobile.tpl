@@ -120,30 +120,32 @@
 
                 <h2>{t}Price{/t}: {$product->get('Price')} <span style="font-size:80%">{$product->get('Price Per Unit')}</span></h2>
 
-                <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
-                    <div class="hide" data-family_key="">
-                        <div class="hide discount_info_applied">
-                            <div class="tw-flex tw-items-center tw-gap-x-1.5">
-                                <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
-                                    <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
-                                    <span class="gold_reward_percentage"></span>
+                <div class="hide">
+                    <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
+                        <div data-family_key="">
+                            <div class="hide discount_info_applied">
+                                <div class="tw-flex tw-items-center tw-gap-x-1.5">
+                                    <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
+                                        <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
+                                        <span class="gold_reward_percentage"></span>
+                                    </div>
+                                    <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
                                 </div>
-                                <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                            </div>
+                            <div class="hide discount_info_unappeased">
+                                <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
+                                    style="border: 1px solid #8f8f8f;"
+                                >
+                                    <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                    <span class="gold_reward_percentage"></span>
+                                    <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="hide discount_info_unappeased">
-                            <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
-                                style="border: 1px solid #8f8f8f;"
-                            >
-                                <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
-                                <span class="gold_reward_percentage"></span>
-                                <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
-                            </div>
-                        </div>
+                        
+                        <div class="gold_reward_price tw-text-[1.1rem]"></div>
+                        <div class="gold_reward_unit_price tw-text-right tw-text-[0.85rem]"></div>
                     </div>
-                    <div class="gold_reward_price tw-text-[1.1rem]"></div>
-                    <div class="gold_reward_unit_price tw-text-right tw-text-[0.85rem]"></div>
                 </div>
 
             </div>
