@@ -112,21 +112,43 @@
 
         {if $logged_in}
             <div class="store-product-rating half-top">
-                <h2>{t}Price{/t}: {$product->get('Price')} <span style="font-size:80%">{$product->get('Price Per Unit')}</span></h2>
                 {if $product->get('RRP')!=''}<span>{t}RRP{/t}: {$product->get('RRP')}</span>{/if}
 
                 {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
                     <br><span style="line-height: 20px "> {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span></span>
                 {/if}
 
+                <h2>{t}Price{/t}: {$product->get('Price')} <span style="font-size:80%">{$product->get('Price Per Unit')}</span></h2>
+
+                <div style="color: rgb(243, 121, 52);"  class="hide gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
+                    <div data-family_key="">
+                        <div class="hide discount_info_applied">
+                            <div class="tw-flex tw-items-center tw-gap-x-1.5">
+                                <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
+                                    <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
+                                    <span class="gold_reward_percentage"></span>
+                                </div>
+                                <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                            </div>
+                        </div>
+
+                        <div class="hide discount_info_unappeased">
+                            <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
+                                style="border: 1px solid #8f8f8f;"
+                            >
+                                <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                <span class="gold_reward_percentage"></span>
+                                <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gold_reward_price tw-text-[1.1rem]"></div>
+                    <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
+                </div>
 
             </div>
-
-
-
-
-
         {/if}
+
         <div class="store-product-icons">
 
         </div>
@@ -138,13 +160,13 @@
         <div class="clear"></div>
 
         {assign 'origin' $product->get('Origin')}
-    {assign 'weight' $product->get('Unit Weight Formatted')}
-    {assign 'weight_gross' $product->get('Package Weight')}
+        {assign 'weight' $product->get('Unit Weight Formatted')}
+        {assign 'weight_gross' $product->get('Package Weight')}
         {assign 'dimensions' $product->get('Unit Dimensions')}
         {assign 'materials' $product->get('Materials')}
         {assign 'barcode' $product->get('Barcode Number')}
         {assign 'cpnp' $product->get('CPNP Number')}
-    {assign 'ufi' $product->get('UFI')}
+        {assign 'ufi' $product->get('UFI')}
 
         <table>
             <tr class="{if $origin==''}hide{/if}">
