@@ -6879,12 +6879,12 @@ calendar*{display:block; overflow:hidden;}
     padding-top:5px;
 }
 
-.store-product-rating div{
+/* .store-product-rating div{
     position:absolute;
     top:0px;
     padding-left:55px;
     font-size:10px;
-}
+} */
 
 .store-product-rating strong{
     position:absolute;
