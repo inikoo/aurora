@@ -215,6 +215,8 @@ function save_item_qty_change(element,options) {
                     }
 
 
+                    console.log('xxx')
+
 
                     $.getJSON(request, function (data2) {
 
@@ -229,6 +231,14 @@ function save_item_qty_change(element,options) {
                 }
 
 
+                $.getJSON("ar_web_customer_products.php?&tipo=category_products&with_category_products=Yes&webpage_key="+ $('#webpage_data').data('webpage_key')  , function (data) {
+
+
+                    show_gold_reward_mobile(data.gold_reward,data.gold_reward_families)
+
+
+
+                });
 
             }
             else if (data.state == 400) {
