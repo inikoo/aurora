@@ -108,7 +108,7 @@
                                     </div>
 
                                     <div class="hide discount_info_unappeased">
-                                        <div class="tw-cursor-pointer tw-text-[0.9rem] tw-text-[#282828] tw-py-[1px] tw-w-fit">
+                                        <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#282828] tw-py-[1px] tw-w-fit">
                                             <i class="gold_reward_badge fas fa-star-half-alt" style="color: #3f3f3f;"></i>
                                             <span class="gold_reward_percentage"></span>
                                             <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
