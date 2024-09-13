@@ -81,7 +81,7 @@
             <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                 {if $logged_in}
 
-                    <div id="price_block_{$product->id}" class="price_block discount_info_family_ " >
+                    <div id="price_block_{$product->id}" class="price_block discount_info_family_ tw-mb-4" >
                         <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                             <div>
                                 {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -122,17 +122,17 @@
 
 
                     {if $product->get('Web State')=='Out of Stock'}
-                        <div style="height:40px;line-height:40px;padding:0px 20px"   class="   out_of_stock ">
+                        <div style="height:40px;line-height:40px;padding:0px 20px" class="out_of_stock ">
+                            <i data-product_id="{$product->id}"
+                                data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                class="far fa-envelope like_button reminder out_of_stock_reminders_{$product->id} tw-mr-2 tw-ml-0 tw-top-0 tw-left-0 tw-text-[1rem] hover:tw-text-gray-100"
+                                aria-hidden="true">
+                            </i>
                             <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
                             <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
                         </div>
-
-
-
-                        <i data-product_id="{$product->id}"
-                           data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
-                           data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$product->id} margin_left_5" aria-hidden="true"></i>
-
 
                     {elseif  $product->get('Web State')=='For Sale'}
 
