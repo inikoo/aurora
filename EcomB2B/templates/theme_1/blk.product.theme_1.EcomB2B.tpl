@@ -81,7 +81,7 @@
             <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                 {if $logged_in}
 
-                    <div id="price_block_{$product->id}" class="price_block discount_info_family_ tw-mb-4" >
+                    <div id="price_block_{$product->id}" class="price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
                         <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                             <div>
                                 {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -94,7 +94,7 @@
                         </div>
 
                         <div style="color: rgb(243, 121, 52);"  class="hide gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
-                            <div data-family_key=""   >
+                            <div data-family_key="{$product->get('Product Family Category Key')}"   >
                                 <div class="hide discount_info_applied">
                                     <div style="display:flex; align-items: center;column-gap: 3px;">
                                         <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
