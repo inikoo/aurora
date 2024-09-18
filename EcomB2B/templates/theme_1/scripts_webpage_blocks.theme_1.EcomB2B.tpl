@@ -44,7 +44,7 @@ function show_gold_reward(discounts,families){
     console.log('dc', discounts)
 
 
-    console.log('famleng', families.length)
+    console.log('famleng1', families.length)
 
     if(families.length>0){
         $('.discount_info_applied').addClass('hide')
@@ -100,20 +100,18 @@ function show_gold_reward(discounts,families){
     });
 
 
-      $.each(families, function (index, value) {
-
-              $('.discount_info_family_' + value + ' .discount_info_applied').removeClass('hide')
-              $('.discount_info_family_' + value + ' .original_price').addClass('strikethrough')
-              $('.discount_info_family_' + value + ' .original_price_tr').css('opacity', .6)
-              $('.discount_info_family_' + value + ' .discount_info_unappeased').addClass('hide')
-              $('.discount_info_family_' + value + ' .original_price_checked').addClass('hide')
-
+    console.log('famleng2', families.length)
+    $.each(families, function (index, value) {
+        console.log('iv', index, value)
+        $('.discount_info_family_' + value + ' .discount_info_applied').removeClass('hide')
+        $('.discount_info_family_' + value + ' .original_price').addClass('strikethrough')
+        $('.discount_info_family_' + value + ' .original_price_tr').css('opacity', .6)
+        $('.discount_info_family_' + value + ' .discount_info_unappeased').addClass('hide')
+        $('.discount_info_family_' + value + ' .original_price_checked').addClass('hide')
         $('.discount_info_family_' + value + ' .gold_reward_applied_check').removeClass('hide')
+    });
 
-
-      });
-
-  }
+}
 
 
 
