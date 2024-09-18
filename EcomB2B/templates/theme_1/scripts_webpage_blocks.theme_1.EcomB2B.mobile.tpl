@@ -57,18 +57,21 @@
         });
 
 
-        $.each(families, function (index, value) {
 
+        console.log('famleng2', families.length)
+        if(families.length>0){
+            console.log('famleng2a', families.length)
+            $.each(families, function (index, value) {
+                console.log('fam', index, value)
                 $('.discount_info_family_' + value + ' .discount_info_applied').removeClass('hide')
                 $('.discount_info_family_' + value + ' .original_price').addClass('strikethrough')
                 $('.discount_info_family_' + value + ' .original_price_tr').css('opacity', .6)
                 $('.discount_info_family_' + value + ' .discount_info_unappeased').addClass('hide')
                 $('.discount_info_family_' + value + ' .original_price_checked').addClass('hide')
+                $('.discount_info_family_' + value + ' .gold_reward_applied_check').removeClass('hide')
+            });
+        }
 
-            $('.discount_info_family_' + value + ' .gold_reward_applied_check').removeClass('hide')
-
-
-        });
 
     }
 
