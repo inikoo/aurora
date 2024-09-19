@@ -188,13 +188,6 @@ from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campai
             }
         }
 
-        if($order->data['Order Store Key']==1 and DNS_ACCOUNT_CODE=='AW' and !$first_order_bonus_applicable){
-            $is_gold_reward_member = true;
-            $gold_reward_member = [
-                'label' => '<a href="https://www.ancientwisdom.biz/gra">Gold Reward Amnesty Week</a>',
-                'until' => 'GR for all! until '.strftime("%a %e %b", strtotime('2024-09-18')),
-            ];
-        }
 
 
         echo json_encode(
