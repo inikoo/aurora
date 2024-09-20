@@ -249,7 +249,7 @@
         }
     </script>
 
-    <link rel="stylesheet" href="js/luigi_theme.css?v=10" type="text/css"/>
+    <link rel="stylesheet" href="js/luigi_theme.css?v=11" type="text/css"/>
 
     <link rel="stylesheet" type="text/css" href="assets/tablet.min.css">
 
