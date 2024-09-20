@@ -36,7 +36,7 @@
     {foreach from=$products item=item }
         {counter print=false assign="counter"}
     <div class="product_wrap  {if $logged_in and isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Hint_Bar'}stock_info_hint{/if} wrap type_{$item.type} " data-type="{$item.type}" {if $item.type=='product'} data-sort_code="{$item.sort_code}" data-sort_name="{$item.sort_name}{/if} ">
-        <div class="product_block item product_container" data-product_id="{$item.product_id}">
+        <div class="product_block item product_container tw-relative" data-product_id="{$item.product_id}">
 
 
 

@@ -32,7 +32,7 @@
                 {if $item.type=='product'}
                     {counter print=false assign="counter"}
 
-                    <div class="product_block item product_container" data-product_id="{$item.product_id}">
+                    <div class="product_block item product_container tw-relative" data-product_id="{$item.product_id}">
                         <div class="product_header_text _au_vw_" >
                             {$item.header_text}
                         </div>
