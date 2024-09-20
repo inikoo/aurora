@@ -960,7 +960,24 @@ $object_fields = array(
                 'type'       => 'value'
             ),
 
-
+            array(
+                'id'         => 'Localised_Labels_gra_t1',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_gra_t1']) ? 'Gold Reward Amnesty Week' : $labels['_gra_t1']),
+                'label'      => 'Gold Reward Amnesty Week',
+                'required'   => true,
+                'type'       => 'value'
+            ),
+            array(
+                'id'         => 'Localised_Labels_gra_t2',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_gra_t2']) ? 'GR for all! until' : $labels['_gra_t2']),
+                'label'      => 'GR for all! until',
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
 
         )
