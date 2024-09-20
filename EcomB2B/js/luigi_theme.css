@@ -82,6 +82,14 @@
     color: var(--luigiColor3) !important;
 }
 
+.luigi-ac-queries {
+    line-height: 0px !important;
+}
+
+.luigi-ac-other-content {
+    color: #fff !important;
+}
+
 
 /* Top Product styling (luigi-ac-first-main) */
 .luigi-ac-first-main .luigi-ac-attr--formatted_price {
