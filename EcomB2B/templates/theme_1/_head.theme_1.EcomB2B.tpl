@@ -305,7 +305,7 @@
     {/if}
 
 
-    <link rel="stylesheet" href="js/luigi_theme.css?v=12" type="text/css"/>
+    <link rel="stylesheet" href="js/luigi_theme.css?v=13" type="text/css"/>
     <link rel="stylesheet" href="js/animations.css" type="text/css"/>
 
 
