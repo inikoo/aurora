@@ -178,21 +178,21 @@
                     <div id="ordering_variant_{$variant->id}" class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
                         <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                             {if $logged_in}
-                                <div class="tw-relative tw-ml-[10px]">
+                                <div class="tw-relative">
                                     <span onclick="open_variant_chooser(this,{$product->id})" class="open_variant_chooser"
                                         style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 130px;display: inline-block;">
                                         {$variant->get('Product Variant Short Name')}
-                                        <div style="font-size: x-small;position: absolute;bottom: -24px;text-align: right;width: 130px;">
-                                            <span style="padding-right: 10px">
-                                                {if empty($labels._variant_options)}
-                                                    {t}More buying options{/t}
-                                                {else}
-                                                    {$labels._variant_options}
-                                                {/if} ☝
-                                            </span>
-                                        </div>
                                         <i style="position:absolute;right:12px;top:7px" class="fas fa-angle-down"></i>
                                     </span>
+                                    <div style="font-size: x-small;">
+                                        <span style="padding-right: 10px">
+                                            {if empty($labels._variant_options)}
+                                                {t}More buying options{/t}
+                                            {else}
+                                                {$labels._variant_options}
+                                            {/if} ☝
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
