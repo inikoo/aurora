@@ -42,32 +42,27 @@
     function open_variant_chooser(element,master_id){
 
 
-        let icon=$(element).find('i');
+        let icon = $(element).find('i');
         if(icon.hasClass('fa-angle-up')){
-
-
             $('#variant_chooser_dialog_'+master_id).addClass('hide')
 
             icon.addClass('fa-angle-down').removeClass('fa-angle-up')
             return;
         }
+
         icon.removeClass('fa-angle-down').addClass('fa-angle-up')
-
-
-        let dialog=$('#variant_chooser_dialog_'+master_id)
+        let dialog = $('#variant_chooser_dialog_'+master_id)
+        console.log('dialog', dialog)
 
         let offset = $(element).offset();
 
-        // console.log('offset', offset)
-        // console.log('dialog 1a', (offset.top+ $(element).height())+7)
-        // console.log('dialog 1b', offset.left-dialog.width()+$(element).width()+12, offset.left-dialog, $(element).width())
 
         dialog.removeClass('hide').offset({
             top: (offset.top+ $(element).height())+7,
             // left: offset.left-dialog.width()+$(element).width()+12
         })
 
-        console.log('dialog 1c', dialog)
+        // console.log('dialog 1c', dialog)
 
     }
 
@@ -97,6 +92,8 @@
       }
 
       parent.find('.ordering_variant').addClass('hide')
+      console.log('elementttt', element)
+      console.log('aaaaxzcxz', '#ordering_variant_'+$(element).data('id'))
       parent.find('#ordering_variant_'+$(element).data('id')).removeClass('hide')
       parent.find('.variant_chooser tr').removeClass('current')
       $(element).closest('tr').addClass('current');

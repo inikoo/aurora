@@ -90,7 +90,7 @@
 
         icon.removeClass('fa-angle-up').addClass('fa-angle-down')
 
-        console.log('dialog 2', dialog.left)
+        // console.log('dialog 2', dialog.left)
 
         dialog.removeClass('hide').offset({
             top: offset.top-$(dialog).height()+2,
