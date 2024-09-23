@@ -52,15 +52,14 @@
 
         icon.removeClass('fa-angle-down').addClass('fa-angle-up')
         let dialog = $('#variant_chooser_dialog_'+master_id)
-        console.log('dialog', dialog)
+        // console.log('dialog', dialog)
 
         let offset = $(element).offset();
 
-        // console.log('zzzz', offset.left, dialog.width(), $(element).width(), 12)
-        console.log('offset left', offset.left)
-        console.log('dialog width', dialog.width())
-        console.log('element width', $(element).width())
-        console.log('zzzz', offset.left-dialog.width()+$(element).width()+12)
+        // console.log('offset left', offset.left)
+        // console.log('dialog width', dialog.width())
+        // console.log('element width', $(element).width())
+        // console.log('zzzz', offset.left-dialog.width()+$(element).width()+12)
 
 
         dialog.removeClass('hide').offset({
@@ -81,9 +80,9 @@
 
     function variant_selected(element){
 
-      console.log($(element).data('code'))
-      console.log($(element).data('name'))
-      console.log($(element).data('weight'))
+    //   console.log($(element).data('code'))
+    //   console.log($(element).data('name'))
+    //   console.log($(element).data('weight'))
 
       let parent = $('.product.product_container')
 
@@ -99,8 +98,8 @@
 
       parent.find('.ordering_variant').addClass('hide')
       
-      console.log('elementttt', element)
-      console.log('aaaaxzcxz', '#ordering_variant_'+$(element).data('id'))
+    //   console.log('elementttt', element)
+    //   console.log('aaaaxzcxz', '#ordering_variant_'+$(element).data('id'))
 
       parent.find('#ordering_variant_'+$(element).data('id')).removeClass('hide')
       parent.find('.variant_chooser tr').removeClass('current')
