@@ -56,6 +56,12 @@
 
         let offset = $(element).offset();
 
+        // console.log('zzzz', offset.left, dialog.width(), $(element).width(), 12)
+        console.log('offset left', offset.left)
+        console.log('dialog width', dialog.width())
+        console.log('element width', $(element).width())
+        console.log('zzzz', offset.left-dialog.width()+$(element).width()+12)
+
 
         dialog.removeClass('hide').offset({
             top: (offset.top+ $(element).height())+7,
