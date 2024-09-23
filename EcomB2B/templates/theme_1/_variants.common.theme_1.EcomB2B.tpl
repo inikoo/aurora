@@ -58,14 +58,13 @@
 
         let offset = $(element).offset();
 
-        console.log('offset', offset)
-        console.log('dialog 1a', (offset.top+ $(element).height())+7)
-        console.log('dialog 1b', offset.left-dialog.width()+$(element).width()+12, offset.left-dialog, $(element).width())
+        // console.log('offset', offset)
+        // console.log('dialog 1a', (offset.top+ $(element).height())+7)
+        // console.log('dialog 1b', offset.left-dialog.width()+$(element).width()+12, offset.left-dialog, $(element).width())
 
         dialog.removeClass('hide').offset({
             top: (offset.top+ $(element).height())+7,
             // left: offset.left-dialog.width()+$(element).width()+12
-            left: '100px'
         })
 
         console.log('dialog 1c', dialog)
