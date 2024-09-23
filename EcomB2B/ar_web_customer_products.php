@@ -379,7 +379,8 @@ function category_products($data, $db, $customer_key, $order)
             'stock'                  => $stock,
             'discounts'              => [],
             'gold_reward'            => $gold_reward,
-            'gold_reward_families'   => $gold_reward_families
+            'gold_reward_families'   => array_values($gold_reward_families),
+            'version'=>'1'
 
 
         )
