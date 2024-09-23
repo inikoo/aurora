@@ -62,7 +62,7 @@
 
         dialog.removeClass('hide').offset({
             top: (offset.top+ $(element).height())+7,
-            left: offset.left-dialog.width()+$(element).width()+12
+            // left: offset.left-dialog.width()+$(element).width()+12
         })
 
     }

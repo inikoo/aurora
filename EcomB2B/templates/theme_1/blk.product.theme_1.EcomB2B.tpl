@@ -193,6 +193,8 @@
                                             {/if} ☝
                                         </span>
                                     </div>
+
+                                    {include file="theme_1/_variants.theme_1.EcomB2B.tpl" variants=$variants master_id={$product->id} }
                                 </div>
 
                                 <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
@@ -277,7 +279,6 @@
                     </div>
                 {/foreach}
 
-                {include file="theme_1/_variants.theme_1.EcomB2B.tpl" variants=$variants master_id={$product->id} }
 
             {/if}
 
