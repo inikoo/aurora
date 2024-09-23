@@ -174,90 +174,107 @@
 
 
 
-                {foreach from=$variants item=$variant  name=variant}
-                <div id="ordering_variant_{$variant->id}" class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}" >
-                <div class="ordering-container  log_in" style="display: flex;margin-top:15px;">
-                    {if $logged_in}
-                        <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
-                            <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$variant->get('Price')} </div>
-
-                            <div class="product_price" style="margin-top:3px"><small>{$variant->get('Price Per Unit Bis')}</small></div>
-                        </div>
-                        {if $variant->get('Web State')=='Out of Stock'}
-                            <div style="height:40px;line-height:40px;padding:0px 20px"   class="   out_of_stock ">
-                                <span class="product_footer label ">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}</span>
-                                <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i>  </span>
-                            </div>
-
-
-
-                            <i data-product_id="{$variant->id}"
-                               data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
-                               data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"   title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"    class="far fa-envelope like_button reminder out_of_stock_reminders_{$variant->id} margin_left_5" aria-hidden="true"></i>
-
-
-                        {elseif  $variant->get('Web State')=='For Sale'}
-
-                            {if $store->get('Store Type')=='Dropshipping'}
-                                <div class="portfolio_row  portfolio_row_{$variant->id} "  style="background: none;color:#000;border-left:1px solid #ccc;border-right:1px solid #ccc" >
-
-                                    <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
-                                        {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
-                                    </div>
-                                    <div class="edit_portfolio_item remove_from_portfolio hide " style="position:relative;"> <i class="fa fa-store-alt padding_right_5"></i>
-                                        {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if} <i style="position: absolute;right:10px;bottom:7.5px" class="far edit_portfolio_item_trigger fa-trash-alt  sim_button" title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
-                                    </div>
-
+                {foreach from=$variants item=$variant name=variant}
+                    <div id="ordering_variant_{$variant->id}" class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
+                        <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
+                            {if $logged_in}
+                                <div class="tw-relative tw-ml-[10px]">
+                                    <span onclick="open_variant_chooser(this,{$product->id})" class="open_variant_chooser"
+                                        style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 130px;display: inline-block;">
+                                        {$variant->get('Product Variant Short Name')}
+                                        <div style="font-size: x-small;position: absolute;bottom: -24px;text-align: right;width: 130px;">
+                                            <span style="padding-right: 10px">
+                                                {if empty($labels._variant_options)}
+                                                    {t}More buying options{/t}
+                                                {else}
+                                                    {$labels._variant_options}
+                                                {/if} ☝
+                                            </span>
+                                        </div>
+                                        <i style="position:absolute;right:12px;top:7px" class="fas fa-angle-down"></i>
+                                    </span>
                                 </div>
+
+                                <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
+                                    <div class="product_price">
+                                        {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$variant->get('Price')}
+                                    </div>
+                        
+                                    <div class="product_price" style="margin-top:3px"><small>{$variant->get('Price Per Unit Bis')}</small></div>
+                                </div>
+
+                                {if $variant->get('Web State')=='Out of Stock'}
+                                    <div style="height:40px;line-height:40px;padding:0px 20px" class="   out_of_stock ">
+                                        <span class="product_footer label ">
+                                            {if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
+                                        </span>
+                                        <span class="product_footer reminder"><i class="fa fa-envelope hide" aria-hidden="true"></i> </span>
+                                    </div>
+                            
+                                    <i data-product_id="{$variant->id}"
+                                        data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                        data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                        title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                        class="far fa-envelope like_button reminder out_of_stock_reminders_{$variant->id} margin_left_5"
+                                        aria-hidden="true"></i>                    
+                                {elseif $variant->get('Web State')=='For Sale'}
+                                    {if $store->get('Store Type')=='Dropshipping'}
+                                        <div class="portfolio_row  portfolio_row_{$variant->id} "
+                                            style="background: none;color:#000;border-left:1px solid #ccc;border-right:1px solid #ccc">
+                                
+                                            <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio sim_button "
+                                                style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
+                                                {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                                            </div>
+                                            <div class="edit_portfolio_item remove_from_portfolio hide " style="position:relative;">
+                                                <i class="fa fa-store-alt padding_right_5"></i>
+                                                {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if}
+                                                <i
+                                                    style="position: absolute;right:10px;bottom:7.5px"
+                                                    class="far edit_portfolio_item_trigger fa-trash-alt  sim_button"
+                                                    title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                            </div>
+                                        </div>
+                                    {else}
+                                        <div class="tw-mt-5 tw-w-1/2">
+                                            <div class="order_row empty  order_row_{$variant->id} ">
+                                                <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
+                                                <span class="order_button label sim_button">
+                                                    <i class="fa fa-hand-pointer  fa-fw   " aria-hidden="true"></i>
+                                                    {if empty($labels._ordering_order_now)}
+                                                        Order now
+                                                    {else}
+                                                        {assign _ordering_order_now $labels._ordering_order_now}
+                                                        {if ($_ordering_order_now|count_characters:true)>10}
+                                                            <span style="font-size: smaller">{$labels._ordering_order_now}</span>
+                                                        {else}
+                                                            {$labels._ordering_order_now}
+                                                        {/if}
+                                                    {/if}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    {/if}
+                                {/if}
+                    
+
                             {else}
-
-
-
-                                <div style="margin-left:10px;">
-                                    <div class="order_row empty  order_row_{$variant->id} ">
-                                        <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
-                                        <span class="order_button label sim_button">
-                                    <i class="fa fa-hand-pointer  fa-fw   " aria-hidden="true"></i> {if empty($labels._ordering_order_now)}Order now{else}
-
-
-
-                                                {assign _ordering_order_now $labels._ordering_order_now}
-
-
-                                                {if ($_ordering_order_now|count_characters:true)>10}
-                                                    <span style="font-size: smaller">{$labels._ordering_order_now}</span>
-                                                {else}{$labels._ordering_order_now}
-
-                                                {/if}
-
-
-                                                {/if}
-                                </span>
+                                <div class="ordering log_out ">
+                                    <div onclick='window.location.href = "/login.sys"' class="mark_on_hover">
+                                        <span class="login_button">
+                                            {if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}
+                                        </span>
+                                    </div>
+                                    <div onclick='window.location.href = "/register.sys"' class="mark_on_hover">
+                                        <span class="register_button">
+                                            {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}
+                                        </span>
                                     </div>
                                 </div>
                             {/if}
-                        {/if}
-
-                        <div style="margin-left: 10px;">
-                            <span onclick="open_variant_chooser(this,{$product->id})" class="open_variant_chooser"
-                                  style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 130px;display: inline-block;">
-                                {$variant->get('Product Variant Short Name')}
-                                <div style="font-size: x-small;position: absolute;bottom: -24px;text-align: right;width: 130px;" >
-                                    <span style="padding-right: 10px">{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span>
-                                </div>
-                                <i style="position:absolute;right:12px;top:7px" class="fas fa-angle-down"></i>
-                            </span>
+                    
                         </div>
-                    {else}
-                        <div class="ordering log_out " >
-                            <div onclick='window.location.href = "/login.sys"' class="mark_on_hover" ><span class="login_button" >{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
-                            <div onclick='window.location.href = "/register.sys"' class="mark_on_hover"><span class="register_button" > {if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
-                        </div>
-
-                    {/if}
-
-                </div>
-                </div>
+                    </div>
                 {/foreach}
 
                 {include file="theme_1/_variants.theme_1.EcomB2B.tpl" variants=$variants master_id={$product->id} }
@@ -265,7 +282,7 @@
             {/if}
 
             {if $logged_in and $product->get('Web State')=='Out of Stock' and  $product->get('Next Supplier Shipment Timestamp')>$smarty.now   }
-            <div style="padding-left: 262px">{t}Expected{/t}: {$product->get('Next Supplier Shipment Timestamp')|date_format:"%x"}<br></div>
+                <div style="padding-left: 262px">{t}Expected{/t}: {$product->get('Next Supplier Shipment Timestamp')|date_format:"%x"}<br></div>
             {/if}
 
 
