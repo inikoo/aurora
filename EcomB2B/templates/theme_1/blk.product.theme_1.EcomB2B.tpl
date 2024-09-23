@@ -179,7 +179,7 @@
                         <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                             {if $logged_in}
                                 <div class="tw-relative">
-                                    <span onclick="open_variant_chooser(this, {$variant->id})" class="open_variant_chooser"
+                                    <span onclick="open_variant_chooser(this, {$product->id})" class="open_variant_chooser"
                                         style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 130px;display: inline-block;">
                                         {$variant->get('Product Variant Short Name')}
                                         <i style="position:absolute;right:12px;top:7px" class="fas fa-angle-down"></i>
