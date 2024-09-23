@@ -92,8 +92,10 @@
       }
 
       parent.find('.ordering_variant').addClass('hide')
+      
       console.log('elementttt', element)
       console.log('aaaaxzcxz', '#ordering_variant_'+$(element).data('id'))
+
       parent.find('#ordering_variant_'+$(element).data('id')).removeClass('hide')
       parent.find('.variant_chooser tr').removeClass('current')
       $(element).closest('tr').addClass('current');
