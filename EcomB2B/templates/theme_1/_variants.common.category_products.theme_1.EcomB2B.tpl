@@ -90,30 +90,23 @@
 
         icon.removeClass('fa-angle-up').addClass('fa-angle-down')
 
-        // console.log('dialog 2', dialog.left)
+        console.log('dialog cat prod', dialog)
 
         dialog.removeClass('hide').offset({
             top: offset.top-$(dialog).height()+2,
             left: dialog.left
         })
-
     }
 
 
     $('.variant_chooser .variant_option').on('click',function() {
-
-
-      variant_selected_in_family(this)
-
-
-
-
+        variant_selected_in_family(this)
     });
 
 
     function variant_selected_in_family(element){
 
-      console.log('xx')
+      console.log('xx var sel fam')
 
       let parent = $(element).closest('.product_block.product_container')
 

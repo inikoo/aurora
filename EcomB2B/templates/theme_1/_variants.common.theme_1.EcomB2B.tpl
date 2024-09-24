@@ -52,8 +52,8 @@
 
         icon.removeClass('fa-angle-down').addClass('fa-angle-up')
         let dialog = $('#variant_chooser_dialog_'+master_id)
-        // console.log('dialog', dialog)
-
+        
+        console.log('dialog theme', dialog)
         let offset = $(element).offset();
 
         // console.log('offset left', offset.left)
@@ -68,14 +68,11 @@
         })
 
         // console.log('dialog 1c', dialog)
-
     }
 
 
     $('.variant_chooser .variant_option').on('click',function() {
-
         variant_selected(this)
-
     });
 
     function variant_selected(element){
