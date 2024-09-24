@@ -38,7 +38,7 @@
                 {/foreach}
             </div>
         </div>
-        <div class="information product_information" >
+        <div class="information product_information tw-relative" >
             <h1 style="padding-top:5px;margin:2px 0;font-size:150%" itemprop="name" class="Product_Name">
                 {if $product->get('number_visible_variants')==0}{$product->get('Name')}{else}{$variants[0]->get('Name')}{/if}
             </h1>
@@ -179,7 +179,7 @@
                         <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                             {if $logged_in}
                                 <div class="tw-relative">
-                                    <span onclick="open_variant_chooser(this,{$product->id})" class="open_variant_chooser"
+                                    <span onclick="open_variant_chooser(this, {$product->id})" class="open_variant_chooser"
                                         style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 130px;display: inline-block;">
                                         {$variant->get('Product Variant Short Name')}
                                         <i style="position:absolute;right:12px;top:7px" class="fas fa-angle-down"></i>
@@ -194,9 +194,6 @@
                                         </span>
                                     </div>
 
-                                    <div class="zxcvbnm">
-                                        {include file="theme_1/_variants.theme_1.EcomB2B.tpl" variants=$variants master_id={$product->id} }
-                                    </div>
                                 </div>
 
                                 <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
@@ -281,6 +278,7 @@
                     </div>
                 {/foreach}
 
+                {include file="theme_1/_variants.theme_1.EcomB2B.tpl" variants=$variants master_id={$product->id} }
 
             {/if}
 

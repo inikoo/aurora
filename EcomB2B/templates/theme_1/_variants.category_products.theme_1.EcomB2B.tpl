@@ -18,8 +18,8 @@
             <th style="text-align: right">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}</th>
             <th style="text-align: right"> {if empty($labels._per_unit)}{t}Price/U{/t}{else}{$labels._per_unit}{/if}</th>
             <th style="text-align: right">U</th>
-
         </tr>
+        
         {foreach from=$variants item=$variant  name=variant}
             <tr class="variant_option {if $master_id==$variant.id}current{/if}"
                     data-id="{$variant.id}"
