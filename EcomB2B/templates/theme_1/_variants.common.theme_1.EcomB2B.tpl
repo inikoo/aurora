@@ -72,11 +72,12 @@
 
 
     $('.variant_chooser .variant_option').on('click',function() {
+        console.log('clicked 2')
         variant_selected(this)
     });
 
     function variant_selected(element){
-
+        console.log('var sel', element)
     //   console.log($(element).data('code'))
     //   console.log($(element).data('name'))
     //   console.log($(element).data('weight'))

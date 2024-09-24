@@ -100,6 +100,7 @@
 
 
     $('.variant_chooser .variant_option').on('click',function() {
+        console.log('clicked 1')
         variant_selected_in_family(this)
     });
 
