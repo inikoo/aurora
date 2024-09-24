@@ -185,7 +185,10 @@ class Public_Product
                 'price_unit_bis'          => $variant->get('Price Per Unit Bis'),
                 'label'                   => $variant->get('Product Variant Short Name'),
                 'web_state'               => $variant->get('Web State'),
-                'next_shipment_timestamp' => $variant->get('Next Supplier Shipment Timestamp')
+                'next_shipment_timestamp' => $variant->get('Next Supplier Shipment Timestamp'),
+                'is_variant'              => $variant->get('is_variant'),
+                'has_variants'            => $variant->get('has_variants'),
+                'variant_short_name'      => $variant->get('Product Variant Short Name'),
 
 
             ];
@@ -287,8 +290,10 @@ class Public_Product
             case 'Product Customer Key':
             case 'Product Current Key':
             case 'number_visible_variants':
-            case  'Product Variant Short Name':
+            case 'Product Variant Short Name':
             case 'Product Units Per Case':
+            case 'is_variant':
+            case 'has_variants':
                 return $this->data[$key];
 
 
