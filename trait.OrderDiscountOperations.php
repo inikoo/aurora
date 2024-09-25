@@ -262,10 +262,10 @@ trait OrderDiscountOperations
                     prepare_mysql(date('Y-m-d', strtotime(gmdate('Y-m-d H:i:s')." -".$deal_component_data['Deal Component Terms'])).' 00:00:00')
                 );
 
-                if(  !in_array( $this->data['Order Store Key'],[18,22]) and DNS_ACCOUNT_CODE=='AWEU'){
-                    $this->deals['Order']['Terms'] = true;
-                    $this->create_allowances_from_deal_component_data($deal_component_data);
-                }else {
+//                if(  !in_array( $this->data['Order Store Key'],[18,22]) and DNS_ACCOUNT_CODE=='AWEU'){
+//                    $this->deals['Order']['Terms'] = true;
+//                    $this->create_allowances_from_deal_component_data($deal_component_data);
+//                }else {
 
                     //print "$sql\n";
                     if ($result = $this->db->query($sql)) {
@@ -278,7 +278,7 @@ trait OrderDiscountOperations
                             }
                         }
                     }
-                }
+                //}
 
                 break;
 
