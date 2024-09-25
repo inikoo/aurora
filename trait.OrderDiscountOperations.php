@@ -267,6 +267,11 @@ trait OrderDiscountOperations
 //                    $this->create_allowances_from_deal_component_data($deal_component_data);
 //                }else {
 
+                                if($this->data['Order Store Key'] != 3 and DNS_ACCOUNT_CODE=='ES'){
+                                    $this->deals['Order']['Terms'] = true;
+                                    $this->create_allowances_from_deal_component_data($deal_component_data);
+                                }else {
+
                     //print "$sql\n";
                     if ($result = $this->db->query($sql)) {
                         if ($_row = $result->fetch()) {
@@ -278,7 +283,7 @@ trait OrderDiscountOperations
                             }
                         }
                     }
-                //}
+                }
 
                 break;
 
