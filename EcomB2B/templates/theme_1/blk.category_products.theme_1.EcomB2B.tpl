@@ -280,7 +280,7 @@
                                             </table>
                                         </div>
 
-                                        <div class="product_prices hide" style="margin: 6px 0px">
+                                        <div class="product_pricesxxxx hide" style="margin: 6px 0px">
                                             <div class="product_price" style="font-size: small;display: flex; column-gap: 3px;">
                                                 <div>{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:</div>
                                                 <div style="display: flex; justify-content: space-between; align-items: center; flex-grow: 1;">
