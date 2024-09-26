@@ -239,19 +239,45 @@
                                             </div>
                                         </div>
 
-                                        <div class="ccccc hide">
-                                            <div id="price_block_{$item.product_id}" class="price_block discount_info_family_{$variant.id} tw-mb-4" >
-                                                <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
-                                                    <div>
+                                        <div class="ccccc hide tw-px-[10px] tw-mt-1.5">
+                                            <table id="price_block_{$item.product_id}" class="price_block discount_info_family_{$variant.id}  " >
+                                                <tr class="original_price_tr" >
+                                                    <td style="width:75px">
                                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
-                                                        <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
-                                                    </div>
-                                                    <div class="original_price tw-text-[1.1rem]">{$variant.price}</div>
+                                                        <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.6rem;"></i>
+                                                    </td>
+                                                    <td class="original_price ">{$variant.price}</td>
                                                     {if isset($variant.price_unit_bis)}
-                                                        <div  style="text-align: right; font-size: 0.85rem"  class="original_price">{$variant.price_unit_bis}</div>
+                                                        <td  style="text-align: right; font-size: 0.7rem"  class="original_price">{$variant.price_unit_bis}</td>
                                                     {/if}
-                                                </div>
-                                            </div>
+                                                </tr>
+        
+                                                <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
+                                                    <td style="width:75px"  data-family_key="{$item_family_key}"   >
+                                                        <div class="hide discount_info_applied">
+                                                            <div style="display:flex; align-items: center;column-gap: 3px;">
+                                                                <div style="cursor: pointer; border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #0b7933;">
+                                                                    <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
+                                                                    <span class="gold_reward_percentage"></span>
+                                                                </div>
+                                                                <i style="color: seagreen;font-size: 0.5rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                                                            </div>
+                                                        </div>
+        
+                                                        <div
+                                                            style="cursor: pointer; border-radius: 4px; font-size: 0.7rem;background-color: #75757545;padding: 1px 6px;width: fit-content;border: 1px solid #8f8f8f;color: #282828;"
+                                                            class=" discount_info_unappeased  "
+                                                        >
+                                                            <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                                            <span class="gold_reward_percentage"></span>
+        
+                                                            <i style="color: #3b3b3b;/*! font-size: 0.5rem; */opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="gold_reward_price "></td>
+                                                    <td style="text-align: right; font-size: 0.7rem"  class="gold_reward_unit_price"></td>
+                                                </tr>
+                                            </table>
                                         </div>
 
                                         <div class="product_prices" style="margin: 6px 0px">
