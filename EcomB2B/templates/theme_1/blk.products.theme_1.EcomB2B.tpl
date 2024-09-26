@@ -200,7 +200,7 @@
                             {else}
                                 {foreach from=$item.variants item=variant name=variant}
                                     <div id="ordering_variant_{$variant.id}"
-                                         class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
+                                         class="fffff ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
                                         <div style="display: flex">
                                             <div class="product_prices  ">
                                                 <div class="product_price" style="font-size: small">

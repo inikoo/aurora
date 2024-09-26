@@ -168,7 +168,7 @@
             {else}
 
                 {foreach from=$variants item=$variant name=variant}
-                    <div id="ordering_variant_{$variant->id}" class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
+                    <div id="ordering_variant_{$variant->id}" class="ddddd ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
                         <div class="ordering-container log_in tw-flex tw-flex-col tw-mt-[15px]">
                             {if $logged_in}
                                 <div class="tw-relative">
@@ -189,15 +189,15 @@
 
                                 </div>
 
-                                <!-- <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
+                                <div class="product_prices log_in aaaaa" style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
                                     <div class="product_price">
                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$variant->get('Price')}
                                     </div>
                         
                                     <div class="product_price" style="margin-top:3px"><small>{$variant->get('Price Per Unit Bis')}</small></div>
-                                </div> -->
+                                </div>
 
-                                <div id="price_block_{$product->id}" class="price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
+                                <!-- <div id="price_block_{$product->id}" class="price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
                                     <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                                         <div>
                                             {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -234,9 +234,8 @@
                                         <div class="gold_reward_price tw-text-[1.1rem]"></div>
                                         <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
                                     </div>
-                                </div>
+                                </div> -->
 
-                                <!-- ================================================================================ -->
 
                                 {if $variant->get('Web State')=='Out of Stock'}
                                     <div style="height:40px;line-height:40px;padding:0px 20px" class="   out_of_stock ">
