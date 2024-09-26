@@ -69,10 +69,6 @@
 
 <script>
 
-    function zxcvbzxcvb(fff, ggg) {
-        console.log('fff', fff)
-        console.log('ggg', ggg)
-    }
 
     function open_variant_chooser(element,master_id){
 
