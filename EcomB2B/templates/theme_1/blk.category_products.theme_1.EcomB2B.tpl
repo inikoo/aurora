@@ -227,7 +227,11 @@
                             {else}
                                 <!-- If product have variant (piece/units/carton) -->
                                 {foreach from=$item.variants item=variant name=variant}
-                                    <div id="ordering_variant_{$variant.id}" class="ccccc ordering_variant {if !$smarty.foreach.variant.first}hide{/if}" onclick="console.log('variants', $item.variants, variant)">
+                                    <div id="ordering_variant_{$variant.id}" class="ccccc ordering_variant {if !$smarty.foreach.variant.first}hide{/if}" onclick="console.log('variants', variant)">
+                                        <div class="ccccc hide">
+                                            {$item.variants}
+                                        </div>
+
                                         <div style="flex-grow:1; padding: 0px 10px; box-sizing: border-box">
                                             <div onclick="open_variant_chooser(this,{$item.product_id})"
                                                 style="width: 100%; cursor:pointer; position:relative; padding:3px 0px 3px 10px; border:1px solid #ccc; border-radius: 3px; display: inline-block; box-sizing: border-box">
