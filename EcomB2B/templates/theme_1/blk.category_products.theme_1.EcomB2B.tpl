@@ -240,7 +240,18 @@
                                         </div>
 
                                         <div class="ccccc hide">
-                                            
+                                            <div id="price_block_{$item.product_id}" class="price_block discount_info_family_{$variant.id} tw-mb-4" >
+                                                <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
+                                                    <div>
+                                                        {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
+                                                        <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
+                                                    </div>
+                                                    <div class="original_price tw-text-[1.1rem]">{$variant.price}</div>
+                                                    {if isset($variant.price_unit_bis)}
+                                                        <div  style="text-align: right; font-size: 0.85rem"  class="original_price">{$variant.price_unit_bis}</div>
+                                                    {/if}
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div class="product_prices" style="margin: 6px 0px">
