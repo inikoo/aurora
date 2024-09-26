@@ -239,8 +239,8 @@
                                             </div>
                                         </div>
 
-                                        <div class="ccccc hide tw-px-[10px] tw-mt-1.5">
-                                            <table id="price_block_{$item.product_id}" class="price_block discount_info_family_{$variant.id}  " >
+                                        <div class="tw-px-[10px] tw-mt-1.5 tw-h-[52px]">
+                                            <table id="price_block_{$item.product_id}" class="price_block discount_info_family_{$variant.id}" >
                                                 <tr class="original_price_tr" >
                                                     <td style="width:75px">
                                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -280,7 +280,7 @@
                                             </table>
                                         </div>
 
-                                        <div class="product_prices" style="margin: 6px 0px">
+                                        <div class="product_prices hide" style="margin: 6px 0px">
                                             <div class="product_price" style="font-size: small;display: flex; column-gap: 3px;">
                                                 <div>{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:</div>
                                                 <div style="display: flex; justify-content: space-between; align-items: center; flex-grow: 1;">
