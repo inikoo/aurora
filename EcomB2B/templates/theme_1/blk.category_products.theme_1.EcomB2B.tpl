@@ -227,7 +227,7 @@
                             {else}
                                 <!-- If product have variant (piece/units/carton) -->
                                 {foreach from=$item.variants item=variant name=variant}
-                                    <div id="ordering_variant_{$variant.id}" class="ccccc ordering_variant {if !$smarty.foreach.variant.first}hide{/if}" onclick="console.log('variants {$item.variants}')">
+                                    <div id="ordering_variant_{$variant.id}" class="ccccc ordering_variant {if !$smarty.foreach.variant.first}hide{/if}" onclick="console.log({$item.variants})">
                                         <div class="ccccc hide">
                                             {$variant}
                                         </div>
