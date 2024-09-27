@@ -225,11 +225,11 @@
 
 
                             {else}
+                                <!-- If product have variant (piece/units/carton) -->
                                 {foreach from=$item.variants item=variant name=variant}
-                                    <div id="ordering_variant_{$variant.id}"
-                                         class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
+                                    <div id="ordering_variant_{$variant.id}" class="ccccc ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
                                         <div style="flex-grow:1; padding: 0px 10px; box-sizing: border-box">
-                                            <div onclick="open_variant_chooser(this,{$item.product_id})"
+                                            <div onclick="open_variant_chooser(this, {$item.product_id})"
                                                 style="width: 100%; cursor:pointer; position:relative; padding:3px 0px 3px 10px; border:1px solid #ccc; border-radius: 3px; display: inline-block; box-sizing: border-box">
                                                 <span class="open_variant_chooser">{$variant.label}</span>
                                                 <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
@@ -239,7 +239,48 @@
                                             </div>
                                         </div>
 
-                                        <div class="product_prices" style="margin: 6px 0px">
+                                        <div class="tw-px-[10px] tw-mt-1.5 tw-h-[52px]">
+                                            <table id="price_block_{$item.product_id}" class="price_block discount_info_family_{$variant.id}" >
+                                                <tr class="original_price_tr" >
+                                                    <td style="width:75px">
+                                                        {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
+                                                        <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.6rem;"></i>
+                                                    </td>
+                                                    <td class="original_price ">{$variant.price}</td>
+                                                    {if isset($variant.price_unit_bis)}
+                                                        <td  style="text-align: right; font-size: 0.7rem"  class="original_price">{$variant.price_unit_bis}</td>
+                                                    {/if}
+                                                </tr>
+        
+                                                <tr style="color: rgb(243, 121, 52);"  class="gold_reward_product_price hide">
+                                                    <td style="width:75px"  data-family_key="{$item_family_key}"   >
+                                                        <div class="hide discount_info_applied">
+                                                            <div style="display:flex; align-items: center;column-gap: 3px;">
+                                                                <div style="cursor: pointer; border-radius: 4px; font-size: 0.7rem;background-color: #4ade8044;padding: 1px 6px;width: fit-content;border: 1px solid #16a34a;color: #0b7933;">
+                                                                    <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
+                                                                    <span class="gold_reward_percentage"></span>
+                                                                </div>
+                                                                <i style="color: seagreen;font-size: 0.5rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                                                            </div>
+                                                        </div>
+        
+                                                        <div
+                                                            style="cursor: pointer; border-radius: 4px; font-size: 0.7rem;background-color: #75757545;padding: 1px 6px;width: fit-content;border: 1px solid #8f8f8f;color: #282828;"
+                                                            class=" discount_info_unappeased  "
+                                                        >
+                                                            <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                                            <span class="gold_reward_percentage"></span>
+        
+                                                            <i style="color: #3b3b3b;/*! font-size: 0.5rem; */opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="gold_reward_price "></td>
+                                                    <td style="text-align: right; font-size: 0.7rem"  class="gold_reward_unit_price"></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="product_pricesxxxx hide" style="margin: 6px 0px">
                                             <div class="product_price" style="font-size: small;display: flex; column-gap: 3px;">
                                                 <div>{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}:</div>
                                                 <div style="display: flex; justify-content: space-between; align-items: center; flex-grow: 1;">
