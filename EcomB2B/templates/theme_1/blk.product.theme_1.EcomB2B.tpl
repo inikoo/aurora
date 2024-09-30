@@ -197,44 +197,43 @@
                                     <div class="product_price" style="margin-top:3px"><small>{$variant->get('Price Per Unit Bis')}</small></div>
                                 </div>
 
-                                <!-- <div id="price_block_{$product->id}" class="price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
-                                    <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
+                                <div id="price_block_{$item.product_id}" class="hide aaa1 price_block discount_info_family_{$item_family_key} " >
+                                    <div class="original_price_tr tw-flex tw-flex-wrap tw-gap-x-2 tw-items-center" >
                                         <div>
                                             {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
                                             <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
                                         </div>
-                                        <div class="original_price tw-text-[1.1rem]">{$product->get('Price')}</div>
-                                        {if isset($product->get('Price Per Unit'))}
-                                            <div  style="text-align: right; font-size: 0.85rem"  class="original_price">{$product->get('Price Per Unit')}</div>
+                                        <div class="Mobil_Product_Price original_price tw-text-[0.9rem]">{$item.price}</div>
+                                        {if isset($item.price_unit)}
+                                            <div  style="text-align: right; font-size: 0.8rem" class="original_price">{$item.price_unit}</div>
                                         {/if}
                                     </div>
-        
-                                    <div style="color: rgb(243, 121, 52);"  class="hide gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
-                                        <div data-family_key="{$product->get('Product Family Category Key')}"   >
+
+                                    <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center pr-2">
+                                        <div data-family_key="{$item_family_key}"   >
                                             <div class="hide discount_info_applied">
                                                 <div style="display:flex; align-items: center;column-gap: 3px;">
-                                                    <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#4ade8044] tw-text-[#0b7933] tw-px-1.5 tw-py-[1px] tw-w-fit" style="border: 1px solid #16a34a;">
-                                                        <i class="gold_reward_badge  fas fa-star" style="color: green; opacity: 0.6"></i>
+                                                    <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#0b7933] tw-py-[1px] tw-w-fit">
+                                                        <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
                                                         <span class="gold_reward_percentage"></span>
                                                     </div>
                                                     <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
                                                 </div>
                                             </div>
-        
+
                                             <div class="hide discount_info_unappeased">
-                                                <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
-                                                    style="border: 1px solid #8f8f8f;"
-                                                >
-                                                    <i class="gold_reward_badge  fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                                <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#282828] tw-py-[1px] tw-w-fit">
+                                                    <i class="gold_reward_badge fas fa-star-half-alt" style="color: #3f3f3f;"></i>
                                                     <span class="gold_reward_percentage"></span>
                                                     <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="gold_reward_price tw-text-[1.1rem]"></div>
-                                        <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
+                                        
+                                        <div class="gold_reward_price tw-text-[0.9rem]"></div>
+                                        <div style="font-size: 0.7rem"  class="gold_reward_unit_price"></div>
                                     </div>
-                                </div> -->
+                                </div>
 
 
                                 {if $variant->get('Web State')=='Out of Stock'}
