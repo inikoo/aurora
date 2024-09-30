@@ -80,45 +80,46 @@
                             {/if}
                         </div>
                         
-                        <div id="price_block_{$item.product_id}" class="yyy price_block discount_info_family_{$item_family_key} " >
-                            <div class="original_price_tr tw-flex tw-flex-wrap tw-gap-x-2 tw-items-center" >
-                                <div>
-                                    {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
-                                    <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
-                                </div>
-                                <div class="Mobil_Product_Price original_price tw-text-[0.9rem]">{$item.price}</div>
-                                {if isset($item.price_unit)}
-                                    <div  style="text-align: right; font-size: 0.8rem" class="original_price">{$item.price_unit}</div>
-                                {/if}
-                            </div>
-
-                            <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center pr-2">
-                                <div data-family_key="{$item_family_key}"   >
-                                    <div class="hide discount_info_applied">
-                                        <div style="display:flex; align-items: center;column-gap: 3px;">
-                                            <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#0b7933] tw-py-[1px] tw-w-fit">
-                                                <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
-                                                <span class="gold_reward_percentage"></span>
-                                            </div>
-                                            <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
-                                        </div>
-                                    </div>
-
-                                    <div class="hide discount_info_unappeased">
-                                        <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#282828] tw-py-[1px] tw-w-fit">
-                                            <i class="gold_reward_badge fas fa-star-half-alt" style="color: #3f3f3f;"></i>
-                                            <span class="gold_reward_percentage"></span>
-                                            <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="gold_reward_price tw-text-[0.9rem]"></div>
-                                <div style="font-size: 0.7rem"  class="gold_reward_unit_price"></div>
-                            </div>
-                        </div>
 
                         {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
+                            <div id="price_block_{$item.product_id}" class="yyy price_block discount_info_family_{$item_family_key} " >
+                                <div class="original_price_tr tw-flex tw-flex-wrap tw-gap-x-2 tw-items-center" >
+                                    <div>
+                                        {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
+                                        <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
+                                    </div>
+                                    <div class="Mobil_Product_Price original_price tw-text-[0.9rem]">{$item.price}</div>
+                                    {if isset($item.price_unit)}
+                                        <div  style="text-align: right; font-size: 0.8rem" class="original_price">{$item.price_unit}</div>
+                                    {/if}
+                                </div>
+
+                                <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center pr-2">
+                                    <div data-family_key="{$item_family_key}"   >
+                                        <div class="hide discount_info_applied">
+                                            <div style="display:flex; align-items: center;column-gap: 3px;">
+                                                <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#0b7933] tw-py-[1px] tw-w-fit">
+                                                    <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
+                                                    <span class="gold_reward_percentage"></span>
+                                                </div>
+                                                <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="hide discount_info_unappeased">
+                                            <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#282828] tw-py-[1px] tw-w-fit">
+                                                <i class="gold_reward_badge fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                                <span class="gold_reward_percentage"></span>
+                                                <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="gold_reward_price tw-text-[0.9rem]"></div>
+                                    <div style="font-size: 0.7rem"  class="gold_reward_unit_price"></div>
+                                </div>
+                            </div>
+
                             {if $store->get('Store Type')=='Dropshipping'}
                                 <div class="portfolio_row portfolio_row_{$item.product_id}">
 
@@ -164,11 +165,60 @@
                         {else}
                             {foreach from=$item.variants item=variant name=variant}
                                 <div id="ordering_variant_{$variant.id}" class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
-                                    <div style="margin-bottom:5px;margin-top:5px;flex-grow:1">
+                                    <!-- <div style="margin-bottom:5px;margin-top:5px;flex-grow:1">
                                         <span onclick="open_variant_chooser(this,{$item.product_id})" class="open_variant_chooser" style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
                                             {$variant.label}
                                             <i style="position:absolute;right:12px;top:5px" class="fas fa-angle-up"></i>
                                         </span>
+                                    </div> -->
+
+                                    <div class="tw-pr-3" style="box-sizing: border-box">
+                                        <div onclick="open_variant_chooser(this, {$item.product_id})"
+                                            style="width: 100%; cursor:pointer; position:relative; padding:3px 0px 3px 10px; border:1px solid #ccc; border-radius: 3px; display: inline-block; box-sizing: border-box">
+                                            <span class="open_variant_chooser">{$variant.label}</span>
+                                            <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
+                                                <span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span>
+                                            </div>
+                                            <i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="price_block_{$item.product_id}" class="yy1 price_block discount_info_family_{$item_family_key} " >
+                                        <div class="original_price_tr tw-flex tw-flex-wrap tw-gap-x-2 tw-items-center" >
+                                            <div>
+                                                {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
+                                                <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
+                                            </div>
+                                            <div class="Mobil_Product_Price original_price tw-text-[0.9rem]">{$item.price}</div>
+                                            {if isset($item.price_unit)}
+                                                <div  style="text-align: right; font-size: 0.8rem" class="original_price">{$item.price_unit}</div>
+                                            {/if}
+                                        </div>
+
+                                        <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center pr-2">
+                                            <div data-family_key="{$item_family_key}"   >
+                                                <div class="hide discount_info_applied">
+                                                    <div style="display:flex; align-items: center;column-gap: 3px;">
+                                                        <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#0b7933] tw-py-[1px] tw-w-fit">
+                                                            <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
+                                                            <span class="gold_reward_percentage"></span>
+                                                        </div>
+                                                        <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div class="hide discount_info_unappeased">
+                                                    <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#282828] tw-py-[1px] tw-w-fit">
+                                                        <i class="gold_reward_badge fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                                        <span class="gold_reward_percentage"></span>
+                                                        <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="gold_reward_price tw-text-[0.9rem]"></div>
+                                            <div style="font-size: 0.7rem"  class="gold_reward_unit_price"></div>
+                                        </div>
                                     </div>
 
                                     {if $store->get('Store Type')=='Dropshipping'}
