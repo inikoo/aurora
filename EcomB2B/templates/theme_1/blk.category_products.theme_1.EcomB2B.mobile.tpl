@@ -64,11 +64,8 @@
                 </div>
 
                 <div class="product_data" style="flex-basis:50%;line-height: 150%;margin:0px 0px">
-
-
                     {if isset($settings['Display Stock Levels in Category']) and $settings['Display Stock Levels in Category']=='Dot'}
-                        <i style="position:absolute;left:-25px;top:5px"
-                           class="stock_dot inline stock_level_{$item.product_id} fa fa-fw fa-circle"></i>
+                        <i style="position:absolute;left:-25px;top:5px" class="stock_dot inline stock_level_{$item.product_id} fa fa-fw fa-circle"></i>
                     {/if}
 
                     <div class="description" {if ($item.name|count_characters)>40} style="font-size: 80% {elseif ($item.name|count_characters)>35}{/if}">
@@ -122,8 +119,6 @@
                         </div>
 
                         {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
-
-
                             {if $store->get('Store Type')=='Dropshipping'}
                                 <div class="portfolio_row portfolio_row_{$item.product_id}">
 
@@ -134,117 +129,104 @@
                                         <i class="fa fa-store-alt padding_right_5"></i>
                                         {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if}
                                         <i style="position: absolute;right:10px;bottom:8px"
-                                           class="far edit_portfolio_item_trigger fa-trash-alt  sim_button"
-                                           title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                            class="far edit_portfolio_item_trigger fa-trash-alt  sim_button"
+                                            title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
                                     </div>
                                 </div>
                             {else}
                                 {if $item.web_state=='Out of Stock'}
                                     <div style="margin-top:10px;">
-                                        <span style="padding:5px 10px;"
-                                              class="highlight-red color-white">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
+                                        <span style="padding:5px 10px;" class="highlight-red color-white">
+                                            {if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
 
-                                        <i data-product_id="{$item.product_id}"
-                                           data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
-                                           data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                           title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                           class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5"
-                                           aria-hidden="true"></i>
+                                            <i data-product_id="{$item.product_id}"
+                                                data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                                data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                class="far fa-envelope like_button reminder out_of_stock_reminders_{$item.product_id} margin_left_5"
+                                                aria-hidden="true"></i>
+                                        </span>
+                                    </div>
 
-                                    </span></div>
                                     {if !empty($item.next_shipment_timestamp)  and $item.next_shipment_timestamp>$smarty.now }
-                                        <div style="margin-top:8px;padding-left: 0px;font-size: 90%">{t}Expected{/t}
-                                            : {$item.next_shipment_timestamp|date_format:"%x"}</div>
+                                        <div style="margin-top:8px;padding-left: 0px;font-size: 90%">{t}Expected{/t} : {$item.next_shipment_timestamp|date_format:"%x"}</div>
                                     {/if}
                                 {elseif $item.web_state=='For Sale'}
                                     <div class="mobile_ordering" data-settings='{ "pid":{$item.product_id} }'>
-                                        <i onclick="save_item_qty_change(this)"
-                                           class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-                                        <input type="number" min="0" value=""
-                                               class="order_qty_{$item.product_id} needsclick order_qty">
-                                        <i onclick="save_item_qty_change(this)"
-                                           class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
-                                        <i onclick="save_item_qty_change(this)"
-                                           class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
+                                        <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
+                                        <input type="number" min="0" value="" class="order_qty_{$item.product_id} needsclick order_qty">
+                                        <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
+                                        <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                                     </div>
                                 {/if}
                             {/if}
-                            {else}
-                                {foreach from=$item.variants item=variant name=variant}
-                                <div id="ordering_variant_{$variant.id}"
-                         class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
 
-                                <div style="margin-bottom:5px;margin-top:5px;flex-grow:1">
-                                            <span onclick="open_variant_chooser(this,{$item.product_id})"
-                                                  class="open_variant_chooser"
-                                                  style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
-                                {$variant.label}
-                                <i style="position:absolute;right:12px;top:5px" class="fas fa-angle-up"></i></span></div>
-
-
-
-                                {if $store->get('Store Type')=='Dropshipping'}
-                                    <div class="portfolio_row portfolio_row_{$variant.product_id}">
-
-                                        <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio  ">
-                                            <i class="fa fa-plus padding_right_5"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
-                                        </div>
-                                        <div class="edit_portfolio_item remove_from_portfolio hide">
-                                            <i class="fa fa-store-alt padding_right_5"></i>
-                                            {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if}
-                                            <i style="position: absolute;right:10px;bottom:8px"
-                                               class="far edit_portfolio_item_trigger fa-trash-alt  sim_button"
-                                               title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
-                                        </div>
+                        {else}
+                            {foreach from=$item.variants item=variant name=variant}
+                                <div id="ordering_variant_{$variant.id}" class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
+                                    <div style="margin-bottom:5px;margin-top:5px;flex-grow:1">
+                                        <span onclick="open_variant_chooser(this,{$item.product_id})" class="open_variant_chooser" style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
+                                            {$variant.label}
+                                            <i style="position:absolute;right:12px;top:5px" class="fas fa-angle-up"></i>
+                                        </span>
                                     </div>
-                                {else}
-                                    {if $variant.web_state=='Out of Stock'}
-                                        <div style="margin-top:10px;">
-                                        <span style="padding:5px 10px;"
-                                              class="highlight-red color-white">{if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
 
-                                        <i data-product_id="{$variant.product_id}"
-                                           data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
-                                           data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                           title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
-                                           class="far fa-envelope like_button reminder out_of_stock_reminders_{$variant.product_id} margin_left_5"
-                                           aria-hidden="true"></i>
+                                    {if $store->get('Store Type')=='Dropshipping'}
+                                        <div class="portfolio_row portfolio_row_{$variant.product_id}">
+                                            <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio  ">
+                                                <i class="fa fa-plus padding_right_5"></i> {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
+                                            </div>
+                                            <div class="edit_portfolio_item remove_from_portfolio hide">
+                                                <i class="fa fa-store-alt padding_right_5"></i>
+                                                {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if}
+                                                <i style="position: absolute;right:10px;bottom:8px"
+                                                    class="far edit_portfolio_item_trigger fa-trash-alt  sim_button"
+                                                    title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                            </div>
+                                        </div>
+                                    {else}
+                                        {if $variant.web_state=='Out of Stock'}
+                                            <div style="margin-top:10px;">
+                                                <span style="padding:5px 10px;" class="highlight-red color-white">
+                                                    {if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
 
-                                    </span></div>
-                                        {if !empty($variant.next_shipment_timestamp)  and $variant.next_shipment_timestamp>$smarty.now }
-                                            <div style="margin-top:8px;padding-left: 0px;font-size: 90%">{t}Expected{/t}
-                                                : {$variant.next_shipment_timestamp|date_format:"%x"}</div>
+                                                    <i data-product_id="{$variant.product_id}"
+                                                    data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                                    data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                    title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                    class="far fa-envelope like_button reminder out_of_stock_reminders_{$variant.product_id} margin_left_5"
+                                                    aria-hidden="true"></i>
+                                                </span>
+                                            </div>
+                                            {if !empty($variant.next_shipment_timestamp)  and $variant.next_shipment_timestamp>$smarty.now }
+                                                <div style="margin-top:8px;padding-left: 0px;font-size: 90%"> {t}Expected{/t} : {$variant.next_shipment_timestamp|date_format:"%x"} </div>
+                                            {/if}
+                                        {elseif $variant.web_state=='For Sale'}
+                                            <div class="mobile_ordering" data-settings='{ "pid":{$variant.product_id} }'>
+                                                <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
+                                                <input type="number" min="0" value="" class="order_qty_{$variant.product_id} needsclick order_qty">
+                                                <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
+                                                <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
+                                            </div>
                                         {/if}
-                                    {elseif $variant.web_state=='For Sale'}
-                                        <div class="mobile_ordering" data-settings='{ "pid":{$variant.product_id} }'>
-                                            <i onclick="save_item_qty_change(this)"
-                                               class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-                                            <input type="number" min="0" value=""
-                                                   class="order_qty_{$variant.product_id} needsclick order_qty">
-                                            <i onclick="save_item_qty_change(this)"
-                                               class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
-                                            <i onclick="save_item_qty_change(this)"
-                                               class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
-                                        </div>
                                     {/if}
-                                {/if}
-
-                    </div>
+                                </div>
                             {/foreach}
-                            {/if}
+                        {/if}
 
-                            {else}
-                                <div class="log_out_prod_info">
+                    {else}
+                        <div class="log_out_prod_info">
                             {if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}
                         </div>
-                                <div class="log_out_prod_links">
+                        <div class="log_out_prod_links">
                             <div onclick='window.location.href = "/login.sys"'>
-                                <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+                                <span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span>
+                            </div>
                             <div onclick='window.location.href = "/register.sys"'>
                                 <span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span>
                             </div>
                         </div>
-                        {/if}
+                    {/if}
                 </div>
             </div>
         {/if}
