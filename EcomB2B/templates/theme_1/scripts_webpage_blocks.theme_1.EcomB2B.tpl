@@ -35,18 +35,18 @@
 
 
 
-function show_gold_reward(discounts,families){
+function show_gold_reward(GRDiscount, GRFamilies){
 
     // $('.product_discounted_price').addClass('hide')
     // $('.original_price').removeClass('strikethrough').css('opacity', '1');
 
     console.log('debug v16')
-    console.log('dc', discounts)
+    console.log('dc', GRDiscount)
 
 
-    console.log('famleng1', families.length)
+    console.log('famleng1', GRFamilies.length)
 
-    if(families.length>0){
+    if(GRFamilies.length>0){
         $('.discount_info_applied').addClass('hide')
         $('.original_price').removeClass('strikethrough')
         $('.original_price_tr').css('opacity',.8)
@@ -55,7 +55,7 @@ function show_gold_reward(discounts,families){
     }
 
 
-    $.each(discounts, function (index, value) {
+    $.each(GRDiscount, function (index, value) {
 
         console.log(index)
         console.log(value)
@@ -100,11 +100,11 @@ function show_gold_reward(discounts,families){
     });
 
 
-    console.log('famleng2', families.length)
-    if(families.length>0){
-        console.log('famleng2a', families.length)
+    console.log('famleng2', GRFamilies.length)
+    if(GRFamilies.length>0){
+        console.log('famleng2a', GRFamilies.length)
 
-        $.each(families, function (index, value) {
+        $.each(GRFamilies, function (index, value) {
             console.log('fam', index, value)
             $('.discount_info_family_' + value + ' .discount_info_applied').removeClass('hide')
             $('.discount_info_family_' + value + ' .original_price').addClass('strikethrough')
@@ -1832,7 +1832,7 @@ function show_gold_reward(discounts,families){
                                 });
 
                                 console.log('A1')
-                                 show_gold_reward(data.gold_reward,data.gold_reward_families)
+                                show_gold_reward(data.gold_reward, data.gold_reward_families)
 
 
 
