@@ -189,15 +189,15 @@
 
                                 </div>
 
-                                <!-- <div class="product_prices log_in aaaaa" style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
+                                <div class="product_prices log_in aaaaa" style="margin-left:0px;padding-left:0px;font-size: 120%;width:120px">
                                     <div class="product_price">
                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$variant->get('Price')}
                                     </div>
                         
                                     <div class="product_price" style="margin-top:3px"><small>{$variant->get('Price Per Unit Bis')}</small></div>
-                                </div> -->
+                                </div>
 
-                                <div id="price_block_{$product->id}" class="aaa1 price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
+                                <!-- <div id="price_block_{$product->id}" class="aaa1 price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
                                     <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                                         <div>
                                             {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -234,7 +234,7 @@
                                         <div class="gold_reward_price tw-text-[1.1rem]"></div>
                                         <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
                                     </div>
-                                </div>
+                                </div> -->
 
 
                                 {if $variant->get('Web State')=='Out of Stock'}
