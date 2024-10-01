@@ -197,7 +197,7 @@
                                     <div class="product_price" style="margin-top:3px"><small>{$variant->get('Price Per Unit Bis')}</small></div>
                                 </div>
 
-                                <!-- <div id="price_block_{$product->id}" class="price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
+                                <!-- <div id="price_block_{$product->id}" class="aaa1 price_block discount_info_family_{$product->get('Product Family Category Key')} tw-mb-4" >
                                     <div class="original_price_tr tw-flex tw-gap-x-2 tw-items-center" >
                                         <div>
                                             {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -208,7 +208,7 @@
                                             <div  style="text-align: right; font-size: 0.85rem"  class="original_price">{$product->get('Price Per Unit')}</div>
                                         {/if}
                                     </div>
-        
+            
                                     <div style="color: rgb(243, 121, 52);"  class="hide gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center">
                                         <div data-family_key="{$product->get('Product Family Category Key')}"   >
                                             <div class="hide discount_info_applied">
@@ -220,7 +220,7 @@
                                                     <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
                                                 </div>
                                             </div>
-        
+            
                                             <div class="hide discount_info_unappeased">
                                                 <div class="tw-cursor-pointer tw-rounded tw-text-[0.9rem] tw-bg-[#75757545] tw-py-[1px] tw-px-1.5 tw-w-fit tw-text-[#282828]"
                                                     style="border: 1px solid #8f8f8f;"
