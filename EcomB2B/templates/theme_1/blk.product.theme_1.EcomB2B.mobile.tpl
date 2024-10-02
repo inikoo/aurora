@@ -112,11 +112,20 @@
 
         {if $logged_in}
             <div id="price_block_{$product->id}" class="discount_info_family_{$product->get('Product Family Category Key')} store-product-rating half-top">
-                {if $product->get('RRP')!=''}<span>{t}RRP{/t}: {$product->get('RRP')}</span>{/if}
+                {if $product->get('RRP')!=''}<span>{t}RRP{/t}: {$product->get('RRP')}</span><br>{/if}
 
-                {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
-                    <br><span style="line-height: 20px "> {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i> <span class="product_stock_label_{$product->id}"></span></span>
-                {/if}
+                <div class="tw-flex tw-justify-between tw-items-center">
+                    {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
+                        <span style="line-height: 20px "> {t}Stock{/t}: <i class="product_stock_dot fa fa-circle stock_level_{$product->id}"></i>
+                            <span class="product_stock_label_{$product->id}"></span>
+                        </span>
+                    {/if}
+                    {if $logged_in}
+                        {if $store->get('Store Type')!='Dropshipping'}
+                            <i style="float: right;font-size: 22px" data-product_code="{$product->get('Code')}" data-product_id="{$product->id}" data-favourite_key="0" class="tw-p-0 sim_button favourite_{$product->id} favourite far fa-heart" aria-hidden="true"></i>
+                        {/if}
+                    {/if}
+                </div>
 
                 <h2 class="tw-text-[1.3rem]">{t}Price{/t}: <span class="original_price">{$product->get('Price')}</span> <span class="original_price" style="font-size:80%">{$product->get('Price Per Unit')}</span></h2>
 

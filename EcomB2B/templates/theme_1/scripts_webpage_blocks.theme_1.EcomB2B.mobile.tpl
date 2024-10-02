@@ -6,6 +6,7 @@
         console.log('GRD', GRDiscount)
         console.log('GRF', GRFamilies)
 
+        // To show GR (as gray stuff)
         if(GRFamilies.length>0){
             $('.discount_info_applied').addClass('hide')
             $('.original_price').removeClass('strikethrough')
