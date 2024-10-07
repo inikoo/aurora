@@ -21,7 +21,7 @@
         <div id="page-content-scroll" class="header-clear"> <!--Enables this element to be scrolled -->
         
         <!-- Luigi: search result -->
-        <div class="container" style="margin-left: 15px;margin-right: 15px;">
+        <div class="container" style="margin-bottom: 0px; margin-left: 15px;margin-right: 15px;">
             <div id="luigi_result_search"></div>
         </div>
 
