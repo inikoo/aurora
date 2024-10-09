@@ -853,7 +853,7 @@
                                         {if $store->get('Store Type')=='Dropshipping'}
                                             <div class="portfolio_row  ">
                                                 <div class="edit_portfolio_item add_to_portfolio sim_button " style="text-align: center"> <i class="fa fa-plus padding_right_5"></i>
-                                                    {if empty($labels._add_to_portfolio)}{t}Add to portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
+                                                    {if empty($labels._add_to_portfolio)}{t}Portfolio{/t}{else}{$labels._add_to_portfolio}{/if}</span>
                                                 </div>
                                             </div>
                                         {else}
