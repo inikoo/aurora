@@ -137,8 +137,7 @@
 
                                     {if !empty($item.rrp) and false }
                                         <div>
-                                        <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
-                                            : {$item.rrp}</small></div>{/if}
+                                        <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$item.rrp}</small></div>{/if}
                                 </div>
 
                                 {if $store->get('Store Type')=='Dropshipping'}
