@@ -140,6 +140,7 @@
                                         <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$item.rrp}</small></div>{/if}
                                 </div>
 
+
                                 {if $store->get('Store Type')=='Dropshipping'}
                                     <div class="portfolio_row  portfolio_row_{$item.product_id} "
                                          style="background: none;color:#000">
