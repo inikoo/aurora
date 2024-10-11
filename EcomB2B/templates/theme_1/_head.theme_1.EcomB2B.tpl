@@ -13,6 +13,40 @@
 <html lang="en-gb" class="isie ie9 no-js"> <![endif]--><!--[if (gt IE 9)|!(IE)]><!-->
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
 <head>
+    <script type="module">
+        import { createApp } from 'https://unpkg.com/petite-vue@0.2.2/dist/petite-vue.iife.js'
+
+        
+
+        
+
+        createApp({
+            const treeData = {
+                name: 'My Tree',
+                children: [
+                    { name: 'hello' },
+                    { name: 'wat' },
+                    {
+                        name: 'child folder',
+                        children: [
+                        {
+                            name: 'child folder',
+                            children: [{ name: 'hello' }, { name: 'wat' }]
+                        },
+                        { name: 'hello' },
+                        { name: 'wat' },
+                        {
+                            name: 'child folder',
+                            children: [{ name: 'hello' }, { name: 'wat' }]
+                        }
+                        ]
+                    }
+                ]
+            },
+            isShow: true,
+
+        }).mount()
+    </script>
 
     <script>
       window.dataLayer = window.dataLayer || [];

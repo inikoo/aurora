@@ -20,6 +20,17 @@
 
     <div style="clear: both"></div>
 
+    <div v-scope class="hide">
+        <div @click="function() { isShow = !isShow }" class="tw-cursor-pointer">
+            Click vcnxklzvncijzopf nfrejkwlfs
+        </div>
+        
+        <div v-if="isShow" class="tw-blue-400">
+            dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+            {{ treeData }}
+        </div>
+    </div>
+
     {foreach from=$footer_data.rows item=row}
         {if !empty($row.type)}
             {if $row.type=='main_4'}
