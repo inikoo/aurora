@@ -14,37 +14,435 @@
 <html lang="en-gb" class="no-js"> <!--<![endif]-->
 <head>
     <script type="module">
-        import { createApp } from 'https://unpkg.com/petite-vue@0.2.2/dist/petite-vue.iife.js'
-
-        
-
-        
-
+        import { createApp } from 'https://unpkg.com/petite-vue@0.2.2/dist/petite-vue.es.js'
         createApp({
-            const treeData = {
-                name: 'My Tree',
-                children: [
-                    { name: 'hello' },
-                    { name: 'wat' },
-                    {
-                        name: 'child folder',
-                        children: [
-                        {
-                            name: 'child folder',
-                            children: [{ name: 'hello' }, { name: 'wat' }]
+            "footerxxx": {
+                "data": {
+                    "column": {
+                        "column_1": {
+                            "key": "1",
+                            "data": [
+                                {
+                                    "id": 1,
+                                    "data": [
+                                        {
+                                            "id": 2,
+                                            "name": "<p>Con Us</p>"
+                                        },
+                                        {
+                                            "id": 3,
+                                            "name": "Delivery"
+                                        },
+                                        {
+                                            "id": 4,
+                                            "name": "<p>Retu Policy</p>"
+                                        }
+                                    ],
+                                    "name": "Help"
+                                },
+                                {
+                                    "id": 5,
+                                    "data": [
+                                        {
+                                            "id": 6,
+                                            "name": "AW Beginning"
+                                        },
+                                        {
+                                            "id": 7,
+                                            "name": "Business Ethics"
+                                        },
+                                        {
+                                            "id": 8,
+                                            "name": "Our Brands"
+                                        },
+                                        {
+                                            "id": 9,
+                                            "name": "Subscribe to the Newsletter"
+                                        }
+                                    ],
+                                    "name": "About AW"
+                                },
+                                {
+                                    "id": 10,
+                                    "data": [
+                                        {
+                                            "id": 11,
+                                            "name": "Book Showroom Appointment"
+                                        }
+                                    ],
+                                    "name": "Showroom"
+                                },
+                                {
+                                    "id": 12,
+                                    "data": [
+                                        {
+                                            "id": 13,
+                                            "name": "+44 (0) 1142 729 165"
+                                        },
+                                        {
+                                            "id": 14,
+                                            "name": "care@ancientwisdom.biz"
+                                        }
+                                    ],
+                                    "name": "Customer Service"
+                                },
+                                {
+                                    "id": 15,
+                                    "data": [],
+                                    "name": "Reviews"
+                                },
+                                {
+                                    "id": 16,
+                                    "data": [],
+                                    "name": "FAQ"
+                                }
+                            ],
+                            "name": "Column 1"
                         },
-                        { name: 'hello' },
-                        { name: 'wat' },
-                        {
-                            name: 'child folder',
-                            children: [{ name: 'hello' }, { name: 'wat' }]
+                        "column_2": {
+                            "key": "2",
+                            "data": [
+                                {
+                                    "id": 17,
+                                    "data": [
+                                        {
+                                            "id": 18,
+                                            "name": "<p>No nimum r</p>"
+                                        },
+                                        {
+                                            "id": 19,
+                                            "name": "First Order Bonus"
+                                        },
+                                        {
+                                            "id": 20,
+                                            "name": "Buy Now, Pay Later"
+                                        },
+                                        {
+                                            "id": 21,
+                                            "name": "Volume Discounts"
+                                        }
+                                    ],
+                                    "name": "<p>Why Choose A?</p>"
+                                },
+                                {
+                                    "id": 22,
+                                    "data": [
+                                        {
+                                            "id": 23,
+                                            "name": "Join The Gold Reward Membership"
+                                        }
+                                    ],
+                                    "name": "Membership"
+                                },
+                                {
+                                    "id": 24,
+                                    "data": [
+                                        {
+                                            "id": 25,
+                                            "name": "Catalogue - Live Stock Feeds"
+                                        },
+                                        {
+                                            "id": 26,
+                                            "name": "AW History & The Phoenix Effect"
+                                        },
+                                        {
+                                            "id": 27,
+                                            "name": "Distribution Centre in Europe"
+                                        },
+                                        {
+                                            "id": 28,
+                                            "name": "David's Travel Blog"
+                                        }
+                                    ],
+                                    "name": "Discover"
+                                },
+                                {
+                                    "id": 29,
+                                    "data": [
+                                        {
+                                            "id": 30,
+                                            "name": "Terms & Conditions"
+                                        },
+                                        {
+                                            "id": 31,
+                                            "name": "Privacy Policy"
+                                        },
+                                        {
+                                            "id": 32,
+                                            "name": "Cookies Policy"
+                                        }
+                                    ],
+                                    "name": "Legal"
+                                }
+                            ],
+                            "name": "Column 2"
+                        },
+                        "column_3": {
+                            "key": "3",
+                            "data": [
+                                {
+                                    "id": 33,
+                                    "data": [
+                                        {
+                                            "id": 34,
+                                            "name": "DROPSHIPPING"
+                                        },
+                                        {
+                                            "id": 35,
+                                            "name": "FULFILMENT"
+                                        },
+                                        {
+                                            "id": 36,
+                                            "name": "DIGITAL MARKETING"
+                                        }
+                                    ],
+                                    "name": "Our Services"
+                                },
+                                {
+                                    "id": 37,
+                                    "data": [
+                                        {
+                                            "id": 38,
+                                            "name": "Agnes + Cat"
+                                        },
+                                        {
+                                            "id": 39,
+                                            "name": "Agnes + Cat"
+                                        },
+                                        {
+                                            "id": 40,
+                                            "name": "AW - Aromatics"
+                                        },
+                                        {
+                                            "id": 41,
+                                            "name": "AW - Portugal"
+                                        },
+                                        {
+                                            "id": 42,
+                                            "name": "AW - Germany"
+                                        },
+                                        {
+                                            "id": 43,
+                                            "name": "AW - Slovakia"
+                                        },
+                                        {
+                                            "id": 44,
+                                            "name": "AW - España"
+                                        },
+                                        {
+                                            "id": 45,
+                                            "name": "Agnes + France"
+                                        },
+                                        {
+                                            "id": 46,
+                                            "name": "Agnes + Poland"
+                                        },
+                                        {
+                                            "id": 47,
+                                            "name": "Agnes + Austria"
+                                        },
+                                        {
+                                            "id": 48,
+                                            "name": "Agnes + Europe"
+                                        },
+                                        {
+                                            "id": 49,
+                                            "name": "Agnes + Romania"
+                                        },
+                                        {
+                                            "id": 50,
+                                            "name": "Agnes + Czechia"
+                                        },
+                                        {
+                                            "id": 51,
+                                            "name": "Agnes + Italy"
+                                        }
+                                    ],
+                                    "name": "AW Partners"
+                                }
+                            ],
+                            "name": "Column 3"
+                        },
+                        "column_4": {
+                            "key": "4",
+                            "data": {
+                                "textBox1": "Ancient Wisdom Marketing Ltd. Affinity Park, Europa Drive Sheffield, S9 1XT",
+                                "textBox2": "<p>Vat No: GB764298589  </br> Reg. No: 04108870</p>",
+                                "textBox3": "Subscribe to the WhatsApp messages and benefit from exclusive discounts."
+                            },
+                            "name": "Column 4"
                         }
+                    },
+                    "copyRight": "Copyright © 2024 Aurora. All rights reserved. Terms of Use Privacy Policy",
+                    "properties": {
+                        "border": {
+                            "top": {
+                                "value": 0
+                            },
+                            "left": {
+                                "value": 0
+                            },
+                            "unit": "px",
+                            "color": "#000000",
+                            "right": {
+                                "value": 0
+                            },
+                            "bottom": {
+                                "value": 0
+                            },
+                            "rounded": {
+                                "unit": "px",
+                                "topleft": {
+                                    "value": 0
+                                },
+                                "topright": {
+                                    "value": 0
+                                },
+                                "bottomleft": {
+                                    "value": 0
+                                },
+                                "bottomright": {
+                                    "value": 0
+                                }
+                            }
+                        },
+                        "margin": {
+                            "top": {
+                                "value": 0
+                            },
+                            "left": {
+                                "value": 0
+                            },
+                            "unit": "px",
+                            "right": {
+                                "value": 0
+                            },
+                            "bottom": {
+                                "value": 0
+                            }
+                        },
+                        "padding": {
+                            "top": {
+                                "value": 96
+                            },
+                            "left": {
+                                "value": 28
+                            },
+                            "unit": "px",
+                            "right": {
+                                "value": 28
+                            },
+                            "bottom": {
+                                "value": 96
+                            }
+                        },
+                        "textColor": "#FFFFFF",
+                        "background": {
+                            "type": "color",
+                            "color": "rgba(0, 0, 0, 1",
+                            "image": {
+                                "original": null
+                            }
+                        }
+                    },
+                    "socialData": [
+                        {
+                            "icon": [
+                                "fab",
+                                "facebook-f"
+                            ],
+                            "link": null,
+                            "label": "Facebook"
+                        },
+                        {
+                            "icon": "fab fa-instagram",
+                            "link": null,
+                            "label": "Instagram"
+                        },
+                        {
+                            "icon": "fab fa-tiktok",
+                            "link": null,
+                            "label": "Tik Tok"
+                        },
+                        {
+                            "icon": "fab fa-pinterest",
+                            "link": null,
+                            "label": "Pinterest"
+                        },
+                        {
+                            "icon": "fab fa-youtube",
+                            "link": null,
+                            "label": "Youtube"
+                        },
+                        {
+                            "icon": "fab fa-linkedin-in",
+                            "link": null,
+                            "label": "Linkedin"
+                        }
+                    ],
+                    "PaymentData": {
+                        "data": [
+                            {
+                                "name": "Checkout.com",
+                                "image": "https://www.linqto.com/wp-content/uploads/2023/04/logo_2021-11-05_19-04-11.530.png",
+                                "value": "checkout.com"
+                            }
+                        ]
+                    }
+                },
+                "bluprint": [
+                    {
+                        "key": "body",
+                        "icon": "far fa-line-columns",
+                        "name": "Body",
+                        "type": "body",
+                        "bluprint": [
+                            {
+                                "key": "properties",
+                                "name": "body",
+                                "type": "body"
+                            }
+                        ]
+                    },
+                    {
+                        "key": "PaymentData",
+                        "icon": "far fa-money-bill",
+                        "name": "Payments",
+                        "type": "payment_templates",
+                        "bluprint": [
+                            {
+                                "key": "PaymentData",
+                                "name": "Payments",
+                                "type": "payment_templates"
+                            }
+                        ]
+                    },
+                    {
+                        "key": "socialData",
+                        "icon": "far fa-icons",
+                        "name": "Social Media",
+                        "type": "socialMedia",
+                        "bluprint": [
+                            {
+                                "key": "socialData",
+                                "name": "Social Media",
+                                "type": "socialMedia"
+                            }
                         ]
                     }
                 ]
             },
+            "header": [
+                {
+                    "js": null,
+                    "css": "* { box-sizing: border-box; } body {margin: 0;}.nav a{color:black;}#ixsfw{padding:0px 10px;}",
+                    "html": "<body id=\"idaq\"><header class=\"bg-light text-dark py-3 px-1.5 md:px-5\"><div class=\"row align-items-center\"><div class=\"col-md-3\"><a href=\"/\" class=\"d-flex align-items-center text-dark text-decoration-none\"></a></div><div class=\"col-md-9\"><div class=\"flex justify-content-end\"><div id=\"ixsfw\"><nav class=\"nav justify-content-end\"></nav></div><div class=\"d-flex justify-content-end\"><a href=\"/login\" data-wowsbar-element=\"login\" class=\"btn btn-primary\">Log in</a></div></div></div></div></header></body>"
+                }
+            ],
             isShow: true,
-
+            toggleShow() {
+                this.isShow = !this.isShow
+            }
         }).mount()
     </script>
 

@@ -21,13 +21,13 @@
     <div style="clear: both"></div>
 
     <div v-scope class="hide">
-        <div @click="function() { isShow = !isShow }" class="tw-cursor-pointer">
-            Click vcnxklzvncijzopf nfrejkwlfs
+        <div @click="toggleShow" class="tw-cursor-pointer">
+            Click me!
         </div>
-        
+
         <div v-if="isShow" class="tw-blue-400">
             dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-            {{ treeData }}
+            <pre>{{ footerxxx }}</pre>
         </div>
     </div>
 
