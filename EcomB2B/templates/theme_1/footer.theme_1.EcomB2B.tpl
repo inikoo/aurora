@@ -20,16 +20,6 @@
 
     <div style="clear: both"></div>
 
-    <div v-scope class="hide">
-        <div @click="toggleShow" class="tw-cursor-pointer">
-            Click me!
-        </div>
-
-        <div v-if="isShow" class="tw-blue-400">
-            dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-            <pre>{{ footerxxx }}</pre>
-        </div>
-    </div>
 
     {foreach from=$footer_data.rows item=row}
         {if !empty($row.type)}
