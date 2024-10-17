@@ -20,6 +20,7 @@
 
     <div style="clear: both"></div>
 
+
     {foreach from=$footer_data.rows item=row}
         {if !empty($row.type)}
             {if $row.type=='main_4'}
