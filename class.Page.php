@@ -2842,7 +2842,6 @@ class Page extends DB_Table
             return;
         }
 
-
         if ($this->get('Webpage State') == 'Offline' or $this->get('Webpage State') == 'InProcess' or $this->get('Webpage State') == 'Ready') {
             if ($this->data['Webpage Scope'] == 'Category Products' or $this->data['Webpage Scope'] == 'Category Categories') {
                 $scope = get_object('Category', $this->data['Webpage Scope Key']);
