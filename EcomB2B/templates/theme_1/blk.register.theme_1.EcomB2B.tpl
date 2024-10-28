@@ -435,9 +435,11 @@
 
 
             </fieldset>
+            {if !empty($settings.tu_site_key)}
             <footer>
-                <div class="cf-turnstile" data-sitekey="0x4AAAAAAAypQKboGG44FOvI"></div>
+                <div class="cf-turnstile" data-sitekey="{$settings.tu_site_key}"></div>
             </footer>
+            {/if}
 
             {if !empty($settings.captcha_client)}
                 <footer>
