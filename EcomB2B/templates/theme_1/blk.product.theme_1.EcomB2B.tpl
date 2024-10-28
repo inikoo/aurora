@@ -40,7 +40,7 @@
                     </script>
 
 
-                    <div style="width: 100px; margin: 0px 5px" class=" tw-relative tw-isolate">
+                    <div style="width: 100px; margin: 0px 5px 5px  5px" class=" tw-relative tw-isolate">
                         <iframe  src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=true"   frameborder="0"  style="aspect-ratio: 1 / 1; height: auto; width:100%;" ></iframe>
                         <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10"></div>
                     </div>
@@ -48,7 +48,7 @@
                 {/if}
 
                 {foreach from=$data.other_images item=image name=foo}
-                    <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                    <figure style="margin: 0px 5px 5px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                         <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
                             <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
                         </a>
