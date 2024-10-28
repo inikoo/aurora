@@ -457,8 +457,13 @@
         <link rel="stylesheet" href="assets/image_gallery.min.css" type="text/css"/>
     {/if}
 
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+
     {if $with_register==1}
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
+
     {/if}
 
 
