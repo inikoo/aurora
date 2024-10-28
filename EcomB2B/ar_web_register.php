@@ -117,14 +117,15 @@ function register($db, $website, $data, $editor) {
 
             $response_data = json_decode($response);
 
-           
+
 
             if (!$response_data->success ) {
 
                 echo json_encode(
                     array(
                         'state' => 400,
-                        'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Captcha verification failed, please try again'))
+                        'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Captcha verification failed, please try again')),
+                           'resp'  => $response_data->error-codes
                     )
                 );
                 exit;
@@ -166,7 +167,8 @@ function register($db, $website, $data, $editor) {
                     echo json_encode(
                         array(
                             'state' => 400,
-                            'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Robot verification failed, please try again'))
+                            'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Robot verification failed, please try again')),
+
                         )
                     );
                 }
