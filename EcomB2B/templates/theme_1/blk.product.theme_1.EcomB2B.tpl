@@ -31,14 +31,6 @@
             </figure>
 
             <div class="gallery" style="display: flex;max-width: 330px;flex-wrap: wrap " itemscope itemtype="http://schema.org/ImageGallery">
-                {foreach from=$data.other_images item=image name=foo}
-                    <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-                        <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                            <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
-                        </a>
-                    </figure>
-                {/foreach}
-
 
                 {if $product->get('Video ID')}
 
@@ -54,6 +46,17 @@
                     </div>
 
                 {/if}
+
+                {foreach from=$data.other_images item=image name=foo}
+                    <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                        <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
+                            <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
+                        </a>
+                    </figure>
+                {/foreach}
+
+
+
 
             </div>
 
