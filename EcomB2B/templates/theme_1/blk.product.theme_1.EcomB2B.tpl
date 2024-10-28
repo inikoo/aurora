@@ -51,7 +51,7 @@
 
                     <div style="width: 100px; margin: 0px 5px 5px  5px" class=" tw-relative tw-isolate">
                         <iframe  src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=true"   frameborder="0"  style="aspect-ratio: 1 / 1; height: auto; width:100%;" ></iframe>
-                        <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10"><i style="font-size:20px;color:green;opacity:.7" class="fas fa-play-circle"></i></div>
+                        <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10"><i style="font-size:20px;color:green;--fa-seconday--opacity:.8;--fa-primary-opacity:1;--fa-primary-color:white" class="fad fa-play-circle"></i></div>
                     </div>
 
                 {/if}
