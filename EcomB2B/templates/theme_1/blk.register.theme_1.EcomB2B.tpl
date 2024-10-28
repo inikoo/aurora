@@ -435,9 +435,9 @@
 
 
             </fieldset>
-            {if !empty($settings.tu_site_key)}
+            {if !empty($settings.fu_key)}
             <footer>
-                <div class="cf-turnstile" data-sitekey="{$settings.tu_site_key}"></div>
+                <div class="cf-turnstile" data-sitekey="{$settings.fu_key}"></div>
             </footer>
             {/if}
 
