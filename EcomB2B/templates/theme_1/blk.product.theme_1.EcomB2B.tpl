@@ -34,7 +34,7 @@
                 {foreach from=$data.other_images item=image name=foo}
                     <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                         <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                            <img style="height: 200px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
+                            <img style="height: 100px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
                         </a>
                     </figure>
                 {/foreach}
