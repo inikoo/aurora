@@ -515,6 +515,27 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
 
             )
         ),
+
+        array(
+            'label'      => _('Video (vimeo)'),
+            'show_title' => true,
+            'class'      => 'product_field '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+            'fields'     => array(
+                array(
+                    'id'              => 'Product_Video',
+                    'class'           => 'product_field '.((!$new and $product->get('Product Type') == 'Service') ? 'hide' : ''),
+                    'edit'            => 'textarea',
+                    'value'           => $product->get('Product Video'),
+                    'formatted_value' => $product->get('Video'),
+                    'label'           => ucfirst($product->get_field_label('Vimeo video link')),
+                    'required'        => false,
+                    'type'            => 'value'
+                )
+
+            )
+        ),
+
+
         array(
             'label'      => _('Parts'),
             'show_title' => true,

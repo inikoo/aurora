@@ -129,7 +129,21 @@ class Product extends Asset
             return '';
         }
 
+
         switch ($key) {
+
+
+
+
+            case 'Video':
+
+                if($this->data['Product Video']) {
+                    $url      = $this->data['Product Video'];
+                    $video_id = explode('vimeo.com/', $url)[1];
+
+                    return '<iframe src="https://player.vimeo.com/video/'.$video_id.'?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&background=true"   frameborder="0"  style="background: #000;height: 200px" ></iframe>';
+                }
+                return '';
 
             case 'Units Per Case':
 
