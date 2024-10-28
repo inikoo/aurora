@@ -77,6 +77,13 @@ function register($db, $website, $data, $editor) {
 
     if ($store->id) {
 
+
+        if ($website->settings('fu_secret') != '' ) {
+
+            print_r($raw_data);
+            exit;
+        }
+
         if ($website->settings('captcha_server') != '' ) {
 
             if (isset($raw_data['captcha']) && !empty($raw_data['captcha'])) {
