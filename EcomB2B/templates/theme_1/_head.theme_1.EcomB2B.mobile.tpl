@@ -15,6 +15,8 @@
       window.dataLayer = window.dataLayer || [];
     </script>
 
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+
     {if  $account_code=='AW'  }
         {if $website->get('Website Code')=='AW.biz'}
             <script src="https://scripts.luigisbox.com/LBX-588294.js"></script>

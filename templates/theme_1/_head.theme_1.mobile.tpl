@@ -27,7 +27,6 @@
             crossorigin="anonymous"></script>
 
     <style>
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
     {assign "with_forms" false}
     {assign "with_not_found" 0}
