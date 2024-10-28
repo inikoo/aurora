@@ -973,7 +973,7 @@ class Public_Product
         );
         while ($row = $stmt->fetch()) {
             if ($row['Image Key']) {
-                $image_website = 'rwi/'.get_image_size($row['Image Key'], '', 100, 'height').'_'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
+                $image_website = 'rwi/'.get_image_size($row['Image Key'], '', 200, 'height').'_'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
                 $img           = 'wi/'.$row['Image Key'].'.'.$row['Image Subject Image File Format'];
 
 
