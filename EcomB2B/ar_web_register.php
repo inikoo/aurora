@@ -117,17 +117,22 @@ function register($db, $website, $data, $editor) {
 
             $response_data = json_decode($response);
 
-            print_r($response_data);
+           
 
-            if ($response_data->success != 1) {
+            if (!$response_data->success ) {
 
-
+                echo json_encode(
+                    array(
+                        'state' => 400,
+                        'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Captcha verification failed, please try again'))
+                    )
+                );
+                exit;
 
             }
 
 
-            print_r($secretKey);
-            exit;
+
         }
 
         if ($website->settings('captcha_server') != '' ) {
