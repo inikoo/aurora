@@ -40,7 +40,24 @@
 
 
             {if $product->get('Video ID')}
-                <iframe src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=true"   frameborder="0"  style="background: #000;width: 350px" ></iframe>
+
+                <script>
+                    function show_video(){
+
+
+
+                    }
+                </script>
+
+
+                <div class="tw-relative tw-isolate">
+                    <iframe    src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=true"   frameborder="0"  style="background: #000;width: 350px" ></iframe>
+
+                    <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10"></div>
+                </div>
+
+
+
 
             {/if}
 

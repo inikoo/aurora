@@ -166,6 +166,43 @@
         <p >
             {$data.text|replace:'<p><br></p>':''}
         </p>
+
+    {if $product->get('Video ID')}
+
+        <script>
+          function show_video(){
+
+
+
+          }
+        </script>
+
+    {if $product->get('Video ID')}
+
+        <script>
+          function show_video(){
+
+
+
+          }
+        </script>
+
+
+      <div style="max-height: 400px;padding-bottom: 20px">
+            <iframe src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="height: 100%;width: 100%" ></iframe>
+      </div>
+
+
+
+
+
+    {/if}
+
+
+
+    {/if}
+
+
         <div class="clear"></div>
 
         {assign 'origin' $product->get('Origin')}
