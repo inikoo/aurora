@@ -34,9 +34,9 @@ switch ($tipo) {
     case 'register':
         $data = prepare_values(
             $_REQUEST, array(
-                         'data'      => array('type' => 'json array'),
-                         'store_key' => array('type' => 'key')
-                     )
+                'data'      => array('type' => 'json array'),
+                'store_key' => array('type' => 'key')
+            )
         );
         register($db, $website, $data, $editor);
         break;
@@ -60,8 +60,8 @@ switch ($tipo) {
  *
  * @throws \Exception
  */
-function register($db, $website, $data, $editor) {
-
+function register($db, $website, $data, $editor)
+{
     include_once 'utils/new_fork.php';
     include_once 'class.Public_Store.php';
 
@@ -76,10 +76,7 @@ function register($db, $website, $data, $editor) {
 
 
     if ($store->id) {
-
-
-        if ($website->settings('fu_secret') != '' ) {
-
+        if ($website->settings('fu_secret') != '') {
             if (empty($raw_data['cf-turnstile-response'])) {
                 echo json_encode(
                     array(
@@ -94,19 +91,17 @@ function register($db, $website, $data, $editor) {
             $ip = '';
             if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
                 $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-
             } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
                 $ip = $_SERVER['REMOTE_ADDR'];
-
             }
 
 
             $secretKey = $website->settings('fu_secret');
 
-            $turnstile_secret     = $website->settings('fu_secret');
-            $turnstile_response   = $raw_data['cf-turnstile-response'];
-            $url                  = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-            $post_fields          = "secret=$turnstile_secret&response=$turnstile_response";
+            $turnstile_secret   = $website->settings('fu_secret');
+            $turnstile_response = $raw_data['cf-turnstile-response'];
+            $url                = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+            $post_fields        = "secret=$turnstile_secret&response=$turnstile_response";
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -115,38 +110,28 @@ function register($db, $website, $data, $editor) {
             $response = curl_exec($ch);
             curl_close($ch);
 
-            $response_data = json_decode($response);
+            $response_data = json_decode($response, true);
 
 
-
-            if (!$response_data->success ) {
-
+            if (!$response_data['success']) {
                 echo json_encode(
                     array(
                         'state' => 400,
                         'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Captcha verification failed, please try again')),
-                           'resp'  => $response_data->error-codes
+                        'resp'  => $response_data['error-codes']
                     )
                 );
                 exit;
-
             }
-
-
-
         }
 
-        if ($website->settings('captcha_server') != '' ) {
-
+        if ($website->settings('captcha_server') != '') {
             if (isset($raw_data['captcha']) && !empty($raw_data['captcha'])) {
-
                 $ip = '';
                 if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
                     $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-
                 } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
                     $ip = $_SERVER['REMOTE_ADDR'];
-
                 }
 
 
@@ -163,7 +148,6 @@ function register($db, $website, $data, $editor) {
                 $responseData = json_decode($verifyResponse);
 
                 if (!$responseData->success) {
-
                     echo json_encode(
                         array(
                             'state' => 400,
@@ -173,7 +157,6 @@ function register($db, $website, $data, $editor) {
                     );
                 }
             } else {
-
                 echo json_encode(
                     array(
                         'state' => 400,
@@ -195,8 +178,6 @@ function register($db, $website, $data, $editor) {
             'Customer Type by Activity'    => ($website->get('Website Registration Type') == 'ApprovedOnly' ? 'ToApprove' : 'Active')
 
         );
-
-
 
 
         if (array_key_exists('locality', $raw_data)) {
@@ -229,7 +210,6 @@ function register($db, $website, $data, $editor) {
             $customer_data['Customer Send Email Marketing']  = 'Yes';
             $customer_data['Customer Send Basket Emails']    = 'Yes';
             $customer_data['Customer Send Postal Marketing'] = 'Yes';
-
         } else {
             $customer_data['Customer Send Newsletter']       = 'No';
             $customer_data['Customer Send Email Marketing']  = 'No';
@@ -241,30 +221,26 @@ function register($db, $website, $data, $editor) {
         list($customer, $website_user) = $store->create_customer($customer_data, array('Website User Password' => $raw_data['new-password']));
 
         if ($store->new_customer and $store->new_website_user) {
-
-
             foreach ($raw_data as $_key => $value) {
-
                 if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
                     $poll_key = $matches[1];
                     $customer->update(array('Customer Poll Query '.$poll_key => $value), 'no_history');
                 }
-
-
             }
 
 
             new_housekeeping_fork(
-                'au_housekeeping', array(
-                'type'         => 'customer_registered',
-                'customer_key' => $customer->id,
-                'website_key'  => $website->id
-            ), DNS_ACCOUNT_CODE
+                'au_housekeeping',
+                array(
+                    'type'         => 'customer_registered',
+                    'customer_key' => $customer->id,
+                    'website_key'  => $website->id
+                ),
+                DNS_ACCOUNT_CODE
             );
 
 
             if ($website->get('Website Registration Type') != 'ApprovedOnly') {
-
                 include_once('class.WebAuth.php');
                 $auth = new WebAuth($db);
 
@@ -286,27 +262,21 @@ function register($db, $website, $data, $editor) {
                     $token = Token::customPayload($_SESSION['UTK'], JWT_KEY);
                     setcookie('UTK', $token, time() + 157680000);
                     setcookie('AUK', strtolower(DNS_ACCOUNT_CODE).'.'.$_SESSION['customer_key'], time() + 157680000);
-
-
                 } else {
-
                     echo json_encode(
                         array(
                             'state' => 400,
                         )
                     );
                     exit;
-
                 }
-
             }
 
 
-
-            if (array_key_exists('hokodo-company-id', $raw_data)  and  $raw_data['hokodo-company-id']!='') {
+            if (array_key_exists('hokodo-company-id', $raw_data) and $raw_data['hokodo-company-id'] != '') {
                 try {
                     create_hokodo_organization($customer, $raw_data['hokodo-company-id']);
-                }catch(Exception $e){
+                } catch (Exception $e) {
                     //
                 }
             }
@@ -319,7 +289,6 @@ function register($db, $website, $data, $editor) {
                 )
             );
             exit;
-
         } else {
             echo json_encode(
                 array(
@@ -329,8 +298,6 @@ function register($db, $website, $data, $editor) {
             );
             exit;
         }
-
-
     } else {
         echo json_encode(
             array(
@@ -339,14 +306,12 @@ function register($db, $website, $data, $editor) {
             )
         );
         exit;
-
     }
-
-
 }
 
 
-function create_hokodo_organization($customer,$hokodo_company_id){
+function create_hokodo_organization($customer, $hokodo_company_id)
+{
     include_once 'hokodo/api_call.php';
 
     $website = get_object('Website', $_SESSION['website_key']);
@@ -354,22 +319,22 @@ function create_hokodo_organization($customer,$hokodo_company_id){
 
     $account = get_object('Account', 1);
 
-    $unique_id  = strtolower($account->get('Account Code')).'-'.$customer->id;
+    $unique_id = strtolower($account->get('Account Code')).'-'.$customer->id;
 
     $email = $customer->get('Customer Main Plain Email');
 
-    $raw_results = api_post_call('organisations', array(
+    $raw_results  = api_post_call('organisations', array(
         "unique_id"  => $unique_id,
         "company"    => $hokodo_company_id,
         'registered' => date('c', strtotime($customer->get('Customer First Contacted Date')))
-    ),                           $api_key);
-    $raw_results0=$raw_results;
+    ), $api_key);
+    $raw_results0 = $raw_results;
     //print_r($raw_results0);
 
-    if(!empty($raw_results['id'])) {
+    if (!empty($raw_results['id'])) {
         $org_id = $raw_results['id'];
 
-        $data    = array(
+        $data = array(
             "name"          => $customer->get('Customer Main Contact Name'),
             "email"         => trim($email),
             "phone"         => trim($customer->get_telephone()),
