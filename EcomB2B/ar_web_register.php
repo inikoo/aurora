@@ -103,6 +103,28 @@ function register($db, $website, $data, $editor) {
 
             $secretKey = $website->settings('fu_secret');
 
+            $turnstile_secret     = $website->settings('fu_secret');
+            $turnstile_response   = $raw_data['cf-turnstile-response'];
+            $url                  = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+            $post_fields          = "secret=$turnstile_secret&response=$turnstile_response";
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+            $response = curl_exec($ch);
+            curl_close($ch);
+
+            $response_data = json_decode($response);
+
+            print_r($response_data);
+
+            if ($response_data->success != 1) {
+
+
+
+            }
+
 
             print_r($secretKey);
             exit;
