@@ -16,6 +16,7 @@
       window.dataLayer = window.dataLayer || [];
     </script>
 
+
     {if  $account_code=='AW'  }
     {if $website->get('Website Code')=='AW.biz'}
         <script src="https://scripts.luigisbox.com/LBX-588294.js"></script>
@@ -248,6 +249,8 @@
             }
         }
     </script>
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
     <link rel="stylesheet" href="js/luigi_theme.css?v=13" type="text/css"/>
 

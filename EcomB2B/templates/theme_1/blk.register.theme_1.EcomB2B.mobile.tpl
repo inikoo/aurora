@@ -336,6 +336,12 @@
 
         </fieldset>
 
+        {if !empty($settings.fu_key)}
+            <footer>
+                <div class="cf-turnstile" data-sitekey="{$settings.fu_key}"></div>
+            </footer>
+        {/if}
+
         {if !empty($settings.captcha_client)}
             <footer>
                 <div class="g-recaptcha" data-sitekey="{$settings.captcha_client}"></div>
