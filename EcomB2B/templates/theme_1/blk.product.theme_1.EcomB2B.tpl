@@ -37,6 +37,15 @@
                     </figure>
                 {/foreach}
             </div>
+
+
+            {if $product->get('Video ID')}
+                <iframe src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479&background=true"   frameborder="0"  style="background: #000;width: 350px" ></iframe>
+
+            {/if}
+
+
+
         </div>
         <div class="information product_information tw-relative" >
             <h1 style="padding-top:5px;margin:2px 0;font-size:150%" itemprop="name" class="Product_Name">

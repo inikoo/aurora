@@ -202,6 +202,28 @@ class Public_Product
     {
         switch ($key) {
 
+            case 'Product Video':
+
+                return $this->data['Product Video'];
+
+            case 'Video ID':
+                if($this->data['Product Video']) {
+                    $url      = $this->data['Product Video'];
+                    $video_id = explode('vimeo.com/', $url)[1];
+                    return $video_id;
+                }
+                return '';
+            case 'Video':
+
+
+                if($this->data['Product Video']) {
+                    $url      = $this->data['Product Video'];
+                    $video_id = explode('vimeo.com/', $url)[1];
+
+                    return '<iframe src="https://player.vimeo.com/video/'.$video_id.'?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&background=true"   frameborder="0"  style="background: #000;width: 350px" ></iframe>';
+                }
+                return '';
+
             case 'Formatted Units':
 
                 return get_html_fractions($this->data['Product Units Per Case']);
