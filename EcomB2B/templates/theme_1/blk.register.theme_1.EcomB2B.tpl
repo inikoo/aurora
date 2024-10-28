@@ -435,6 +435,10 @@
 
 
             </fieldset>
+            <footer>
+                <div class="cf-turnstile" data-sitekey="0x4AAAAAAAypQKboGG44FOvI"></div>
+            </footer>
+
             {if !empty($settings.captcha_client)}
                 <footer>
                     <div class="g-recaptcha" data-sitekey="{$settings.captcha_client}"></div>
