@@ -17,11 +17,11 @@
         </a>
     </figure>
 
-    <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[60px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
+    <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[110px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
         {foreach from=$data.other_images item=image name=foo}
             <figure onclick="show_video()" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                    <img style="height: 50px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
+                    <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
                 </a>
             </figure>
         {/foreach}
