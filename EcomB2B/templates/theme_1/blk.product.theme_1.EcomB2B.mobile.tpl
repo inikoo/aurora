@@ -55,7 +55,7 @@
                     <iframe id="the_big_video" src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: auto; width:100%; max-height: 400px" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
                     <div onclick="close_video_modal()" class="tw-mt-4 tw-flex tw-flex-col tw-items-center tw-absolute tw-left-1/2 -tw-translate-x-1/2 tw-text-white">
                         <div class="tw-h-5 tw-w-5 tw-rounded-full tw-flex tw-justify-center tw-items-center tw-border tw-border-solid tw-border-white">
-                            <i class="far fa-times tw-text-2xl"></i>
+                            <i class="fas fa-times tw-text-2xl"></i>
                         </div>
                         <div>
                             Close
