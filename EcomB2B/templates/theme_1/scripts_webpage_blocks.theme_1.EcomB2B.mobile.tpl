@@ -1591,18 +1591,22 @@
 
                 })
 
-              console.log(items)
+                console.log(items)
 
 
                 $('.images figure a').on('click', function (event) {
-
-                  console.log(event.target)
-
                     event.preventDefault();
+
+                    console.log(event.target)
+
+                    var index = $(this).closest('figure').index('.images figure');
+                    console.log('index', index)
+                    
                     var options = {
-                        index: $('.images').index(this)
+                        index: index-1
                     }
-                  console.log(options)
+                    console.log(options)
+
                     var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
                     lightBox.init();
                 });
