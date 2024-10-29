@@ -1597,15 +1597,12 @@
                 $('.images figure a').on('click', function (event) {
                     event.preventDefault();
 
-                    console.log(event.target)
 
                     var index = $(this).closest('figure').index('.images figure');
-                    console.log('index', index)
                     
                     var options = {
-                        index: index-1
+                        index: index
                     }
-                    console.log(options)
 
                     var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
                     lightBox.init();
