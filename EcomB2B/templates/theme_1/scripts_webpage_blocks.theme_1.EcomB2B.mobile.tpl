@@ -565,6 +565,7 @@
 
 
                                 } else if (data.state == '400') {
+                                  turnstile.reset()
                                     swal("{t}Error{/t}!", data.msg, "error")
                                 }
 
@@ -573,7 +574,7 @@
 
 
                             }, error: function () {
-
+                            turnstile.reset()
 
                                 $('#register_button').removeClass('wait')
                                 $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -1435,6 +1436,7 @@
 
 
                             }, error: function () {
+                            turnstile.reset()
                                 button.removeClass('wait')
                                 button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin f')
 
@@ -1532,7 +1534,7 @@
 
 
                             }, error: function () {
-
+                            turnstile.reset()
                                 $('#recovery_button').removeClass('wait')
                                 $('#recovery_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
