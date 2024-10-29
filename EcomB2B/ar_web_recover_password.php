@@ -108,9 +108,6 @@ function recover_password($db, $data, $editor, $website, $account)
                 )
             );
             exit;
-        }else{
-            print_r($response_data);
-
         }
 
 
