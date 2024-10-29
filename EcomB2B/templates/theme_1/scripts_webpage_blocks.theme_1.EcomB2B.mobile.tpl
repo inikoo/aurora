@@ -1577,6 +1577,7 @@
           console.log('gallery')
 
             getScript("/assets/image_gallery.min.js", function () {
+              console.log('init gallery')
                 var $pswp = $('.pswp')[0];
 
                 var items = [];
@@ -1591,6 +1592,9 @@
                 })
 
                 $('.images figure a').on('click', function (event) {
+
+                  console.log('image clicked')
+
                     event.preventDefault();
                     var options = {
                         index: $(this).index()
