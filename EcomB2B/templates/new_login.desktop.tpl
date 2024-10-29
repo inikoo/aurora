@@ -1,7 +1,7 @@
 
 <div class="tw-text-color1 tw-bg-white tw-w-[85%] tw-mx-auto tw-py-[20px] tw-px-[50px]">
 
-
+   {if !empty($smarty.get.reset)  }
 
     <div id="recovery_form_container" class="login_form hide" >
         <form action="" id="password_recovery_form" class="sky-form "  >
@@ -45,7 +45,7 @@
         </form>
     </div>
 
-
+    {else}
 
     <div id="login_form_container" class="xxlogin_form ">
         <div class="tw-grid tw-grid-cols-2 tw-gap-x-[55px]">
@@ -121,6 +121,6 @@
         </div>
     </div>
 
-
+  {/if}
 
 </div>
