@@ -1602,6 +1602,7 @@
                     var options = {
                         index: $(this).index()
                     }
+                  console.log(options)
                     var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
                     lightBox.init();
                 });
