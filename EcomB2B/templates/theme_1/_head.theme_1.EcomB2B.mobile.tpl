@@ -16,6 +16,7 @@
     </script>
 
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {if  $account_code=='AW'  }
         {if $website->get('Website Code')=='AW.biz'}
