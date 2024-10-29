@@ -62,7 +62,7 @@ switch ($tipo) {
 
 function recover_password($db, $data, $editor, $website, $account)
 {
-    if ($website->settings('fu_secret') != '' and false  ) {
+    if ($website->settings('fu_secret') != ''  ) {
 
         if (empty($data['cf-turnstile-response'])) {
             echo json_encode(
