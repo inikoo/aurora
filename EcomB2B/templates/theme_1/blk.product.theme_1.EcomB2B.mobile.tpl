@@ -13,7 +13,7 @@
 <div class="images tw-mb-2">
     <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
         <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
-            <img style="max-height: 450px;margin:0px auto"  src="wi.php?id={$data.image.key}&s=800x800'" itemprop="image" alt="{$data.image.caption}">
+            <img style="max-height: 450px;max-width:450px;margin:0px auto"  src="wi.php?id={$data.image.key}&s=800x800'" itemprop="image" alt="{$data.image.caption}">
         </a>
     </figure>
 
