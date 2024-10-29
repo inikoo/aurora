@@ -10,26 +10,22 @@
 *}
 
 
-<div class="images">
-<figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+<div class="images tw-mb-5">
+    <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+        <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
+            <img style="max-height: 450px;margin:0px auto" src="{if $data.image.image_website=='' }{$data.image.src}{else}{$data.image.image_website}{/if}" itemprop="image" alt="{$data.image.caption}">
+        </a>
+    </figure>
 
-    <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
-        <img style="max-height: 450px;margin:0px auto" src="{if $data.image.image_website=='' }{$data.image.src}{else}{$data.image.image_website}{/if}" itemprop="image" alt="{$data.image.caption}">
-    </a>
-</figure>
-
-<div class="gallery "  itemscope itemtype="http://schema.org/ImageGallery">
-
-    {foreach from=$data.other_images item=image name=foo}
-        <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-            <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                <img style="height: 50px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
-            </a>
-        </figure>
-    {/foreach}
-
-
-</div>
+    <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[60px]"  itemscope itemtype="http://schema.org/ImageGallery">
+        {foreach from=$data.other_images item=image name=foo}
+            <figure onclick="show_video()" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
+                    <img style="height: 50px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
+                </a>
+            </figure>
+        {/foreach}
+    </div>
 </div>
 
 <div class="content single_line_height product_container" data-product_id="{$product->id}" >
