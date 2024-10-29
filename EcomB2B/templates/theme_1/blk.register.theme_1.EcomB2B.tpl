@@ -13,7 +13,7 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 {if empty($data.registration_type) }{assign type 'simple'}{else}{assign type $data.registration_type}{/if}
-
+{assign type 'simple'}
 {if $type=='company_fork'}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <style>
