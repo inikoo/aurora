@@ -1574,6 +1574,8 @@
             {/if}
             {if $with_gallery==1}
 
+          console.log('gallery')
+
             getScript("/assets/image_gallery.min.js", function () {
                 var $pswp = $('.pswp')[0];
 
