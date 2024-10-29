@@ -229,7 +229,7 @@
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    {if isset($sentry_js)  }
+    {if isset($sentry_js) and false }
 
         <script
                 src="https://browser.sentry-cdn.com/6.7.1/bundle.min.js"
