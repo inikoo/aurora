@@ -459,12 +459,7 @@
 
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
-    {if $with_register==1}
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-
-
-    {/if}
 
 
     {if !isset($is_devel) or !$is_devel  }
