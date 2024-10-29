@@ -1588,7 +1588,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
                         ajaxData.append("webpage_key", '{$webpage->id}')
 
                         ajaxData.append("recovery_email", $('#recovery_email').val())
-                        ajaxData.append("cf-turnstile-response", turnstile.getResponse()))
+                        ajaxData.append("cf-turnstile-response", turnstile.getResponse())
 
 
                         $.ajax({
