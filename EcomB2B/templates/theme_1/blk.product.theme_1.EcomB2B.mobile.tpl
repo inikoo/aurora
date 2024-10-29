@@ -183,6 +183,15 @@
           function show_video(){
 
 
+            Swal.fire({
+
+                        padding :'0 40px',
+                        showCloseButton: true,
+                        showConfirmButton: false,
+                        html: `<div><iframe  src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"   frameborder="0"  style="aspect-ratio: 1 / 1; height: auto; width:100%;" ></iframe></div>`
+
+                      });
+          }
 
           }
         </script>
