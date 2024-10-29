@@ -149,130 +149,136 @@
                 </div>
                     <div class="clear"></div>
                 </div>
-                <div class="content single_line_height clear">
-                    <div class="store-product-header">
 
-                        <div class="one-half-responsive">
-                        <p>
-                            {$data.text|replace:'<p><br></p>':''}
-                        </p>
-
-                        </div>
-
-                        <div class="one-half-responsive last-column ">
-                            {assign 'origin' $product->get('Origin')}
-                            {assign 'weight' $product->get('Unit Weight Formatted')}
-                            {assign 'weight_gross' $product->get('Package Weight')}
-                            {assign 'dimensions' $product->get('Unit Dimensions')}
-                            {assign 'materials' $product->get('Materials')}
-                            {assign 'barcode' $product->get('Barcode Number')}
-                            {assign 'cpnp' $product->get('CPNP Number')}
-                            {assign 'ufi' $product->get('UFI')}
-
-
-                            <div >
-
-                            <div class="activity-item {if $origin==''}hide{/if}">
-                                <div class=" one-half-responsive ">
-
-                                    <strong>{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column ">
-
-                                    <span style="float:right" class="origin">{$origin}</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item {if $weight=='' or $weight=='0Kg'}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_weight)}{t}Net weight{/t}{else}{$labels._product_weight}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <span style="float:right" class="origin">{$weight}</span>
-                                </div>
-                            </div>
-                                <div class="activity-item {if $weight_gross=='' or $weight_gross=='0Kg'}hide{/if}">
-                                    <div class=" one-half-responsive ">
-                                        <i class="ion-record color-green-dark"></i>
-                                        <strong>{if empty($labels._product_weight_gross)}{t}Shipping weight{/t}{else}{$labels._product_weight_gross}{/if}</strong>
-                                    </div>
-                                    <div class="one-half-responsive last-column"  >
-
-                                        <span style="float:right" class="origin">{$weight_gross}</span>
-                                    </div>
-                                </div>
-
-                            <div class="activity-item {if $dimensions==''}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <span style="float:right" class="origin">{$dimensions}</span>
-                                </div>
-                            </div>
-
-
-                            <div class="activity-item {if $barcode==''}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <span style="float:right" class="origin">{$barcode}</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item {if $cpnp==''}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>CPNP</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <span style="float:right" class="origin">{$cpnp}</span>
-                                </div>
-                            </div>
-
-                                <div class="activity-item {if $ufi==''}hide{/if}">
-                                    <div class=" one-half-responsive ">
-                                        <i class="ion-record color-green-dark"></i>
-                                        <strong>UFI</strong>
-                                    </div>
-                                    <div class="one-half-responsive last-column"  >
-
-                                        <span style="float:right" class="origin">{$ufi}</span>
-                                    </div>
-                                </div>
-
-
-                            <div class="activity-item {if $materials==''}hide{/if}" style="border-bottom: none">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_materials)}{t}Materials{/t}/{t}Ingredients{/t}{else}{$labels._product_materials}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <div style="float:right;line-height: 150%;text-align: right">{$materials}</div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-
-
-                        </div>
-
-                            <div class="clear"></div>
-                        </div>
-
-
-                    </div>
-                </div>
                 <div class="clear"></div>
 </div>
+<div>
+
+    <div class="content single_line_height clear">
+        <div class="store-product-header">
+
+            <div class="one-half-responsive">
+                <p>
+                    {$data.text|replace:'<p><br></p>':''}
+                </p>
+
+            </div>
+
+            <div class="one-half-responsive last-column ">
+                {assign 'origin' $product->get('Origin')}
+                {assign 'weight' $product->get('Unit Weight Formatted')}
+                {assign 'weight_gross' $product->get('Package Weight')}
+                {assign 'dimensions' $product->get('Unit Dimensions')}
+                {assign 'materials' $product->get('Materials')}
+                {assign 'barcode' $product->get('Barcode Number')}
+                {assign 'cpnp' $product->get('CPNP Number')}
+                {assign 'ufi' $product->get('UFI')}
+
+
+                <div >
+
+                    <div class="activity-item {if $origin==''}hide{/if}">
+                        <div class=" one-half-responsive ">
+
+                            <strong>{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</strong>
+                        </div>
+                        <div class="one-half-responsive last-column ">
+
+                            <span style="float:right" class="origin">{$origin}</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item {if $weight=='' or $weight=='0Kg'}hide{/if}">
+                        <div class=" one-half-responsive ">
+                            <i class="ion-record color-green-dark"></i>
+                            <strong>{if empty($labels._product_weight)}{t}Net weight{/t}{else}{$labels._product_weight}{/if}</strong>
+                        </div>
+                        <div class="one-half-responsive last-column"  >
+
+                            <span style="float:right" class="origin">{$weight}</span>
+                        </div>
+                    </div>
+                    <div class="activity-item {if $weight_gross=='' or $weight_gross=='0Kg'}hide{/if}">
+                        <div class=" one-half-responsive ">
+                            <i class="ion-record color-green-dark"></i>
+                            <strong>{if empty($labels._product_weight_gross)}{t}Shipping weight{/t}{else}{$labels._product_weight_gross}{/if}</strong>
+                        </div>
+                        <div class="one-half-responsive last-column"  >
+
+                            <span style="float:right" class="origin">{$weight_gross}</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item {if $dimensions==''}hide{/if}">
+                        <div class=" one-half-responsive ">
+                            <i class="ion-record color-green-dark"></i>
+                            <strong>{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</strong>
+                        </div>
+                        <div class="one-half-responsive last-column"  >
+
+                            <span style="float:right" class="origin">{$dimensions}</span>
+                        </div>
+                    </div>
+
+
+                    <div class="activity-item {if $barcode==''}hide{/if}">
+                        <div class=" one-half-responsive ">
+                            <i class="ion-record color-green-dark"></i>
+                            <strong>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</strong>
+                        </div>
+                        <div class="one-half-responsive last-column"  >
+
+                            <span style="float:right" class="origin">{$barcode}</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item {if $cpnp==''}hide{/if}">
+                        <div class=" one-half-responsive ">
+                            <i class="ion-record color-green-dark"></i>
+                            <strong>CPNP</strong>
+                        </div>
+                        <div class="one-half-responsive last-column"  >
+
+                            <span style="float:right" class="origin">{$cpnp}</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item {if $ufi==''}hide{/if}">
+                        <div class=" one-half-responsive ">
+                            <i class="ion-record color-green-dark"></i>
+                            <strong>UFI</strong>
+                        </div>
+                        <div class="one-half-responsive last-column"  >
+
+                            <span style="float:right" class="origin">{$ufi}</span>
+                        </div>
+                    </div>
+
+
+                    <div class="activity-item {if $materials==''}hide{/if}" style="border-bottom: none">
+                        <div class=" one-half-responsive ">
+                            <i class="ion-record color-green-dark"></i>
+                            <strong>{if empty($labels._product_materials)}{t}Materials{/t}/{t}Ingredients{/t}{else}{$labels._product_materials}{/if}</strong>
+                        </div>
+                        <div class="one-half-responsive last-column"  >
+
+                            <div style="float:right;line-height: 150%;text-align: right">{$materials}</div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="clear"></div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
 
 <script>
     ga('auTracker.ec:addProduct', { 'id': '{$product->get('Code')}',  'category': '{$product->get('Family Code')}','price': '{$product->get('Product Price')}','name': '{$product->get('Name')|escape:'quotes'}', });
