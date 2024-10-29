@@ -449,6 +449,9 @@ elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
       }
 
+    $smarty->assign('settings', $website->settings);
+
+
     //  } elseif (!empty($_GET['order'])) {
     //     $smarty->assign('redirect_after_login', '/profile.sys?order='.$_GET['order']);
 
