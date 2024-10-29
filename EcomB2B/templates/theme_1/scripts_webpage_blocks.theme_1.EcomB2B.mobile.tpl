@@ -1591,6 +1591,9 @@
 
                 })
 
+              console.log(items)
+
+
                 $('.images figure a').on('click', function (event) {
 
                   console.log('image clicked')
