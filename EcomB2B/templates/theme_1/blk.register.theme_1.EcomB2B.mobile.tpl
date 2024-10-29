@@ -338,7 +338,7 @@
 
         {if !empty($settings.fu_key)}
             <footer>
-                <div class="cf-turnstile" data-sitekey="{$settings.fu_key}"></div>
+                <div class="cf-turnstile" data-action="register_mobile" data-sitekey="{$settings.fu_key}"></div>
             </footer>
         {/if}
 
