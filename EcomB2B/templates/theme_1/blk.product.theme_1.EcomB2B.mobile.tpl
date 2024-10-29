@@ -49,7 +49,7 @@
             </script>
 
 
-            <div id="the_big_video_modal" class="hide tw-fixed tw-top-0 tw-left-0 tw-w-[100vw] tw-h-[100vh] tw-bg-black/60 tw-isolate tw-z-[9999999999999]">
+            <div id="the_big_video_modal" class="hide tw-fixed tw-top-0 tw-left-0 tw-w-[100vw] tw-h-[100vh] tw-bg-black/70 tw-isolate tw-z-[9999999999999]">
                 <div class="tw-absolute tw-top-1/2 tw-left-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2 tw-w-[90%]">
 
                     <iframe id="the_big_video" src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: auto; width:100%; max-height: 400px" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
