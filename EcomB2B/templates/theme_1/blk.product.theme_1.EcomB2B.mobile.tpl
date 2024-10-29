@@ -22,10 +22,20 @@
 
         {if $product->get('Video ID')}
 
+            <script src="https://player.vimeo.com/api/player.js"></script>
+
+
+
+
+            </script>
+
             <script>
               function show_video(){
 
+                var iframe = document.querySelector('#the_video');
+                var player = new Vimeo.Player(iframe);
 
+                player.play();
 
               }
 
@@ -34,7 +44,10 @@
 
 
             <div class="tw-w-[100px] tw-h-[100px] tw-relative tw-isolate">
-                <iframe src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&playsinline=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: 100%; width:auto;" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                <iframe id="the_video" src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&playsinline=0&controls=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: 100%; width:auto;" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-justify-center tw-items-center"><i style="padding:10px;font-size:30px;color:#4B5058;--fa-secondary-opacity:.9;--fa-primary-opacity:1;--fa-primary-color:white" class="fad fa-play-circle"></i></div>
+
+
             </div>
 
         {/if}
