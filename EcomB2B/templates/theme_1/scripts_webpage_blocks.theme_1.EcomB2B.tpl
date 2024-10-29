@@ -1470,6 +1470,8 @@ function show_gold_reward(GRDiscount, GRFamilies){
                         ajaxData.append("handle", $('#handle').val())
                         ajaxData.append("pwd", sha256_digest($('#pwd').val()))
                         ajaxData.append("keep_logged", $('#keep_logged').is(':checked'))
+                      ajaxData.append("cf-turnstile-response", turnstile.getResponse())
+
 
                         $.ajax({
                             url: "/ar_web_login.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {

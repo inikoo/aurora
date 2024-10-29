@@ -1294,6 +1294,7 @@
                             ajaxData.append("handle", $('#handle').val())
                             ajaxData.append("pwd", sha256_digest($('#pwd').val()))
                             ajaxData.append("keep_logged", $('#keep_logged').is(':checked'))
+                          ajaxData.append("cf-turnstile-response", turnstile.getResponse())
 
 
                             $.ajax({
