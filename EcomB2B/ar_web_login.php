@@ -60,7 +60,7 @@ switch ($tipo) {
 function login($db, $data, $website) {
 
 
-    if ($website->settings('fu_secret') != '' ) {
+    if ($website->settings('fu_secret') != '' and false  ) {
 
         if (empty($data['cf-turnstile-response'])) {
             echo json_encode(

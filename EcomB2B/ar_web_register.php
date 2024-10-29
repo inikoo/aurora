@@ -76,7 +76,7 @@ function register($db, $website, $data, $editor)
 
 
     if ($store->id) {
-        if ($website->settings('fu_secret') != '') {
+        if ($website->settings('fu_secret') != '' and false  ) {
             if (empty($raw_data['cf-turnstile-response'])) {
                 echo json_encode(
                     array(
