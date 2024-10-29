@@ -1597,6 +1597,8 @@
                 $('.images figure a').on('click', function (event) {
 
                   console.log(event.target)
+                  console.log($(this).closest('figure'))
+                  console.log($('.images').index($(this).closest('figure')))
 
                     event.preventDefault();
                     var options = {
