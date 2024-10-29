@@ -48,11 +48,7 @@
                         </fieldset>
 
 
-                        {if !empty($settings.fu_key)}
-                            <footer>
-                                <div class="cf-turnstile" data-action="reset_password_desktop" data-sitekey="{$settings.fu_key}"></div>
-                            </footer>
-                        {/if}
+
 
                         <footer>
 
