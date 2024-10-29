@@ -1600,7 +1600,7 @@
 
                     event.preventDefault();
                     var options = {
-                        index: $(this).index()
+                        index: $('.images').index(this)
                     }
                   console.log(options)
                     var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
