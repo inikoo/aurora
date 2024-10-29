@@ -1516,6 +1516,8 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                                 } else if (data.state == '400') {
+                                  turnstile.reset()
+                                    turnstile.reset()
                                     swal("{t}Error{/t}!", data.msg, "error")
                                     button.removeClass('wait')
                                     button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -1609,7 +1611,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
                                     $('#password_recovery_go_back').addClass('hide')
 
                                 } else if (data.state == '400') {
-
+                                  turnstile.reset()
                                     console.log('#password_recovery_' + data.error_code + '_error_msg')
 
                                     $('.password_recovery_msg').addClass('hide').prev('i').removeClass('fa-check').addClass('error fa-exclamation')

@@ -1334,6 +1334,7 @@
 
 
                                     } else if (data.state == '400') {
+                                      turnstile.reset()
                                         swal("{t}Error{/t}!", data.msg, "error")
                                         button.removeClass('wait')
                                         button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -1426,6 +1427,8 @@
                                         $('#password_recovery_go_back').addClass('hide')
 
                                     } else if (data.state == '400') {
+
+                                      turnstile.reset()
 
                                         console.log('#password_recovery_' + data.error_code + '_error_msg')
 
