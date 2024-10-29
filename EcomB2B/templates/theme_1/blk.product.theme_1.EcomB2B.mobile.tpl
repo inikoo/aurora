@@ -10,14 +10,14 @@
 *}
 
 
-<div class="images tw-mb-5">
+<div class="images tw-mb-2">
     <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
         <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
             <img style="max-height: 450px;margin:0px auto" src="{if $data.image.image_website=='' }{$data.image.src}{else}{$data.image.image_website}{/if}" itemprop="image" alt="{$data.image.caption}">
         </a>
     </figure>
 
-    <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[60px]"  itemscope itemtype="http://schema.org/ImageGallery">
+    <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[60px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
         {foreach from=$data.other_images item=image name=foo}
             <figure onclick="show_video()" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
