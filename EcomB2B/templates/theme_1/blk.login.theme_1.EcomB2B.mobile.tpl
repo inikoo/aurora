@@ -44,7 +44,7 @@
                 <span class="password_recovery_msg error hide" id="password_recovery_unknown_error_msg" >{$data.labels._password_recovery_unknown_error_msg}</span>
 
                 <br>
-                <a href="login"  class="modal-closer" id="password_recovery_go_back" >{$data.labels._password_recovery_go_back}</a>
+                <a href="login.sys"  class="modal-closer" id="password_recovery_go_back" >{$data.labels._password_recovery_go_back}</a>
 
 
             </div>
