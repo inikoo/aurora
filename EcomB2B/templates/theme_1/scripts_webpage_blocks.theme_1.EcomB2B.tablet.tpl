@@ -1407,7 +1407,7 @@
                             ajaxData.append("webpage_key", '{$webpage->id}')
 
                             ajaxData.append("recovery_email", $('#recovery_email').val())
-
+                          ajaxData.append("cf-turnstile-response", turnstile.getResponse())
 
                             $.ajax({
                                 url: "/ar_web_recover_password.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
