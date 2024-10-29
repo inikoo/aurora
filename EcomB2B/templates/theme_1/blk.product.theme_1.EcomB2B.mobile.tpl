@@ -212,7 +212,7 @@
         {assign 'cpnp' $product->get('CPNP Number')}
         {assign 'ufi' $product->get('UFI')}
 
-        <table>
+        <table class="tw-border tw-border-solid tw-border-[#e9e9e9]">
             <tr class="{if $origin==''}hide{/if}">
                 <td>{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</td>
                 <td class="origin">{$origin}</td>
