@@ -1499,9 +1499,11 @@
 
                     $('.images figure a').on( 'click',function (event) {
                         event.preventDefault();
-                        var options = {
-                            index: $(this).index()
-                        }
+                      var index = $(this).closest('figure').index('.images figure');
+
+                      var options = {
+                        index: index
+                      }
                         var lightBox = new PhotoSwipe($pswp, PhotoSwipeUI_Default, items, options);
                         lightBox.init();
                     });
