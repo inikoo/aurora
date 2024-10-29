@@ -18,12 +18,12 @@
     </a>
 </figure>
 
-<div class="gallery " style="display: none" itemscope itemtype="http://schema.org/ImageGallery">
+<div class="gallery "  itemscope itemtype="http://schema.org/ImageGallery">
 
     {foreach from=$data.other_images item=image name=foo}
         <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
             <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                <img style="height: 50px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
+                <img style="height: 50px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
             </a>
         </figure>
     {/foreach}
