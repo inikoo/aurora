@@ -18,6 +18,37 @@
     </figure>
 
     <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[110px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
+
+
+        {if $product->get('Video ID')}
+
+            <script>
+              function show_video(){
+
+
+                Swal.fire({
+
+                            padding :'0 40px',
+                            showCloseButton: true,
+                            showConfirmButton: false,
+                            html: `<div><iframe  src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"   frameborder="0"  style="aspect-ratio: 1 / 1; height: auto; width:100%;" ></iframe></div>`
+
+                          });
+              }
+
+              }
+            </script>
+
+
+            <div style="width: 100px; " class=" tw-relative tw-isolate">
+                <iframe src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&background=true" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: auto; width:100%;" ></iframe>
+                <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-justify-center tw-items-center"><i style="padding:10px;font-size:30px;color:#4B5058;--fa-secondary-opacity:.9;--fa-primary-opacity:1;--fa-primary-color:white" class="fad fa-play-circle"></i></div>
+            </div>
+
+
+
+        {/if}
+
         {foreach from=$data.other_images item=image name=foo}
             <figure onclick="show_video()" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
@@ -163,48 +194,13 @@
             {$data.text|replace:'<p><br></p>':''}
         </p>
 
-    {if $product->get('Video ID')}
-
-        <script>
-          function show_video(){
 
 
 
-          }
-        </script>
-
-    {if $product->get('Video ID')}
-
-        <script>
-          function show_video(){
-
-
-            Swal.fire({
-
-                        padding :'0 40px',
-                        showCloseButton: true,
-                        showConfirmButton: false,
-                        html: `<div><iframe  src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&byline=0&portrait=0&badge=0&autopause=0&player_id=0&app_id=58479"   frameborder="0"  style="aspect-ratio: 1 / 1; height: auto; width:100%;" ></iframe></div>`
-
-                      });
-          }
-
-          }
-        </script>
-
-
-        <div style="width: 100px; margin: 0px 5px 5px  5px" class=" tw-relative tw-isolate">
-            <iframe src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&background=true" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: auto; width:100%;" ></iframe>
-            <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-justify-center tw-items-center"><i style="padding:10px;font-size:30px;color:#4B5058;--fa-secondary-opacity:.9;--fa-primary-opacity:1;--fa-primary-color:white" class="fad fa-play-circle"></i></div>
-        </div>
 
 
 
-    {/if}
 
-
-
-    {/if}
 
 
         <div class="clear"></div>
