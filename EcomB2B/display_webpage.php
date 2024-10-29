@@ -449,7 +449,6 @@ elseif ($webpage->get('Webpage Code') == 'login.sys') {
 
       }
 
-    $smarty->assign('settings', $website->settings);
 
 
     //  } elseif (!empty($_GET['order'])) {
@@ -499,6 +498,14 @@ if ( $webpage->get('Webpage Code') == 'profile.sys') {
     $smarty->assign('poll_queries', $website->get_poll_queries($webpage));
 
 }
+
+
+
+if ( $webpage->get('Webpage Code') == 'login.sys') {
+    $smarty->assign('settings', $website->settings);
+}
+
+
 
 $with_payment_error='no';
 if(!empty($_REQUEST['error'])  and $_REQUEST['error']=='payment'  ){
