@@ -76,9 +76,9 @@
                     </section>
                 </fieldset>
                 {if !empty($settings.fu_key)}
-                    <footer>
+                    <div class="tw-w-full">
                         <div class="cf-turnstile" data-action="login_desktop" data-sitekey="{$settings.fu_key}"></div>
-                    </footer>
+                    </div>
                 {/if}
 
                 <div class="tw-w-full">

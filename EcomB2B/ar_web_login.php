@@ -36,7 +36,11 @@ switch ($tipo) {
                          'handle'      => array('type' => 'string'),
                          'pwd'         => array('type' => 'string'),
                          'keep_logged' => array('type' => 'string'),
+                         'cf-turnstile-response' => array(
+                             'type'     => 'string',
+                             'optional' => true
 
+                         )
                      )
         );
         login($db, $data, $website);
@@ -54,6 +58,9 @@ switch ($tipo) {
 }
 
 function login($db, $data, $website) {
+
+
+
 
     include_once 'class.WebAuth.php';
     $auth = new WebAuth($db);
