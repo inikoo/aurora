@@ -1596,7 +1596,7 @@
 
                 $('.images figure a').on('click', function (event) {
 
-                  console.log($(this))
+                  console.log(event.target)
 
                     event.preventDefault();
                     var options = {
