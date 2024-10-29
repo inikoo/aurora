@@ -89,6 +89,11 @@
                     </div>
                 </section>
             </fieldset>
+            {if !empty($settings.fu_key)}
+                <footer>
+                    <div class="cf-turnstile" data-action="login_tablet" data-sitekey="{$settings.fu_key}"></div>
+                </footer>
+            {/if}
             <footer>
                 <button id="login_button" type="submit" class="button">{$data.labels._log_in_label}  <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
                 <a href="/register.sys" class="button button-secondary">{$data.labels._register_label}</a>

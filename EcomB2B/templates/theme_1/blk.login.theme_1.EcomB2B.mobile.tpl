@@ -81,6 +81,12 @@
                             </div>
                         </section >
 
+                        {if !empty($settings.fu_key)}
+                            <footer>
+                                <div class="cf-turnstile" data-action="login_mobile" data-sitekey="{$settings.fu_key}"></div>
+                            </footer>
+                        {/if}
+
                         <section class="hide">
                             <div class="row">
                                 <div class="col col-4"></div>

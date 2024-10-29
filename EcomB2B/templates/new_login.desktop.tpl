@@ -75,6 +75,11 @@
                         </div>
                     </section>
                 </fieldset>
+                {if !empty($settings.fu_key)}
+                    <footer>
+                        <div class="cf-turnstile" data-action="login_desktop" data-sitekey="{$settings.fu_key}"></div>
+                    </footer>
+                {/if}
 
                 <div class="tw-w-full">
                     <button id="login_button" type="submit" class="tw-bg-color1 hover:tw-gray-600 tw-border-none tw-cursor-pointer tw-mb-2.5 tw-text-white tw-block tw-rounded-md tw-w-full tw-text-center" style="font-weight: 700; padding: 10px 14px; font-size: 17px;">
