@@ -808,6 +808,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                                 } else if (data.state == '400') {
+                                  turnstile.reset()
                                     swal("{t}Error{/t}!", data.msg, "error")
                                     $('#register_button').removeClass('wait')
                                     $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -815,7 +816,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                             }, error: function () {
-
+                            turnstile.reset()
 
                                 $('#register_button').removeClass('wait')
                                 $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -1471,6 +1472,8 @@ function show_gold_reward(GRDiscount, GRFamilies){
                         ajaxData.append("handle", $('#handle').val())
                         ajaxData.append("pwd", sha256_digest($('#pwd').val()))
                         ajaxData.append("keep_logged", $('#keep_logged').is(':checked'))
+                        ajaxData.append("cf-turnstile-response", turnstile.getResponse())
+
 
                         $.ajax({
                             url: "/ar_web_login.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
@@ -1515,6 +1518,8 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                                 } else if (data.state == '400') {
+                                    turnstile.reset()
+                                    turnstile.reset()
                                     swal("{t}Error{/t}!", data.msg, "error")
                                     button.removeClass('wait').removeAttr('disabled')
                                     // button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -1526,6 +1531,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                             }, error: function () {
+                                turnstile.reset()
                                 button.removeClass('wait').removeAttr('disabled')
                                 // button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin f')
                                 button.find('i').addClass('hide')
@@ -1593,6 +1599,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
                         ajaxData.append("webpage_key", '{$webpage->id}')
 
                         ajaxData.append("recovery_email", $('#recovery_email').val())
+                        ajaxData.append("cf-turnstile-response", turnstile.getResponse())
 
 
                         $.ajax({
@@ -1611,7 +1618,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
                                     $('#password_recovery_go_back').addClass('hide')
 
                                 } else if (data.state == '400') {
-
+                                  turnstile.reset()
                                     console.log('#password_recovery_' + data.error_code + '_error_msg')
 
                                     $('.password_recovery_msg').addClass('hide').prev('i').removeClass('fa-check').addClass('error fa-exclamation')
@@ -1625,7 +1632,7 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                             }, error: function () {
-
+                            turnstile.reset()
                                 $('#recovery_button').removeClass('wait')
                                 $('#recovery_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 

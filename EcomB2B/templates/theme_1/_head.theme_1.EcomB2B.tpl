@@ -229,7 +229,7 @@
     <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    {if isset($sentry_js)  }
+    {if isset($sentry_js) and false }
 
         <script
                 src="https://browser.sentry-cdn.com/6.7.1/bundle.min.js"
@@ -459,12 +459,7 @@
 
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
-    {if $with_register==1}
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-
-
-    {/if}
 
 
     {if !isset($is_devel) or !$is_devel  }

@@ -76,7 +76,7 @@ function register($db, $website, $data, $editor)
 
 
     if ($store->id) {
-        if ($website->settings('fu_secret') != '') {
+        if ($website->settings('fu_secret') != ''  ) {
             if (empty($raw_data['cf-turnstile-response'])) {
                 echo json_encode(
                     array(
@@ -101,7 +101,7 @@ function register($db, $website, $data, $editor)
             $turnstile_secret   = $website->settings('fu_secret');
             $turnstile_response = $raw_data['cf-turnstile-response'];
             $url                = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
-            $post_fields        = "secret=$turnstile_secret&response=$turnstile_response";
+            $post_fields        = "secret=$turnstile_secret&response=$turnstile_response&remoteip=$ip";
 
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -125,48 +125,7 @@ function register($db, $website, $data, $editor)
             }
         }
 
-        if ($website->settings('captcha_server') != '') {
-            if (isset($raw_data['captcha']) && !empty($raw_data['captcha'])) {
-                $ip = '';
-                if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
-                    $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
-                } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
-                    $ip = $_SERVER['REMOTE_ADDR'];
-                }
 
-
-                $secretKey = $website->settings('captcha_server');
-
-                $request = 'https://www.google.com/recaptcha/api/siteverify?secret='.$secretKey.'&response='.$raw_data['captcha'];
-                if ($ip != '') {
-                    $request .= '&remoteip='.$ip;
-                }
-
-                $verifyResponse = file_get_contents($request);
-
-
-                $responseData = json_decode($verifyResponse);
-
-                if (!$responseData->success) {
-                    echo json_encode(
-                        array(
-                            'state' => 400,
-                            'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Robot verification failed, please try again')),
-
-                        )
-                    );
-                }
-            } else {
-                echo json_encode(
-                    array(
-                        'state' => 400,
-                        'msg'   => (!empty($labels['_captcha_missing']) ? $labels['_captcha_missing'] : _('Please check on the reCAPTCHA box'))
-
-                    )
-                );
-                exit;
-            }
-        }
 
         $customer_data = array(
             'Customer Main Contact Name'   => $raw_data['name'],

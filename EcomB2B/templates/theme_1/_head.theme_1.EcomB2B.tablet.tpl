@@ -189,7 +189,7 @@
     <title>{$webpage->get('Webpage Browser Title')}</title>
     <meta name="description" content="{$webpage->get('Webpage Meta Description')}"/>
 
-    {if isset($sentry_js)  }
+    {if isset($sentry_js) and false }
         <script
                 src="https://browser.sentry-cdn.com/6.7.1/bundle.min.js"
                 integrity="sha384-+GoWV2WnDUGsSmipBvyBrWuhW8hPa/D21fH+j3NoZxDf9RgDryqh4Ug4L+7E1nxM"

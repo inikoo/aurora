@@ -36,7 +36,11 @@ switch ($tipo) {
                          'handle'      => array('type' => 'string'),
                          'pwd'         => array('type' => 'string'),
                          'keep_logged' => array('type' => 'string'),
+                         'cf-turnstile-response' => array(
+                             'type'     => 'string',
+                             'optional' => true
 
+                         )
                      )
         );
         login($db, $data, $website);
@@ -54,6 +58,58 @@ switch ($tipo) {
 }
 
 function login($db, $data, $website) {
+
+
+    if ($website->settings('fu_secret') != ''  ) {
+
+        if (empty($data['cf-turnstile-response'])) {
+            echo json_encode(
+                array(
+                    'state' => 400,
+                    'msg'   => (!empty($labels['_captcha_missing']) ? $labels['_captcha_missing'] : _('Please check on the reCAPTCHA box'))
+
+                )
+            );
+            exit;
+        }
+
+        $ip = '';
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
+
+
+        $turnstile_secret   = $website->settings('fu_secret');
+        $turnstile_response = $data['cf-turnstile-response'];
+        $url                = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+        $post_fields        = "secret=$turnstile_secret&response=$turnstile_response&remoteip=$ip";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $response_data = json_decode($response, true);
+
+
+        if (!$response_data['success']) {
+            echo json_encode(
+                array(
+                    'state' => 400,
+                    'msg'   => (!empty($labels['_captcha_fail']) ? $labels['_captcha_fail'] : _('Captcha verification failed, please try again')),
+                    'resp'  => $response_data['error-codes']
+                )
+            );
+            exit;
+        }
+
+
+    }
 
     include_once 'class.WebAuth.php';
     $auth = new WebAuth($db);

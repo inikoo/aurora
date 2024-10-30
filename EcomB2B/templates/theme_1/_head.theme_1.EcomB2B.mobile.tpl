@@ -198,7 +198,7 @@
             m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/2dfc4018e22b28a66ec6cc1bd/b9c276fd71aa5eecf3a87d6d5.js");</script>
     {/if}
 
-    {if isset($sentry_js) }
+    {if isset($sentry_js) and false }
 
         <script
                 src="https://browser.sentry-cdn.com/6.7.1/bundle.min.js"
