@@ -34,7 +34,7 @@
                         </a>
                     </figure>
 
-                    <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[110px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
+                    <div class="gallery XX tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[110px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
 
 
                         {if $product->get('Video ID')}
