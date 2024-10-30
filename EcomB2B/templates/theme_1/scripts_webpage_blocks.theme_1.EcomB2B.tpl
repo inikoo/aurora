@@ -1460,8 +1460,9 @@ function show_gold_reward(GRDiscount, GRFamilies){
                             return;
                         }
 
-                        button.addClass('wait')
-                        button.find('i').removeClass('fa-arrow-right').addClass('fa-spinner fa-spin')
+                        button.addClass('wait').attr('disabled', true)
+                        button.find('i').removeClass('hide')
+                        button.find('span').addClass('hide')
 
 
                         var ajaxData = new FormData();
@@ -1520,17 +1521,21 @@ function show_gold_reward(GRDiscount, GRFamilies){
                                     turnstile.reset()
                                     turnstile.reset()
                                     swal("{t}Error{/t}!", data.msg, "error")
-                                    button.removeClass('wait')
-                                    button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                    button.removeClass('wait').removeAttr('disabled')
+                                    // button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
+                                    button.find('i').addClass('hide')
+                                    button.find('span').removeClass('hide')
                                 }
 
 
 
 
                             }, error: function () {
-                            turnstile.reset()
-                                button.removeClass('wait')
-                                button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin f')
+                                turnstile.reset()
+                                button.removeClass('wait').removeAttr('disabled')
+                                // button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin f')
+                                button.find('i').addClass('hide')
+                                button.find('span').removeClass('hide')
 
                             }
                         });
