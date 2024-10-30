@@ -152,19 +152,8 @@
 
 
 
-                    {else}
-                        <div class="notification-small bg-red-light tap-hide animate-right">
-                            <strong class="bg-red-dark"><i class="fa fa-info-circle"></i></strong>
-                            <p style="line-height: 50px">
-                                {if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}
-                            </p>
-                        </div>
 
-                        <div class="log_out_prod_links" >
-                            <div class="one-half center-text" onclick='window.location.href = "/login.sys"'  ><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
-                            <div class="one-half last-column center-text" onclick='window.location.href = "/register.sys"'><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
-                            <div class="clear"></div>
-                        </div>
+
                     {/if}
 
                     <div class="decoration half-bottom full-top"></div>
