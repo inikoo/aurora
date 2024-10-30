@@ -84,7 +84,7 @@
 
                 <div class="tw-w-full">
                     <button id="login_button" type="submit" class="tw-bg-color1 hover:tw-gray-600 tw-border-none tw-cursor-pointer tw-mb-2.5 tw-text-white tw-block tw-rounded-md tw-w-full tw-text-center" style="font-weight: 700; padding: 10px 14px; font-size: 17px;">
-                        <i aria-hidden="true" class="fad fa-spinner-third tw-animate-spin"></i>
+                        <i aria-hidden="true" class="fad fa-spinner-third tw-animate-spin hide"></i>
                         <span>{$data.labels._log_in_label}</span>
                     </button>
                     <div style="margin: 10px auto">
