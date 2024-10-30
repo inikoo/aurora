@@ -9,7 +9,7 @@
 -->
 *}
 
-<div class="outter-elements" data-code-web-"{$website->get('Code')}"   data-code-"{$store->get('Code')}" style="clear: both">
+<div class="outter-elements" data-code-web-"{$website->get('Website Code')}"   data-code-"{$store->get('Store Code')}" style="clear: both">
     <div class="decoration decoration-margins"></div>
 
 <div class="footer footer-dark">
