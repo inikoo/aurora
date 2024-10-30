@@ -34,12 +34,67 @@
                         </a>
                     </figure>
 
-                    <div class="gallery" style="display: flex;flex-wrap: wrap ;max-width: 330px" itemscope itemtype="http://schema.org/ImageGallery">
+                    <div class="gallery tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[110px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
+
+
+                        {if $product->get('Video ID')}
+
+                            <script src="https://player.vimeo.com/api/player.js"></script>
+
+
+
+
+                            </script>
+
+                            <script>
+                              function show_video(){
+
+                                $('#the_big_video_modal').removeClass('hide');
+
+                              }
+
+                              function close_video_modal(){
+                                var iframe = document.querySelector('#the_big_video');
+                                var player = new Vimeo.Player(iframe);
+
+                                $('#the_big_video_modal').addClass('hide');
+                                player.pause();
+
+                              }
+
+
+                            </script>
+
+
+                            <div id="the_big_video_modal" class="hide tw-fixed tw-top-0 tw-left-0 tw-w-[100vw] tw-h-[100vh] tw-bg-black/70 tw-isolate tw-z-[9999999999999]">
+                                <div class="tw-absolute tw-top-1/2 tw-left-1/2 -tw-translate-x-1/2 -tw-translate-y-1/2 tw-w-[90%]">
+
+                                    <iframe id="the_big_video" src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&pip=0&title=0&vimeo_logo=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: auto; width:100%; max-height: 400px" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                    <div onclick="close_video_modal()" class="tw-mt-4 tw-flex tw-flex-col tw-items-center tw-absolute tw-left-1/2 -tw-translate-x-1/2 tw-text-white">
+                                        <div class="tw-h-5 tw-w-5 tw-rounded-full tw-flex tw-justify-center tw-items-center tw-border tw-border-solid tw-border-white">
+                                            <i class="fas fa-times tw-text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            Close
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="tw-w-[100px] tw-h-[100px] tw-relative tw-isolate">
+                                <iframe id="the_video" src="https://player.vimeo.com/video/{$product->get('Video ID')}?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&&background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" style="aspect-ratio: 1 / 1; height: 100%; width:auto;" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                <div onclick="show_video()" style="cursor:pointer"  class="tw-absolute tw-inset-0 tw-z-10 tw-flex tw-justify-center tw-items-center"><i style="padding:10px;font-size:30px;color:#4B5058;--fa-secondary-opacity:.9;--fa-primary-opacity:1;--fa-primary-color:white" class="fad fa-play-circle"></i></div>
+
+
+                            </div>
+
+                        {/if}
 
                         {foreach from=$data.other_images item=image name=foo}
                             <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                                    <img style="height: 50px" src="{if $image.image_website=='' }{$image.src}{else}{$image.image_website}{/if}" itemprop="thumbnail" alt="{$image.caption}"/>
+                                    <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
                                 </a>
                             </figure>
                         {/foreach}
