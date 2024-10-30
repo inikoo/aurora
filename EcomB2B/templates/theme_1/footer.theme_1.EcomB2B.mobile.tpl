@@ -9,6 +9,10 @@
 -->
 *}
 
+{if {$website->get('Website Code')}=='awindo'}
+    {include file="new_footer.tpl"}
+{else}
+
 <div class="outter-elements" data-code-web-"{$website->get('Website Code')}"   data-code-"{$store->get('Store Code')}" style="clear: both">
     <div class="decoration decoration-margins"></div>
 
@@ -27,3 +31,5 @@
 </div>
 
 </div>
+
+    {/if}

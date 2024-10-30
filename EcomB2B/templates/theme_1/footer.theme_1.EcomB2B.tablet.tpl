@@ -9,6 +9,10 @@
 -->
 *}
 
+{if {$website->get('Website Code')}=='awindo'}
+{include file="new_footer.tpl"}
+{else}
+
 <div class="outter-elements"  style="clear: both">
 
 <div class="footer footer-dark">
@@ -27,3 +31,4 @@
 </div>
 </div>
 
+{/if}

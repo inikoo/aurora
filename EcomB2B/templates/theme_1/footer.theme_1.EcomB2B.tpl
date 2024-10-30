@@ -8,6 +8,10 @@
  Version 3
 -->
 *}
+
+{if {$website->get('Website Code')}=='awindo'}
+{include file="new_footer.tpl"}
+{else}
 {if !empty($footer_data.rows) and  $footer_data.rows|is_array}
 
     {if $logged_in==1 and $website->get('Website Type')=='EcomDS' and isset($smarty.const.DS_HELP_PORTAL)}
@@ -147,4 +151,6 @@
         {/if}
     {/foreach}
 </footer>
+{/if}
+
 {/if}
