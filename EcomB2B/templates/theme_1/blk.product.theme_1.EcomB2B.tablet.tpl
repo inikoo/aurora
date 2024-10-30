@@ -24,7 +24,7 @@
 
 <div id="block_{$key}" class="{if !$data.show}hide{/if} product_container"  data-product_id="{$product->id}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
-                <div style="padding:20px">
+
                 <div class="images one-half-responsive">
 
                     <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
@@ -193,16 +193,18 @@
                         </div>
                     {else}
                         <div class="container">
-                            <div class="one-half">
-                                <a href="/login.sys" class="button button-icon button-blue button-round button-full button-xs no-bottom"><i
-                                            class="ion-log-in"></i>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</a>
+                            <div class="notification-small bg-red-light tap-hide animate-right">
+                                <strong class="bg-red-dark"><i class="fa fa-info-circle"></i></strong>
+                                <p style="line-height: 50px">
+                                    {if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}
+                                </p>
                             </div>
-                            <div class="one-half last-column">
-                                <a href="/register.sys" class="button button-icon button-green button-round button-full button-xs no-bottom"><i
-                                            class="ion-android-add-circle"></i>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</a>
+
+                            <div class="log_out_prod_links" >
+                                <div class="one-half center-text" onclick='window.location.href = "/login.sys"'  ><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+                                <div class="one-half last-column center-text" onclick='window.location.href = "/register.sys"'><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
+                                <div class="clear"></div>
                             </div>
-                            <div class="clear"></div>
-                        </div>
                     {/if}
 
 
