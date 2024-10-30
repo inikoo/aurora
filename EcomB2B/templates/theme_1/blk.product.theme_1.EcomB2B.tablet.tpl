@@ -34,7 +34,8 @@
                         </a>
                     </figure>
 
-                    <div class="gallery XX tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[110px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
+
+                    <div class="gallery XX2 tw-w-[95%] tw-overflow-x-auto tw-mx-auto tw-flex tw-h-[110px] tw-gap-x-2"  itemscope itemtype="http://schema.org/ImageGallery">
 
 
                         {if $product->get('Video ID')}
@@ -92,7 +93,7 @@
                         {/if}
 
                         {foreach from=$data.other_images item=image name=foo}
-                            <figure style="margin: 0px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+                            <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
                                     <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
                                 </a>
@@ -153,10 +154,16 @@
 
                     {else}
                         <div class="notification-small bg-red-light tap-hide animate-right">
-                            <strong class="bg-red-dark"><i class="ion-information-circled"></i></strong>
-                            <p>
+                            <strong class="bg-red-dark"><i class="fa fa-info-circle"></i></strong>
+                            <p style="line-height: 50px">
                                 {if empty($labels._login_to_see)}{t}For prices, please login or register{/t}{else}{$labels._login_to_see}{/if}
                             </p>
+                        </div>
+
+                        <div class="log_out_prod_links" >
+                            <div class="one-half center-text" onclick='window.location.href = "/login.sys"'  ><span>{if empty($labels._Login)}{t}Login{/t}{else}{$labels._Login}{/if}</span></div>
+                            <div class="one-half last-column center-text" onclick='window.location.href = "/register.sys"'><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
+                            <div class="clear"></div>
                         </div>
                     {/if}
 
