@@ -192,7 +192,7 @@
 
                         </div>
                     {else}
-                        <div class="container" data-a="""x">
+                        <div class="container v1222" >
                             <div class="notification-small bg-red-light tap-hide animate-right">
                                 <strong class="bg-red-dark"><i class="fa fa-info-circle"></i></strong>
                                 <p style="line-height: 50px">
