@@ -192,7 +192,7 @@
 
                         </div>
                     {else}
-                        <div class="container">
+                        <div class="container" data-a="""x">
                             <div class="notification-small bg-red-light tap-hide animate-right">
                                 <strong class="bg-red-dark"><i class="fa fa-info-circle"></i></strong>
                                 <p style="line-height: 50px">
@@ -205,6 +205,7 @@
                                 <div class="one-half last-column center-text" onclick='window.location.href = "/register.sys"'><span>{if empty($labels._Register)}{t}Register{/t}{else}{$labels._Register}{/if}</span></div>
                                 <div class="clear"></div>
                             </div>
+                        </div>
                     {/if}
 
 
