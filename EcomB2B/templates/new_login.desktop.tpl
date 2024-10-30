@@ -31,7 +31,8 @@
 
                 <div class="tw-w-full">
                     <button id="login_button" type="submit" class="tw-bg-color1 hover:tw-gray-600 tw-border-none tw-cursor-pointer tw-mb-2.5 tw-text-white tw-block tw-rounded-md tw-w-full tw-text-center" style="font-weight: 700; padding: 10px 14px; font-size: 17px;">
-                        {$data.labels._log_in_label}
+                        <i aria-hidden="true" class="fad fa-spinner-third tw-animate-spin"></i>
+                        <span>{$data.labels._log_in_label}</span>
                     </button>
                     <div style="margin: 10px auto">
                         <div class="tw-text-center" style="">{if empty($data.labels._register_help)}Need Help Logging in? Hit the chat button or call us:{else}{$data.labels._register_help}{/if}</div>
