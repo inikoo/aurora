@@ -1,24 +1,25 @@
 
 
 {assign var="footerTheme1" value=array(
-            "code" => "FooterTheme1",
-            "name" => "Footer 1",
+    "code" => "FooterTheme1",
+    "name" => "Footer 1",
+    "bluprint" => array(
+        array(
+            "key" => "body",
+            "icon" => "far fa-line-columns",
+            "name" => "Body",
+            "type" => "body",
             "bluprint" => array(
                 array(
-                    "key" => "body",
-                    "icon" => "far fa-line-columns",
+                    "key" => array("container", "properties"),
                     "name" => "Body",
-                    "type" => "body",
-                    "bluprint" => array(
-                        array(
-                            "key" => array("container", "properties"),
-                            "name" => "Body",
-                            "type" => "body",
-                        )
-                    )
-                ),
-            ),
-        )}
+                    "type" => "body"
+                )
+            )
+        )
+    )
+)}
+
 
 
 <div>
