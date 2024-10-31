@@ -64,11 +64,109 @@ function getStyles(properties) {
     };
 }
 
-console.log('www')
+const footerTheme1 = {
+    code: "FooterTheme1",
+    name: "Footer 1",
+    data: {
+        fieldValue: {
+            container: {
+                properties: {
+                    text: {
+                        color: "#FFFFFF",
+                        fontFamily: null
+                    },
+                    border: {
+                        top: {
+                            value: 0
+                        },
+                        left: {
+                            value: 0
+                        },
+                        unit: "px",
+                        color: "#000000",
+                        right: {
+                            value: 0
+                        },
+                        bottom: {
+                            value: 0
+                        },
+                        rounded: {
+                            unit: "px",
+                            topleft: {
+                                value: 0
+                            },
+                            topright: {
+                                value: 0
+                            },
+                            bottomleft: {
+                                value: 0
+                            },
+                            bottomright: {
+                                value: 0
+                            }
+                        }
+                    },
+                    margin: {
+                        top: {
+                            value: 0
+                        },
+                        left: {
+                            value: 0
+                        },
+                        unit: "px",
+                        right: {
+                            value: 0
+                        },
+                        bottom: {
+                            value: 0
+                        }
+                    },
+                    padding: {
+                        top: {
+                            value: 96
+                        },
+                        left: {
+                            value: 28
+                        },
+                        unit: "px",
+                        right: {
+                            value: 28
+                        },
+                        bottom: {
+                            value: 96
+                        }
+                    },
+                    background: {
+                        type: "color",
+                        color: "rgba(0, 0, 0, 1)", // Corrected color syntax here
+                        image: {
+                            original: null
+                        }
+                    }
+                }
+            },
+        }
+    },
+};
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    console.log('mounted')
+    const properties = footerTheme1 && footerTheme1.data && footerTheme1.data.fieldValue && footerTheme1.data.fieldValue.container && footerTheme1.data.fieldValue.container.properties;
+    const element = document.getElementById('footer_container');
+    console.log('zzzz', getStyles(properties));
+    
+    if (element) {
+        Object.assign(element.style, getStyles(properties));
+    } else {
+        console.warn('Element with id "footer_container" not found');
+    }
+});
+
 </script>
 
 <div>
-    <div id="app" class="tw-py-24 md:tw-px-7">
+    <div id="footer_container" class="tw-py-24 md:tw-px-7">
         <div class="">
             <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
                 <div class=" tw-px-4 md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
