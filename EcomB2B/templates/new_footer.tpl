@@ -478,7 +478,7 @@ console.log('zzzz', footerTheme1)
 
 const element = document.getElementById('footer_container');
 
-Object.assign(element.style, getStyles(footerTheme1data.fieldValue.container.properties));
+Object.assign(element.style, getStyles(footerTheme1?.data?.fieldValue?.container?.properties));
 
 </script>
 
