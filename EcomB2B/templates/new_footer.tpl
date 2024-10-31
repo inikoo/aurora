@@ -68,11 +68,153 @@ console.log('www')
 </script>
 
 <div>
-    <div id="footer_container" class="tw-py-24 md:tw-px-7" style="">
+    <div id="app" class="tw-py-24 md:tw-px-7">
         <div class="">
             <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
-                Hello guys
+                <div class=" tw-px-4 md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                    <div class="tw-px-4 md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                        <!-- v-for="(item, index) in modelValue.column['column_1']['data']" -->
+                        <div>
+                            <div>
+                                <div
+                                    class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
+                                    <div class="tw-flex">
+                                        <div class="tw-w-fit">
+                                            <span class="tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
+                                                <div>
+                                                    <p>Help</p>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <!-- v-for="(sub, subIndex) in item.data" -->
+                                        <div>
+                                            <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                                <li>
+                                                    <div class="tw-flex tw-items-center tw-gap-2">
+                                                        <div class="tw-w-full">
+                                                            <span class="tw-text-sm tw-block">
+                                                                <div>
+                                                                    <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.ancientwisdom.biz/contact.sys">Contact Us</a></p>
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <div class="tw-block md:tw-hidden">
+                                    <div >
+                                        <div
+                                            class="tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none tw-w-full">
+                                            <div class="tw-flex tw-justify-between">
+                                                <div class="tw-flex">
+                                                    <div class="tw-w-fit">
+                                                        <span class="tw-text-xl tw-font-semibold tw-leading-6">
+                                                            <div>
+                                                                <p>Help</p>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div>
+                                                <div>
+                                                    <!-- v-for="(sub, subIndex) in item.data" -->
+                                                    <div>
+                                                        <ul class="tw-block tw-space-y-1">
+                                                            <li>
+                                                                <div class="tw-flex tw-items-center">
+                                                                    <div class="tw-w-full">
+                                                                        <span class="tw-text-sm tw-block">
+                                                                            <div>
+                                                                                <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.ancientwisdom.biz/contact.sys">Contact Us</a></p>
+                                                                            </div>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="md:tw-hidden tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
+                    <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
+                    <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
+                        <!-- v-for="item of modelValue.socialData" -->
+                        <a target="_blank">
+                            <div icon="item.icon" class="tw-text-2xl" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="tw-flex tw-flex-col tw-flex-col-reverse tw-gap-y-6 md:tw-block">
+                    <div>
+                        <div class="tw-flex tw-flex-wrap -tw-mx-4">
+                            <!-- v-for="payment in modelValue.PaymentData.data" -->
+                            <div class="tw-w-full md:tw-w-1/3 tw-px-4 tw-mb-8">
+                                <div class="tw-flex tw-items-center tw-justify-center md:tw-justify-start tw-space-x-4">
+                                    <img src="payment.image" alt="payment.name" class="tw-px-1 tw-h-4">
+                                </div>
+                            </div>
+                        </div>
+                        <address
+                            class="tw-mt-10 md:tw-mt-0 tw-not-italic tw-mb-4 tw-text-center md:tw-text-left tw-text-xs md:tw-text-sm tw-text-gray-300">
+                            <div>
+                                Ancient Wisdom Marketing Ltd. Affinity Park, Europa Drive Sheffield, S9 1XT
+                            </div>
+                        </address>
+
+                        <div class="tw-flex tw-justify-center tw-gap-x-8 tw-text-gray-300 md:tw-block">
+                            <div>
+                                <p>Vat No: GB764298589 </br> Reg. No: 04108870</p>
+                            </div>
+                        </div>
+                        <div
+                            class="tw-hidden md:tw-block tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
+                            <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
+                            <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
+                                <!-- v-for="item of modelValue.socialData" -->
+                                <a target="_blank" href="item.link"><div icon="item.icon" class="tw-text-2xl" /></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="tw-border-b tw-border-gray-500 md:tw-border-none tw-flex tw-items-center tw-space-x-2 tw-px-5 tw-pb-4 md:tw-pb-0 md:tw-px-0">
+                        <i class="tw-text-4xl md:tw-text-3xl fab fa-whatsapp tw-text-green-500"></i>
+                        <span class="tw-w-10/12 md:tw-w-full md:tw-text-sm">
+                            <div>
+                                "Subscribe to the WhatsApp messages and benefit from exclusive discounts."
+                            </div>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
+                <div>
+                    Copyright c 2024 Aurora. All rights reserved. Terms of Use Privacy Policy
+                </div>
             </div>
         </div>
     </div>
