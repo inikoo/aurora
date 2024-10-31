@@ -499,11 +499,11 @@ const footerTheme1 = {
     },
 };
 
-console.log('zzzz', getStyles(properties));
 document.addEventListener("DOMContentLoaded", function() {
     console.log('mounted')
     const properties = footerTheme1 && footerTheme1.data && footerTheme1.data.fieldValue && footerTheme1.data.fieldValue.container && footerTheme1.data.fieldValue.container.properties;
     const element = document.getElementById('footer_container');
+    console.log('zzzz', getStyles(properties));
     
     if (element) {
         Object.assign(element.style, getStyles(properties));
