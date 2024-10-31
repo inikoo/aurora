@@ -3,9 +3,9 @@ function getStyles(properties) {
     if (!properties) return {};
 
     return {
-        height: (properties.dimension && properties.dimension.height && properties.dimension.height.value || 0) + 
+        height: (properties.dimension && properties.dimension.height && properties.dimension.height.value || undefined) + 
                  (properties.dimension && properties.dimension.height && properties.dimension.height.unit || ''),
-        width: (properties.dimension && properties.dimension.width && properties.dimension.width.value || 0) + 
+        width: (properties.dimension && properties.dimension.width && properties.dimension.width.value || undefined) + 
                 (properties.dimension && properties.dimension.width && properties.dimension.width.unit || ''),
 
         color: properties.text && properties.text.color,
@@ -514,6 +514,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 </script>
+
+
 
 <div>
     <div id="footer_container" class="tw-py-24 md:tw-px-7" style="">
