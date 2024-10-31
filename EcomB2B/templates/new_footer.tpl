@@ -14,8 +14,8 @@
                             "key" => ["container", "properties"],
                             "name" => "Body",
                             "type" => "body",
-                        ],
-                    ],
+                        ]
+                    ]
                 ],
                 [
                     "key" => "PaymentData",
@@ -27,8 +27,8 @@
                             "key" => "PaymentData",
                             "name" => "Payments",
                             "type" => "payment_templates",
-                        ],
-                    ],
+                        ]
+                    ]
                 ],
                 [
                     "key" => "socialData",
@@ -40,8 +40,8 @@
                             "key" => "socialData",
                             "name" => "Social Media",
                             "type" => "socialMedia",
-                        ],
-                    ],
+                        ]
+                    ]
                 ],
             ],
             "data" => [
