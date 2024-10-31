@@ -29,9 +29,10 @@ function getStyles(properties) {
         marginLeft: (properties.margin && properties.margin.left && properties.margin.left.value || 0) + 
                     (properties.margin && properties.margin.unit || ''),
 
-        background: (properties.background && properties.background.type === 'color') ? 
-                    properties.background.color : 
-                    `url('${properties.background && properties.background.image && properties.background.image.source && properties.background.image.source.original || ''}')`,
+        background: (properties.background && properties.background.type === 'color') 
+            ? properties.background.color 
+            : 'url(' + (properties.background && properties.background.image && properties.background.image.source && properties.background.image.source.original || '') + ')',
+
         backgroundPosition: (properties.background && properties.background.type === 'image') ? 'center' : '',
         backgroundSize: (properties.background && properties.background.type === 'image') ? 'cover' : '',
 
