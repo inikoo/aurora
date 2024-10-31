@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3" />
+                                                    <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
                         <!-- v-for="item of modelValue.socialData" -->
                         <a target="_blank">
-                            <div icon="item.icon" class="tw-text-2xl" />
+                            <div icon="item.icon" class="tw-text-2xl"></div>
                         </a>
                     </div>
                 </div>
@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
                             <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
                                 <!-- v-for="item of modelValue.socialData" -->
-                                <a target="_blank" href="item.link"><div icon="item.icon" class="tw-text-2xl" /></a>
+                                <a target="_blank" href="item.link"><div icon="item.icon" class="tw-text-2xl"></div></a>
                             </div>
                         </div>
                     </div>
