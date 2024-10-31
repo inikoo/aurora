@@ -6,6 +6,8 @@
             "bluprint" => array("zzz")
 )}
 
+console.log('ddd', {$footerTheme1})
+
 </script>
 
 <div>
