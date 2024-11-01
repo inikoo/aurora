@@ -1,6 +1,5 @@
 
 
-{$wowsbar_footer_data}
 
 
 <script>
@@ -165,6 +164,10 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 </script>
+
+<pre>
+    hello
+</pre>
 
 <div>
     <div id="footer_container" class="tw-py-24 md:tw-px-7">
