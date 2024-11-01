@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <pre>
-    hello
+    hello  >>{$wowsbar_footer_data}<<   x
 </pre>
 
 <div>
