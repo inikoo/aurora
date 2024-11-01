@@ -1,5 +1,6 @@
 
 
+{$wowsbar_footer_data}
 
 
 <script>

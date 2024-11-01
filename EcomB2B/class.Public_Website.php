@@ -174,6 +174,16 @@ class Public_Website
 
 
         switch ($key) {
+
+            case 'wowsbar_footer_data':
+
+
+                if($this->data['$wowsbar_footer']!=''){
+                    return json_decode($this->data['$wowsbar_footer'],true);
+                }
+                return null;
+
+
             case 'Footer Data':
             case 'Footer Published Data':
 

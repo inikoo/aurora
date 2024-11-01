@@ -536,6 +536,8 @@ if ($cacheable == 'Yes') {
 header('Vary: Accept-Encoding, X-Device, X-State');
 $smarty->assign('zaraz', $zaraz);
 
+$smarty->assign('wowsbar_footer_data', $website->get('wowsbar_footer_data'));
+
 
 include_once __DIR__.'/conf/features_data.php';
 
