@@ -175,11 +175,12 @@ class Public_Website
 
         switch ($key) {
 
+
             case 'wowsbar_footer_data':
 
 
-                if($this->data['$wowsbar_footer']!=''){
-                    return json_decode($this->data['$wowsbar_footer'],true);
+                if($this->data['wowsbar_footer']!=''){
+                    return json_decode($this->data['wowsbar_footer'],true);
                 }
                 return null;
 
