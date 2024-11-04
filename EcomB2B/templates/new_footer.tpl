@@ -177,6 +177,9 @@ document.addEventListener("DOMContentLoaded", function() {
         line-height: 1rem;
         font-size: 1rem;
     }
+    #new_footer_container li {
+        list-style-type: none;
+    }
 </style>
 <div>
     <div id="new_footer_container" class="tw-py-24 md:tw-px-7">
