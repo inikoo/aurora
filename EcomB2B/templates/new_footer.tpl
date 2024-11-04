@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <pre>
-    hello    >>{$wowsbar_footer_data|@print_r}<<  xV2
+    hello    >>{$wowsbar_footer_data|@print_r}<<  xV3
 </pre>
 
 <div>
