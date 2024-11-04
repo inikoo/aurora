@@ -32,10 +32,10 @@ if ($result = $db->query($sql)) {
         if(!in_array($deal_campaign->get('Code'),['OR','VL','CU'] )){
             print_r($row);
             $deal_campaign->get('Code')."\n";
-           // $deal->update_status_from_dates(false);
-           // foreach ($deal->get_deal_components('objects', 'all') as $component) {
-           //     $component->update_status_from_dates();
-           // }
+            $deal->update_status_from_dates(false);
+            foreach ($deal->get_deal_components('objects', 'all') as $component) {
+                $component->update_status_from_dates();
+            }
         }
 
 
@@ -68,7 +68,7 @@ if ($result = $db->query($sql)) {
             print_r($row);
             $deal_campaign->get('Code')." <dc \n";
 
-            //$dealComponent->update_status_from_dates();
+            $dealComponent->update_status_from_dates();
         }
 
     }
