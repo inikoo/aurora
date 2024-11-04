@@ -460,13 +460,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         <address
                             class="tw-mt-10 md:tw-mt-0 tw-not-italic tw-mb-4 tw-text-center md:tw-text-left tw-text-xs md:tw-text-sm tw-text-gray-300">
                             <div>
-                                Ancient Wisdom Marketing Ltd. Affinity Park, Europa Drive Sheffield, S9 1XT
+                                {$wowsbar_footer_data.data.fieldValue.column.column_4.textBox1}
+
                             </div>
                         </address>
 
                         <div class="tw-flex tw-justify-center tw-gap-x-8 tw-text-gray-300 md:tw-block">
                             <div>
-                                <p>Vat No: GB764298589 </br> Reg. No: 04108870</p>
+                                {$wowsbar_footer_data.data.fieldValue.column.column_4.textBox2}
                             </div>
                         </div>
                         <div
