@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <pre>
-    hello    >>{$wowsbar_footer_data|@print_r}<<  xV4
+    hello    >>{$wowsbar_footer_data|@print_r}<<  xV5
 </pre>
 
 <div>
@@ -452,10 +452,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="tw-flex tw-flex-col tw-flex-col-reverse tw-gap-y-6 md:tw-block">
                     <div>
                         <div class="tw-flex tw-flex-wrap -tw-mx-4">
-                            <!-- v-for="payment in modelValue.PaymentData.data" -->
+
                             <div class="tw-w-full md:tw-w-1/3 tw-px-4 tw-mb-8">
                                 <div class="tw-flex tw-items-center tw-justify-center md:tw-justify-start tw-space-x-4">
+
+
+                                    <!-- PayPal Logo --><table  class="tw-px-1 tw-h-4" border="0" cellpadding="10" cellspacing="0" align="center"><tr><td align="center"></td></tr><tr><td align="center"><a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="How PayPal Works" onclick="javascript:window.open('https://www.paypal.com/webapps/mpp/paypal-popup','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;"><img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" border="0" alt="PayPal Logo"></a></td></tr></table><!-- PayPal Logo -->
+
+                                    {*
                                     <img src="payment.image" alt="payment.name" class="tw-px-1 tw-h-4">
+                                    *}
                                 </div>
                             </div>
                         </div>
