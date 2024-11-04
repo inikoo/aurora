@@ -1,0 +1,1 @@
+ALTER TABLE `Category Dimension` DROP COLUMN `Category Shopify Key`;
