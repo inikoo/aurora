@@ -18,11 +18,11 @@ require_once 'utils/order_functions.php';
 
 
 
-$sql = sprintf("SELECT `Deal Key` FROM `Deal Dimension`   where  `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished') ");
+$sql = sprintf("SELECT * FROM `Deal Dimension`   where  `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished') ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
-        print_r($row);
+
 
         $deal = get_object('Deal', $row['Deal Key']);
 
@@ -30,6 +30,7 @@ if ($result = $db->query($sql)) {
 
 
         if(!in_array($deal_campaign->get('Code'),['OR','VL','CU'] )){
+            print_r($row);
             $deal_campaign->get('Code')."\n";
            // $deal->update_status_from_dates(false);
            // foreach ($deal->get_deal_components('objects', 'all') as $component) {
@@ -50,12 +51,12 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf("SELECT `Deal Cmponent Key` FROM `Deal Cmponent Dimension`  where  `Deal Cmponent Expiration Date` is not null  and `Deal Cmponent Status` not in ('Finished') ");
+$sql = sprintf("SELECT *  FROM `Deal Cmponent Dimension`  where  `Deal Cmponent Expiration Date` is not null  and `Deal Cmponent Status` not in ('Finished') ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
 
-        print_r($row);
+
 
         $dealComponent = get_object('DealComponent', $row['Deal Component Key']);
 
@@ -63,6 +64,7 @@ if ($result = $db->query($sql)) {
 
 
         if(!in_array($deal_campaign->get('Code'),['OR','VL','CU'] )){
+            print_r($row);
             $deal_campaign->get('Code')." <dc \n";
 
             //$dealComponent->update_status_from_dates();
