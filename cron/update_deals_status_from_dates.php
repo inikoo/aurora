@@ -51,7 +51,8 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf("SELECT *  FROM `Deal Cmponent Dimension`  where  `Deal Cmponent Expiration Date` is not null  and `Deal Cmponent Status` not in ('Finish') ");
+$sql = sprintf("SELECT *  FROM `Deal Component Dimension`  where  `Deal Component Expiration Date` is not null  and `Deal Component Status` not in ('Finish') ");
+
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
