@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-    #new_footer_container s {
+    #new_footer_container a {
         color: inherit;
 
     }
@@ -190,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 </style>
 <div>
-    <div id="new_footer_container" class="tw-py-24 md:tw-px-7">
+    <div id="new_footer_container" class="tw-py-24 md:tw-px-16">
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
