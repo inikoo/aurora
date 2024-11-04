@@ -484,14 +484,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         <address
                             class="tw-mt-10 md:tw-mt-0 tw-not-italic tw-mb-4 tw-text-center md:tw-text-left tw-text-xs md:tw-text-sm tw-text-gray-300">
                             <div>
-                                {$wowsbar_footer_data.data.fieldValue.column.column_4.textBox1}
+                                {$wowsbar_footer_data.data.fieldValue.column.column_4.data.textBox1}
 
                             </div>
                         </address>
 
                         <div class="tw-flex tw-justify-center tw-gap-x-8 tw-text-gray-300 md:tw-block">
                             <div>
-                                {$wowsbar_footer_data.data.fieldValue.column.column_4.textBox2}
+                                {$wowsbar_footer_data.data.fieldValue.column.column_4.data.textBox2}
                             </div>
                         </div>
                         {*
