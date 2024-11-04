@@ -18,7 +18,7 @@ require_once 'utils/order_functions.php';
 
 
 
-$sql = sprintf("SELECT * FROM `Deal Dimension`   where  `Deal Expiration Date` is not null  and `Deal Status` not in ('Finished') ");
+$sql = sprintf("SELECT * FROM `Deal Dimension`   where  `Deal Expiration Date` is not null  and `Deal Status` not in ('Finish') ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
@@ -51,7 +51,7 @@ if ($result = $db->query($sql)) {
 }
 
 
-$sql = sprintf("SELECT *  FROM `Deal Cmponent Dimension`  where  `Deal Cmponent Expiration Date` is not null  and `Deal Cmponent Status` not in ('Finished') ");
+$sql = sprintf("SELECT *  FROM `Deal Cmponent Dimension`  where  `Deal Cmponent Expiration Date` is not null  and `Deal Cmponent Status` not in ('Finish') ");
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
