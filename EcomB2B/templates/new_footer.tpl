@@ -4,7 +4,9 @@
 
 <script>
 function getStyles(properties) {
-    if (!properties) return {};
+    if (!properties) return {
+
+    };
 
     return {
         height: (properties.dimension && properties.dimension.height && properties.dimension.height.value || undefined) + 
@@ -174,82 +176,82 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
-{*                this is 1 column*}
+
+
+
                 <div class=" tw-px-4 md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="tw-px-4 md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
-                        <!-- v-for="(item, index) in modelValue.column['column_1']['data']" -->
+                   {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_1.data item=block}
+                    <div >
                         <div>
-                            <div>
-                                <div
-                                    class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
-                                    <div class="tw-flex">
-                                        <div class="tw-w-fit">
-                                            <span class="tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
-                                                <div>
-                                                    <p>Help</p>
-                                                </div>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <!-- v-for="(sub, subIndex) in item.data" -->
-                                        <div>
-                                            <ul class="tw-hidden md:tw-block tw-space-y-1">
-                                                <li>
-                                                    <div class="tw-flex tw-items-center tw-gap-2">
-                                                        <div class="tw-w-full">
-                                                            <span class="tw-text-sm tw-block">
-                                                                <div>
-                                                                    <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.ancientwisdom.biz/contact.sys">Contact Us</a></p>
-                                                                </div>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
+                            <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
+                                <div class="tw-flex">
+                                    <div class="tw-w-fit">
+                                            <div class="tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
+
+                                                    {$block.name}
+
+                                            </div>
                                     </div>
                                 </div>
-
-                                <div class="tw-block md:tw-hidden">
-                                    <div >
-                                        <div
-                                            class="tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none tw-w-full">
-                                            <div class="tw-flex tw-justify-between">
-                                                <div class="tw-flex">
-                                                    <div class="tw-w-fit">
-                                                        <span class="tw-text-xl tw-font-semibold tw-leading-6">
-                                                            <div>
-                                                                <p>Help</p>
+                                <div>
+                                    <!-- v-for="(sub, subIndex) in item.data" -->
+                                    <div>
+                                        <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                            {foreach from=$block.data item=link}
+                                            <li>
+                                                <div class="tw-flex tw-items-center tw-gap-2">
+                                                    <div class="tw-w-full">
+                                                            <div class="tw-text-sm tw-block">
+                                                                    {$link.name}
                                                             </div>
-                                                        </span>
                                                     </div>
                                                 </div>
-                                                <div>
-                                                    <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3"></div>
+                                            </li>
+                                            {/foreach}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tw-block md:tw-hidden">
+                                <div >
+                                    <div
+                                            class="tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none tw-w-full">
+                                        <div class="tw-flex tw-justify-between">
+                                            <div class="tw-flex">
+                                                <div class="tw-w-fit">
+                                                        <div class="tw-text-xl tw-font-semibold tw-leading-6">
+
+                                                               {$block.name}
+
+                                                        </div>
                                                 </div>
                                             </div>
+                                            <div>
+                                                <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3"></div>
+                                            </div>
                                         </div>
+                                    </div>
 
+                                    <div>
                                         <div>
                                             <div>
+                                                <!-- v-for="(sub, subIndex) in item.data" -->
                                                 <div>
-                                                    <!-- v-for="(sub, subIndex) in item.data" -->
-                                                    <div>
-                                                        <ul class="tw-block tw-space-y-1">
-                                                            <li>
-                                                                <div class="tw-flex tw-items-center">
-                                                                    <div class="tw-w-full">
-                                                                        <span class="tw-text-sm tw-block">
-                                                                            <div>
-                                                                                <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.ancientwisdom.biz/contact.sys">Contact Us</a></p>
-                                                                            </div>
-                                                                        </span>
-                                                                    </div>
+                                                    <ul class="tw-block tw-space-y-1">
+                                                        {foreach from=$block.data item=link}
+                                                        <li>
+                                                            <div class="tw-flex tw-items-center">
+                                                                <div class="tw-w-full">
+                                                                        <div class="tw-text-sm tw-block">
+                                                                            {$link.name}
+                                                                        </div>
                                                                 </div>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                            </div>
+                                                        </li>
+                                                        {/foreach}
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
@@ -258,7 +260,16 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                         </div>
                     </div>
+
+                {/foreach}
+                    </div>
                 </div>
+
+{*                this is 1 column*}
+
+                        <!-- v-for="(item, index) in modelValue.column['column_1']['data']" -->
+
+
                 {*                this is payment*}
 
 {*                Mobile only*}
@@ -319,7 +330,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             <div id="wowsbar_footer_top_copyright"  class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
                 <div>
-                    Copyright c 2024 Aurora. All rights reserved. Terms of Use Privacy Policy
+                    {$wowsbar_footer_data.data.fieldValue.copyRight}
+
                 </div>
             </div>
         </div>
