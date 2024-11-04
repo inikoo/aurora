@@ -171,13 +171,17 @@ document.addEventListener("DOMContentLoaded", function() {
     hello    >>{$wowsbar_footer_data|@print_r}<<  xV6
 </pre>
 
+<style>
+    #new_footer_container p {
+        margin: 0;
+        line-height: 1rem;
+        font-size: 1rem;
+    }
+</style>
 <div>
-    <div id="footer_container" class="tw-py-24 md:tw-px-7">
+    <div id="new_footer_container" class="tw-py-24 md:tw-px-7">
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
-
-
-
 
                 <div class=" tw-px-4 md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="tw-px-4 md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
@@ -448,6 +452,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     </div>
                 </div>
                 *}
+
+
+
 
                 <div class="tw-flex tw-flex-col tw-flex-col-reverse tw-gap-y-6 md:tw-block">
                     <div>
