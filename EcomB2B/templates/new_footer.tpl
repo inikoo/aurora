@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <pre>
-    hello    >>{$wowsbar_footer_data|@print_r}<<  xV3
+    hello    >>{$wowsbar_footer_data|@print_r}<<  xV4
 </pre>
 
 <div>
@@ -436,6 +436,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 {*                Mobile only*}
+                {*
                 <div
                     class="md:tw-hidden tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
                     <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
@@ -446,6 +447,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         </a>
                     </div>
                 </div>
+                *}
 
                 <div class="tw-flex tw-flex-col tw-flex-col-reverse tw-gap-y-6 md:tw-block">
                     <div>
@@ -470,6 +472,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 {$wowsbar_footer_data.data.fieldValue.column.column_4.textBox2}
                             </div>
                         </div>
+                        {*
                         <div
                             class="tw-hidden md:tw-block tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
                             <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
@@ -478,7 +481,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <a target="_blank" href="item.link"><div icon="item.icon" class="tw-text-2xl"></div></a>
                             </div>
                         </div>
+         *}
                     </div>
+{*
                     <div
                         class="tw-border-b tw-border-gray-500 md:tw-border-none tw-flex tw-items-center tw-space-x-2 tw-px-5 tw-pb-4 md:tw-pb-0 md:tw-px-0">
                         <i class="tw-text-4xl md:tw-text-3xl fab fa-whatsapp tw-text-green-500"></i>
@@ -488,6 +493,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                         </span>
                     </div>
+*}
                 </div>
             </div>
 
