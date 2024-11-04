@@ -115,7 +115,7 @@ class nodes {
         $_keys   = preg_replace('/^,/', '', $_keys);
 
         $sql = "insert into ".$this->table_name." ($_keys) values ($_values)";
-        print "$sql   <<<\n";
+
 
 
         $this->db->exec($sql);
@@ -123,9 +123,9 @@ class nodes {
         $this->id = $this->db->lastInsertId();
         if(!$this->id){
 
-            print_r($fields);
+          //  print_r($fields);
 
-            print "$sql\n";
+        //    print "$sql\n";
 return;
            // throw new Exception('Error inserting category');
         }
