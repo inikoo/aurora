@@ -166,13 +166,15 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <pre>
-    hello  >>{$wowsbar_footer_data}<<   x
+    hello    >>{$wowsbar_footer_data|@print_r}<<  x
 </pre>
 
 <div>
     <div id="footer_container" class="tw-py-24 md:tw-px-7">
         <div class="">
-            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
+            <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
+
+{*                this is 1 column*}
                 <div class=" tw-px-4 md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="tw-px-4 md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         <!-- v-for="(item, index) in modelValue.column['column_1']['data']" -->
@@ -257,7 +259,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         </div>
                     </div>
                 </div>
+                {*                this is payment*}
 
+{*                Mobile only*}
                 <div
                     class="md:tw-hidden tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
                     <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
@@ -313,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
 
 
-            <div class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
+            <div id="wowsbar_footer_top_copyright"  class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
                 <div>
                     Copyright c 2024 Aurora. All rights reserved. Terms of Use Privacy Policy
                 </div>
