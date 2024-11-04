@@ -155,7 +155,7 @@ const footerTheme1 = {
 document.addEventListener("DOMContentLoaded", function() {
     console.log('mounted')
     const properties = footerTheme1 && footerTheme1.data && footerTheme1.data.fieldValue && footerTheme1.data.fieldValue.container && footerTheme1.data.fieldValue.container.properties;
-    const element = document.getElementById('footer_container');
+    const element = document.getElementById('new_footer_container');
     console.log('zzzz', getStyles(properties));
     
     if (element) {
@@ -172,6 +172,8 @@ document.addEventListener("DOMContentLoaded", function() {
 </pre>
 
 <style>
+
+
 
     #new_footer_container s {
         color: inherit;
