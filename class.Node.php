@@ -95,7 +95,15 @@ class nodes {
             $_keys .= ",".$key."";
 
 
-            if ($_key == 'Category Main Image Key') {
+            if ($_key == 'Category Main Image Key'
+                or $_key == 'aiku_invoice_id'
+                or $_key == 'aiku_part_id'
+                or $_key == 'aiku_family_id'
+                or $_key == 'aiku_department_id'
+                or $_key == 'aiku_id'
+                or $_key == 'staging_aiku_id'
+
+            ) {
                 $_values .= ','.prepare_mysql($value, true);
             } else {
                 $_values .= ','.prepare_mysql($value, false);
@@ -107,6 +115,7 @@ class nodes {
         $_keys   = preg_replace('/^,/', '', $_keys);
 
         $sql = "insert into ".$this->table_name." ($_keys) values ($_values)";
+        print "$sql   <<<\n";
 
 
         $this->db->exec($sql);
@@ -117,8 +126,8 @@ class nodes {
             print_r($fields);
 
             print "$sql\n";
-
-            throw new Exception('Error inserting category');
+return;
+           // throw new Exception('Error inserting category');
         }
 
         $node_id  = $this->id;
