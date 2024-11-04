@@ -155,7 +155,7 @@ const footerTheme1 = {
 document.addEventListener("DOMContentLoaded", function() {
     console.log('mounted')
     const properties = footerTheme1 && footerTheme1.data && footerTheme1.data.fieldValue && footerTheme1.data.fieldValue.container && footerTheme1.data.fieldValue.container.properties;
-    const element = document.getElementById('new_footer_container');
+    const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles(properties));
     
     if (element) {
@@ -175,22 +175,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-    #new_footer_container a {
+    #footer_container a {
         color: inherit;
 
     }
 
-    #new_footer_container p {
+    #footer_container p {
         margin: 0;
         line-height: 1rem;
         font-size: 1rem;
     }
-    #new_footer_container li {
+    #footer_container li {
         list-style-type: none;
     }
 </style>
 <div>
-    <div id="new_footer_container" class="tw-py-24 md:tw-px-16">
+    <div id="footer_container" class="tw-py-24 md:tw-px-16">
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
