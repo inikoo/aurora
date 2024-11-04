@@ -172,6 +172,12 @@ document.addEventListener("DOMContentLoaded", function() {
 </pre>
 
 <style>
+
+    #new_footer_container s {
+        color: inherit;
+
+    }
+
     #new_footer_container p {
         margin: 0;
         line-height: 1rem;
