@@ -30,7 +30,7 @@ if ($result = $db->query($sql)) {
 
 
         if(!in_array($deal_campaign->get('Code'),['OR','VL','CU'] )){
-            print_r($row);
+            //print_r($row);
             $deal_campaign->get('Code')."\n";
             $deal->update_status_from_dates(false);
             foreach ($deal->get_deal_components('objects', 'all') as $component) {
@@ -45,11 +45,7 @@ if ($result = $db->query($sql)) {
 
     }
 
-} else {
-    print_r($error_info = $db->errorInfo());
-    exit;
 }
-
 
 $sql = sprintf("SELECT *  FROM `Deal Component Dimension`  where  `Deal Component Expiration Date` is not null  and `Deal Component Status` not in ('Finish') ");
 
@@ -65,7 +61,7 @@ if ($result = $db->query($sql)) {
 
 
         if(!in_array($deal_campaign->get('Code'),['OR','VL','CU'] )){
-            print_r($row);
+           // print_r($row);
             $deal_campaign->get('Code')." <dc \n";
 
             $dealComponent->update_status_from_dates();
