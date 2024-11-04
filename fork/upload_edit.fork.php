@@ -523,6 +523,8 @@ function new_object($db, $editor, $data, $upload, $fork_key) {
 
             $store->fork = true;
 
+            print_r($data);
+
             $object = $store->create_product($data['fields_data']);
 
 
