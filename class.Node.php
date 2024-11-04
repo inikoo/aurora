@@ -113,6 +113,11 @@ class nodes {
 
         $this->id = $this->db->lastInsertId();
         if(!$this->id){
+
+            print_r($fields);
+
+            print "$sql\n";
+
             throw new Exception('Error inserting category');
         }
 
