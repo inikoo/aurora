@@ -150,17 +150,27 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 </style>
 <div>
     <div id="footer_container" class="tw-py-24 md:tw-px-16">
-        <div class="tw-flex tw-py-6 tw-mb-6 tw-border-b tw-border-solid tw-border-gray-300">
-            {foreach from=$wowsbar_footer_data.data.fieldValue.topFooter item=block}
-                <div class="tw-flex-1">
-                    {if $block.type == 'image'}
-                        <img src="{$block.value}" alt="xxxxx">
-                    {else}
-                        {$block.value}
-                    {/if}
-                </div>
-            {/foreach}
+        <div class="tw-flex tw-gap-8 tw-pt-2 tw-pb-6 tw-mb-10 tw-border-0 tw-border-b-2 tw-border-solid tw-border-gray-600">
+            <div class="tw-flex-1 tw-flex tw-justify-start ">
+                {if $wowsbar_footer_data.data.fieldValue.logo}
+                    <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-24 tw-w-auto tw-min-w-16">
+                {/if}
+            </div>
+
+            <div class="tw-flex-1 tw-flex tw-justify-center ">
+                {$wowsbar_footer_data.data.fieldValue.email}
+            </div>
+
+            <div class="tw-flex-1 tw-flex tw-justify-center ">
+                {$wowsbar_footer_data.data.fieldValue.email}
+            </div>
+            
+            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-end ">
+                <span>{$wowsbar_footer_data.data.fieldValue.phone.number}</span>
+                <span class="tw-text-sm tw-text-gray-400">{$wowsbar_footer_data.data.fieldValue.phone.openHours}</span>
+            </div>
         </div>
+
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
