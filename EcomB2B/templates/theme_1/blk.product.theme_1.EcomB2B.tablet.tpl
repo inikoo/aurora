@@ -21,6 +21,7 @@
 {if isset($data.top_margin)}{assign "top_margin" $data.top_margin}{else}{assign "top_margin" "0"}{/if}
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
+{assign 'variants' $product->get_variants()}
 
 <div id="block_{$key}" class="{if !$data.show}hide{/if} product_container"  data-product_id="{$product->id}" style="padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
 
@@ -103,8 +104,22 @@
                 </div>
 
                 <div class="one-half-responsive last-column ">
-                    <h1 >{$product->get('Code')}</h1>
-                    <h2 >{$product->get('Name')}</h2>
+
+
+
+                    <h1 >
+
+                       {if $product->get('number_visible_variants')==0}{$product->get('Code')}{else}{$variants[0]->get('Code')}{/if}
+
+                    </h1>
+
+
+
+                    <h2 >
+                        {if $product->get('number_visible_variants')==0}{$product->get('Name')}{else}{$variants[0]->get('Name')}{/if}
+
+
+                    </h2>
                     {if $logged_in}
 
 
