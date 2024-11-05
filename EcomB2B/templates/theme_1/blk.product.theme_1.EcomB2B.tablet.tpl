@@ -118,7 +118,6 @@
                     <h2 >
                         {if $product->get('number_visible_variants')==0}{$product->get('Name')}{else}{$variants[0]->get('Name')}{/if}
 
-
                     </h2>
                     {if $logged_in}
 
@@ -177,9 +176,21 @@
                         <div class="container">
                             <div class="product_prices log_in " style="margin-left:0px;padding-left:0px;font-size: 140%;">
                                 <div class="product_price">{if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}: {$product->get('Price')} <span style="font-size: 90%">{$product->get('Price Per Unit')}</span></div>
+
                                 {assign 'rrp' $product->get('RRP')}
-                                {if $rrp!=''}
+
+
+                                {if  $product->get('number_visible_variants')>0 }
+                                    <div>
+                                        {if $rrp!=''}<div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+                                    </div>
+                                {/if}
+
+                                {if $rrp!='' and $product->get('number_visible_variants')==0}
                                     <div style="margin-top:4px">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}: {$rrp}</div>{/if}
+
+
+
 
                                 {if $logged_in and  isset($settings['Display Stock Levels in Product']) and $settings['Display Stock Levels in Product']=='Yes'}
                                     <div style="margin-top:15px">
