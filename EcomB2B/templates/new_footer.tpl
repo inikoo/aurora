@@ -239,7 +239,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
-                {* Column 1 *}
+                {* column_1 *}
                 <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_1.data item=block}
@@ -270,7 +270,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                                         {$block.name}
                                     </summary>
 
-                                    <ul class="tw-mt-4 tw-block tw-space-y-4">
+                                    <ul class="tw-block tw-space-y-4 tw-pl-[2.2rem]">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-items-center tw-text-sm">
                                                 {$link.name}
@@ -308,7 +308,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                     </div>
                 </div>
 
-                {* Column 2 *}
+                {* column_2 *}
                 <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_2.data item=block}
@@ -339,7 +339,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                                         {$block.name}
                                     </summary>
 
-                                    <ul class="tw-mt-4 tw-block tw-space-y-4">
+                                    <ul class="tw-block tw-space-y-4 tw-pl-[2.2rem]">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-items-center tw-text-sm">
                                                 {$link.name}
@@ -377,7 +377,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                     </div>
                 </div>
 
-                {* Column 3 *}
+                {* column_3 *}
                 <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_3.data item=block}
@@ -408,7 +408,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                                         {$block.name}
                                     </summary>
 
-                                    <ul class="tw-mt-4 tw-block tw-space-y-4">
+                                    <ul class="tw-block tw-space-y-4 tw-pl-[2.2rem]">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-items-center tw-text-sm">
                                                 {$link.name}
