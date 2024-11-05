@@ -134,7 +134,7 @@
                 <div class="store-product-socials full-bottom " style="text-align: center">
                     <div class="mobile_ordering" data-settings='{ "pid":{$product->id} }'>
                         <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
-                        <input type="number" min="0" value="" class="needsclick order_qty">
+                        <input  type="number" min="0" value="" class="needsclick order_qty order_qty_{$product->id}">
                         <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
                         <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                     </div>

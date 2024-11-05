@@ -432,7 +432,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                         <div class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-12">
                             {* v-for="payment in modelValue.PaymentData.data" *}
                             {foreach from=$wowsbar_footer_data.data.fieldValue.paymentData.data item=block}
-                                <img src="{$block.image}" alt="{$block.name}" class="tw-h-auto tw-max-h-5 md:tw-max-h-8 tw-max-w-full tw-w-fit">
+                                <img src="{$block.image}" alt="{$block.name}" class="tw-h-auto tw-max-h-7 md:tw-max-h-8 tw-max-w-full tw-w-fit">
                             {/foreach}
                         </div>
                     </div>
