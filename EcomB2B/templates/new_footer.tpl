@@ -172,12 +172,8 @@ document.addEventListener("DOMContentLoaded", function() {
 </pre>
 
 <style>
-
-
-
     #footer_container a {
         color: inherit;
-
     }
 
     #footer_container p {
@@ -188,6 +184,56 @@ document.addEventListener("DOMContentLoaded", function() {
     #footer_container li {
         list-style-type: none;
     }
+
+    // 
+    #footer_container details {
+        width: 80%;
+        margin: 0 auto;
+        background: #ef4646;
+        margin-bottom: .5rem;
+        box-shadow: 0 .1rem 1rem -.5rem rgba(0, 0, 0, .4);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    #footer_container summary {
+        padding: 1rem;
+        display: block;
+        background: #333;
+        padding-left: 2.2rem;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    #footer_container summary:before {
+        content: '';
+        border-width: .4rem;
+        border-style: solid;
+        border-color: transparent transparent transparent #95ff00;
+        position: absolute;
+        top: 1.3rem;
+        left: 1rem;
+        transform: rotate(0);
+        transform-origin: .2rem 50%;
+        transition: .25s transform ease;
+    }
+
+    /* THE MAGIC 🧙‍♀️ */
+    #footer_container details[open]>summary:before {
+        transform: rotate(90deg);
+    }
+
+
+    #footer_container details summary::-webkit-details-marker {
+        display: none;
+    }
+
+    #footer_container details>ul {
+        padding-bottom: 1rem;
+        margin-bottom: 0;
+    }
+    
 </style>
 <div>
     <div id="footer_container" class="tw-py-24 md:tw-px-16">
@@ -221,23 +267,27 @@ document.addEventListener("DOMContentLoaded", function() {
 
                                     {* Mobile *}
                                     <div class="tw-block md:tw-hidden">
-                                        <div class="tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none tw-w-full">
-                                            <div class="tw-flex tw-justify-between">
-                                                <div class="tw-flex">
-                                                    <div class="tw-w-fit">
-                                                            <div class="tw-text-xl tw-font-semibold tw-leading-6">
+                                        <details class="tw-flex tw-justify-between tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 tw-border-none tw-w-full">
+                                            <summary class="tw-text-xl tw-font-semibold tw-leading-6">
+                                                {$block.name}
+                                            </summary>
 
-                                                                {$block.name}
-
-                                                            </div>
+                                            <ul class="tw-block tw-space-y-1">
+                                                {foreach from=$block.data item=link}
+                                                <li>
+                                                    <div class="tw-flex tw-items-center">
+                                                        <div class="tw-w-full">
+                                                                <div class="tw-text-sm tw-block">
+                                                                    {$link.name}
+                                                                </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div>
-                                                    <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3"></div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                </li>
+                                                {/foreach}
+                                            </ul>
+                                        </details>
 
+                                        {*
                                         <div>
                                             <div>
                                                 <div>
@@ -260,6 +310,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 </div>
                                             </div>
                                         </div>
+                                        *}
                                     </div>
                                 </div>
                             </div>
