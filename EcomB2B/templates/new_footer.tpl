@@ -198,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function() {
     #footer_container summary {
         padding: 1rem;
         display: block;
-        background: #333;
         padding-left: 2.2rem;
         position: relative;
         cursor: pointer;
@@ -213,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function() {
         position: absolute;
         top: 50%;
         left: 0rem;
-        transform: rotate(0);
+        transform: translateY(-50%);
         transform-origin: 25% 50%;
         transition: .2s transform ease;
     }
