@@ -128,7 +128,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
         content: '';
         border-width: .4rem;
         border-style: solid;
-        border-color: transparent transparent transparent #fff;
+        border-color: transparent transparent #fff transparent ;
         position: absolute;
         top: 50%;
         right: 0rem;
@@ -157,7 +157,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
     
 </style>
 <div>
-    <div id="footer_container" class="tw-pb-24 tw-pt-4 md:tw-pt-8 md:tw-px-16">
+    <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pb-24 tw-pt-4 md:tw-pt-8 md:tw-px-16">
         <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
             <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start ">
                 {if $wowsbar_footer_data.data.fieldValue.logo}
@@ -208,8 +208,8 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                             {* Mobile *}
                             <div class="tw-block md:tw-hidden">
-                                <details class="tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
-                                    <summary class="tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
+                                <details class="tw-p-2 md:tw-p-0 tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
+                                    <summary class="tw-mb-2 md:tw-mb-0 tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
                                         {$block.name}
                                     </summary>
 
@@ -432,7 +432,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                         <div class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-12">
                             {* v-for="payment in modelValue.PaymentData.data" *}
                             {foreach from=$wowsbar_footer_data.data.fieldValue.paymentData.data item=block}
-                                <img src="{$block.image}" alt="{$block.name}" class="tw-h-auto tw-max-h-5 md:tw-max-h-10 tw-max-w-full tw-w-fit">
+                                <img src="{$block.image}" alt="{$block.name}" class="tw-h-auto tw-max-h-5 md:tw-max-h-8 tw-max-w-full tw-w-fit">
                             {/foreach}
                         </div>
                     </div>
