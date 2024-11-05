@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-console.log('wowsbar Data:', {$wowsbar_footer_data})
+console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
 </script>
 
