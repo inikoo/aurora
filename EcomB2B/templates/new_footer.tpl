@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 5')
+    console.log('new_footer mounted 6')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -117,28 +117,28 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
     }
 
     #footer_container summary {
-        padding: 1rem;
+        // padding: 1rem;
         display: block;
         position: relative;
         cursor: pointer;
         user-select: none;
     }
 
-    // #footer_container summary:before {
-    //     content: '';
-    //     border-width: .4rem;
-    //     border-style: solid;
-    //     border-color: transparent transparent transparent #fff;
-    //     position: absolute;
-    //     top: 50%;
-    //     left: 0rem;
-    //     transform: translateY(-50%);
-    //     transform-origin: 25% 50%;
-    //     transition: .2s transform ease;
-    // }
+    #footer_container summary:before {
+        content: '';
+        border-width: .4rem;
+        border-style: solid;
+        border-color: transparent transparent transparent #fff;
+        position: absolute;
+        top: 50%;
+        right: 0rem;
+        transform: translateY(-50%);
+        transform-origin: 25% 50%;
+        transition: .2s transform ease;
+    }
 
     #footer_container details[open] {
-        background: rgba(240,240,240,0.15),
+        background: rgba(240,240,240,0.15)
     }
 
     /* THE MAGIC 🧙‍♀️ */
@@ -158,8 +158,8 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 </style>
 <div>
     <div id="footer_container" class="tw-pb-24 tw-pt-4 md:tw-pt-8 md:tw-px-16">
-        <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-6 tw-mb-0 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
-            <div class="tw-flex-1 tw-flex tw-justify-start ">
+        <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
+            <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start ">
                 {if $wowsbar_footer_data.data.fieldValue.logo}
                     <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}?v=3" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
                 {/if}
@@ -169,11 +169,11 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 
             </div>
 
-            <div class="tw-flex-1 tw-flex tw-items-center">
+            <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start tw-items-center">
                 <a href="mailto:{$wowsbar_footer_data.data.fieldValue.email}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.email}</a>
             </div>
             
-            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-start md:tw-items-end tw-justify-center">
+            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
                 <a href="tel:{$wowsbar_footer_data.data.fieldValue.phone.number}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.phone.number}</a>
                 <span class="" style="font-size: 15px">{$wowsbar_footer_data.data.fieldValue.phone.openHours}</span>
             </div>
@@ -183,7 +183,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
                 {* column_1 *}
-                <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                <div class="md:tw-px-0 tw-grid tw-gap-y-3 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.columns.column_1.data item=block}
                             {* Desktop *}
@@ -208,8 +208,8 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                             {* Mobile *}
                             <div class="tw-block md:tw-hidden">
-                                <details class="tw-transition-all tw-p-3 tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-pb-4 tw-border-none tw-w-full">
-                                    <summary class="tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6 tw-relative tw-before:content-[''] tw-before:absolute tw-before:top-1/2 tw-before:left-full sm:tw-before:left-0 tw-before:border-solid tw-before:border-t-transparent tw-before:border-r-transparent tw-before:border-b-transparent tw-before:border-l-white tw-before:border-l-4 tw-before:transform tw-before:-translate-y-1/2 tw-before:transition-transform tw-before:duration-200 tw-before:ease-linear">
+                                <details class="tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
+                                    <summary class="tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
                                         {$block.name}
                                     </summary>
 
@@ -252,7 +252,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 </div>
 
                 {* column_2 *}
-                <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                <div class="md:tw-px-0 tw-grid tw-gap-y-3 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.columns.column_2.data item=block}
                             {* Desktop *}
@@ -277,12 +277,12 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                             {* Mobile *}
                             <div class="tw-block md:tw-hidden">
-                                <details class="tw-flex tw-justify-between tw-cursor-default tw-border-b tw-pb-4 tw-border-none tw-w-full">
-                                    <summary class="tw-text-xl tw-font-semibold tw-leading-6">
+                                <details class="tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
+                                    <summary class="tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
                                         {$block.name}
                                     </summary>
 
-                                    <ul class="tw-block tw-space-y-4 tw-pl-[2.2rem]">
+                                    <ul class="tw-block tw-space-y-4 tw-pl-0 md:tw-pl-[2.2rem]">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-items-center tw-text-sm">
                                                 {$link.name}
@@ -321,7 +321,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 </div>
 
                 {* column_3 *}
-                <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                <div class="md:tw-px-0 tw-grid tw-gap-y-3 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.columns.column_3.data item=block}
                             {* Desktop *}
@@ -346,12 +346,12 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                             {* Mobile *}
                             <div class="tw-block md:tw-hidden">
-                                <details class="tw-flex tw-justify-between tw-cursor-default tw-border-b tw-pb-4 tw-border-none tw-w-full">
-                                    <summary class="tw-text-xl tw-font-semibold tw-leading-6">
+                                <details class="tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
+                                    <summary class="tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
                                         {$block.name}
                                     </summary>
 
-                                    <ul class="tw-block tw-space-y-4 tw-pl-[2.2rem]">
+                                    <ul class="tw-block tw-space-y-4 tw-pl-0 md:tw-pl-[2.2rem]">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-items-center tw-text-sm">
                                                 {$link.name}
@@ -453,7 +453,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
             <div id="wowsbar_footer_top_copyright"  class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
                 <div>
-                    {$wowsbar_footer_data.data.fieldValue.copyRight}
+                    {$wowsbar_footer_data.data.fieldValue.copyight}
 
                 </div>
             </div>
