@@ -14,6 +14,7 @@
 {if isset($data.bottom_margin)}{assign "bottom_margin" $data.bottom_margin}{else}{assign "bottom_margin" "0"}{/if}
 
 
+<div style="display: none">xxxx aaaa</div>
 
 <div id="block_{$key}"  class=" _block {if !$data.show}hide{/if}"
      style="clear:both;padding-top:{$top_margin}px;padding-bottom:{$bottom_margin}px">
@@ -22,6 +23,14 @@
 
         {counter start=-1 print=false assign="counter"}
         {foreach from=$data.items item=item key=stack_index}
+
+            <div style="display: none">caca caca</div>
+
+            <pre style="display: none" class="variants_data">
+                                  hello    >>{$item|@print_r}<<  xV6=7
+                            </pre>
+
+
             {if $item.type=='product'}
                 {counter print=false assign="counter"}
                 <div style=" display: flex;margin-bottom:20px" class="product_container" data-product_id="{$item.product_id}">
@@ -119,9 +128,6 @@
                                     <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
                                 </div>
                             </div>
-                            <pre style="display: none" class="variants_data">
-                                  hello    >>{$item|@print_r}<<  xV6=7
-                            </pre>
 
                             {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
 
