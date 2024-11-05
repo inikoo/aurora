@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 6')
+    console.log('new_footer mounted 7')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -128,7 +128,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
         content: '';
         border-width: .4rem;
         border-style: solid;
-        border-color: transparent transparent #fff transparent ;
+        border-color: #fff transparent transparent transparent ;
         position: absolute;
         top: 50%;
         right: 0rem;
@@ -277,8 +277,8 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                             {* Mobile *}
                             <div class="tw-block md:tw-hidden">
-                                <details class="tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
-                                    <summary class="tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
+                                <details class="tw-p-2 md:tw-p-0 tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
+                                    <summary class="tw-mb-2 md:tw-mb-0 tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
                                         {$block.name}
                                     </summary>
 
@@ -346,8 +346,8 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                             {* Mobile *}
                             <div class="tw-block md:tw-hidden">
-                                <details class="tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
-                                    <summary class="tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
+                                <details class="tw-p-2 md:tw-p-0 tw-transition-all tw-rounded tw-flex tw-justify-between tw-cursor-default tw-border-b tw-border-none tw-w-full">
+                                    <summary class="tw-mb-2 md:tw-mb-0 tw-pl-0 md:tw-pl-[2.2rem] tw-text-xl tw-font-semibold tw-leading-6">
                                         {$block.name}
                                     </summary>
 
