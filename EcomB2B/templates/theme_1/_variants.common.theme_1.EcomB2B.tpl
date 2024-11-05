@@ -34,6 +34,28 @@
     .variant_chooser th {
         border-bottom: 1px solid #ccc;font-size: small;padding:4px 10px;
     }
+
+    {if $device=='mobile'}
+
+    .variant_chooser_dialog {
+        width: 100%
+    }
+
+    .variant_chooser{
+        font-size: medium;
+
+    }
+    .variant_chooser th {
+        font-size: medium;
+    }
+    .variant_chooser td.smaller_font {
+        font-size: medium;padding-top:20px;padding-bottom:20px;
+    }
+
+
+
+    {/if}
+
 </style>
 
 
@@ -78,9 +100,9 @@
 
     function variant_selected(element){
         console.log('var sel', element)
-    //   console.log($(element).data('code'))
-    //   console.log($(element).data('name'))
-    //   console.log($(element).data('weight'))
+       console.log($(element).data('code'))
+       console.log($(element).data('name'))
+       console.log($(element).data('weight'))
 
       let parent = $('.product.product_container')
 

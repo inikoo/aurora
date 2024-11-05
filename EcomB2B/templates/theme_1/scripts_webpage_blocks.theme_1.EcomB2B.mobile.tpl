@@ -2,9 +2,9 @@
 
 
     function show_gold_reward_mobile(GRDiscount, GRFamilies){
-        console.log('debug M v3')
-        console.log('GRD', GRDiscount)
-        console.log('GRF', GRFamilies)
+        console.log('debug M v4')
+       // console.log('GRD', GRDiscount)
+    //    console.log('GRF', GRFamilies)
 
         // To show GR (as gray stuff)
         if(GRFamilies.length>0){
@@ -21,10 +21,10 @@
             console.log('dc val', value)
             
             if(value.price) {
+
                 let block = $('#price_block_'+index)
-                console.log('block', block)
-    
-    
+
+
                 block.find('.gold_reward_product_price').removeClass('hide')
                 block.find('.gold_reward_percentage').html(value.percentage)
                 block.find('.gold_reward_price').html(value.price)
