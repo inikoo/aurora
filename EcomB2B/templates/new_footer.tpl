@@ -66,95 +66,9 @@ function getStyles(properties) {
     };
 }
 
-const footerTheme1 = {
-    code: "FooterTheme1",
-    name: "Footer 1",
-    data: {
-        fieldValue: {
-            container: {
-                properties: {
-                    text: {
-                        color: "#FFFFFF",
-                        fontFamily: null
-                    },
-                    border: {
-                        top: {
-                            value: 0
-                        },
-                        left: {
-                            value: 0
-                        },
-                        unit: "px",
-                        color: "#000000",
-                        right: {
-                            value: 0
-                        },
-                        bottom: {
-                            value: 0
-                        },
-                        rounded: {
-                            unit: "px",
-                            topleft: {
-                                value: 0
-                            },
-                            topright: {
-                                value: 0
-                            },
-                            bottomleft: {
-                                value: 0
-                            },
-                            bottomright: {
-                                value: 0
-                            }
-                        }
-                    },
-                    margin: {
-                        top: {
-                            value: 0
-                        },
-                        left: {
-                            value: 0
-                        },
-                        unit: "px",
-                        right: {
-                            value: 0
-                        },
-                        bottom: {
-                            value: 0
-                        }
-                    },
-                    padding: {
-                        top: {
-                            value: 96
-                        },
-                        left: {
-                            value: 28
-                        },
-                        unit: "px",
-                        right: {
-                            value: 28
-                        },
-                        bottom: {
-                            value: 96
-                        }
-                    },
-                    background: {
-                        type: "color",
-                        color: "rgba(0, 0, 0, 1)", // Corrected color syntax here
-                        image: {
-                            original: null
-                        }
-                    }
-                }
-            },
-        }
-    },
-};
-
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted')
-    // const properties = footerTheme1 && footerTheme1.data && footerTheme1.data.fieldValue && footerTheme1.data.fieldValue.container && footerTheme1.data.fieldValue.container.properties;
+    console.log('new_footer mounted 1')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -236,10 +150,10 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 </style>
 <div>
     <div id="footer_container" class="tw-py-24 md:tw-px-16">
-        <div class="tw-flex tw-py-6 tw-border tw-border-b tw-border-gray-300">
+        <div class="tw-flex tw-py-6 tw-mb-6 tw-border-b tw-border-solid tw-border-gray-300">
             {foreach from=$wowsbar_footer_data.data.fieldValue.topFooter item=block}
                 <div class="tw-flex-1">
-                    {if block.type == 'image'}
+                    {if $block.type == 'image'}
                         <img src="{$block.value}" alt="xxxxx">
                     {else}
                         {$block.value}
