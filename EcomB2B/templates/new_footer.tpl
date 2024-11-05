@@ -153,15 +153,15 @@ const footerTheme1 = {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('mounted')
-    const properties = footerTheme1 && footerTheme1.data && footerTheme1.data.fieldValue && footerTheme1.data.fieldValue.container && footerTheme1.data.fieldValue.container.properties;
+    console.log('new_footer mounted')
+    // const properties = footerTheme1 && footerTheme1.data && footerTheme1.data.fieldValue && footerTheme1.data.fieldValue.container && footerTheme1.data.fieldValue.container.properties;
     const element = document.getElementById('footer_container');
-    console.log('zzzz', getStyles(properties));
+    console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
     if (element) {
-        Object.assign(element.style, getStyles(properties));
+        Object.assign(element.style, getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     } else {
-        console.warn('Element with id "footer_container" not found');
+        console.error('Element with id "footer_container" not found');
     }
 });
 
