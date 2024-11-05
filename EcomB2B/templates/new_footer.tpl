@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 7')
+    console.log('new_footer mounted 8')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -130,10 +130,10 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
         border-style: solid;
         border-color: #fff transparent transparent transparent ;
         position: absolute;
-        top: 50%;
-        right: 0rem;
-        transform: translateY(-50%);
-        transform-origin: 25% 50%;
+        top: 10%;
+        right: 1rem;
+        // transform: translateY(-50%);
+        transform-origin: 50% 50%;
         transition: .2s transform ease;
     }
 
@@ -143,7 +143,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
     /* THE MAGIC 🧙‍♀️ */
     #footer_container details[open]>summary:before {
-        transform: rotate(90deg);
+        transform: rotate(180deg);
     }
 
 
