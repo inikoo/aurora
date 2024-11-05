@@ -237,6 +237,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
+                {* Column 1 *}
                 <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_1.data item=block}
@@ -262,12 +263,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
                             {* Mobile *}
                             <div class="tw-block md:tw-hidden">
-                                <details class="tw-flex tw-justify-between tw-cursor-default tw-space-y-1 tw-border-b tw-pb-4 tw-border-none tw-w-full">
+                                <details class="tw-flex tw-justify-between tw-cursor-default tw-border-b tw-pb-4 tw-border-none tw-w-full">
                                     <summary class="tw-text-xl tw-font-semibold tw-leading-6">
                                         {$block.name}
                                     </summary>
 
-                                    <ul class="tw-block tw-space-y-1">
+                                    <ul class="tw-mt-4 tw-block tw-space-y-4">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-items-center tw-text-sm">
                                                 {$link.name}
@@ -305,171 +306,139 @@ document.addEventListener("DOMContentLoaded", function() {
                     </div>
                 </div>
 
-                <div class=" tw-px-4 md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
-                    <div class="tw-px-4 md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                {* Column 2 *}
+                <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                    <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_2.data item=block}
-                            <div >
+                            {* Desktop *}
+                            <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
+                                <div class="tw-flex tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
+                                    {$block.name}
+                                </div>
+
                                 <div>
-                                    <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
-                                        <div class="tw-flex">
-                                            <div class="tw-w-fit">
-                                                <div class="tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
-
-                                                    {$block.name}
-
+                                    <!-- v-for="(sub, subIndex) in item.data" -->
+                                    <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                        {foreach from=$block.data item=link}
+                                            <li class="tw-flex tw-w-full tw-items-center tw-gap-2">
+                                                <div class="tw-text-sm tw-block">
+                                                    {$link.name}
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {* Mobile *}
+                            <div class="tw-block md:tw-hidden">
+                                <details class="tw-flex tw-justify-between tw-cursor-default tw-border-b tw-pb-4 tw-border-none tw-w-full">
+                                    <summary class="tw-text-xl tw-font-semibold tw-leading-6">
+                                        {$block.name}
+                                    </summary>
+
+                                    <ul class="tw-mt-4 tw-block tw-space-y-4">
+                                        {foreach from=$block.data item=link}
+                                            <li class="tw-flex tw-items-center tw-text-sm">
+                                                {$link.name}
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </details>
+
+                                {*
+                                <div>
+                                    <div>
                                         <div>
                                             <!-- v-for="(sub, subIndex) in item.data" -->
                                             <div>
-                                                <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                                <ul class="tw-block tw-space-y-1">
                                                     {foreach from=$block.data item=link}
-                                                        <li>
-                                                            <div class="tw-flex tw-items-center tw-gap-2">
-                                                                <div class="tw-w-full">
+                                                    <li>
+                                                        <div class="tw-flex tw-items-center">
+                                                            <div class="tw-w-full">
                                                                     <div class="tw-text-sm tw-block">
                                                                         {$link.name}
                                                                     </div>
-                                                                </div>
                                                             </div>
-                                                        </li>
+                                                        </div>
+                                                    </li>
                                                     {/foreach}
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="tw-block md:tw-hidden">
-                                        <div >
-                                            <div
-                                                    class="tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none tw-w-full">
-                                                <div class="tw-flex tw-justify-between">
-                                                    <div class="tw-flex">
-                                                        <div class="tw-w-fit">
-                                                            <div class="tw-text-xl tw-font-semibold tw-leading-6">
-
-                                                                {$block.name}
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <div>
-                                                    <div>
-                                                        <!-- v-for="(sub, subIndex) in item.data" -->
-                                                        <div>
-                                                            <ul class="tw-block tw-space-y-1">
-                                                                {foreach from=$block.data item=link}
-                                                                    <li>
-                                                                        <div class="tw-flex tw-items-center">
-                                                                            <div class="tw-w-full">
-                                                                                <div class="tw-text-sm tw-block">
-                                                                                    {$link.name}
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
-                                                                {/foreach}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
+                                *}
                             </div>
                         {/foreach}
                     </div>
                 </div>
 
-                <div class=" tw-px-4 md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
-                    <div class="tw-px-4 md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                {* Column 3 *}
+                <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
+                    <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                         {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_3.data item=block}
-                            <div >
+                            {* Desktop *}
+                            <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
+                                <div class="tw-flex tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
+                                    {$block.name}
+                                </div>
+
                                 <div>
-                                    <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
-                                        <div class="tw-flex">
-                                            <div class="tw-w-fit">
-                                                <div class="tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
-
-                                                    {$block.name}
-
+                                    <!-- v-for="(sub, subIndex) in item.data" -->
+                                    <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                        {foreach from=$block.data item=link}
+                                            <li class="tw-flex tw-w-full tw-items-center tw-gap-2">
+                                                <div class="tw-text-sm tw-block">
+                                                    {$link.name}
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {* Mobile *}
+                            <div class="tw-block md:tw-hidden">
+                                <details class="tw-flex tw-justify-between tw-cursor-default tw-border-b tw-pb-4 tw-border-none tw-w-full">
+                                    <summary class="tw-text-xl tw-font-semibold tw-leading-6">
+                                        {$block.name}
+                                    </summary>
+
+                                    <ul class="tw-mt-4 tw-block tw-space-y-4">
+                                        {foreach from=$block.data item=link}
+                                            <li class="tw-flex tw-items-center tw-text-sm">
+                                                {$link.name}
+                                            </li>
+                                        {/foreach}
+                                    </ul>
+                                </details>
+
+                                {*
+                                <div>
+                                    <div>
                                         <div>
                                             <!-- v-for="(sub, subIndex) in item.data" -->
                                             <div>
-                                                <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                                <ul class="tw-block tw-space-y-1">
                                                     {foreach from=$block.data item=link}
-                                                        <li>
-                                                            <div class="tw-flex tw-items-center tw-gap-2">
-                                                                <div class="tw-w-full">
+                                                    <li>
+                                                        <div class="tw-flex tw-items-center">
+                                                            <div class="tw-w-full">
                                                                     <div class="tw-text-sm tw-block">
                                                                         {$link.name}
                                                                     </div>
-                                                                </div>
                                                             </div>
-                                                        </li>
+                                                        </div>
+                                                    </li>
                                                     {/foreach}
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="tw-block md:tw-hidden">
-                                        <div >
-                                            <div
-                                                    class="tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none tw-w-full">
-                                                <div class="tw-flex tw-justify-between">
-                                                    <div class="tw-flex">
-                                                        <div class="tw-w-fit">
-                                                            <div class="tw-text-xl tw-font-semibold tw-leading-6">
-
-                                                                {$block.name}
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <div icon="open ? faAngleDown : faAngleUp" class="tw-w-3 tw-h-3"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div>
-                                                <div>
-                                                    <div>
-                                                        <!-- v-for="(sub, subIndex) in item.data" -->
-                                                        <div>
-                                                            <ul class="tw-block tw-space-y-1">
-                                                                {foreach from=$block.data item=link}
-                                                                    <li>
-                                                                        <div class="tw-flex tw-items-center">
-                                                                            <div class="tw-w-full">
-                                                                                <div class="tw-text-sm tw-block">
-                                                                                    {$link.name}
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
-                                                                {/foreach}
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
+                                *}
                             </div>
                         {/foreach}
                     </div>
