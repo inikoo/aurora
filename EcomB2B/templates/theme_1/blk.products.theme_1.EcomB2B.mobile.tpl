@@ -119,6 +119,9 @@
                                     <div style="text-align: right; font-size: 0.85rem"  class="gold_reward_unit_price"></div>
                                 </div>
                             </div>
+                            <pre style="display: none" class="variants_data">
+                                  hello    >>{$item|@print_r}<<  xV6=7
+                            </pre>
 
                             {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
 
