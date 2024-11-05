@@ -133,7 +133,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
         top: 10%;
         right: 1rem;
         // transform: translateY(-50%);
-        transform-origin: 50% 50%;
+        transform-origin: center;
         transition: .2s transform ease;
     }
 
