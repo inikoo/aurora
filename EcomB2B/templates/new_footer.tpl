@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 3')
+    console.log('new_footer mounted 4')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -149,15 +149,15 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
     
 </style>
 <div>
-    <div id="footer_container" class="tw-pb-24 tw-pt-8 md:tw-px-16">
-        <div class="tw-flex tw-gap-8 tw-pt-2 tw-pb-6 tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
+    <div id="footer_container" class="tw-pb-24 tw-pt-4 md:tw-pt-8 md:tw-px-16">
+        <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-6 tw-mb-0 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
             <div class="tw-flex-1 tw-flex tw-justify-start ">
                 {if $wowsbar_footer_data.data.fieldValue.logo}
                     <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}?v=3" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
                 {/if}
             </div>
 
-            <div class="tw-flex-1 tw-flex tw-justify-center ">
+            <div class="tw-hidden tw-flex-1 md:tw-flex tw-justify-center ">
                 
             </div>
 
@@ -165,7 +165,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 <a href="mailto:{$wowsbar_footer_data.data.fieldValue.email}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.email}</a>
             </div>
             
-            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-end tw-justify-center">
+            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-start md:tw-items-end tw-justify-center">
                 <a href="tel:{$wowsbar_footer_data.data.fieldValue.phone.number}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.phone.number}</a>
                 <span class="" style="font-size: 15px">{$wowsbar_footer_data.data.fieldValue.phone.openHours}</span>
             </div>
@@ -421,10 +421,10 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                         </div>
                     *}
                         
-                        <div class="tw-flex tw-flex-wrap tw-gap-4 tw-mt-12">
+                        <div class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-12">
                             {* v-for="payment in modelValue.PaymentData.data" *}
                             {foreach from=$wowsbar_footer_data.data.fieldValue.paymentData.data item=block}
-                                <img src="{$block.image}" alt="{$block.name}" class="tw-h-auto tw-max-h-[30px] tw-w-auto tw-min-w-[45px]">
+                                <img src="{$block.image}" alt="{$block.name}" class="tw-h-auto tw-max-h-10 tw-max-w-full tw-w-fit">
                             {/foreach}
                         </div>
                     </div>
