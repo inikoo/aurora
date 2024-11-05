@@ -165,6 +165,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+console.log('wowsbar Data:', {$wowsbar_footer_data})
+
 </script>
 
 <pre style="display: none">
