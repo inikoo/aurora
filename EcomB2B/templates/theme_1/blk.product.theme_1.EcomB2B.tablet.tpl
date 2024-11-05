@@ -154,12 +154,121 @@
 
                             {else}
                             <div>
+                                {if true or  !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
                                 <div class="mobile_ordering" data-settings='{ "pid":{$product->id} }'>
                                     <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
                                     <input type="number" min="0" value="" class="needsclick order_qty">
                                     <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
                                     <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                                 </div>
+                                {else}
+                                    {foreach  from=$variants item=$variant name=variant}
+                                        <div id="ordering_variant_{$variant.id}" class="ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
+                                            <!-- <div style="margin-bottom:5px;margin-top:5px;flex-grow:1">
+                                        <span onclick="open_variant_chooser(this,{$item.product_id})" class="open_variant_chooser" style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
+                                            {$variant.label}
+                                            <i style="position:absolute;right:12px;top:5px" class="fas fa-angle-up"></i>
+                                        </span>
+                                    </div> -->
+
+                                            <div class="tw-pr-3" style="box-sizing: border-box">
+                                                <div onclick="open_variant_chooser(this, {$item.product_id})"
+                                                     style="width: 100%; cursor:pointer; position:relative; padding:3px 0px 3px 10px; border:1px solid #ccc; border-radius: 3px; display: inline-block; box-sizing: border-box">
+                                                    <span class="open_variant_chooser">{$variant.label}</span>
+                                                    <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
+                                                        <span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span>
+                                                    </div>
+                                                    <i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i>
+                                                </div>
+                                            </div>
+
+                                            <div id="price_block_{$item.product_id}" class="yy1 price_block discount_info_family_{$item_family_key} " >
+                                                <div class="original_price_tr tw-flex tw-flex-wrap tw-gap-x-2 tw-items-center" >
+                                                    <div>
+                                                        {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
+                                                        <i class="original_price_checked  fal fa-check" style="color: #727272;font-size: 0.8rem;"></i>
+                                                    </div>
+                                                    <div class="Mobil_Product_Price original_price tw-text-[0.9rem]">{$item.price}</div>
+                                                    {if isset($item.price_unit)}
+                                                        <div  style="text-align: right; font-size: 0.8rem" class="original_price">{$item.price_unit}</div>
+                                                    {/if}
+                                                </div>
+
+                                                <div style="color: rgb(243, 121, 52);" class="gold_reward_product_price tw-flex tw-gap-x-2 tw-items-center pr-2">
+                                                    <div data-family_key="{$item_family_key}"   >
+                                                        <div class="hide discount_info_applied">
+                                                            <div style="display:flex; align-items: center;column-gap: 3px;">
+                                                                <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#0b7933] tw-py-[1px] tw-w-fit">
+                                                                    <i class="gold_reward_badge fas fa-star" style="color: green; opacity: 0.6"></i>
+                                                                    <span class="gold_reward_percentage"></span>
+                                                                </div>
+                                                                <i style="color: seagreen;font-size: 0.8rem;" class="hide gold_reward_applied_check fal fa-check"></i>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="hide discount_info_unappeased">
+                                                            <div class="tw-cursor-pointer tw-text-[0.8rem] tw-text-[#282828] tw-py-[1px] tw-w-fit">
+                                                                <i class="gold_reward_badge fas fa-star-half-alt" style="color: #3f3f3f;"></i>
+                                                                <span class="gold_reward_percentage"></span>
+                                                                <i style="color: #3b3b3b; opacity: 0.7;" class="hide gold_reward_applied fal fa-question-circle"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="gold_reward_price tw-text-[0.9rem]"></div>
+                                                    <div style="font-size: 0.7rem"  class="gold_reward_unit_price"></div>
+                                                </div>
+                                            </div>
+
+                                            {if $store->get('Store Type')=='Dropshipping'}
+                                                <div class="portfolio_row portfolio_row_{$variant.product_id}">
+                                                    <div class=" edit_portfolio_item edit_portfolio_item_trigger add_to_portfolio  ">
+                                                        <i class="fa fa-plus padding_right_5"></i> {if empty($labels._add_to_portfolio)}{t}Portfolio{/t}{else}{$labels._add_to_portfolio}{/if}
+                                                    </div>
+                                                    <div class="edit_portfolio_item remove_from_portfolio hide">
+                                                        <i class="fa fa-store-alt padding_right_5"></i>
+                                                        {if empty($labels._in_portfolio)}{t}In portfolio{/t}{else}{$labels._in_portfolio}{/if}
+                                                        <i style="position: absolute;right:10px;bottom:8px"
+                                                           class="far edit_portfolio_item_trigger fa-trash-alt  sim_button"
+                                                           title="{if empty($labels._remove_from_portfolio)}{t}Remove from portfolio{/t}{else}{$labels._remove_from_portfolio}{/if}"></i>
+                                                    </div>
+                                                </div>
+                                            {else}
+                                                {if $variant.web_state=='Out of Stock'}
+                                                    <div style="margin-top:10px;">
+                                                <span style="padding:5px 10px;" class="highlight-red color-white">
+                                                    {if empty($labels.out_of_stock)}{t}Out of stock{/t}{else}{$labels.out_of_stock}{/if}
+
+                                                    <i data-product_id="{$variant.product_id}"
+                                                       data-label_remove_notification="{if empty($labels.remove_notification)}{t}Click to remove notification{/t},{else}{$labels.remove_notification}{/if}"
+                                                       data-label_add_notification="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                       title="{if empty($labels.add_notification)}{t}Click to be notified by email when back in stock{/t},{else}{$labels.add_notification}{/if}"
+                                                       class="far fa-envelope like_button reminder out_of_stock_reminders_{$variant.product_id} margin_left_5"
+                                                       aria-hidden="true"></i>
+                                                </span>
+                                                    </div>
+                                                    {if !empty($variant.next_shipment_timestamp)  and $variant.next_shipment_timestamp>$smarty.now }
+                                                        <div style="margin-top:8px;padding-left: 0px;font-size: 90%"> {t}Expected{/t} : {$variant.next_shipment_timestamp|date_format:"%x"} </div>
+                                                    {/if}
+                                                {elseif $variant.web_state=='For Sale'}
+                                                    <div class="mobile_ordering" data-settings='{ "pid":{$variant.product_id} }'>
+                                                        <i onclick="save_item_qty_change(this)" class="ordering_button one_less fa fa-fw  fa-minus-circle color-red-dark"></i>
+                                                        <input type="number" min="0" value="" class="order_qty_{$variant.product_id} needsclick order_qty">
+                                                        <i onclick="save_item_qty_change(this)" class="hide ordering_button save fa fa-save fa-fw color-blue-dark"></i>
+                                                        <i onclick="save_item_qty_change(this)" class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
+                                                    </div>
+                                                {/if}
+                                            {/if}
+                                        </div>
+                                    {/foreach}
+
+                                    {include file="theme_1/_variants.theme_1.EcomB2B.tpl" variants=$variants master_id={$product->id} }
+
+
+                                {/if}
+
+
+
                             </div>
                             {/if}
                         {/if}
