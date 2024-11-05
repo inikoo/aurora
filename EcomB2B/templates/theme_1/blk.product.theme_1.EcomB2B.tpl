@@ -186,7 +186,7 @@
                         {else}
                             <div class="tw-mt-5 tw-w-1/2">
                                 <div class="order_row empty order_row_{$product->id} ">
-                                    <input maxlength=6 class='order_input ' type="text" size='2' value='' data-ovalue=''>
+                                    <input   maxlength=6 class='order_input order_qty_{$product->id}' type="text" size='2' value='' data-ovalue=''>
                                     <span class="order_button label sim_button">
                                         <i class="fa fa-hand-pointer fa-fw" aria-hidden="true"></i> {if empty($labels._ordering_order_now)}{t}Order now{/t}{else}{$labels._ordering_order_now}{/if}
                                     </span>
