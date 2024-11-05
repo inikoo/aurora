@@ -236,13 +236,24 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 </style>
 <div>
     <div id="footer_container" class="tw-py-24 md:tw-px-16">
+        <div class="tw-flex tw-py-6 tw-border tw-border-b tw-border-gray-300">
+            {foreach from=$wowsbar_footer_data.data.fieldValue.topFooter item=block}
+                <div class="tw-flex-1">
+                    {if block.type == 'image'}
+                        <img src="{$block.value}" alt="xxxxx">
+                    {else}
+                        {$block.value}
+                    {/if}
+                </div>
+            {/foreach}
+        </div>
         <div class="">
             <div id="wowsbar_footer_top_part" class=" tw-grid tw-grid-cols-1 md:tw-grid-cols-4 tw-gap-3 md:tw-gap-8">
 
                 {* column_1 *}
                 <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
-                        {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_1.data item=block}
+                        {foreach from=$wowsbar_footer_data.data.fieldValue.columns.column_1.data item=block}
                             {* Desktop *}
                             <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
                                 <div class="tw-flex tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
@@ -251,7 +262,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                                 <div>
                                     <!-- v-for="(sub, subIndex) in item.data" -->
-                                    <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                    <ul class="tw-hidden md:tw-block tw-space-y-3">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-w-full tw-items-center tw-gap-2">
                                                 <div class="tw-text-sm tw-block">
@@ -311,7 +322,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 {* column_2 *}
                 <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
-                        {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_2.data item=block}
+                        {foreach from=$wowsbar_footer_data.data.fieldValue.columns.column_2.data item=block}
                             {* Desktop *}
                             <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
                                 <div class="tw-flex tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
@@ -320,7 +331,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                                 <div>
                                     <!-- v-for="(sub, subIndex) in item.data" -->
-                                    <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                    <ul class="tw-hidden md:tw-block tw-space-y-3">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-w-full tw-items-center tw-gap-2">
                                                 <div class="tw-text-sm tw-block">
@@ -380,7 +391,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 {* column_3 *}
                 <div class="md:tw-px-0 tw-grid tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
                     <div class="md:tw-px-0 tw-grid tw-grid-cols-1 tw-gap-y-2 md:tw-gap-y-6 tw-h-fit">
-                        {foreach from=$wowsbar_footer_data.data.fieldValue.column.column_3.data item=block}
+                        {foreach from=$wowsbar_footer_data.data.fieldValue.columns.column_3.data item=block}
                             {* Desktop *}
                             <div class="tw-hidden md:tw-block tw-grid tw-grid-cols-1 md:tw-cursor-default tw-space-y-1 tw-border-b tw-pb-2 md:tw-border-none">
                                 <div class="tw-flex tw-text-xl tw-font-semibold tw-w-fit tw-leading-6">
@@ -389,7 +400,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                                 <div>
                                     <!-- v-for="(sub, subIndex) in item.data" -->
-                                    <ul class="tw-hidden md:tw-block tw-space-y-1">
+                                    <ul class="tw-hidden md:tw-block tw-space-y-3">
                                         {foreach from=$block.data item=link}
                                             <li class="tw-flex tw-w-full tw-items-center tw-gap-2">
                                                 <div class="tw-text-sm tw-block">
@@ -479,12 +490,12 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
                         <address class="tw-mt-10 md:tw-mt-0 tw-not-italic tw-mb-4 tw-text-center md:tw-text-left tw-text-xs md:tw-text-sm tw-text-gray-300">
                             <div>
-                                {$wowsbar_footer_data.data.fieldValue.column.column_4.data.textBox1}
+                                {$wowsbar_footer_data.data.fieldValue.columns.column_4.data.textBox1}
                             </div>
                         </address>
 
                         <div class="tw-flex tw-justify-center tw-gap-x-8 tw-text-gray-300 md:tw-block">
-                            {$wowsbar_footer_data.data.fieldValue.column.column_4.data.textBox2}
+                            {$wowsbar_footer_data.data.fieldValue.columns.column_4.data.textBox2}
                         </div>
                     {*
                         <div
