@@ -9,7 +9,7 @@
 -->
 *}
 
-{if {$website->get('Website Code')}=='awindo'}
+{if $wowsbar_footer_data!=''   }
 {include file="new_footer.tpl"}
 {else}
 {if !empty($footer_data.rows) and  $footer_data.rows|is_array}

@@ -469,7 +469,7 @@
 
 {if $logged_in  and $product->get('number_visible_variants')>0 }
 
-    {include file="theme_1/_variants.common.theme_1.EcomB2B.tpl"  }
+    {include file="theme_1/_variants.common.theme_1.EcomB2B.tpl"  device="desktop" }
 
 {/if}
 
