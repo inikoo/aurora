@@ -88,6 +88,11 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 </pre>
 
 <style>
+    #footer_container * {
+        box-sizing: border-box;
+        color: inherit !important;
+    }
+
     #footer_container a {
         color: inherit;
     }
@@ -155,37 +160,31 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
     #footer_container details>ul {
         margin-bottom: 0;
     }
-
-    #footer_container * {
-        box-sizing: border-box;
-    }
     
 </style>
 <div>
     <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pb-24 tw-pt-4 md:tw-pt-8 md:tw-px-16">
         <div class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
-            <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start ">
+            <div class="tw-flex-1 tw-flex tw-items-center tw-justify-center md:tw-justify-start ">
                 {if $wowsbar_footer_data.data.fieldValue.logo}
                     <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}?v=3" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
                 {/if}
             </div>
 
-            <div class="tw-hidden tw-flex-1 md:tw-flex tw-justify-center ">
-                
-            </div>
-
             <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start tw-items-center">
                 <a href="mailto:{$wowsbar_footer_data.data.fieldValue.email}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.email}</a>
+            </div>
+
+            <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center">
+                <i class="fab fa-whatsapp-square tw-bg-gradient-to-r tw-from-[#25D366] tw-to-[#128C7E] tw-bg-clip-text tw-text-transparent"></i>
+                <span>{$wowsbar_footer_data.data.fieldValue.whatsapp.number}</span>
             </div>
             
             <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
                 {foreach from=$wowsbar_footer_data.data.fieldValue.phone.number item=phone}
-                    <div class="tw-space-x-2">
-                        <i class="fas fa-phone"></i>
-                        <a href="tel:{$phone}" style="font-size: 17px">
-                            {$phone}
-                        </a>
-                    </div>
+                    <a href="tel:{$phone}" style="font-size: 17px">
+                        {$phone}
+                    </a>
                 {/foreach}
             
                 <span class="" style="font-size: 15px">{$wowsbar_footer_data.data.fieldValue.phone.caption}</span>
