@@ -390,19 +390,17 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 </div>
 
 
-                {* Mobile only *}
-                {*
-                <div
-                    class="md:tw-hidden tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
+                {* Social Media Mobile *}
+                <div class="md:tw-hidden tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
                     <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
                     <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
-                        <!-- v-for="item of modelValue.socialData" -->
-                        <a target="_blank">
-                            <div icon="item.icon" class="tw-text-2xl"></div>
-                        </a>
+                        {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
+                            <a target="_blank" href="{$socmed.link}">
+                                <i icon="{$socmed.icon}" class="tw-text-2xl"></i>
+                            </a>
+                        {/foreach}
                     </div>
                 </div>
-                *}
 
 
 
@@ -418,16 +416,18 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                         <div class="tw-flex tw-justify-center tw-gap-x-8 tw-text-gray-300 md:tw-block">
                             {$wowsbar_footer_data.data.fieldValue.columns.column_4.data.textBox2}
                         </div>
-                    {*
-                        <div
-                            class="tw-hidden md:tw-block tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
+
+                        {* Social Media Desktop *}
+                        <div class="tw-hidden md:tw-block tw-mb-6 md:tw-mb-5 tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
                             <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
                             <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
-                                <!-- v-for="item of modelValue.socialData" -->
-                                <a target="_blank" href="item.link"><div icon="item.icon" class="tw-text-2xl"></div></a>
+                                {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
+                                    <a target="_blank" href="{$socmed.link}">
+                                        <i icon="{$socmed.icon}" class="tw-text-2xl"></i>
+                                    </a>
+                                {/foreach}
                             </div>
                         </div>
-                    *}
                         
                         <div style="display: none"  class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-12">
                             {* v-for="payment in modelValue.PaymentData.data" *}
