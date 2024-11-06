@@ -15,6 +15,7 @@ RewriteRule (fork|websocket_server|EcomB2B|box|app_files|cron|server_files) - [R
 Options -Indexes
 
 
+RewriteRule ^wowsbar/ wowsbar_api.php [L]
 RewriteRule ^api/ api.php [L]
 RewriteRule ^picking/ apps/picking/app.php [L]
 
