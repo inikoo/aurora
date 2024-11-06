@@ -21,12 +21,18 @@ $db = new PDO("mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
-    $website_id=(int) $_REQUEST['website_id'];
+    $website_url=(int) $_REQUEST['website'];
+
+    $prefix = 'www.';
+    $website_url = preg_replace('/^' . preg_quote($prefix, '/') . '/', '', $website_url);
+    $website_url='www.'.$website_url;
+
+
     $entityBody = file_get_contents('php://input');
     $data=json_decode($entityBody,true);
     if(isset($data['footer'])){
 
-        $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website Key`=%s  ",$website_id);
+        $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website URL`=%s  ",$website_url);
 
 
         $db->prepare($sql)->execute(
