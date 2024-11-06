@@ -443,23 +443,24 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 </div>
             </div>
 
-            
-            {* Social Media Desktop *}
-            <div class="tw-mb-6 md:tw-mb-5 tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-space-y-0">
-                <h2 class="tw-text-xl tw-text-center tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
-                <div class="tw-flex tw-gap-x-6 tw-mb-4 tw-justify-center">
-                    {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
-                        <a target="_blank" href="{$socmed.link}">
-                            <i class="{$socmed.icon} tw-text-2xl"></i>
-                        </a>
-                    {/foreach}
+            <div class="tw-mt-8 tw-border-0 tw-border-t tw-border-solid tw-border-gray-700 tw-flex tw-flex-col md:tw-flex-row-reverse tw-justify-between tw-pt-6 tw-items-center tw-gap-y-8">
+                <div class="tw-grid tw-gap-y-2 tw-text-center md:tw-text-left">
+                    <h2 style="margin-bottom: 0px; font-size: inherit; font-weight: inherit" class="tw-hidden tw-text-center tw-tracking-wider">
+                        {$wowsbar_footer_data.data.fieldValue.columns.column_4.data.textBox4}
+                    </h2>
+
+                    <div class="tw-flex tw-gap-x-6 tw-justify-center">
+                        {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
+                            <a target="_blank" href="{$socmed.link}">
+                                <i class="{$socmed.icon} tw-text-4xl md:tw-text-2xl"></i>
+                            </a>
+                        {/foreach}
+                    </div>
                 </div>
-            </div>
 
-
-            {* Copyright *}
-            <div id="footer_copyright"  class="tw-text-[10px] md:tw-text-base tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
-                {$wowsbar_footer_data.data.fieldValue.copyright}
+                <div id="footer_copyright" class="tw-text-[10px] md:tw-text-base tw-text-center">
+                    {$wowsbar_footer_data.data.fieldValue.copyright}
+                </div>
             </div>
 
         </div>
