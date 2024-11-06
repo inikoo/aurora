@@ -8,7 +8,7 @@
  Version 3
 -->
 *}
-<div id="block_{$key}" class="{$data.type} _block blk_images  template_{$data.template} {if !$data.show}hide{/if} " style="Width:100%;">
+<div id="block_{$key}" class="{$data.type} _block blk_images  template_{$data.template} {if !$data.show}hide{/if} tw-flex tw-flex-wrap" style="Width:100%;">
     {foreach from=$data.images item=image}
         {if !empty($image.src)}
         <figure >
