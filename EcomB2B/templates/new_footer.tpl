@@ -130,10 +130,10 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
         border-style: solid;
         border-color: #fff transparent transparent transparent ;
         position: absolute;
-        top: 10%;
+        top: 30%;
         right: 1rem;
         // transform: translateY(-50%);
-        transform-origin: center;
+        transform-origin: 50% 25%;
         transition: .2s transform ease;
     }
 
@@ -158,7 +158,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 </style>
 <div>
     <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pb-24 tw-pt-4 md:tw-pt-8 md:tw-px-16">
-        <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
+        <div class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
             <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start ">
                 {if $wowsbar_footer_data.data.fieldValue.logo}
                     <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}?v=3" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
@@ -453,7 +453,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
             <div id="wowsbar_footer_top_copyright"  class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
                 <div>
-                    {$wowsbar_footer_data.data.fieldValue.copyight}
+                    {$wowsbar_footer_data.data.fieldValue.copyright}
 
                 </div>
             </div>
