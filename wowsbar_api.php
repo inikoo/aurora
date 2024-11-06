@@ -24,7 +24,7 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
     $website_url=$_REQUEST['website'];
     $website_url=preg_replace('/^http?s:\/\//','',$website_url);
     $website_url=preg_replace('/^www./','',$website_url,);
-
+    $website_url='www.'.$website_url;
 
     $entityBody = file_get_contents('php://input');
     $data=json_decode($entityBody,true);
@@ -32,7 +32,7 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
 
         $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website URL`=?  ");
 
-        print $sql;
+        print $website_url;
 
         $db->prepare($sql)->execute(
             array(
