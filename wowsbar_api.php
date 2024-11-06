@@ -26,15 +26,19 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
 if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
-
     $entityBody = file_get_contents('php://input');
-
     $data=json_decode($entityBody,true);
-    print_r($data);
+    if(isset($data['footer'])){
+        $sql="update `Website Dimension` set wowsbat_footer=? where `Website Key`=?  ";
 
+        $db->prepare($sql)->execute(
+            array(
+                $data['footer']==''?'':json_encode($data['footer']),
+                $_REQUEST['website_key']
+            )
+        );
+    }
 
-    print "====\n";
-    print_r($_REQUEST['website_key']);
 
 
 
