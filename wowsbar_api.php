@@ -29,7 +29,7 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
     $entityBody = file_get_contents('php://input');
     $data=json_decode($entityBody,true);
     if(isset($data['footer'])){
-        $sql="update `Website Dimension` set wowsbat_footer=? where `Website Key`=?  ";
+        $sql="update `Website Dimension` set wowsbar_header=? where `Website Key`=?  ";
 
         $db->prepare($sql)->execute(
             array(
@@ -37,6 +37,11 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
                 $_REQUEST['website_key']
             )
         );
+
+
+
+
+
     }
 
 
@@ -47,4 +52,4 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
 }
 
 
-echo 'hello';
+
