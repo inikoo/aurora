@@ -21,11 +21,9 @@ $db = new PDO("mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
-    $website_url=(int) $_REQUEST['website'];
-
-    $prefix = 'www.';
-    $website_url = preg_replace('/^' . preg_quote($prefix, '/') . '/', '', $website_url);
-    $website_url='www.'.$website_url;
+    $website_url=$_REQUEST['website'];
+    $website_url=preg_replace('/^http?s:\/\//','',$website_url);
+    $website_url=preg_replace('/^www./','',$website_url,);
 
 
     $entityBody = file_get_contents('php://input');
@@ -34,6 +32,7 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
 
         $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website URL`=%s  ",$website_url);
 
+        print $sql;
 
         $db->prepare($sql)->execute(
             array(
