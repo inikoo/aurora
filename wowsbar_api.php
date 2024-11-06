@@ -17,39 +17,25 @@ date_default_timezone_set('UTC');
 include_once 'utils/general_functions.php';
 include_once 'utils/object_functions.php';
 
-
-
-$db = new PDO(
-    "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
-);
+$db = new PDO("mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd);
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-
 if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
+    $website_id=(int) $_REQUEST['website_id'];
     $entityBody = file_get_contents('php://input');
     $data=json_decode($entityBody,true);
     if(isset($data['footer'])){
-        $sql="update `Website Dimension` set wowsbar_header=? where `Website Key`=?  ";
+
+        $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website Key`=%s  ",$website_id);
+        print $sql;
 
         $db->prepare($sql)->execute(
             array(
                 $data['footer']==''?'':json_encode($data['footer']),
-                $_REQUEST['website_key']
             )
         );
 
-
-
-
-
     }
-
-
-
-
 }else{
     echo '403';
 }
-
-
-
