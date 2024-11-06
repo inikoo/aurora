@@ -30,13 +30,14 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
     $data=json_decode($entityBody,true);
     if(isset($data['footer'])){
 
-        $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website URL`=%s  ",$website_url);
+        $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website URL`=?  ");
 
         print $sql;
 
         $db->prepare($sql)->execute(
             array(
                 $data['footer']==''?'':json_encode($data['footer']),
+                $website_url
             )
         );
 
