@@ -162,7 +162,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
     
 </style>
 <div>
-    <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pb-24 tw-pt-4 md:tw-pt-8 md:tw-px-16">
+    <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pt-4 md:tw-pt-8 md:tw-px-16">
         <div class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
             <div class="tw-flex-1 tw-flex tw-items-center tw-justify-center md:tw-justify-start ">
                 {if $wowsbar_footer_data.data.fieldValue.logo}
