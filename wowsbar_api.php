@@ -27,7 +27,7 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
     if(isset($data['footer'])){
 
         $sql=sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website Key`=%s  ",$website_id);
-        print $sql;
+
 
         $db->prepare($sql)->execute(
             array(
