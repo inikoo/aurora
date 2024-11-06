@@ -90,7 +90,6 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 <style>
     #footer_container * {
         box-sizing: border-box;
-        color: inherit !important;
     }
 
     #footer_container a {
@@ -176,8 +175,10 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
             </div>
 
             <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center">
-                <i class="fab fa-whatsapp-square tw-bg-gradient-to-r tw-from-[#25D366] tw-to-[#128C7E] tw-bg-clip-text tw-text-transparent"></i>
-                <span>{$wowsbar_footer_data.data.fieldValue.whatsapp.number}</span>
+                <a target="_blank" href="https://api.whatsapp.com/send/?phone={$wowsbar_footer_data.data.fieldValue.whatsapp.number|replace:" ":""|replace:"+":""}&text={$wowsbar_footer_data.data.fieldValue.whatsapp.message}&type=phone_number" class="tw-flex tw-gap-x-2 tw-items-center">
+                    <i class="fab fa-whatsapp-square tw-text-[#00EE52]" style="font-size: 22px"></i>
+                    <span style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.whatsapp.number}</span>
+                </a>
             </div>
             
             <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
