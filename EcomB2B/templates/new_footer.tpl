@@ -175,8 +175,16 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
             </div>
             
             <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
-                <a href="tel:{$wowsbar_footer_data.data.fieldValue.phone.number}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.phone.number}</a>
-                <span class="" style="font-size: 15px">{$wowsbar_footer_data.data.fieldValue.phone.openHours}</span>
+                {foreach from=$wowsbar_footer_data.data.fieldValue.phone.number item=phone}
+                    <div class="tw-space-x-2">
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:{$phone}" style="font-size: 17px">
+                            {$phone}
+                        </a>
+                    </div>
+                {/foreach}
+            
+                <span class="" style="font-size: 15px">{$wowsbar_footer_data.data.fieldValue.phone.caption}</span>
             </div>
         </div>
 
