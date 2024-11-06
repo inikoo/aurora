@@ -100,6 +100,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
     #footer_container p strong {
         color: inherit;
+        font-size: inherit;
     }
 
     #footer_container li {
@@ -444,9 +445,9 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
             
             {* Social Media Desktop *}
-            <div class="tw-mb-6 md:tw-mb-5 tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
+            <div class="tw-mb-6 md:tw-mb-5 tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-space-y-0">
                 <h2 class="tw-text-xl tw-text-center tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
-                <div class="tw-flex md:tw-gap-x-6 md:tw-mb-4 tw-justify-center">
+                <div class="tw-flex tw-gap-x-6 tw-mb-4 tw-justify-center">
                     {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
                         <a target="_blank" href="{$socmed.link}">
                             <i class="{$socmed.icon} tw-text-2xl"></i>
@@ -457,11 +458,10 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
 
             {* Copyright *}
-            <div id="wowsbar_footer_top_copyright"  class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
-                <div>
-                    {$wowsbar_footer_data.data.fieldValue.copyright}
-                </div>
+            <div id="footer_copyright"  class="tw-text-[10px] md:tw-text-base tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
+                {$wowsbar_footer_data.data.fieldValue.copyright}
             </div>
+
         </div>
     </div>
 </div>
