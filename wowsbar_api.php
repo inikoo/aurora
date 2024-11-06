@@ -27,9 +27,16 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
 
-    print_r($_REQUEST['footer']);
+    $entityBody = file_get_contents('php://input');
+
+    $data=json_decode($entityBody,true);
+    print_r($data);
+
+
     print "====\n";
     print_r($_REQUEST['website_key']);
+
+
 
 }else{
     echo '403';
