@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 8')
+    console.log('new_footer mounted 9')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -391,16 +391,18 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
 
                 {* Social Media Mobile *}
-                <div class="md:tw-hidden tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
-                    <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
-                    <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
-                        {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
-                            <a target="_blank" href="{$socmed.link}">
-                                <i icon="{$socmed.icon}" class="tw-text-2xl"></i>
-                            </a>
-                        {/foreach}
+                {*
+                    <div class="md:tw-hidden tw-mb-6 md:tw-mb-5 tw-bg-[#9c7c64] md:tw-bg-transparent tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
+                        <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
+                        <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
+                            {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
+                                <a target="_blank" href="{$socmed.link}">
+                                    <i class="{$socmed.icon} tw-text-2xl"></i>
+                                </a>
+                            {/foreach}
+                        </div>
                     </div>
-                </div>
+                *}
 
 
 
@@ -417,19 +419,9 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                             {$wowsbar_footer_data.data.fieldValue.columns.column_4.data.textBox2}
                         </div>
 
-                        {* Social Media Desktop *}
-                        <div class="tw-hidden md:tw-block tw-mb-6 md:tw-mb-5 tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
-                            <h2 class="tw-text-xl tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
-                            <div class="tw-flex md:tw-space-x-6 md:tw-mb-4 tw-justify-around md:tw-justify-start">
-                                {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
-                                    <a target="_blank" href="{$socmed.link}">
-                                        <i icon="{$socmed.icon}" class="tw-text-2xl"></i>
-                                    </a>
-                                {/foreach}
-                            </div>
-                        </div>
                         
-                        <div style="display: none"  class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-12">
+                        {* Payment Data: Paypal, Pastpay, etc *}
+                        <div class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-12">
                             {* v-for="payment in modelValue.PaymentData.data" *}
                             {foreach from=$wowsbar_footer_data.data.fieldValue.paymentData.data item=block}
                                 <img src="{$block.image}" alt="{$block.name}"   class="tw-h-auto tw-max-h-7 md:tw-max-h-8 tw-max-w-full tw-w-fit">
@@ -450,11 +442,24 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 </div>
             </div>
 
+            
+            {* Social Media Desktop *}
+            <div class="tw-mb-6 md:tw-mb-5 tw-text-center md:tw-text-left tw-pt-4 tw-pb-6 tw-space-y-4 md:tw-py-0 md:tw-space-y-0">
+                <h2 class="tw-text-xl tw-text-center tw-tracking-wider tw-font-semibold md:tw-mt-8 md:tw-mb-4">Get Social with Us!</h2>
+                <div class="tw-flex md:tw-gap-x-6 md:tw-mb-4 tw-justify-center">
+                    {foreach from=$wowsbar_footer_data.data.fieldValue.socialMedia item=socmed}
+                        <a target="_blank" href="{$socmed.link}">
+                            <i class="{$socmed.icon} tw-text-2xl"></i>
+                        </a>
+                    {/foreach}
+                </div>
+            </div>
 
+
+            {* Copyright *}
             <div id="wowsbar_footer_top_copyright"  class="tw-text-[10px] md:tw-text-base tw-border-t tw-mt-8 tw-pb-2 tw-pt-2 md:tw-pb-0 md:tw-pt-4 tw-text-center">
                 <div>
                     {$wowsbar_footer_data.data.fieldValue.copyright}
-
                 </div>
             </div>
         </div>
