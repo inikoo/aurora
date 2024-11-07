@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 10')
+    console.log('new_footer mounted 11')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -470,7 +470,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                     </div>
                 </div>
 
-                <div id="footer_copyright" class="tw-text-[14px] md:tw-text-[12px] tw-text-center">
+                <div id="footer_copyright" class="tw-text-[13px] tw-leading-5 md:tw-text-[12px] tw-text-center tw-w-[60%] md:tw-w-fit tw-mx-auto md:tw-mx-0">
                     {$wowsbar_footer_data.data.fieldValue.copyright}
                 </div>
             </div>
