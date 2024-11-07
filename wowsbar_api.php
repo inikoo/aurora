@@ -41,7 +41,12 @@ if(!empty($_REQUEST['key']) and $_REQUEST['key']==WOWSBAR_KEY ){
             )
         );
 
-       print $footer;
+       print json_encode(
+           [
+               'website'=>$website_url,
+               'footer'=>$data['footer']
+           ]
+       );
 
 
     }
