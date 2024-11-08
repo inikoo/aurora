@@ -32,7 +32,7 @@ if (!empty($_REQUEST['key']) and $_REQUEST['key'] == WOWSBAR_KEY) {
     if (isset($data['footer'])) {
         $sql = sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website URL`=?  ");
 
-        $footer = $data['footer'] == '' ? '' : json_encode($data['footer']);
+        $footer = !$data['footer'] ? '' : json_encode($data['footer']);
 
         $db->prepare($sql)->execute(
             array(
@@ -50,7 +50,6 @@ if (!empty($_REQUEST['key']) and $_REQUEST['key'] == WOWSBAR_KEY) {
             [
                 'website_id' => $website->id,
                 'website'    => $website_url
-                //   'footer'=>$data['footer']['data']
             ]
         );
     }
