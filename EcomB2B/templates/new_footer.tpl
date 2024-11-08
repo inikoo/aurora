@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 12')
+    console.log('new_footer mounted 13')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -193,7 +193,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 {/if}
                 
                 {if $wowsbar_footer_data.data.fieldValue.email}
-                <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-end tw-items-center" style="direction: ltr">
+                <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start tw-items-center" style="direction: ltr">
                     <a href="mailto:{$wowsbar_footer_data.data.fieldValue.email}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.email}</a>
                 </div>
                 {/if}
