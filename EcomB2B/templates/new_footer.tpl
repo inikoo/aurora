@@ -163,14 +163,14 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 </style>
 <div>
     <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pt-4 md:tw-pt-8 md:tw-px-16">
-        <div class="tw-w-full tw-flex tw-flex-col md:tw-flex-row tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
+        <div class="tw-w-full tw-grid md:tw-grid-cols-4 tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
             <div class="tw-flex-1 tw-flex tw-items-center tw-justify-center md:tw-justify-start ">
                 {if $wowsbar_footer_data.data.fieldValue.logo}
                     <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}?v=3" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
                 {/if}
             </div>
 
-            <div class="tw-col-span-3 tw-grid tw-grid-cols-3" style="direction: rtl">
+            <div class="tw-col-span-3 tw-grid md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-y-0" style="direction: rtl">
                 {if $wowsbar_footer_data.data.fieldValue.phone.numbers|@count > 0}
                 <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
                     {foreach from=$wowsbar_footer_data.data.fieldValue.phone.numbers item=phone}
@@ -184,7 +184,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 {/if}
                 
                 {if $wowsbar_footer_data.data.fieldValue.whatsapp.number}
-                <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center">
+                <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center tw-flex-row-reverse md:tw-flex-row">
                     <a target="_blank" href="https://api.whatsapp.com/send/?phone={$wowsbar_footer_data.data.fieldValue.whatsapp.number|replace:" ":""|replace:"+":""}&text={$wowsbar_footer_data.data.fieldValue.whatsapp.message}&type=phone_number" class="tw-flex tw-gap-x-2 tw-items-center">
                         <i class="fab fa-whatsapp tw-text-[#00EE52]" style="font-size: 22px"></i>
                         <span style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.whatsapp.number}</span>
