@@ -68,7 +68,7 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 11')
+    console.log('new_footer mounted 13')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -92,8 +92,8 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
         box-sizing: border-box;
     }
 
-    #footer_container a {
-        color: inherit;
+    #footer_container a, #footer_container span, #footer_container p {
+        color: #ffffff;
     }
 
     #footer_container p {
@@ -165,14 +165,14 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
     <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pt-4 md:tw-pt-8 md:tw-px-16">
         <div class="tw-w-full tw-grid md:tw-grid-cols-4 tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
             <div class="tw-flex-1 tw-flex tw-items-center tw-justify-center md:tw-justify-start ">
-                {if $wowsbar_footer_data.data.fieldValue.logo}
-                    <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}?v=3" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
+                {if $wowsbar_footer_data.data.fieldValue.logo.source}
+                    <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
                 {/if}
             </div>
 
-            <div class="md:tw-col-span-3 tw-grid md:tw-grid-cols-3 tw-gap-y-4 md:tw-gap-y-0" style="direction: rtl">
+            <div class="md:tw-col-span-3 tw-flex tw-flex-col tw-flex-col-reverse md:tw-grid md:tw-grid-cols-3  tw-gap-y-4 md:tw-gap-y-0" style="direction: rtl">
                 {if $wowsbar_footer_data.data.fieldValue.phone.numbers|@count > 0}
-                <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
+                <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center" style="direction: ltr">
                     {foreach from=$wowsbar_footer_data.data.fieldValue.phone.numbers item=phone}
                         <a href="tel:{$phone}" style="font-size: 17px">
                             {$phone}
@@ -184,7 +184,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 {/if}
                 
                 {if $wowsbar_footer_data.data.fieldValue.whatsapp.number}
-                <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center tw-flex-row-reverse">
+                <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center" style="direction: ltr">
                     <a target="_blank" href="https://api.whatsapp.com/send/?phone={$wowsbar_footer_data.data.fieldValue.whatsapp.number|replace:" ":""|replace:"+":""}&text={$wowsbar_footer_data.data.fieldValue.whatsapp.message}&type=phone_number" class="tw-flex tw-gap-x-2 tw-items-center">
                         <i class="fab fa-whatsapp tw-text-[#00EE52]" style="font-size: 22px"></i>
                         <span style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.whatsapp.number}</span>
@@ -193,7 +193,7 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 {/if}
                 
                 {if $wowsbar_footer_data.data.fieldValue.email}
-                <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-end tw-items-center">
+                <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start tw-items-center" style="direction: ltr">
                     <a href="mailto:{$wowsbar_footer_data.data.fieldValue.email}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.email}</a>
                 </div>
                 {/if}
