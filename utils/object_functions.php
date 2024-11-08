@@ -108,6 +108,11 @@ function get_object($object_name, $key, $load_other_data = false) {
 
             $object = new Website($key);
             break;
+        case 'website_url':
+            include_once 'class.Website.php';
+
+            $object = new Website('url',$key);
+            break;
         case 'voucher':
             include_once 'class.Voucher.php';
 

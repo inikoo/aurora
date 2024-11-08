@@ -50,7 +50,11 @@ class Website extends DB_Table {
                 $sql = sprintf(
                     "SELECT  * FROM `Website Dimension` WHERE `Website Code`=%s ", prepare_mysql($tag)
                 );
-            } else {
+            }elseif ($key == 'url') {
+                $sql = sprintf(
+                    "SELECT  * FROM `Website Dimension` WHERE `Website URL`=%s ", prepare_mysql($tag)
+                );
+            }  else {
                 return;
             }
         }
