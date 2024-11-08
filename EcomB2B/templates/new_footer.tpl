@@ -170,25 +170,33 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                 {/if}
             </div>
 
-            <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start tw-items-center">
-                <a href="mailto:{$wowsbar_footer_data.data.fieldValue.email}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.email}</a>
-            </div>
-
-            <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center">
-                <a target="_blank" href="https://api.whatsapp.com/send/?phone={$wowsbar_footer_data.data.fieldValue.whatsapp.number|replace:" ":""|replace:"+":""}&text={$wowsbar_footer_data.data.fieldValue.whatsapp.message}&type=phone_number" class="tw-flex tw-gap-x-2 tw-items-center">
-                    <i class="fab fa-whatsapp tw-text-[#00EE52]" style="font-size: 22px"></i>
-                    <span style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.whatsapp.number}</span>
-                </a>
-            </div>
-            
-            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
-                {foreach from=$wowsbar_footer_data.data.fieldValue.phone.number item=phone}
-                    <a href="tel:{$phone}" style="font-size: 17px">
-                        {$phone}
+            <div class="tw-col-span-3 tw-grid tw-grid-cols-3" style="direction: rtl">
+                {if $wowsbar_footer_data.data.fieldValue.phone.numbers|@count > 0}
+                <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center md:tw-items-end tw-justify-center">
+                    {foreach from=$wowsbar_footer_data.data.fieldValue.phone.numbers item=phone}
+                        <a href="tel:{$phone}" style="font-size: 17px">
+                            {$phone}
+                        </a>
+                    {/foreach}
+                
+                    <span class="" style="font-size: 15px">{$wowsbar_footer_data.data.fieldValue.phone.caption}</span>
+                </div>
+                {/if}
+                
+                {if $wowsbar_footer_data.data.fieldValue.whatsapp.number}
+                <div class="tw-flex-1 tw-flex tw-gap-x-1.5 tw-justify-center md:tw-justify-start tw-items-center">
+                    <a target="_blank" href="https://api.whatsapp.com/send/?phone={$wowsbar_footer_data.data.fieldValue.whatsapp.number|replace:" ":""|replace:"+":""}&text={$wowsbar_footer_data.data.fieldValue.whatsapp.message}&type=phone_number" class="tw-flex tw-gap-x-2 tw-items-center">
+                        <i class="fab fa-whatsapp tw-text-[#00EE52]" style="font-size: 22px"></i>
+                        <span style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.whatsapp.number}</span>
                     </a>
-                {/foreach}
-            
-                <span class="" style="font-size: 15px">{$wowsbar_footer_data.data.fieldValue.phone.caption}</span>
+                </div>
+                {/if}
+                
+                {if $wowsbar_footer_data.data.fieldValue.email}
+                <div class="tw-flex-1 tw-flex tw-justify-center md:tw-justify-start tw-items-center">
+                    <a href="mailto:{$wowsbar_footer_data.data.fieldValue.email}" style="font-size: 17px">{$wowsbar_footer_data.data.fieldValue.email}</a>
+                </div>
+                {/if}
             </div>
         </div>
 
