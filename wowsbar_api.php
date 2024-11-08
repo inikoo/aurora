@@ -29,7 +29,7 @@ if (!empty($_REQUEST['key']) and $_REQUEST['key'] == WOWSBAR_KEY) {
 
     $entityBody = file_get_contents('php://input');
     $data       = json_decode($entityBody, true);
-    if (isset($data['footer'])) {
+    if (array_key_exists('footer',$data)) {
         $sql = sprintf("update `Website Dimension` set wowsbar_footer=?  where `Website URL`=?  ");
 
         $footer = !$data['footer'] ? '' : json_encode($data['footer']);
