@@ -1,0 +1,1 @@
+ALTER TABLE `Supplier Part Dimension` CHANGE `staging_aiku_id` `aiku_org_id` int unsigned NULL;
