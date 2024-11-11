@@ -19,10 +19,8 @@ function getStyles(properties) {
 
         paddingTop: (properties.padding && properties.padding.top && properties.padding.top.value || 0) + 
                     (properties.padding && properties.padding.unit || ''),
-        paddingBottom: (properties.padding && properties.padding.bottom && properties.padding.bottom.value < 30 
-            ? 30 
-            : properties.padding.bottom.value || null)
-            + (properties.padding && properties.padding.unit || 'px'),
+        paddingBottom: (properties.padding && properties.padding.bottom && properties.padding.bottom.value || 0) + 
+                       (properties.padding && properties.padding.unit || ''),
         paddingRight: (properties.padding && properties.padding.right && properties.padding.right.value || 0) + 
                       (properties.padding && properties.padding.unit || ''),
         paddingLeft: (properties.padding && properties.padding.left && properties.padding.left.value || 0) + 
@@ -71,9 +69,9 @@ function getStyles(properties) {
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log('original', {$wowsbar_footer_data.data.fieldValue.logo.source.original|json_encode})
-    console.log('new_footer mounted 15')
+    console.log('new_footer mounted 14')
     const element = document.getElementById('footer_container');
-    console.log('style', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
+    console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
     if (element) {
         Object.assign(element.style, getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
