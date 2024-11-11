@@ -1,0 +1,1 @@
+ALTER TABLE `Purchase Order Transaction Fact` CHANGE `aiku_id` `aiku_po_id` int unsigned NULL, CHANGE `staging_aiku_id` `aiku_sd_id` int unsigned NULL;
