@@ -69,7 +69,7 @@ function getStyles(properties) {
 
 document.addEventListener("DOMContentLoaded", function() {
     console.log('original', {$wowsbar_footer_data.data.fieldValue.logo.source.original|json_encode})
-    console.log('new_footer mounted 15')
+    console.log('new_footer mounted 16')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
