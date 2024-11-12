@@ -41,7 +41,7 @@
             console.log('heheh 22');
         </script>
         <script src="https://delivery-staging.wowsbar.com/announcement.js?v=1&ulid=01JCF2XA53CWTS6J36G4WSV3GM" async type="text/javascript"></script>
-    {/if}
+
 
 
     {elseif  $account_code=='AWEU'  }
