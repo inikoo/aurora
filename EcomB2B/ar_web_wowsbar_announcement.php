@@ -9,7 +9,12 @@
 
 */
 
-$url = $_REQUEST['url'];
+if(empty($_REQUEST['url_KHj321Tu'])){
+    echo 'error A';
+    exit;
+}
+
+$url = $_REQUEST['url_KHj321Tu'];
 
 $curl = curl_init();
 
