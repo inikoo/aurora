@@ -68,7 +68,8 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('new_footer mounted 13')
+    console.log('original', {$wowsbar_footer_data.data.fieldValue.logo.source.original|json_encode})
+    console.log('new_footer mounted 17')
     const element = document.getElementById('footer_container');
     console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
@@ -162,10 +163,17 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
     
 </style>
 <div>
-    <div id="footer_container" class="-tw-mx-2 md:tw-mx-0 tw-pt-4 md:tw-pt-8 md:tw-px-16">
+    <div id="footer_container" class="tw-py-4 md:tw-py-8 tw-px-8 md:tw-px-16">
         <div class="tw-w-full tw-grid md:tw-grid-cols-4 tw-gap-4 md:tw-gap-8 tw-pt-2 tw-pb-4 md:tw-pb-6 tw-mb-4 md:tw-mb-10 tw-border-0 tw-border-b tw-border-solid tw-border-gray-700">
             <div class="tw-flex-1 tw-flex tw-items-center tw-justify-center md:tw-justify-start ">
-                {if $wowsbar_footer_data.data.fieldValue.logo.source}
+                {if $wowsbar_footer_data.data.fieldValue.logo.source.original}
+                    {if is_array($wowsbar_footer_data.data.fieldValue.logo.source.original)}
+                        {assign var='logoSrc' value=$wowsbar_footer_data.data.fieldValue.logo.source.original[0]}
+                    {else}
+                        {assign var='logoSrc' value=$wowsbar_footer_data.data.fieldValue.logo.source.original}
+                    {/if}
+                    <img src="{$logoSrc}" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
+                {else if $wowsbar_footer_data.data.fieldValue.logo.source}
                     <img src="{$wowsbar_footer_data.data.fieldValue.logo.source}" alt="{$wowsbar_footer_data.data.fieldValue.logo.alt}" class="tw-h-auto tw-max-h-20 tw-w-auto tw-min-w-16">
                 {/if}
             </div>

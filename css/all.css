@@ -1,5 +1,5 @@
 /*!
- * Font Awesome Pro 5.13.0 by @fontawesome - https://fontawesome.com
+ * Font Awesome vika Pro 5.13.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
  */
 .fa,
@@ -6183,6 +6183,9 @@ readers do not read off random characters that represent icons */
 .fa-ticket-alt:before {
   content: "\f3ff"; }
 
+.fa-tiktok:before {
+  content: "\e07b"; }
+
 .fa-tilde:before {
   content: "\f69f"; }
 
@@ -7090,8 +7093,8 @@ readers do not read off random characters that represent icons */
   font-style: normal;
   font-weight: 400;
   font-display: block;
-  src: url("../webfonts/fa-brands-400.eot");
-  src: url("../webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-brands-400.woff2") format("woff2"), url("../webfonts/fa-brands-400.woff") format("woff"), url("../webfonts/fa-brands-400.ttf") format("truetype"), url("../webfonts/fa-brands-400.svg#fontawesome") format("svg"); }
+  src: url("../webfonts/fa-brands-400.eot?v=1");
+  src: url("../webfonts/fa-brands-400.eot?#iefix&v=1") format("embedded-opentype"), url("../webfonts/fa-brands-400.woff2?v=1") format("woff2"), url("../webfonts/fa-brands-400.woff?v=1") format("woff"), url("../webfonts/fa-brands-400.ttf?v=1") format("truetype"), url("../webfonts/fa-brands-400.svg#fontawesome?v=1") format("svg"); }
 
 .fab {
   font-family: 'Font Awesome 5 Brands';
