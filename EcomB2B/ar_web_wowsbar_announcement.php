@@ -37,4 +37,5 @@ $response = curl_exec($curl);
 
 
 curl_close($curl);
+header('Content-type: application/json');
 echo $response;
