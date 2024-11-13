@@ -448,10 +448,12 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
                             {$wowsbar_footer_data.data.fieldValue.columns.column_4.data.textBox2}
                         </div>
 
-                        
+                        <div class="tw-w-full tw-mt-8">
+                            {$wowsbar_footer_data.data.fieldValue.paymentData.label}
+                        </div>
+
                         {* Payment Data: Paypal, Pastpay, etc *}
-                        <div class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-12">
-                            {* v-for="payment in modelValue.PaymentData.data" *}
+                        <div class="tw-flex tw-flex-col tw-items-center tw-gap-y-6 tw-mt-4">
                             {foreach from=$wowsbar_footer_data.data.fieldValue.paymentData.data item=block}
                                 <img src="{$block.image}" alt="{$block.name}" class="tw-h-auto tw-max-h-6 md:tw-max-h-8 tw-max-w-full tw-w-full tw-object-contain">
                             {/foreach}
