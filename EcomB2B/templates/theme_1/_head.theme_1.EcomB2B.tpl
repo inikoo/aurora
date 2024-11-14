@@ -38,9 +38,9 @@
 
     {elseif  $account_code=='INDO'  }
         <script>
-            console.log('heheh 22');
+            console.log('heheh indo');
         </script>
-        <script src="https://delivery-staging.wowsbar.com/announcement.js?v=5&ulid=01JCF2XA53CWTS6J36G4WSV3GM" async type="text/javascript"></script>
+        <script src="https://staging.awads.io/announcement.min.js?ulid=01JCF2XA53CWTS6J36G4WSV3GM&delivery=https://delivery-staging.wowsbar.com" async type="text/javascript"></script>
 
 
 
