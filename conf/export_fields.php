@@ -1357,7 +1357,8 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'name'    => '`Location Distinct Parts`',
                 'label'   => _('Parts'),
                 'checked' => 1
-            ),   array(
+            ),
+            array(
                 'name'    => '`Location Current Weight`',
                 'label'   => _('Current weight').' (Kg)',
                 'checked' => 1
@@ -1367,6 +1368,11 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'label'   => _('Barcode'),
                 'checked' => 0,
                 'type'    => 'text'
+            ),
+            array(
+                'name'    => '`Location Stock Value`',
+                'label'   => _('Stock value'),
+                'checked' => 1
             ),
 
 
