@@ -2944,7 +2944,7 @@ class Order extends DB_Table
 
                 $this->db->prepare($sql)->execute(array(
                     $row['Order Transaction Fact Key'],
-                    prepare_mysql(gmdate('Y-m-d H:i:s')),
+                    gmdate('Y-m-d H:i:s'),
                     $this->data['Order Store Key'],
                     $this->id,
                     $row['Product Key'],
