@@ -84,9 +84,6 @@ console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
 </script>
 
-<pre style="display: none">
-    hello    >>{$wowsbar_footer_data|@print_r}<<  xV6
-</pre>
 
 <style>
     #footer_container * {
