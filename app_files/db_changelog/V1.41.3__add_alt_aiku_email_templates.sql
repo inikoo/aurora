@@ -1,0 +1,1 @@
+ALTER TABLE `Email Campaign Dimension` CHANGE `staging_aiku_id` `alt_aiku_id` int unsigned NULL;
