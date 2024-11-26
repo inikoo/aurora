@@ -40,7 +40,7 @@
         <script>
             console.log('heheh indo');
         </script>
-        <script src="https://staging.awads.io/announcement.min.js?v=3&ulid=01JCF2XA53CWTS6J36G4WSV3GM&delivery=https://delivery-staging.wowsbar.com" async type="text/javascript"></script>
+        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=3&ulid=01JCF2XA53CWTS6J36G4WSV3GM&delivery=https://delivery-staging.wowsbar.com" async type="text/javascript"></script>
 
 
 
