@@ -8,6 +8,12 @@
  Version 3
 
 */
+require_once '../vendor/autoload.php';
+require 'keyring/dns.php';
+require 'keyring/au_deploy_conf.php';
+
+$redis = new Redis();
+$redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
 if(empty($_REQUEST['url_KHj321Tu'])){
     echo 'error A';
@@ -17,6 +23,15 @@ if(empty($_REQUEST['url_KHj321Tu'])){
 $url = $_REQUEST['url_KHj321Tu'];
 
 $curl = curl_init();
+
+$url_cache_key='wowsbar_announcement_'.$url;
+
+if ($redis->exists($url_cache_key)) {
+    $response = $redis->get($url_cache_key);
+    header('Content-type: application/json');
+    echo $response;
+}
+
 
 curl_setopt_array($curl, array(
   CURLOPT_URL => $url,
@@ -34,6 +49,12 @@ curl_setopt_array($curl, array(
 ));
 
 $response = curl_exec($curl);
+$redis->set(
+    $url_cache_key,
+    $response,
+    [
+        'ex'=>60
+    ]);
 
 
 curl_close($curl);
