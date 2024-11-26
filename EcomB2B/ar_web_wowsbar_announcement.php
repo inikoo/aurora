@@ -30,6 +30,7 @@ if ($redis->exists($url_cache_key)) {
     $response = $redis->get($url_cache_key);
     header('Content-type: application/json');
     echo $response;
+    exit;
 }
 
 
