@@ -60,4 +60,4 @@ $redis->set(
 
 curl_close($curl);
 header('Content-type: application/json');
-echo $response;
+echo $html;
