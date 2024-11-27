@@ -26,12 +26,12 @@ $curl = curl_init();
 
 $url_cache_key='wowsbar_announcement_v2_'.$url;
 
-if ($redis->exists($url_cache_key)) {
-    $response = $redis->get($url_cache_key);
-    header('Content-type: application/json');
-    echo $response;
-    exit;
-}
+//if ($redis->exists($url_cache_key)) {
+//    $response = $redis->get($url_cache_key);
+//    header('Content-type: application/json');
+//    echo $response;
+//    exit;
+//}
 
 
 curl_setopt_array($curl, array(
@@ -54,7 +54,7 @@ $redis->set(
     $url_cache_key,
     $response,
     [
-        'ex'=>1
+        'ex'=>10
     ]);
 
 
