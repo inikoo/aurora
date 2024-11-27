@@ -22,7 +22,7 @@ if(empty($_REQUEST['url_KHj321Tu'])){
 
 $url = $_REQUEST['url_KHj321Tu'];
 
-$html='<script>console.log("test_announcement_v2")</script><div class="tw-bg-red-500">Hello World</div>';
+$html='<script>console.log("test_announcement_v2")</script><div class="tw-bg-red-500 tw-py-1 tw-text-white tw-px-4">Hello World</div>';
 
 
 header('Content-type: application/json');
