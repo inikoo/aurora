@@ -22,8 +22,42 @@ if(empty($_REQUEST['url_KHj321Tu'])){
 
 $url = $_REQUEST['url_KHj321Tu'];
 
-$html='<script>console.log("test_announcement_v2")</script><div class="tw-bg-red-500">Hello World</div>';
+$curl = curl_init();
+
+$url_cache_key='wowsbar_announcement_'.$url;
+
+if ($redis->exists($url_cache_key)) {
+    $response = $redis->get($url_cache_key);
+    header('Content-type: application/json');
+    echo $response;
+    exit;
+}
 
 
+curl_setopt_array($curl, array(
+    CURLOPT_URL => $url,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_ENCODING => '',
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 0,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => 'GET',
+    CURLOPT_HTTPHEADER => array(
+        'content-type: application/json',
+        'Accept: application/json',
+    ),
+));
+
+$response = curl_exec($curl);
+$redis->set(
+    $url_cache_key,
+    $response,
+    [
+        'ex'=>10
+    ]);
+
+
+curl_close($curl);
 header('Content-type: application/json');
-echo $html;
+echo $response;
