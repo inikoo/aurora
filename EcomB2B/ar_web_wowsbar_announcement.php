@@ -24,7 +24,7 @@ $url = $_REQUEST['url_KHj321Tu'];
 
 $curl = curl_init();
 
-$url_cache_key='wowsbar_announcement_'.$url;
+$url_cache_key='wowsbar_announcement_v2_'.$url;
 
 if ($redis->exists($url_cache_key)) {
     $response = $redis->get($url_cache_key);
@@ -54,7 +54,7 @@ $redis->set(
     $url_cache_key,
     $response,
     [
-        'ex'=>10
+        'ex'=>1
     ]);
 
 
