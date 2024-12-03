@@ -81,6 +81,7 @@ function get_webpage_blocks($theme = '') {
             'height' => 250,
             'src'    => 'cdn.bannersnack.com/banners/bxmldll37/embed/index.html?userId=30149291&t=1499779573'
         ),
+        /*
         'code'   => array(
             'type'   => 'code',
             'label'  => _('Code'),
@@ -99,7 +100,7 @@ function get_webpage_blocks($theme = '') {
 
 "
         ),
-
+*/
 
         /*        'banner'    => array(
                     'type'   => 'banner',
