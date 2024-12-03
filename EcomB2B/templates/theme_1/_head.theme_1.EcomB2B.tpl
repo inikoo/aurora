@@ -34,13 +34,14 @@
         <script src="https://scripts.luigisbox.com/LBX-621871.js"></script>
     {elseif $website->get('Website Code')=='AC'}
         <script src="https://scripts.luigisbox.com/LBX-621949.js"></script>
+        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=1&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
     {/if}
 
     {elseif  $account_code=='INDO'  }
         <script>
             console.log('heheh indo');
         </script>
-        <script src="https://staging.awads.io/announcement.min.js?v=5&ulid=01JCF2XA53CWTS6J36G4WSV3GM&delivery=https://delivery-staging.wowsbar.com" async type="text/javascript"></script>
+        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=5&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
 
 
 
