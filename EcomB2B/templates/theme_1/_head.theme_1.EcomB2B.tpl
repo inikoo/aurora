@@ -32,6 +32,7 @@
     {elseif  $account_code=='AROMA'  }
     {if $website->get('Website Code')=='Aroma'}
         <script src="https://scripts.luigisbox.com/LBX-621871.js"></script>
+        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js" async type="text/javascript"></script>
     {elseif $website->get('Website Code')=='AC'}
         <script src="https://scripts.luigisbox.com/LBX-621949.js"></script>
     {/if}
@@ -40,7 +41,7 @@
         <script>
             console.log('heheh indo');
         </script>
-        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=7&ulid=01JCF2XA53CWTS6J36G4WSV3GM&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        <script src="https://staging.awads.io/announcement.min.js" async type="text/javascript"></script>
 
 
 
