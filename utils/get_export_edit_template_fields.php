@@ -1254,6 +1254,66 @@ function get_export_edit_template_fields($object) {
                 'label'         => _('Customer Id'),
                 'checked'       => 0
             ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Manufacturer',
+                'name'          => 'Product GPSR Manufacturer',
+                'label'         => _('GPSR Manufacturer'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR EU Responsable',
+                'name'          => 'Product GPSR EU Responsable',
+                'label'         => 'GPSR EU Responsible',
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Warnings',
+                'name'          => 'Product GPSR Warnings',
+                'label'         => _('GPSR Warnings'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Manual',
+                'name'          => 'Product GPSR Manual',
+                'label'         => _('GPSR Manual'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Class Category Danger',
+                'name'          => 'Product GPSR Class Category Danger',
+                'label'         => _('GPSR Class Category Danger'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Languages',
+                'name'          => 'Product GPSR Languages',
+                'label'         => _('GPSR Languages'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
 
 
         ),
