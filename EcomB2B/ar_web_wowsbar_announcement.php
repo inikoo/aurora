@@ -20,7 +20,7 @@ if(empty($_REQUEST['url_KHj321Tu'])){
     exit;
 }
 
-$url = $_REQUEST['url_KHj321Tu'];
+$url = str_replace('&', '\&', $_REQUEST['url_KHj321Tu']);
 
 $curl = curl_init();
 
