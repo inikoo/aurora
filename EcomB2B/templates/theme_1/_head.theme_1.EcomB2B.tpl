@@ -38,10 +38,17 @@
     {/if}
 
     {elseif  $account_code=='INDO'  }
-        <script>
-            console.log('heheh indo');
-        </script>
-        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=6&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        {if $logged_in}
+            <script>
+                console.log('heheh indo login');
+            </script>
+            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=6&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        {else}
+            <script>
+                console.log('heheh indo logout');
+            </script>
+            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=6&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        {/if}
 
 
 
