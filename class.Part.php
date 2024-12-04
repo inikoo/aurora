@@ -4632,6 +4632,25 @@ class Part extends Asset
             case 'Part Attention':
                 $label = _('for attention');
                 break;
+            case 'Part GPSR Manufacturer':
+                $label = _('manufacturer');
+                break;
+            case 'Part GPSR EU Responsable':
+                $label = _('EU responsible');
+                break;
+            case 'Part GPSR Warnings':
+                $label = _('warnings');
+                break;
+            case 'Part GPSR Manual':
+                $label = _('How to use');
+                break;
+            case 'Part GPSR Class Category Danger':
+                $label = _('Class & category of danger');
+                break;
+
+
+
+
             default:
                 $label = $field;
         }

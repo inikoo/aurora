@@ -836,7 +836,99 @@ $part_fields[] = array(
 );
 
 
+$part_fields[] = array(
+    'label' =>'GPSR',
+    'show_title' => true,
+    'fields'     => array(
 
+        array(
+            'id'              => 'Part_GPSR_Manufacturer',
+            'edit'            => ($edit ? 'textarea' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars(
+                $object->get('Part GPSR Manufacturer')
+            ),
+            'formatted_value' => $object->get('GPSR Manufacturer'),
+            'label'           => ucfirst(
+                $object->get_field_label('Part GPSR Manufacturer')
+            ),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'id'              => 'Part_GPSR_EU_Responsable',
+            'edit'            => ($edit ? 'textarea' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars(
+                $object->get('Part GPSR EU Responsable')
+            ),
+            'formatted_value' => $object->get('GPSR EU Responsable'),
+            'label'           => ucfirst(
+                $object->get_field_label('Part GPSR EU Responsable')
+            ),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'id'              => 'Part_GPSR_Warnings',
+            'edit'            => ($edit ? 'textarea' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars(
+                $object->get('Part GPSR Warnings')
+            ),
+            'formatted_value' => $object->get('GPSR Warnings'),
+            'label'           => ucfirst(
+                $object->get_field_label('Part GPSR Warnings')
+            ),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'id'              => 'Part_GPSR_Manual',
+            'edit'            => ($edit ? 'textarea' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars(
+                $object->get('Part GPSR Manual')
+            ),
+            'formatted_value' => $object->get('GPSR Manual'),
+            'label'           => ucfirst(
+                $object->get_field_label('Part GPSR Manual')
+            ),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'id'              => 'Part_GPSR_Class_Category_Danger',
+            'edit'            => ($edit ? 'textarea' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars(
+                $object->get('Part GPSR Class Category Danger')
+            ),
+            'formatted_value' => $object->get('GPSR Class Category Danger'),
+            'label'           => ucfirst(
+                $object->get_field_label('Part GPSR Class Category Danger')
+            ),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'id'              => 'Part_GPSR_Languages',
+            'edit'            => ($edit ? 'string' : ''),
+            'right_code'      => 'PE',
+            'value'           => htmlspecialchars(
+                $object->get('Part GPSR Languages')
+            ),
+            'formatted_value' => $object->get('GPSR Languages'),
+            'label'           => ucfirst(
+                $object->get_field_label('Part GPSR Languages')
+            ),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+    )
+
+
+);
 
 
 // Remove this until you create an alert saying you will destroy this part for good
