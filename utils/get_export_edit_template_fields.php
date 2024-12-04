@@ -1091,6 +1091,66 @@ function get_export_edit_template_fields($object) {
                 'checked'       => 0,
                 'cell_type'     => 'string'
             ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Manufacturer',
+                'name'          => 'Part GPSR Manufacturer',
+                'label'         => _('GPSR Manufacturer'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR EU Responsable',
+                'name'          => 'Part GPSR EU Responsable',
+                'label'         => 'EU Responsible',
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Warnings',
+                'name'          => 'Part GPSR Warnings',
+                'label'         => _('GPSR Warnings'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Manual',
+                'name'          => 'Part GPSR Manual',
+                'label'         => _('GPSR Manual'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Class Category Danger',
+                'name'          => 'Part GPSR Class Category Danger',
+                'label'         => _('GPSR Class Category Danger'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
+                'required'      => false,
+                'header'        => 'GPSR Languages',
+                'name'          => 'Part GPSR Languages',
+                'label'         => _('GPSR Languages'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
 
 
 
