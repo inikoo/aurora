@@ -41,7 +41,7 @@
         <script>
             console.log('heheh indo');
         </script>
-        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=6&json=https://delivery-staging.wowsbar.com/announcement&logged_in=$logged_in" async type="text/javascript"></script>
+        <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=6&json=https://delivery-staging.wowsbar.com/announcement&logged_in={$logged_in}&xxx=${logged_in}" async type="text/javascript"></script>
 
 
 
