@@ -1345,6 +1345,21 @@ class Product extends Asset
             case 'Product Pricing Policy Key':
                 $label = _('pricing policy');
                 break;
+            case 'Product GPSR Manufacturer':
+                $label = _('manufacturer');
+                break;
+            case 'Product GPSR EU Responsable':
+                $label = _('EU responsible');
+                break;
+            case 'Product GPSR Warnings':
+                $label = _('warnings');
+                break;
+            case 'Product GPSR Manual':
+                $label = _('How to use');
+                break;
+            case 'Product GPSR Class Category Danger':
+                $label = _('Class & category of danger');
+                break;
             default:
                 $label = $field;
         }

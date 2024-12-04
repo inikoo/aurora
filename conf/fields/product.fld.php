@@ -913,6 +913,104 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
 
 
         );
+
+        $product_fields[] = array(
+            'label'      => 'GPSR (if empty will use Part GPSR)',
+            'class'      => (($new  or $product->get('is_variant') == 'Yes')  ? 'hide' : ''),
+            'show_title' => true,
+            'fields'     => array(
+                array(
+                    'id'              => 'Product_GPSR_Manufacturer',
+                    'edit'            => ($edit ? 'textarea' : ''),
+                    'right_code'      => 'PE',
+                    'value'           => htmlspecialchars(
+                        $product->get('Product GPSR Manufacturer')
+                    ),
+                    'formatted_value' => $product->get('GPSR Manufacturer'),
+                    'label'           => ucfirst(
+                        $product->get_field_label('Product GPSR Manufacturer')
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_GPSR_EU_Responsable',
+                    'edit'            => ($edit ? 'textarea' : ''),
+                    'right_code'      => 'PE',
+                    'value'           => htmlspecialchars(
+                        $product->get('Product GPSR EU Responsable')
+                    ),
+                    'formatted_value' => $product->get('GPSR EU Responsable'),
+                    'label'           => ucfirst(
+                        $product->get_field_label('Product GPSR EU Responsable')
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_GPSR_Warnings',
+                    'edit'            => ($edit ? 'textarea' : ''),
+                    'right_code'      => 'PE',
+                    'value'           => htmlspecialchars(
+                        $product->get('Product GPSR Warnings')
+                    ),
+                    'formatted_value' => $product->get('GPSR Warnings'),
+                    'label'           => ucfirst(
+                        $product->get_field_label('Product GPSR Warnings')
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_GPSR_Manual',
+                    'edit'            => ($edit ? 'textarea' : ''),
+                    'right_code'      => 'PE',
+                    'value'           => htmlspecialchars(
+                        $product->get('Product GPSR Manual')
+                    ),
+                    'formatted_value' => $product->get('GPSR Manual'),
+                    'label'           => ucfirst(
+                        $product->get_field_label('Product GPSR Manual')
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_GPSR_Class_Category_Danger',
+                    'edit'            => ($edit ? 'textarea' : ''),
+                    'right_code'      => 'PE',
+                    'value'           => htmlspecialchars(
+                        $product->get('Product GPSR Class Category Danger')
+                    ),
+                    'formatted_value' => $product->get('GPSR Class Category Danger'),
+                    'label'           => ucfirst(
+                        $product->get_field_label('Product GPSR Class Category Danger')
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'              => 'Product_GPSR_Languages',
+                    'edit'            => ($edit ? 'string' : ''),
+                    'right_code'      => 'PE',
+                    'value'           => htmlspecialchars(
+                        $product->get('Product GPSR Languages')
+                    ),
+                    'formatted_value' => $product->get('GPSR Languages'),
+                    'label'           => ucfirst(
+                        $product->get_field_label('Product GPSR Languages')
+                    ),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+
+            )
+
+
+        );
+
+
+
     }
 
     return $product_fields;
