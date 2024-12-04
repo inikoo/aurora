@@ -1107,7 +1107,7 @@ function get_export_edit_template_fields($object) {
                 'required'      => false,
                 'header'        => 'GPSR EU Responsable',
                 'name'          => 'Part GPSR EU Responsable',
-                'label'         => 'EU Responsible',
+                'label'         => 'GPSR EU Responsible',
                 'checked'       => 0,
                 'cell_type'     => 'string'
             ),
