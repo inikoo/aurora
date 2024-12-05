@@ -425,20 +425,22 @@
         {/foreach}
 
 
+        <tr colspan="2" class="hide">
+            <details id="details_1">
+                <summary class="tw-relative tw-mb-2 small">
+                    <i class="fas fa-plus tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                    <i class="fas fa-minus tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                    Hello
+                </summary>
+                
+                <div class="tw-ml-4">
+                    World
+                </div>
+            </details>
+        </tr>
 
         </table>
 
-        <details id="details_1" class="hide">
-            <summary class="tw-relative tw-mb-2 md:tw-mb-0 tw-pl-0  tw-text-xl tw-font-semibold tw-leading-6">
-                <i class="fas fa-plus" style="position: absolute; left: 0; top: 0;"></i>
-                <i class="fas fa-minus" style="position: absolute; left: 0; top: 0; display: none;"></i>
-                Hello
-            </summary>
-            
-            <div>
-                World
-            </div>
-        </details>
 
         <script>
             document.querySelector('#details_1').addEventListener('toggle', function(event) {
