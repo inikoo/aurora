@@ -203,12 +203,12 @@ class Public_Product
         switch ($key) {
 
 
-            case 'xGPSR Manufacturer':
-            case 'xGPSR EU Responsable':
-            case 'xGPSR Warnings':
-            case 'xGPSR Manual':
-            case 'xGPSR Class Category Danger':
-            case 'xGPSR Languages':
+            case 'GPSR Manufacturer':
+            case 'GPSR EU Responsable':
+            case 'GPSR Warnings':
+            case 'GPSR Manual':
+            case 'GPSR Class Category Danger':
+            case 'GPSR Languages':
 
                 $value=$this->data['Product '.$key];
                 if($value==''){
