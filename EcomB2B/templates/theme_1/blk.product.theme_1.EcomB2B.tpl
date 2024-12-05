@@ -445,9 +445,6 @@
 
             {if $gpsr_manufacturer!='' or $gpsr_eu_responsible!='' or $gpsr_warnings!='' or $gpsr_manual!='' or $gpsr_danger!='' or $gpsr_languages!=''}
 
-                {*
-                    Make a tbody with 'title' GPSR inside that tbody put the following trs
-                *}
                 <tr class="tw-border-t-0">
                     <td colspan="2" class="tw-pt-3">
                         <strong>GPSR</strong>
@@ -474,7 +471,7 @@
                     </td>
                 </tr>
                 <tr class="{if $gpsr_warnings==''}hide{/if}">
-                    {if ($gpsr_warnings|count_characters)<100}
+                    {if ($gpsr_warnings|count_characters)<1}
                         <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
                         <td>{$gpsr_warnings}</td>
                     {else}
@@ -494,7 +491,7 @@
                     {/if}
                 </tr>
                 <tr class="{if $gpsr_manual==''}hide{/if}">
-                    {if ($gpsr_manual|count_characters)<100}
+                    {if ($gpsr_manual|count_characters)<1}
                         <td class="small">{if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}</td>
                         <td>{$gpsr_manual}</td>
                     {else}
@@ -514,7 +511,7 @@
                     {/if}
                 </tr>
                 <tr class="{if $gpsr_danger==''}hide{/if}">
-                    {if ($gpsr_danger|count_characters)<100}
+                    {if ($gpsr_danger|count_characters)<1}
                         <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
                         <td>{$gpsr_danger}</td>
                     {else}
@@ -534,7 +531,7 @@
                     {/if}
                 </tr>
                 <tr class="{if $gpsr_languages==''}hide{/if}">
-                    {if ($gpsr_languages|count_characters)<100}
+                    {if ($gpsr_languages|count_characters)<1}
                         <td class="small">{if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}</td>
                         <td>{$gpsr_languages}</td>
                     {else}
@@ -554,9 +551,7 @@
                     {/if}
                 </tr>
 
-                {*
-                                  end tbody
-                               *}
+                {* end tbody *}
 
             {/if}
 
