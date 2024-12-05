@@ -218,14 +218,14 @@ class Public_Product
                         $this->id
                     );
 
-
-                    if ($result2 = $this->db->query($sql)) {
-
-                        if(!empty($result2['Part '.$key])) {
-                            $value = $result2['Part '.$key];
+                    if ($result = $this->db->query($sql)) {
+                        if ($row = $result->fetch()) {
+                            if(!empty($row['Part '.$key])) {
+                                $value = $row['Part '.$key];
+                            }
                         }
-
                     }
+
 
                 }
 
