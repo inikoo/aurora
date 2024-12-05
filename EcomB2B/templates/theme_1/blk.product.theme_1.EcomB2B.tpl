@@ -398,11 +398,28 @@
             <td>{$dimensions}</td>
         </tr>
         <tr class="{if $materials==''}hide{/if}">
-            <td class="small">{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
-            <td>
-                {$materials}
-            </td>
+            {if ($materials)<100}
+                <td class="small">{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
+                <td>
+                    {$materials}
+                </td>
+            {else}
+                <td colspan="2">
+                    <details id="details_1">
+                        <summary class="tw-cursor-pointer tw-relative tw-mb-2 small" style="list-style: none">
+                            <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                            <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                            {if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}
+                        </summary>
+                        
+                        <div class="tw-ml-4">
+                            {$materials}
+                        </div>
+                    </details>
+                </td>
+            {/if}
         </tr>
+        
         <tr class="{if $cpnp==''}hide{/if}">
             <td class="small" title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
             <td>{$cpnp}</td>
@@ -432,7 +449,7 @@
                     Make a tbody with 'title' GPSR inside that tbody put the following trs
                 *}
                 <tr class="tw-border-t-0">
-                    <td colspan="2" class="text-center tw-pt-3">
+                    <td colspan="2" class="tw-text-center tw-pt-3">
                         <strong>GPSR</strong>
                     </td>
                 </tr>
@@ -442,8 +459,19 @@
                     <td>{$gpsr_manufacturer}</td>
                 </tr>
                 <tr class="{if $gpsr_eu_responsible==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_eu_responsible)}{t}Responsible Person in the EU{/t}{else}{$labels._product_gpsr_eu_responsible}{/if}</td>
-                    <td>{$gpsr_eu_responsible}</td>
+                    <td colspan="2">
+                        <details id="details_1">
+                            <summary class="tw-cursor-pointer tw-relative tw-mb-2 small" style="list-style: none">
+                                <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                {if empty($labels._product_gpsr_eu_responsible)}{t}Responsible Person in the EU{/t}{else}{$labels._product_gpsr_eu_responsible}{/if}
+                            </summary>
+                            
+                            <div class="tw-ml-4">
+                                {$gpsr_eu_responsible}
+                            </div>
+                        </details>
+                    </td>
                 </tr>
                 <tr class="{if $gpsr_warnings==''}hide{/if}">
                     <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
@@ -456,7 +484,7 @@
                     {else}
                         <td colspan="2">
                             <details id="details_1">
-                                <summary class="tw-relative tw-mb-2 small">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-2 small" style="list-style: none">
                                     <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
                                     <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
                                     {if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}
@@ -496,7 +524,7 @@
             <tr class="hide">
                 <td colspan="2">
                     <details id="details_1">
-                        <summary class="tw-relative tw-mb-2 small">
+                        <summary class="tw-relative tw-mb-2 small" style="list-style: none">
                             <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
                             <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
                             Hello
@@ -511,19 +539,20 @@
 
         </table>
 
-
+        
         <script>
-            document.querySelector('#details_1').addEventListener('toggle', function(event) {
-                const details = event.target;
-                const isOpen = details.open;
-                const icons = details.querySelector('summary').querySelectorAll('i');
-                if (isOpen) {
-                    icons[0].style.display = 'none';
-                    icons[1].style.display = 'block';
-                } else {
-                    icons[0].style.display = 'block';
-                    icons[1].style.display = 'none';
-                }
+            document.querySelectorAll('#details_1').forEach(function(details) {
+                details.addEventListener('toggle', function(event) {
+                    const isOpen = event.target.open;
+                    const icons = event.target.querySelector('summary').querySelectorAll('i');
+                    if (isOpen) {
+                        icons[0].style.display = 'none';
+                        icons[1].style.display = 'block';
+                    } else {
+                        icons[0].style.display = 'block';
+                        icons[1].style.display = 'none';
+                    }
+                });
             });
         </script>
 
