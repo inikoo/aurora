@@ -472,19 +472,21 @@
 
 
 
-        <tr colspan="2" class="hide">
-            <details id="details_1">
-                <summary class="tw-relative tw-mb-2 small">
-                    <i class="fas fa-plus tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
-                    <i class="fas fa-minus tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
-                    Hello
-                </summary>
-                
-                <div class="tw-ml-4">
-                    World
-                </div>
-            </details>
-        </tr>
+            <tr class="hide">
+                <td colspan="2">
+                    <details id="details_1">
+                        <summary class="tw-relative tw-mb-2 small">
+                            <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                            <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                            Hello
+                        </summary>
+                        
+                        <div class="tw-ml-4">
+                            World
+                        </div>
+                    </details>
+                </td>
+            </tr>
 
         </table>
 
