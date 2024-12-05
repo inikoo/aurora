@@ -412,7 +412,7 @@
                             {if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}
                         </summary>
                         
-                        <div class="tw-ml-0 tw-border-0 tw-border-l-4 tw-ml-2 tw-pl-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                        <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
                             {$materials}
                         </div>
                     </details>
@@ -449,7 +449,7 @@
                     Make a tbody with 'title' GPSR inside that tbody put the following trs
                 *}
                 <tr class="tw-border-t-0">
-                    <td colspan="2" class="tw-text-center tw-pt-3">
+                    <td colspan="2" class="tw-pt-3">
                         <strong>GPSR</strong>
                     </td>
                 </tr>
@@ -467,15 +467,31 @@
                                 {if empty($labels._product_gpsr_eu_responsible)}{t}Responsible Person in the EU{/t}{else}{$labels._product_gpsr_eu_responsible}{/if}
                             </summary>
                             
-                            <div class="tw-ml-0 tw-border-0 tw-border-l-4 tw-ml-2 tw-pl-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                            <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
                                 {$gpsr_eu_responsible}
                             </div>
                         </details>
                     </td>
                 </tr>
                 <tr class="{if $gpsr_warnings==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
-                    <td>{$gpsr_warnings}</td>
+                    {if ($gpsr_warnings|count_characters)<100}
+                        <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
+                        <td>{$gpsr_warnings}</td>
+                    {else}
+                        <td colspan="2" class="tw-pr-0">
+                            <details id="details_1">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                    {$gpsr_warnings}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
                 <tr class="{if $gpsr_manual==''}hide{/if}">
                     {if ($gpsr_manual|count_characters)<100}
@@ -490,7 +506,7 @@
                                     {if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}
                                 </summary>
                                 
-                                <div class="tw-ml-0 tw-border-0 tw-border-l-4 tw-ml-2 tw-pl-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
                                     {$gpsr_manual}
                                 </div>
                             </details>
@@ -498,12 +514,44 @@
                     {/if}
                 </tr>
                 <tr class="{if $gpsr_danger==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
-                    <td>{$gpsr_danger}</td>
+                    {if ($gpsr_danger|count_characters)<100}
+                        <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
+                        <td>{$gpsr_danger}</td>
+                    {else}
+                        <td colspan="2" class="tw-pr-0">
+                            <details id="details_1">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                    {$gpsr_danger}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
                 <tr class="{if $gpsr_languages==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}</td>
-                    <td>{$gpsr_languages}</td>
+                    {if ($gpsr_languages|count_characters)<100}
+                        <td class="small">{if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}</td>
+                        <td>{$gpsr_languages}</td>
+                    {else}
+                        <td colspan="2" class="tw-pr-0">
+                            <details id="details_1">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                    {$gpsr_languages}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
 
                 {*
@@ -520,22 +568,6 @@
                 </tr>
             {/foreach}
 
-
-            <tr class="hide">
-                <td colspan="2" class="tw-pr-0">
-                    <details id="details_1">
-                        <summary class="tw-relative tw-mb-1 small" style="list-style: none">
-                            <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
-                            <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
-                            Hello
-                        </summary>
-                        
-                        <div class="tw-ml-0 tw-border-0 tw-border-l-4 tw-ml-2 tw-pl-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
-                            World
-                        </div>
-                    </details>
-                </td>
-            </tr>
 
         </table>
 
