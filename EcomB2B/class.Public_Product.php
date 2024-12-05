@@ -202,6 +202,37 @@ class Public_Product
     {
         switch ($key) {
 
+
+            case 'GPSR Manufacturer':
+            case 'GPSR EU Responsable':
+            case 'GPSR Warnings':
+            case 'GPSR Manual':
+            case 'GPSR Class Category Danger':
+            case 'GPSR Languages':
+
+                $value=$this->data['Product '.$key];
+                if($value==''){
+
+                    $sql = sprintf(
+                        "SELECT * FROM `Product Part Bridge` B  LEFT JOIN `Part Dimension` P  ON (P.`Part SKU`=B.`Product Part Part SKU`)    WHERE  `Product Part Product ID`=%d  limit 1 ",
+                        $this->id
+                    );
+
+
+                    if ($result2 = $this->db->query($sql)) {
+
+                        if(!empty($result2['Part '.$key])) {
+                            $value = $result2['Part '.$key];
+                        }
+
+                    }
+
+                }
+
+                    return $value;
+
+
+
             case 'Product Video':
 
                 return $this->data['Product Video'];
@@ -923,6 +954,8 @@ class Public_Product
     {
         $this->webpage = get_object('public_webpage-scope_product', $this->id);
     }
+
+
 
     function get_attachments()
     {
