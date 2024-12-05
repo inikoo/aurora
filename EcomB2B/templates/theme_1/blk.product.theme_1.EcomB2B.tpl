@@ -474,6 +474,34 @@
 
 
         </table>
+
+        <details id="details_1" class="hide">
+            <summary class="tw-relative tw-mb-2 md:tw-mb-0 tw-pl-0  tw-text-xl tw-font-semibold tw-leading-6">
+                <i class="fas fa-plus" style="position: absolute; left: 0; top: 0;"></i>
+                <i class="fas fa-minus" style="position: absolute; left: 0; top: 0; display: none;"></i>
+                Hello
+            </summary>
+            
+            <div>
+                World
+            </div>
+        </details>
+
+        <script>
+            document.querySelector('#details_1').addEventListener('toggle', function(event) {
+                const details = event.target;
+                const isOpen = details.open;
+                const icons = details.querySelector('summary').querySelectorAll('i');
+                if (isOpen) {
+                    icons[0].style.display = 'none';
+                    icons[1].style.display = 'block';
+                } else {
+                    icons[0].style.display = 'block';
+                    icons[1].style.display = 'none';
+                }
+            });
+        </script>
+
             {if $webpage->get('Webpage Blog URL')!=''}
             <table   style="margin-top: 20px;min-width: 270px">
 
