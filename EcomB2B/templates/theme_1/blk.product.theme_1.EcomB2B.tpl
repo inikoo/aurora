@@ -431,6 +431,11 @@
                 {*
                     Make a tbody with 'title' GPSR inside that tbody put the following trs
                 *}
+                <tr class="tw-border-t-0">
+                    <td colspan="2" class="text-center tw-pt-3">
+                        <strong>GPSR</strong>
+                    </td>
+                </tr>
 
                 <tr class="{if $gpsr_manufacturer==''}hide{/if}">
                     <td class="small">{if empty($labels._product_gpsr_manufacturer)}{t}Manufacturer{/t}{else}{$labels._product_gpsr_manufacturer}{/if}</td>
@@ -445,8 +450,24 @@
                     <td>{$gpsr_warnings}</td>
                 </tr>
                 <tr class="{if $gpsr_manual==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}</td>
-                    <td>{$gpsr_manual}</td>
+                    {if ($gpsr_manual|count_characters)<100}
+                        <td class="small">{if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}</td>
+                        <td>{$gpsr_manual}</td>
+                    {else}
+                        <td colspan="2">
+                            <details id="details_1">
+                                <summary class="tw-relative tw-mb-2 small">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-4">
+                                    {$gpsr_manual}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
                 <tr class="{if $gpsr_danger==''}hide{/if}">
                     <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
