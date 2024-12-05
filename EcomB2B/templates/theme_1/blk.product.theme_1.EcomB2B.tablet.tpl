@@ -409,109 +409,189 @@
                         </div>
 
                         <div class="one-half-responsive last-column ">
+
                             {assign 'origin' $product->get('Origin')}
                             {assign 'weight' $product->get('Unit Weight Formatted')}
-                            {assign 'weight_gross' $product->get('Package Weight')}
+
+                            {if $product->get('number_visible_variants')==0}
+                                {assign 'weight_gross' $product->get('Package Weight')}
+                            {else}
+                                {assign 'weight_gross' $variants[0]->get('Package Weight')}
+                            {/if}
+
                             {assign 'dimensions' $product->get('Unit Dimensions')}
                             {assign 'materials' $product->get('Materials')}
                             {assign 'barcode' $product->get('Barcode Number')}
                             {assign 'cpnp' $product->get('CPNP Number')}
                             {assign 'ufi' $product->get('UFI')}
 
+                            <div class="product_properties" >
 
-                            <div >
+                                <table class="properties" >
+                                    <tr class="{if $origin==''}hide{/if}">
+                                        <td class="small">{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</td>
+                                        <td>{$origin}</td>
+                                    </tr>
 
-                            <div class="activity-item {if $origin==''}hide{/if}">
-                                <div class=" one-half-responsive ">
+                                    <tr class="{if $weight==''}hide{/if}">
+                                        <td class="small">{if empty($labels._product_weight)}{t}Net weight{/t}{else}{$labels._product_weight}{/if}</td>
+                                        <td>{$weight}</td>
+                                    </tr>
+                                    <tr class="Package_Weight_Container {if $weight_gross==''}hide{/if}">
+                                        <td class="small">{if empty($labels._product_weight_gross)}{t}Shipping weight{/t}{else}{$labels._product_weight_gross}{/if}</td>
+                                        <td class="Package_Weight">{$weight_gross}</td>
+                                    </tr>
+                                    <tr class="{if $dimensions==''}hide{/if}">
+                                        <td class="small">{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</td>
+                                        <td>{$dimensions}</td>
+                                    </tr>
+                                    <tr class="{if $materials==''}hide{/if}">
+                                        <td class="small">{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
+                                        <td>
+                                            {$materials}
+                                        </td>
+                                    </tr>
+                                    <tr class="{if $cpnp==''}hide{/if}">
+                                        <td class="small" title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
+                                        <td>{$cpnp}</td>
+                                    </tr>
+                                    <tr class="{if $ufi==''}hide{/if}">
+                                        <td class="small" title="{if empty($labels._product_ufi)}{t}Unique Formula Identifier - Poison Centres{/t}{else}{$labels._product_ufi}{/if}">UFI</td>
+                                        <td>{$ufi}</td>
+                                    </tr>
+                                    <tr class="{if $barcode==''}hide{/if}">
+                                        <td class="small">{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
+                                        <td>{$barcode}</td>
+                                    </tr>
 
-                                    <strong>{if empty($labels._product_origin)}{t}Origin{/t}{else}{$labels._product_origin}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column ">
 
-                                    <span style="float:right" class="origin">{$origin}</span>
-                                </div>
+
+                                    {assign 'gpsr_manufacturer' $product->get('GPSR Manufacturer')}
+                                    {assign 'gpsr_eu_responsible' $product->get('GPSR EU Responsable')}
+                                    {assign 'gpsr_warnings' $product->get('GPSR Warnings')}
+                                    {assign 'gpsr_manual' $product->get('GPSR Manual')}
+                                    {assign 'gpsr_danger' $product->get('GPSR Class Category Danger')}
+                                    {assign 'gpsr_languages' $product->get('GPSR Languages')}
+
+
+                                    {if $gpsr_manufacturer!='' or $gpsr_eu_responsible!='' or $gpsr_warnings!='' or $gpsr_manual!='' or $gpsr_danger!='' or $gpsr_languages!=''}
+
+                                        {*
+                                            Make a tbody with 'title' GPSR inside that tbody put the following trs
+                                        *}
+
+                                        <tr class="{if $gpsr_manufacturer==''}hide{/if}">
+                                            <td class="small">{if empty($labels._product_gpsr_manufacturer)}{t}Manufacturer{/t}{else}{$labels._product_gpsr_manufacturer}{/if}</td>
+                                            <td>{$gpsr_manufacturer}</td>
+                                        </tr>
+                                        <tr class="{if $gpsr_eu_responsible==''}hide{/if}">
+                                            <td class="small">{if empty($labels._product_gpsr_eu_responsible)}{t}Responsible Person in the EU{/t}{else}{$labels._product_gpsr_eu_responsible}{/if}</td>
+                                            <td>{$gpsr_eu_responsible}</td>
+                                        </tr>
+                                        <tr class="{if $gpsr_warnings==''}hide{/if}">
+                                            <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
+                                            <td>{$gpsr_warnings}</td>
+                                        </tr>
+                                        <tr class="{if $gpsr_manual==''}hide{/if}">
+                                            <td class="small">{if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}</td>
+                                            <td>{$gpsr_manual}</td>
+                                        </tr>
+                                        <tr class="{if $gpsr_danger==''}hide{/if}">
+                                            <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
+                                            <td>{$gpsr_danger}</td>
+                                        </tr>
+                                        <tr class="{if $gpsr_languages==''}hide{/if}">
+                                            <td class="small">{if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}</td>
+                                            <td>{$gpsr_languages}</td>
+                                        </tr>
+
+                                        {*
+                                                          end tbody
+                                                       *}
+
+                                    {/if}
+
+
+                                    {foreach from=$product->get_attachments() item=attachment}
+                                        <tr>
+                                            <td>{$attachment.label} <i class="fa fa-paperclip" style="margin-left:5px" aria-hidden="true"></i></td>
+                                            <td><a href="attachment.php?id={$attachment.id}" target="_blank">{$attachment.name}</a></td>
+                                        </tr>
+                                    {/foreach}
+
+
+                                    <tr class="hide">
+                                        <td colspan="2">
+                                            <details id="details_1">
+                                                <summary class="tw-relative tw-mb-2 small">
+                                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                                    Hello
+                                                </summary>
+
+                                                <div class="tw-ml-4">
+                                                    World
+                                                </div>
+                                            </details>
+                                        </td>
+                                    </tr>
+
+                                </table>
+
+
+                                <script>
+                                  document.querySelector('#details_1').addEventListener('toggle', function(event) {
+                                    const details = event.target;
+                                    const isOpen = details.open;
+                                    const icons = details.querySelector('summary').querySelectorAll('i');
+                                    if (isOpen) {
+                                      icons[0].style.display = 'none';
+                                      icons[1].style.display = 'block';
+                                    } else {
+                                      icons[0].style.display = 'block';
+                                      icons[1].style.display = 'none';
+                                    }
+                                  });
+                                </script>
+
+                                {if $webpage->get('Webpage Blog URL')!=''}
+                                    <table   style="margin-top: 20px;min-width: 270px">
+
+                                        <tr >
+
+                                            <td ><a href="{$webpage->get('Webpage Blog URL')}" style="text-decoration: none">
+                                                    <span style="border:1px solid #ccc;padding:5px 15px 5px 10px"> <i style="margin-right: 3px" class="fab fa-blogger-b"></i>    Blog </span>
+                                                </a></td>
+                                        </tr>
+                                        <tr style="height: 20px"><td></td></tr>
+
+
+                                    </table>
+                                {/if}
+
+                                <table class="{if $materials==''}hide{/if}"   style="margin-top: 20px;min-width: 270px">
+
+                                    <tr class="{if $materials==''}hide{/if}">
+
+                                        <td ><a href="asset_label.php?object=product&key={$product->id}&type=unit_ingredients" target="_blank" style="text-decoration: none">
+                                                <span style="border:1px solid #ccc;padding:5px 15px 5px 10px"><img  style="width: 50px;height:16px;position: relative;top:3px;margin-right: 5px" src="/art/pdf.gif"> {if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}</span>{/if}
+                                            </a></td>
+                                    </tr>
+                                    <tr style="height: 20px"><td></td></tr>
+                                    <tr class="{if $barcode==''}hide{/if}">
+
+                                        <td ><a href="asset_label.php?object=product&key={$product->id}&type=unit_barcode" target="_blank" style="text-decoration: none">
+                                                <span style="border:1px solid #ccc;padding:5px 15px 5px 10px"><img  style="width: 50px;height:16px;position: relative;top:3px;margin-right: 5px" src="/art/pdf.gif"> {if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}</span>{/if}
+                                            </a></td>
+                                    </tr>
+
+                                </table>
+
+
+
                             </div>
 
-                            <div class="activity-item {if $weight=='' or $weight=='0Kg'}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_weight)}{t}Net weight{/t}{else}{$labels._product_weight}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
 
-                                    <span style="float:right" class="origin">{$weight}</span>
-                                </div>
-                            </div>
-                                <div class="Package_Weight_Container activity-item {if $weight_gross=='' or $weight_gross=='0Kg'}hide{/if}">
-                                    <div class=" one-half-responsive ">
-                                        <i class="ion-record color-green-dark"></i>
-                                        <strong>{if empty($labels._product_weight_gross)}{t}Shipping weight{/t}{else}{$labels._product_weight_gross}{/if}</strong>
-                                    </div>
-                                    <div class="one-half-responsive last-column"  >
-
-                                        <span style="float:right" class="origin Package_Weight">{$weight_gross}</span>
-                                    </div>
-                                </div>
-
-                            <div class="activity-item {if $dimensions==''}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_dimensions)}{t}Dimensions{/t}{else}{$labels._product_dimensions}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <span style="float:right" class="origin">{$dimensions}</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item {if $barcode==''}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <span style="float:right" class="origin">{$barcode}</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item {if $cpnp==''}hide{/if}">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>CPNP</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <span style="float:right" class="origin">{$cpnp}</span>
-                                </div>
-                            </div>
-
-                                <div class="activity-item {if $ufi==''}hide{/if}">
-                                    <div class=" one-half-responsive ">
-                                        <i class="ion-record color-green-dark"></i>
-                                        <strong>UFI</strong>
-                                    </div>
-                                    <div class="one-half-responsive last-column"  >
-
-                                        <span style="float:right" class="origin">{$ufi}</span>
-                                    </div>
-                                </div>
-
-
-                            <div class="activity-item {if $materials==''}hide{/if}" style="border-bottom: none">
-                                <div class=" one-half-responsive ">
-                                    <i class="ion-record color-green-dark"></i>
-                                    <strong>{if empty($labels._product_materials)}{t}Materials{/t}/{t}Ingredients{/t}{else}{$labels._product_materials}{/if}</strong>
-                                </div>
-                                <div class="one-half-responsive last-column"  >
-
-                                    <div style="float:right;line-height: 150%;text-align: right">{$materials}</div>
-                                    <div class="clear"></div>
-                                </div>
-                            </div>
-
-
-                        </div>
 
                             <div class="clear"></div>
                         </div>
