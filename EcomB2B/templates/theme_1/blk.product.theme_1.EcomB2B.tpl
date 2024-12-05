@@ -398,11 +398,28 @@
             <td>{$dimensions}</td>
         </tr>
         <tr class="{if $materials==''}hide{/if}">
-            <td class="small">{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
-            <td>
-                {$materials}
-            </td>
+            {if ($materials|count_characters)<100}
+                <td class="small">{if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}</td>
+                <td>
+                    {$materials}
+                </td>
+            {else}
+                <td colspan="2" class="tw-pr-0">
+                    <details id="details_1">
+                        <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                            <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                            <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                            {if empty($labels._product_materials)}{t}Materials{/t} / {t}Ingredients{/t}{else}{$labels._product_materials}{/if}
+                        </summary>
+                        
+                        <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                            {$materials}
+                        </div>
+                    </details>
+                </td>
+            {/if}
         </tr>
+        
         <tr class="{if $cpnp==''}hide{/if}">
             <td class="small" title="{if empty($labels._product_cpnp)}{t}Cosmetic Products Notification Portal{/t}{else}{$labels._product_cpnp}{/if} - Europa.eu">CPNP</td>
             <td>{$cpnp}</td>
@@ -428,38 +445,113 @@
 
             {if $gpsr_manufacturer!='' or $gpsr_eu_responsible!='' or $gpsr_warnings!='' or $gpsr_manual!='' or $gpsr_danger!='' or $gpsr_languages!=''}
 
-                {*
-                    Make a tbody with 'title' GPSR inside that tbody put the following trs
-                *}
+                <tr class="tw-border-t-0">
+                    <td colspan="2" class="tw-pt-3">
+                        <strong>GPSR</strong>
+                    </td>
+                </tr>
 
                 <tr class="{if $gpsr_manufacturer==''}hide{/if}">
                     <td class="small">{if empty($labels._product_gpsr_manufacturer)}{t}Manufacturer{/t}{else}{$labels._product_gpsr_manufacturer}{/if}</td>
                     <td>{$gpsr_manufacturer}</td>
                 </tr>
                 <tr class="{if $gpsr_eu_responsible==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_eu_responsible)}{t}Responsible Person in the EU{/t}{else}{$labels._product_gpsr_eu_responsible}{/if}</td>
-                    <td>{$gpsr_eu_responsible}</td>
+                    <td colspan="2" class="tw-pr-0">
+                        <details id="details_1">
+                            <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                {if empty($labels._product_gpsr_eu_responsible)}{t}Responsible Person in the EU{/t}{else}{$labels._product_gpsr_eu_responsible}{/if}
+                            </summary>
+                            
+                            <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                {$gpsr_eu_responsible}
+                            </div>
+                        </details>
+                    </td>
                 </tr>
                 <tr class="{if $gpsr_warnings==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
-                    <td>{$gpsr_warnings}</td>
+                    {if ($gpsr_warnings|count_characters)<1}
+                        <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
+                        <td>{$gpsr_warnings}</td>
+                    {else}
+                        <td colspan="2" class="tw-pr-0">
+                            <details id="details_1">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                    {$gpsr_warnings}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
                 <tr class="{if $gpsr_manual==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}</td>
-                    <td>{$gpsr_manual}</td>
+                    {if ($gpsr_manual|count_characters)<1}
+                        <td class="small">{if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}</td>
+                        <td>{$gpsr_manual}</td>
+                    {else}
+                        <td colspan="2" class="tw-pr-0">
+                            <details id="details_1">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                    {$gpsr_manual}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
                 <tr class="{if $gpsr_danger==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
-                    <td>{$gpsr_danger}</td>
+                    {if ($gpsr_danger|count_characters)<1}
+                        <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
+                        <td>{$gpsr_danger}</td>
+                    {else}
+                        <td colspan="2" class="tw-pr-0">
+                            <details id="details_1">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                    {$gpsr_danger}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
                 <tr class="{if $gpsr_languages==''}hide{/if}">
-                    <td class="small">{if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}</td>
-                    <td>{$gpsr_languages}</td>
+                    {if ($gpsr_languages|count_characters)<1}
+                        <td class="small">{if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}</td>
+                        <td>{$gpsr_languages}</td>
+                    {else}
+                        <td colspan="2" class="tw-pr-0">
+                            <details id="details_1">
+                                <summary class="tw-cursor-pointer tw-relative tw-mb-1 small" style="list-style: none">
+                                    <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
+                                    <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
+                                    {if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}
+                                </summary>
+                                
+                                <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
+                                    {$gpsr_languages}
+                                </div>
+                            </details>
+                        </td>
+                    {/if}
                 </tr>
 
-                {*
-                                  end tbody
-                               *}
+                {* end tbody *}
 
             {/if}
 
@@ -472,37 +564,22 @@
             {/foreach}
 
 
-            <tr class="hide">
-                <td colspan="2">
-                    <details id="details_1">
-                        <summary class="tw-relative tw-mb-2 small">
-                            <i class="fal fa-plus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style=""></i>
-                            <i class="fal fa-minus tw-cursor-pointer tw-absolute tw-right-2 tw-top-1/2 -tw-translate-y-1/2" style="display: none;"></i>
-                            Hello
-                        </summary>
-                        
-                        <div class="tw-ml-4">
-                            World
-                        </div>
-                    </details>
-                </td>
-            </tr>
-
         </table>
 
-
+        
         <script>
-            document.querySelector('#details_1').addEventListener('toggle', function(event) {
-                const details = event.target;
-                const isOpen = details.open;
-                const icons = details.querySelector('summary').querySelectorAll('i');
-                if (isOpen) {
-                    icons[0].style.display = 'none';
-                    icons[1].style.display = 'block';
-                } else {
-                    icons[0].style.display = 'block';
-                    icons[1].style.display = 'none';
-                }
+            document.querySelectorAll('#details_1').forEach(function(details) {
+                details.addEventListener('toggle', function(event) {
+                    const isOpen = event.target.open;
+                    const icons = event.target.querySelector('summary').querySelectorAll('i');
+                    if (isOpen) {
+                        icons[0].style.display = 'none';
+                        icons[1].style.display = 'block';
+                    } else {
+                        icons[0].style.display = 'block';
+                        icons[1].style.display = 'none';
+                    }
+                });
             });
         </script>
 
