@@ -53,6 +53,15 @@ trait Send_Email
 
         $this->store = get_object('Store', $this->email_template_type->get('Store Key'));
 
+        if ($recipient->get_object_name() == 'Prospect' or $recipient->get_object_name() == 'Customer') {
+            if($this->store->id!=$recipient->get('Store Key')){
+                $this->error = true;
+                $this->msg   = 'Recipient store key does not match email template store key';
+                return false;
+            }
+        }
+        
+
         $website          = get_object('Website', $this->store->get('Store Website Key'));
         $localised_labels = $website->get('Localised Labels');
 
