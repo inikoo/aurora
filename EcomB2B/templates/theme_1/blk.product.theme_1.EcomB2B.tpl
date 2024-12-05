@@ -414,7 +414,6 @@
         <tr class="{if $barcode==''}hide{/if}">
             <td class="small">{if empty($labels._product_barcode)}{t}Barcode{/t}{else}{$labels._product_barcode}{/if}</td>
             <td>{$barcode}</td>
-
         </tr>
 
         {foreach from=$product->get_attachments() item=attachment}
@@ -423,6 +422,54 @@
                 <td><a href="attachment.php?id={$attachment.id}" target="_blank">{$attachment.name}</a></td>
             </tr>
         {/foreach}
+
+            {assign 'gpsr_manufacturer' $product->get('GPSR Manufacturer')}
+            {assign 'gpsr_eu_responsible' $product->get('GPSR EU Responsable')}
+            {assign 'gpsr_warnings' $product->get('GPSR Warnings')}
+            {assign 'gpsr_manual' $product->get('GPSR Manual')}
+            {assign 'gpsr_danger' $product->get('GPSR Class Category Danger')}
+            {assign 'gpsr_languages' $product->get('GPSR Languages')}
+
+
+            {if $gpsr_manufacturer!='' or $gpsr_eu_responsible!='' or $gpsr_warnings!='' or $gpsr_manual!='' or $gpsr_danger!='' or $gpsr_languages!=''}
+
+                {*
+                    Make a tbody with 'title' GPSR inside that tbody put the following trs
+                *}
+
+                <tr class="{if $gpsr_manufacturer==''}hide{/if}">
+                    <td class="small">{if empty($labels._product_gpsr_manufacturer)}{t}Manufacturer{/t}{else}{$labels._product_gpsr_manufacturer}{/if}</td>
+                    <td>{$gpsr_manufacturer}</td>
+                </tr>
+                <tr class="{if $gpsr_eu_responsible==''}hide{/if}">
+                    <td class="small">{if empty($labels._product_gpsr_eu_responsible)}{t}Responsible Person in the EU{/t}{else}{$labels._product_gpsr_eu_responsible}{/if}</td>
+                    <td>{$gpsr_eu_responsible}</td>
+                </tr>
+                <tr class="{if $gpsr_warnings==''}hide{/if}">
+                    <td class="small">{if empty($labels._product_gpsr_warnings)}{t}Warnings{/t}{else}{$labels._product_gpsr_warnings}{/if}</td>
+                    <td>{$gpsr_warnings}</td>
+                </tr>
+                <tr class="{if $gpsr_manual==''}hide{/if}">
+                    <td class="small">{if empty($labels._product_gpsr_manual)}{t}How to use{/t}{else}{$labels._product_gpsr_manual}{/if}</td>
+                    <td>{$gpsr_manual}</td>
+                </tr>
+                <tr class="{if $gpsr_danger==''}hide{/if}">
+                    <td class="small">{if empty($labels._product_gpsr_danger)}{t}Class and category of danger{/t}{else}{$labels._product_gpsr_danger}{/if}</td>
+                    <td>{$gpsr_danger}</td>
+                </tr>
+                <tr class="{if $gpsr_languages==''}hide{/if}">
+                    <td class="small">{if empty($labels._product_gpsr_languages)}{t}Available languages on the product{/t}{else}{$labels._product_gpsr_languages}{/if}</td>
+                    <td>{$gpsr_languages}</td>
+                </tr>
+
+                {*
+                                  end tbody
+                               *}
+
+            {/if}
+
+
+
 
 
 
