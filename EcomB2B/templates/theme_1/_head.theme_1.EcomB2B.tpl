@@ -50,7 +50,13 @@
     {elseif  $account_code=='INDO'  }
         <script>
             var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
-            document.querySelector('#wowsbar_announcement').style.height = dataFromLocalStorage?.height || '0px';
+            const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
+            if (wowsbar_announcement) {
+                console.log('wowsbar_announcement', wowsbar_announcement)
+                wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div></div>');
+                // wowsbar_announcement.style.height = dataFromLocalStorage?.height || '0px';
+                // wowsbar_announcement.replaceWith
+            }
         </script>
 
         {if $logged_in}
