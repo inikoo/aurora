@@ -53,7 +53,7 @@
             const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
             if (wowsbar_announcement) {
                 console.log('wowsbar_announcement', wowsbar_announcement)
-                wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div></div>');
+                wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div id="wowsbar_announcement" class="hide"></div>');
                 // wowsbar_announcement.style.height = dataFromLocalStorage?.height || '0px';
                 // wowsbar_announcement.replaceWith
             }
