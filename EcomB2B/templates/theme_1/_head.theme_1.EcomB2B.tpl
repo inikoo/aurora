@@ -38,26 +38,31 @@
             <script>
                 console.log('ag login');
             </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=12&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
         {else}
             <script>
                 console.log('ag logout');
             </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=12&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
         {/if}
     {/if}
 
     {elseif  $account_code=='INDO'  }
+        <script>
+            var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
+            document.querySelector('#wowsbar_announcement').style.height = dataFromLocalStorage?.height || '0px';
+        </script>
+
         {if $logged_in}
             <script>
                 console.log('indo login');
             </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=12&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
         {else}
             <script>
                 console.log('indo logout');
             </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=12&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
         {/if}
 
 
