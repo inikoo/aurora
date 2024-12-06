@@ -15,12 +15,30 @@ require 'keyring/au_deploy_conf.php';
 $redis = new Redis();
 $redis->connect(REDIS_HOST, REDIS_READ_ONLY_PORT);
 
-if(empty($_REQUEST['url_KHj321Tu'])){
-    echo 'error A';
+// if(empty($_REQUEST['url_KHj321Tu'])){
+//     echo 'error A';
+//     exit;
+// }
+
+$headers = getallheaders();
+
+$url = null;
+if (isset($headers['X-Wowsbar-Announcement-Url'])) {
+    $url = filter_var(urldecode($headers['X-Wowsbar-Announcement-Url']), FILTER_VALIDATE_URL);
+    if ($url === false) {
+        // Handle invalid URL
+        $url = null;
+
+        echo 'Header Wowsbar is not a valid URL';
+        exit;
+    }
+} else {
+    // Handle missing header
+    echo 'Missing header Wowsbar';
     exit;
 }
 
-$url = urldecode($_REQUEST['url_KHj321Tu']);
+// $url = urldecode($_REQUEST['url_KHj321Tu']);
 
 $curl = curl_init();
 
