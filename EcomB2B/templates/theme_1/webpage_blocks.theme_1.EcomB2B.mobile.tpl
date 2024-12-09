@@ -20,11 +20,7 @@
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"> <!--Enables this element to be scrolled -->
         
-        {if $logged_in}
-            <iframe id="wowsbar_announcement_iframe" src="https://delivery.wowsbar.com/announcement?logged_in=true&iframe=true&domain={$website->get('Website URL')}"></iframe>
-        {else}
-            <iframe id="wowsbar_announcement_iframe" src="https://delivery.wowsbar.com/announcement?logged_in=false&iframe=true&domain={$website->get('Website URL')}"></iframe>
-        {/if}
+
         
         <!-- Luigi: search result -->
         <div class="container" style="margin-bottom: 0px; margin-left: 15px;margin-right: 15px;">
