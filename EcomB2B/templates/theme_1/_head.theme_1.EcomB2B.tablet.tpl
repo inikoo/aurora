@@ -16,7 +16,7 @@
       window.dataLayer = window.dataLayer || [];
     </script>
 
-    
+
     <script>
         var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
         const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
@@ -27,6 +27,18 @@
             // wowsbar_announcement.replaceWith
         }
     </script>
+
+    {if $logged_in}
+        <script>
+            console.log('xxx login');
+        </script>
+        <script src="https://awads.io/announcement.min.js?v=13&logged_in=true&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
+    {else}
+        <script>
+            console.log('xxx logout');
+        </script>
+        <script src="https://awads.io/announcement.min.js?v=13&logged_in=false&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
+    {/if}
 
 
     {if  $account_code=='AW'  }

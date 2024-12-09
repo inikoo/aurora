@@ -28,6 +28,18 @@
         }
     </script>
 
+    {if $logged_in}
+        <script>
+            console.log('xxx login');
+        </script>
+        <script src="https://awads.io/announcement.min.js?v=13&logged_in=true&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
+    {else}
+        <script>
+            console.log('xxx logout');
+        </script>
+        <script src="https://awads.io/announcement.min.js?v=13&logged_in=false&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
+    {/if}
+
     {if  $account_code=='AW'  }
         {if $website->get('Website Code')=='AW.biz'}
             <script src="https://scripts.luigisbox.com/LBX-588294.js"></script>
