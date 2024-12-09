@@ -57,17 +57,6 @@
         <script src="https://scripts.luigisbox.com/LBX-621871.js"></script>
     {elseif $website->get('Website Code')=='AC'}
         <script src="https://scripts.luigisbox.com/LBX-621949.js"></script>
-        // {if $logged_in}
-        //     <script>
-        //         console.log('ag login');
-        //     </script>
-        //     <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
-        // {else}
-        //     <script>
-        //         console.log('ag logout');
-        //     </script>
-        //     <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
-        // {/if}
     {/if}
 
     {elseif  $account_code=='INDO'  }
