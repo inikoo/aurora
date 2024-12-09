@@ -17,6 +17,17 @@
 
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
+    <script>
+        var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
+        const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
+        if (wowsbar_announcement) {
+            console.log('wowsbar_announcement 2', wowsbar_announcement)
+            wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div id="wowsbar_announcement" class="hide"></div>');
+            // wowsbar_announcement.style.height = dataFromLocalStorage?.height || '0px';
+            // wowsbar_announcement.replaceWith
+        }
+    </script>
+
     {if  $account_code=='AW'  }
         {if $website->get('Website Code')=='AW.biz'}
             <script src="https://scripts.luigisbox.com/LBX-588294.js"></script>
