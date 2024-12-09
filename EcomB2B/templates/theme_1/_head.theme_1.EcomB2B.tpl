@@ -20,11 +20,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa&family=Inter&family=Laila&family=Lobster&family=Playfair&family=Port+Lligat+Slab&family=Quicksand&family=Yatra+One&display=swap" rel="stylesheet">
     <script>
         var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
+        console.log('dataFromLocalStorage', dataFromLocalStorage)
         const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
+        console.log('wowsbar_announcement', wowsbar_announcement)
+        
         if (wowsbar_announcement) {
-            console.log('wowsbar_announcement', wowsbar_announcement)
             wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div id="wowsbar_announcement" class="hide"></div>');
             // wowsbar_announcement.style.height = dataFromLocalStorage?.height || '0px';
             // wowsbar_announcement.replaceWith
