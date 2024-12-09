@@ -10,8 +10,6 @@
 *}
 <span id="webpage_data" style="display:none" data-webpage_key="{$webpage->id}"></span>
 
-<div id="wowsbar_announcement" class="hide"></div>
-
 <div class="sidebars sidebars-light">
     <div class="sidebar sidebar-left">
         <div class="sidebar-header sidebar-header-image bg-1">
