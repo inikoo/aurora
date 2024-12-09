@@ -20,7 +20,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    
     <script>
         var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
         const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
