@@ -20,6 +20,29 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
+        const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
+        if (wowsbar_announcement) {
+            console.log('wowsbar_announcement', wowsbar_announcement)
+            wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div id="wowsbar_announcement" class="hide"></div>');
+            // wowsbar_announcement.style.height = dataFromLocalStorage?.height || '0px';
+            // wowsbar_announcement.replaceWith
+        }
+    </script>
+
+    {if $logged_in}
+        <script>
+            console.log('xxx login');
+        </script>
+        <script src="https://awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=true&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
+    {else}
+        <script>
+            console.log('xxx logout');
+        </script>
+        <script src="https://awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=false&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
+    {/if}
+
 
     {if  $account_code=='AW'  }
     {if $website->get('Website Code')=='AW.biz'}
@@ -34,31 +57,42 @@
         <script src="https://scripts.luigisbox.com/LBX-621871.js"></script>
     {elseif $website->get('Website Code')=='AC'}
         <script src="https://scripts.luigisbox.com/LBX-621949.js"></script>
-        {if $logged_in}
-            <script>
-                console.log('ag login');
-            </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=8&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
-        {else}
-            <script>
-                console.log('ag logout');
-            </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=8&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
-        {/if}
+        // {if $logged_in}
+        //     <script>
+        //         console.log('ag login');
+        //     </script>
+        //     <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        // {else}
+        //     <script>
+        //         console.log('ag logout');
+        //     </script>
+        //     <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        // {/if}
     {/if}
 
     {elseif  $account_code=='INDO'  }
-        {if $logged_in}
-            <script>
-                console.log('indo login');
-            </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=8&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
-        {else}
-            <script>
-                console.log('indo logout');
-            </script>
-            <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=8&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
-        {/if}
+        // <script>
+        //     var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
+        //     const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
+        //     if (wowsbar_announcement) {
+        //         console.log('wowsbar_announcement', wowsbar_announcement)
+        //         wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div id="wowsbar_announcement" class="hide"></div>');
+        //         // wowsbar_announcement.style.height = dataFromLocalStorage?.height || '0px';
+        //         // wowsbar_announcement.replaceWith
+        //     }
+        // </script>
+
+        // {if $logged_in}
+        //     <script>
+        //         console.log('indo login');
+        //     </script>
+        //     <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=true&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        // {else}
+        //     <script>
+        //         console.log('indo logout');
+        //     </script>
+        //     <script src="https://staging.awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=false&json=https://delivery-staging.wowsbar.com/announcement" async type="text/javascript"></script>
+        // {/if}
 
 
 
