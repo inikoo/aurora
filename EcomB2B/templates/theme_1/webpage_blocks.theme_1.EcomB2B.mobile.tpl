@@ -20,8 +20,26 @@
     <div id="page-content" class="page-content">
         <div id="page-content-scroll" class="header-clear"> <!--Enables this element to be scrolled -->
         
+        <script>
+            window.addEventListener('message', function(event) {
+                console.log('received message', event.data)
 
-        
+                if (event?.data?.height) {
+                    document.getElementById('wowsbar_announcement_iframe').style.height = event.data.height
+                }
+            })
+        </script>
+
+        <iframe
+            id="wowsbar_announcement_iframe"
+            src="https://delivery.wowsbar.com/announcement?logged_in=true&iframe=true&domain={$smarty.server.HTTP_HOST}{$smarty.server.REQUEST_URI|escape:'url'}"
+            frameBorder="0"
+            allowTransparency="true"
+            class="tw-border-none tw-w-full tw-block tw-bg-transparent tw-isolate tw-relative"
+            style="height: 0px"
+        >
+        </iframe>
+    
         <!-- Luigi: search result -->
         <div class="container" style="margin-bottom: 0px; margin-left: 15px;margin-right: 15px;">
             <div id="luigi_result_search"></div>
