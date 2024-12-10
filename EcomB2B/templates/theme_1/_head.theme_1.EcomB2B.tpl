@@ -20,28 +20,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        var dataFromLocalStorage = JSON.parse(localStorage.getItem('__wowsbar_announcement'));
-        const wowsbar_announcement = document.querySelector('#wowsbar_announcement')
-        if (wowsbar_announcement) {
-            console.log('wowsbar_announcement 2', wowsbar_announcement)
-            wowsbar_announcement.replaceWith(dataFromLocalStorage?.compiled_layout || '<div id="wowsbar_announcement" class="hide"></div>');
-            // wowsbar_announcement.style.height = dataFromLocalStorage?.height || '0px';
-            // wowsbar_announcement.replaceWith
-        }
-    </script>
-
-    {if $logged_in}
-        <script>
-            console.log('xxx login');
-        </script>
-        <script src="https://awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=true&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
-    {else}
-        <script>
-            console.log('xxx logout');
-        </script>
-        <script src="https://awads.io/announcementr9I0jJ2Oy2.js?v=13&logged_in=false&json=https://delivery.wowsbar.com/announcement" async type="text/javascript"></script>
-    {/if}
 
 
     {if  $account_code=='AW'  }
