@@ -22,6 +22,64 @@
     }'></span>
 {/if}
 <div class="wrapper_boxed">
+    {* Start of Announcement *}
+    <script>
+        window.addEventListener('message', function(event) {
+            console.log('received message', event.data)
+
+            if (event?.data?.height) {
+                document.getElementById('wowsbar_announcement_iframe').style.height = event.data.height
+            }
+        })
+    </script>
+
+    {if  $account_code=='INDO'  }
+        {if $logged_in}
+            <iframe
+                id="wowsbar_announcement_iframe"
+                src="https://delivery-staging.wowsbar.com/announcement?logged_in=true&domain={$smarty.server.HTTP_HOST}{$smarty.server.REQUEST_URI}"
+                frameBorder="0"
+                allowTransparency="true"
+                class="tw-border-none tw-w-full tw-block tw-bg-transparent tw-isolate tw-relative"
+                style="height: 0px"
+            >
+            </iframe>
+        {else}
+            <iframe
+                id="wowsbar_announcement_iframe"
+                src="https://delivery-staging.wowsbar.com/announcement?logged_in=false&domain={$smarty.server.HTTP_HOST}{$smarty.server.REQUEST_URI}"
+                frameBorder="0"
+                allowTransparency="true"
+                class="tw-border-none tw-w-full tw-block tw-bg-transparent tw-isolate tw-relative"
+                style="height: 0px"
+            >
+            </iframe>
+        {/if}
+    {else}
+        {if $logged_in}
+            <iframe
+                id="wowsbar_announcement_iframe"
+                src="https://delivery.wowsbar.com/announcement?logged_in=true&domain={$smarty.server.HTTP_HOST}{$smarty.server.REQUEST_URI}"
+                frameBorder="0"
+                allowTransparency="true"
+                class="tw-border-none tw-w-full tw-block tw-bg-transparent tw-isolate tw-relative"
+                style="height: 0px"
+            >
+            </iframe>
+        {else}
+            <iframe
+                id="wowsbar_announcement_iframe"
+                src="https://delivery.wowsbar.com/announcement?logged_in=false&domain={$smarty.server.HTTP_HOST}{$smarty.server.REQUEST_URI}"
+                frameBorder="0"
+                allowTransparency="true"
+                class="tw-border-none tw-w-full tw-block tw-bg-transparent tw-isolate tw-relative"
+                style="height: 0px"
+            >
+            </iframe>
+        {/if}
+    {/if}
+    {* End of Announcement *}
+
     <div class="site_wrapper">
         {include file="theme_1/header.theme_1.EcomB2B.tpl"}
         <div id="body" class="{$website->get('content_background_type')}">
