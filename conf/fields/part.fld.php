@@ -932,7 +932,7 @@ $part_fields[] = array(
             'edit'   => 'no_icon',
             'render' => true,
             'value'           => $object->get('Part Pictogram Toxic'),
-            'formatted_value' => '<span class="button" onclick="save_toggle_switch(this)"  field="Part_Pictogram_Toxic"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Part Pictogram Toxic') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+            'formatted_value' => '<span class="button" onclick="save_toggle_switch_part(this)"  field="Part_Pictogram_Toxic"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Part Pictogram Toxic') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
                 .'" aria-hidden="true"></i> <span class="'.($object->get('Part Pictogram Toxic') == 'Yes' ? 'discreet' : '').'">'._('Acute Toxicity').' <img src="https://aw.aurora.systems/art/pictograms/Toxic.png" style="position:relative;top:-5px;height: 30px"/></span></span>',
             'label'           => _('Acute Toxicity'),
             'required'        => false,
