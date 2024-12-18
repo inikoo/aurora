@@ -1003,6 +1003,105 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
                     'required'        => false,
                     'type'            => 'value'
                 ),
+                array(
+                    'id'     => 'Product_Pictogram_Toxic',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Toxic'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Toxic"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Toxic') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Toxic') == 'Yes' ? 'discreet' : '').'">'._('Acute Toxicity').' <img src="https://aw.aurora.systems/art/pictograms/Toxic.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Acute Toxicity'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Corrosive',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Corrosive'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Corrosive"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Corrosive') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Corrosive') == 'Yes' ? 'discreet' : '').'">'._('Corrosive').' <img src="https://aw.aurora.systems/art/pictograms/Corrosive.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Corrosive'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Explosive',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Explosive'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Explosive"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Explosive') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Explosive') == 'Yes' ? 'discreet' : '').'">'._('Explosive').' <img src="https://aw.aurora.systems/art/pictograms/Explosive.jpg" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Explosive'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Flammable',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Flammable'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Flammable"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Flammable') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Flammable') == 'Yes' ? 'discreet' : '').'">'._('Flammable').' <img src="https://aw.aurora.systems/art/pictograms/Flammable.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Flammable'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Gas',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Gas'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Gas"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Gas') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Gas') == 'Yes' ? 'discreet' : '').'">'._('Gas under pressure').' <img src="https://aw.aurora.systems/art/pictograms/Gas.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Gas under pressure'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Environment',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Environment'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Environment"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Environment') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Environment') == 'Yes' ? 'discreet' : '').'">'._('Hazards to the environment').' <img src="https://aw.aurora.systems/art/pictograms/Environment.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Hazards to the environment'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Health',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Health'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Health"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Health') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Health') == 'Yes' ? 'discreet' : '').'">'._('Health hazard').' <img src="https://aw.aurora.systems/art/pictograms/Health.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Health hazard'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Oxidising',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Oxidising'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Oxidising"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Oxidising') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Oxidising') == 'Yes' ? 'discreet' : '').'">'._('Oxidising agent').' <img src="https://aw.aurora.systems/art/pictograms/Oxidising.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Oxidising'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
+                array(
+                    'id'     => 'Product_Pictogram_Danger',
+                    'edit'   => 'no_icon',
+                    'render' => true,
+                    'value'           => $product->get('Product Pictogram Danger'),
+                    'formatted_value' => '<span class="button" onclick="save_toggle_switch_product(this)"  field="Product_Pictogram_Danger"  style="margin-right:40px"><i class=" fa fa-fw '.($product->get('Product Pictogram Danger') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                        .'" aria-hidden="true"></i> <span class="'.($product->get('Product Pictogram Danger') == 'Yes' ? 'discreet' : '').'">'._('Serious health hazard').' <img src="https://aw.aurora.systems/art/pictograms/Danger.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+                    'label'           => _('Health hazard'),
+                    'required'        => false,
+                    'type'            => 'value'
+                ),
 
             )
 
