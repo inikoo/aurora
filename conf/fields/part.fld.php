@@ -933,11 +933,56 @@ $part_fields[] = array(
             'render' => true,
             'value'           => $object->get('Part Pictogram Toxic'),
             'formatted_value' => '<span class="button" onclick="save_toggle_switch_part(this)"  field="Part_Pictogram_Toxic"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Part Pictogram Toxic') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
-                .'" aria-hidden="true"></i> <span class="'.($object->get('Part Pictogram Toxic') == 'Yes' ? 'discreet' : '').'">'._('Acute Toxicity').' <img src="https://aw.aurora.systems/art/pictograms/Toxic.png" style="position:relative;top:-5px;height: 30px"/></span></span>',
+                .'" aria-hidden="true"></i> <span class="'.($object->get('Part Pictogram Toxic') == 'Yes' ? 'discreet' : '').'">'._('Acute Toxicity').' <img src="https://aw.aurora.systems/art/pictograms/Toxic.png" style="position:relative;top:5px;height: 24px"/></span></span>',
             'label'           => _('Acute Toxicity'),
             'required'        => false,
             'type'            => 'value'
-        )
+        ),
+        array(
+            'id'     => 'Part_Pictogram_Corrosive',
+            'edit'   => 'no_icon',
+            'render' => true,
+            'value'           => $object->get('Part Pictogram Corrosive'),
+            'formatted_value' => '<span class="button" onclick="save_toggle_switch_part(this)"  field="Part_Pictogram_Corrosive"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Part Pictogram Corrosive') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                .'" aria-hidden="true"></i> <span class="'.($object->get('Part Pictogram Corrosive') == 'Yes' ? 'discreet' : '').'">'._('Corrosive').' <img src="https://aw.aurora.systems/art/pictograms/Corrosive.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+            'label'           => _('Corrosive'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'id'     => 'Part_Pictogram_Explosive',
+            'edit'   => 'no_icon',
+            'render' => true,
+            'value'           => $object->get('Part Pictogram Explosive'),
+            'formatted_value' => '<span class="button" onclick="save_toggle_switch_part(this)"  field="Part_Pictogram_Explosive"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Part Pictogram Explosive') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                .'" aria-hidden="true"></i> <span class="'.($object->get('Part Pictogram Explosive') == 'Yes' ? 'discreet' : '').'">'._('Explosive').' <img src="https://aw.aurora.systems/art/pictograms/Explosive.jpg" style="position:relative;top:5px;height: 24px"/></span></span>',
+            'label'           => _('Explosive'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+        array(
+            'id'     => 'Part_Pictogram_Flammable',
+            'edit'   => 'no_icon',
+            'render' => true,
+            'value'           => $object->get('Part Pictogram Flammable'),
+            'formatted_value' => '<span class="button" onclick="save_toggle_switch_part(this)"  field="Part_Pictogram_Flammable"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Part Pictogram Flammable') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                .'" aria-hidden="true"></i> <span class="'.($object->get('Part Pictogram Flammable') == 'Yes' ? 'discreet' : '').'">'._('Flammable').' <img src="https://aw.aurora.systems/art/pictograms/Flammable.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+            'label'           => _('Flammable'),
+            'required'        => false,
+            'type'            => 'value'
+        ),
+         array(
+             'id'     => 'Part_Pictogram_Gas',
+             'edit'   => 'no_icon',
+             'render' => true,
+             'value'           => $object->get('Part Pictogram Gas'),
+             'formatted_value' => '<span class="button" onclick="save_toggle_switch_part(this)"  field="Part_Pictogram_Gas"  style="margin-right:40px"><i class=" fa fa-fw '.($object->get('Part Pictogram Gas') == 'Yes' ? 'fa-toggle-on' : 'fa-toggle-off')
+                 .'" aria-hidden="true"></i> <span class="'.($object->get('Part Pictogram Gas') == 'Yes' ? 'discreet' : '').'">'._('Gas under pressure').' <img src="https://aw.aurora.systems/art/pictograms/Gas.png" style="position:relative;top:5px;height: 24px"/></span></span>',
+             'label'           => _('Gas under pressure'),
+             'required'        => false,
+             'type'            => 'value'
+         )
+
 
 
 
