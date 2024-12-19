@@ -524,7 +524,19 @@
                                 </summary>
                                 
                                 <div class="tw-ml-0 tw-text-justify tw-border-0 tw-border-l-4 tw-ml-2 tw-px-2 tw-border-solid tw-border-gray-400 tw-bg-gray-100 tw-py-1">
-                                    {$gpsr_danger}
+                                    <div class="tw-mb-2">{$gpsr_danger}</div>
+
+                                    <div class="last:tw-mb-2 tw-flex tw-gap-2 tw-flex-wrap">
+                                        <img id="pictogram-explosive" src="/art/pictograms/Explosive.png" alt="Explosive" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-corrosive" src="/art/pictograms/Corrosive.png" alt="Corrosive" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-danger" src="/art/pictograms/Danger.png" alt="Danger" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-environment" src="/art/pictograms/Environment.png" alt="Environment" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-flammable" src="/art/pictograms/Flammable.png" alt="Flammable" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-gas" src="/art/pictograms/Gas.png" alt="Gas" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-health" src="/art/pictograms/Health.png" alt="Health" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-oxidising" src="/art/pictograms/Oxidising.png" alt="Oxidising" class="hide tw-h-12 tw-aspect-ratio">
+                                        <img id="pictogram-toxic" src="/art/pictograms/Toxic.png" alt="Toxic" class="hide tw-h-12 tw-aspect-ratio">
+                                    </div>
                                 </div>
                             </details>
                         </td>
