@@ -191,21 +191,30 @@ from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campai
 //Gold Reward Amnesty Week
 //GR for all! until
 
-//        if( !in_array( $order->data['Order Store Key'],[18,22]) and DNS_ACCOUNT_CODE=='AWEU' and !$first_order_bonus_applicable){
-//            $is_gold_reward_member = true;
-//            $gold_reward_member = [
-//                'label' => '<a href="https://'.$website->get('Website URL').'/gra">'.(!empty($labels['_gra_t1']) ? $labels['_gra_t1'] : 'Gold Reward Amnesty Week').'</a>',
-//                'until' => (!empty($labels['_gra_t2']) ? $labels['_gra_t2'] : 'GR for all! until').' '.strftime("%a %e %b", strtotime('2024-09-24')),
-//            ];
-//        }
+        if( !in_array( $order->data['Order Store Key'],[18,22]) and DNS_ACCOUNT_CODE=='AWEU' and !$first_order_bonus_applicable){
+            $is_gold_reward_member = true;
+            $gold_reward_member = [
+                'label' => '<a href="https://'.$website->get('Website URL').'/gra">'.(!empty($labels['_gra_t1']) ? $labels['_gra_t1'] : 'Gold Reward Amnesty Week').'</a>',
+                'until' => (!empty($labels['_gra_t2']) ? $labels['_gra_t2'] : 'GR for all! until').' '.strftime("%a %e %b", strtotime('2025-01-12')),
+            ];
+        }
 
-//                if($order->data['Order Store Key'] != 3 and DNS_ACCOUNT_CODE=='ES' and !$first_order_bonus_applicable){
-//                    $is_gold_reward_member = true;
-//                    $gold_reward_member = [
-//                        'label' => '<a href="https://'.$website->get('Website URL').'/gra">'.(!empty($labels['_gra_t1']) ? $labels['_gra_t1'] : 'Gold Reward Amnesty Week').'</a>',
-//                        'until' => (!empty($labels['_gra_t2']) ? $labels['_gra_t2'] : 'GR for all! until').' '.strftime("%a %e %b", strtotime('2024-10-02')),
-//                    ];
-//                }
+        if($order->data['Order Store Key'] != 3 and DNS_ACCOUNT_CODE=='ES' and !$first_order_bonus_applicable){
+                    $is_gold_reward_member = true;
+                    $gold_reward_member = [
+                        'label' => '<a href="https://'.$website->get('Website URL').'/gra">'.(!empty($labels['_gra_t1']) ? $labels['_gra_t1'] : 'Gold Reward Amnesty Week').'</a>',
+                        'until' => (!empty($labels['_gra_t2']) ? $labels['_gra_t2'] : 'GR for all! until').' '.strftime("%a %e %b", strtotime('2025-01-12')),
+                    ];
+        }
+
+        if($order->data['Order Store Key'] == 1 and DNS_ACCOUNT_CODE=='AW' and !$first_order_bonus_applicable){
+            $is_gold_reward_member = true;
+            $gold_reward_member = [
+                'label' => '<a href="https://'.$website->get('Website URL').'/gra">'.(!empty($labels['_gra_t1']) ? $labels['_gra_t1'] : 'Gold Reward Amnesty Week').'</a>',
+                'until' => (!empty($labels['_gra_t2']) ? $labels['_gra_t2'] : 'GR for all! until').' '.strftime("%a %e %b", strtotime('2025-01-12')),
+            ];
+        }
+
 
         echo json_encode(
             array(
