@@ -96,15 +96,14 @@ $export_fields_type = 'website_catalogue_items';
 
 if (in_array(
     $output_type, [
-                    'csv',
-                    'xlsx',
-                    'xls',
-                    'pdf'
-                ]
+        'xlsx',
+        'xls',
+        'pdf'
+    ]
 )) {
     $use_php_excel = true;
 
-} elseif (in_array($output_type, ['json'])) {
+} elseif (in_array($output_type, ['json','csv'])) {
     $use_php_excel = false;
 
 } else {
@@ -260,6 +259,9 @@ $sql = strtr($sql, $placeholders);
 $stmt = $db->prepare($sql);
 $stmt->execute($sql_args);
 
+//print "$sql\n\n";
+//print_r($sql_args);
+//exit;
 
 $title   = 'Catalogue items';
 $subject = 'Data feed';
@@ -493,6 +495,19 @@ if ($use_php_excel) {
 
             header('Cache-Control: max-age=0');
             print json_encode($data);
+            exit;
+        case('csv'):
+            header("Content-type: text/csv");
+            header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.csv"');
+            header('Cache-Control: max-age=0');
+            $output = fopen('php://output', 'w');
+            fputcsv($output, array_column($data['schema'], 'field_description'));
+            foreach ($data['data'] as $row) {
+                fputcsv($output, $row);
+            }
+            fclose($output);
+            exit;
+
 
     }
 }

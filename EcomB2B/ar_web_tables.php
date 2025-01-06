@@ -787,7 +787,7 @@ function get_catalogue_table_html($data, $customer,$website) {
         'title'=>_('All products data feed'),
         'urls'=>[
             'csv'=>'/ar_web_catalog_data_feed.php?output=CSV&scope=website&scope_key='.$website->id,
-            'xlsx'=>'/ar_web_catalog_data_feed.php?output=XLSX&scope=website&scope_key='.$website->id,
+            //'xlsx'=>'/ar_web_catalog_data_feed.php?output=XLSX&scope=website&scope_key='.$website->id,
             'json'=>'/ar_web_catalog_data_feed.php?output=Json&scope=website&scope_key='.$website->id
         ]
     );
