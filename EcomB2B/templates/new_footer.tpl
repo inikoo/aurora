@@ -68,19 +68,16 @@ function getStyles(properties) {
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    console.log('original', {$wowsbar_footer_data.data.fieldValue.logo.source.original|json_encode})
-    console.log('new_footer mounted 17')
+    //console.log('original', {$wowsbar_footer_data.data.fieldValue.logo.source.original|json_encode})
+   // console.log('new_footer mounted 17')
     const element = document.getElementById('footer_container');
-    console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
+   // console.log('zzzz', getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
     
     if (element) {
         Object.assign(element.style, getStyles({$wowsbar_footer_data['data']['fieldValue']['container']['properties']|json_encode}));
-    } else {
-        console.error('Element with id "footer_container" not found');
     }
 });
 
-console.log('wowsbar Data:', {$wowsbar_footer_data|json_encode})
 
 </script>
 
