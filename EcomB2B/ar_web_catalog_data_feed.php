@@ -466,7 +466,7 @@ if ($use_php_excel) {
             } else {
                 if ($type == 'array') {
                     $_value = preg_split('/,/', $value);
-
+                    $_value=join('; ',$_value);
                 } else {
                     $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
 
