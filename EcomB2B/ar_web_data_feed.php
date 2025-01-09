@@ -66,14 +66,14 @@ if ($row = $stmt->fetch()) {
             if (in_array(
                 $output_type, [
             //                    'csv',
-                                'xlsx',
-                                'xls',
+                               // 'xlsx',
+                              //  'xls',
                                 'pdf'
                             ]
             )) {
                 $use_php_excel = true;
 
-            } elseif (in_array($output_type, ['json'])) {
+            } elseif (in_array($output_type, ['json','csv'])) {
                 $use_php_excel = false;
 
             } else {
