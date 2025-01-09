@@ -112,6 +112,12 @@ if (in_array(
 }
 
 
+if(($output_type=='xls' or $output_type=='xlsx') and  ($_REQUEST['scope']=='website'  or $_REQUEST['scope']=='portfolio_items' ) ){
+    header("HTTP/1.0 400 Bad Request");
+    exit;
+}
+
+
 if ($use_cache) {
 
     switch ($_REQUEST['scope']) {
