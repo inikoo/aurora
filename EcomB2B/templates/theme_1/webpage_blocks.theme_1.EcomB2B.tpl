@@ -196,7 +196,6 @@
                         <div class="portfolio_data_feeds hide">
                         <span><i class="fal fa-database"></i> {t}Portfolio products data feed{/t}  (
                             <a class="csv" href="">.cvs</a>,
-                            <a class="xlsx" href="">.xlsx</a>,
                             <a class="json" href="">json</a>
                             )</span>  <span style="font-size: xx-small" class=" discreet">UTF-8 encoding</span>
                         <span style="margin-left: 30px" title="{t}Portfolio images (including products){/t}"><i class="fal fa-images"></i> {t}Images{/t} </span>( <a class="images_zip" href="">.zip</a> )
