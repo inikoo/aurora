@@ -43,6 +43,8 @@ $db = new PDO(
 $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 
+
+
 $sql  =
     "select `Customer Key` ,`Website URL` from `Customer Dimension` left join `Website User Dimension` on (`Customer Key`=`Website User Customer Key`) left join `Website Dimension` on (`Website User Website Key`=`Website Key`)    where `Website User Static API Hash`=? and `Website User Key`=?  ";
 $stmt = $db->prepare($sql);
@@ -58,9 +60,12 @@ if ($row = $stmt->fetch()) {
         case 'portfolio_items':
             $output_type = strtolower($_REQUEST['output']);
 
+
+
+
             if (in_array(
                 $output_type, [
-                                'csv',
+            //                    'csv',
                                 'xlsx',
                                 'xls',
                                 'pdf'
@@ -331,7 +336,7 @@ if ($row = $stmt->fetch()) {
                         } else {
                             if ($type == 'array') {
                                 $_value = preg_split('/,/', $value);
-
+                                $_value=join('; ',$_value);
                             } else {
                                 $value=str_replace("\xc2\xa0",' ',$value);
                                 $_value = html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5);
@@ -361,6 +366,18 @@ if ($row = $stmt->fetch()) {
 
                         header('Cache-Control: max-age=0');
                         print json_encode($data);
+exit;
+                    case('csv'):
+                        header("Content-type: text/csv");
+                        header('Content-Disposition: attachment;filename="'.$_REQUEST['scope'].'_'.gmdate('Ymd').'.csv"');
+                        header('Cache-Control: max-age=0');
+                        $output = fopen('php://output', 'w');
+                        fputcsv($output, array_column($data['schema'], 'field_description'));
+                        foreach ($data['data'] as $row) {
+                            fputcsv($output, $row);
+                        }
+                        fclose($output);
+                        exit;
 
                 }
 
