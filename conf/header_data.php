@@ -133,7 +133,7 @@ function get_default_header_data($template) {
                             array(
                                 'type'  => 'text',
                                 'title' => _('About Website'),
-                                'image' => 'https://via.placeholder.com/400x160.png',
+                                'image' => 'https://placehold.co/400x160.png',
                                 'url'   => '',
                                 'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
@@ -181,7 +181,7 @@ function get_default_header_data($template) {
                                 'type' => 'image',
 
                                 'title' => _('Big offer A'),
-                                'image' => 'https://via.placeholder.com/400x350.png',
+                                'image' => 'https://placehold.co/400x350.png',
                                 'url'   => '',
 
 
@@ -190,7 +190,7 @@ function get_default_header_data($template) {
                             array(
                                 'type'  => 'text',
                                 'title' => _('Big offer B'),
-                                'image' =>  'https://via.placeholder.com/400x200.png',
+                                'image' =>  'https://placehold.co/400x200.png',
                                 'url'   => '',
                                 'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 
@@ -211,7 +211,7 @@ function get_default_header_data($template) {
                             array(
                                 'type'  => 'image',
                                 'title' => _('Big Idea A'),
-                                'image' => 'https://via.placeholder.com/400x350.png',
+                                'image' => 'https://placehold.co/400x350.png',
                                 'url'   => '',
 
 
@@ -220,7 +220,7 @@ function get_default_header_data($template) {
                             array(
                                 'type'  => 'text',
                                 'title' => _('Big Idea B'),
-                                'image' =>  'https://via.placeholder.com/400x200.png',
+                                'image' =>  'https://placehold.co/400x200.png',
                                 'url'   => '',
                                 'text'  => 'There are many variations passages available the majority have alteration in some form, by injected humour on randomised words if you are going to use a passage of lorem anything.'
 

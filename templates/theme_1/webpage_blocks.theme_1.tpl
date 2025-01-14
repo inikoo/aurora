@@ -115,7 +115,7 @@
     <div id="template_1" class="hide">
 <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/1240x250.png" alt="" data-width="1240" display_class="caption_left">
+            <img class="button" src="https://placehold.co/1240x250.png" alt="" data-width="1240" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -125,13 +125,13 @@
     <div id="template_2" class="hide">
 <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/610x250.png" alt="" data-width="610" display_class="caption_left">
+            <img class="button" src="https://placehold.co/610x250.png" alt="" data-width="610" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/610x250.png" alt=""  data-width="610" display_class="caption_left">
+            <img class="button" src="https://placehold.co/610x250.png" alt=""  data-width="610" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -142,19 +142,19 @@
     <div id="template_3" class="hide">
 <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/400x250.png" alt=""  data-width="400" display_class="caption_left">
+            <img class="button" src="https://placehold.co/400x250.png" alt=""  data-width="400" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/400x250.png" alt=""  data-width="400" display_class="caption_left">
+            <img class="button" src="https://placehold.co/400x250.png" alt=""  data-width="400" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/400x250.png" alt=""  data-width="400" display_class="caption_left">
+            <img class="button" src="https://placehold.co/400x250.png" alt=""  data-width="400" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -165,25 +165,25 @@
     <div id="template_4" class="hide">
 <span class="image"   >
         <figure>
-            <img class="button" src="https://via.placeholder.com/300x250.png" alt=""  data-width="300" display_class="caption_left">
+            <img class="button" src="https://placehold.co/300x250.png" alt=""  data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/300x250.png" alt="" data-width="300" display_class="caption_left">
+            <img class="button" src="https://placehold.co/300x250.png" alt="" data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/300x250.png" alt="" data-width="300" display_class="caption_left">
+            <img class="button" src="https://placehold.co/300x250.png" alt="" data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/300x250.png" alt="" data-width="300" display_class="caption_left">
+            <img class="button" src="https://placehold.co/300x250.png" alt="" data-width="300" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -193,13 +193,13 @@
     <div id="template_12" class="hide">
 <span class="image" >
         <figure>
-            <img class="button" src="https://via.placeholder.com/400x250.png" data-width="400" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/400x250.png" data-width="400" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/800x250.png" data-width="800"  alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/800x250.png" data-width="800"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -209,13 +209,13 @@
     <div id="template_21" class="hide">
 <span class="image" >
         <figure>
-            <img class="button" src="https://via.placeholder.com/800x250.png" data-width="800"  alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/800x250.png" data-width="800"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/400x250.png" data-width="400"  alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/400x250.png" data-width="400"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -226,13 +226,13 @@
     <div id="template_13" class="hide">
 <span class="image"  >
         <figure>
-            <img class="button" src="https://via.placeholder.com/310x250.png" data-width="310"  alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/310x250.png" data-width="310"  alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/910x250.png"  data-width="910" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/910x250.png"  data-width="910" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -245,13 +245,13 @@
     <div id="template_31" class="hide">
 <span class="image"  >
         <figure>
-            <img class="button" src="https://via.placeholder.com/910x250.png"  data-width="910" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/910x250.png"  data-width="910" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/310x250.png"  data-width="310" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/310x250.png"  data-width="310" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -264,19 +264,19 @@
     <div id="template_211" class="hide">
 <span class="image"  >
         <figure>
-            <img class="button" src="https://via.placeholder.com/600x250.png"  data-width="600" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/600x250.png"  data-width="600" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/300x250.png"  data-width="300" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/300x250.png"  data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
         <span class=" image">
         <figure>
-            <img class="button" src="https://via.placeholder.com/300x250.png"  data-width="300" alt="" display_class="caption_left">
+            <img class="button" src="https://placehold.co/300x250.png"  data-width="300" alt="" display_class="caption_left">
             <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
         </figure>
     </span>
@@ -336,7 +336,7 @@
         <div id="image_layout_1">
         <span class=" image">
             <figure>
-                <img class="button" src="https://via.placeholder.com/300x250.png" alt="" display_class="caption_left">
+                <img class="button" src="https://placehold.co/300x250.png" alt="" display_class="caption_left">
                 <figcaption contenteditable="true" class="caption_left" >{t}Caption{/t}</figcaption>
             </figure>
         </span>

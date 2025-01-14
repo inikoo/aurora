@@ -144,7 +144,7 @@
                        data-parent="Website"  data-parent_key="{$website->id}"  data-parent_object_scope="Logo"  data-metadata=""  data-options=""  data-response_type="website" />
 
                 <label style="cursor: pointer" for="update_image_logo">
-                    <img id="website_logo" style="max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}http://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
+                    <img id="website_logo" style="max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}http://placehold.co/60x60{else}{$settings['logo_website']}{/if}"/>
                 </label>
 
 

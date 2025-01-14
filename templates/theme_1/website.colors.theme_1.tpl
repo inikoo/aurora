@@ -617,7 +617,7 @@
 
 
 
-                    <img  style="cursor:not-allowed	;max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}https://via.placeholder.com/60x60{else}{$settings['logo_website']}{/if}"/>
+                    <img  style="cursor:not-allowed	;max-height: 100%;max-width:  100%;vertical-align: middle;" src="{if empty($settings['logo_website'])}https://placehold.co/60x60{else}{$settings['logo_website']}{/if}"/>
 
 
             </div>

@@ -26,10 +26,10 @@
      data-link="{$category_data.link}" data-webpage_code="{$category_data.webpage_code}">
     <div class="item_header_text">{$category_data.header_text|strip_tags}</div>
     <div  style="position: relative;top:-2px;left:3px" class="wrap_to_center ">
-        <img src="{if $category_data.image_website==''}https://via.placeholder.com/150x120{else}EcomB2B/{$category_data.image_website}{/if}"
-             data-image_mobile_website="{if $category_data.image_mobile_website==''}https://via.placeholder.com/150x120{else}{$category_data.image_mobile_website}{/if}"
-             data-image_website="{if $category_data.image_website==''}https://via.placeholder.com/150x120{else}{$category_data.image_website}{/if}"
-             data-src="{if $category_data.image_src==''}https://via.placeholder.com/150x120{else}{$category_data.image_src}{/if}"/>
+        <img src="{if $category_data.image_website==''}https://placehold.co/150x120{else}EcomB2B/{$category_data.image_website}{/if}"
+             data-image_mobile_website="{if $category_data.image_mobile_website==''}https://placehold.co/150x120{else}{$category_data.image_mobile_website}{/if}"
+             data-image_website="{if $category_data.image_website==''}https://placehold.co/150x120{else}{$category_data.image_website}{/if}"
+             data-src="{if $category_data.image_src==''}https://placehold.co/150x120{else}{$category_data.image_src}{/if}"/>
     </div>
 </div>
 <div class="category_block item_overlay hide">

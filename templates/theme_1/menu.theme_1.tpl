@@ -171,12 +171,12 @@
         <ul id="empty_stem_cell"></ul>
 
         <ul id="text_stem_cell">
-                <img data-type="image_and_text" link=""   src="https://via.placeholder.com/360x120.png" alt=""   />
+                <img data-type="image_and_text" link=""   src="https://placehold.co/360x120.png" alt=""   />
             <div class="new_editor"></div>
         </ul>
 
         <ul id="image_stem_cell">
-            <img data-type="image" link=""  src="https://via.placeholder.com/360x240.png" alt=""   />
+            <img data-type="image" link=""  src="https://placehold.co/360x240.png" alt=""   />
         </ul>
 
         <ul id="catalogue_stem_cell">

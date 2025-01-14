@@ -620,36 +620,36 @@ function update_category_products_item_headers(block_key,value){
         $('#block_'+block_key+' img.panel').each(function (i, img) {
             $(img).data('height',330);
 
-            if($(img).attr('src')=='https://via.placeholder.com/470x290'){
-                $(img).attr('src','https://via.placeholder.com/470x330')
+            if($(img).attr('src')=='https://placehold.co/470x290'){
+                $(img).attr('src','https://placehold.co/470x330')
             }
 
-            if($(img).attr('src')=='https://via.placeholder.com/226x290'){
-                $(img).attr('src','https://via.placeholder.com/226x330')
+            if($(img).attr('src')=='https://placehold.co/226x290'){
+                $(img).attr('src','https://placehold.co/226x330')
             }
-            if($(img).data('src')=='https://via.placeholder.com/226x290'){
-                $(img).data('src','https://via.placeholder.com/226x330')
-            }
-
-            if($(img).attr('src')=='https://via.placeholder.com/470x290'){
-                $(img).attr('src','https://via.placeholder.com/470x330')
-            }
-            if($(img).data('src')=='https://via.placeholder.com/470x290'){
-                $(img).data('src','https://via.placeholder.com/470x330')
+            if($(img).data('src')=='https://placehold.co/226x290'){
+                $(img).data('src','https://placehold.co/226x330')
             }
 
-            if($(img).attr('src')=='https://via.placeholder.com/714x290'){
-                $(img).attr('src','https://via.placeholder.com/714x330')
+            if($(img).attr('src')=='https://placehold.co/470x290'){
+                $(img).attr('src','https://placehold.co/470x330')
             }
-            if($(img).data('src')=='https://via.placeholder.com/714x290'){
-                $(img).data('src','https://via.placeholder.com/714x330')
+            if($(img).data('src')=='https://placehold.co/470x290'){
+                $(img).data('src','https://placehold.co/470x330')
             }
 
-            if($(img).attr('src')=='https://via.placeholder.com/958x290'){
-                $(img).attr('src','https://via.placeholder.com/958x330')
+            if($(img).attr('src')=='https://placehold.co/714x290'){
+                $(img).attr('src','https://placehold.co/714x330')
             }
-            if($(img).data('src')=='https://via.placeholder.com/1202x290'){
-                $(img).data('src','https://via.placeholder.com/1202x330')
+            if($(img).data('src')=='https://placehold.co/714x290'){
+                $(img).data('src','https://placehold.co/714x330')
+            }
+
+            if($(img).attr('src')=='https://placehold.co/958x290'){
+                $(img).attr('src','https://placehold.co/958x330')
+            }
+            if($(img).data('src')=='https://placehold.co/1202x290'){
+                $(img).data('src','https://placehold.co/1202x330')
             }
 
         })
@@ -664,32 +664,32 @@ function update_category_products_item_headers(block_key,value){
             $(img).data('height',290);
 
 
-            if($(img).attr('src')=='https://via.placeholder.com/226x330'){
-                $(img).attr('src','https://via.placeholder.com/226x290')
+            if($(img).attr('src')=='https://placehold.co/226x330'){
+                $(img).attr('src','https://placehold.co/226x290')
             }
-            if($(img).data('src')=='https://via.placeholder.com/226x330'){
-                $(img).data('src','https://via.placeholder.com/226x290')
-            }
-
-            if($(img).attr('src')=='https://via.placeholder.com/470x330'){
-                $(img).attr('src','https://via.placeholder.com/470x290')
-            }
-            if($(img).data('src')=='https://via.placeholder.com/470x330'){
-                $(img).data('src','https://via.placeholder.com/470x290')
+            if($(img).data('src')=='https://placehold.co/226x330'){
+                $(img).data('src','https://placehold.co/226x290')
             }
 
-            if($(img).attr('src')=='https://via.placeholder.com/714x330'){
-                $(img).attr('src','https://via.placeholder.com/714x290')
+            if($(img).attr('src')=='https://placehold.co/470x330'){
+                $(img).attr('src','https://placehold.co/470x290')
             }
-            if($(img).data('src')=='https://via.placeholder.com/714x330'){
-                $(img).data('src','https://via.placeholder.com/714x290')
+            if($(img).data('src')=='https://placehold.co/470x330'){
+                $(img).data('src','https://placehold.co/470x290')
             }
 
-            if($(img).attr('src')=='https://via.placeholder.com/958x330'){
-                $(img).attr('src','https://via.placeholder.com/958x290')
+            if($(img).attr('src')=='https://placehold.co/714x330'){
+                $(img).attr('src','https://placehold.co/714x290')
             }
-            if($(img).data('src')=='https://via.placeholder.com/1202x330'){
-                $(img).data('src','https://via.placeholder.com/1202x290')
+            if($(img).data('src')=='https://placehold.co/714x330'){
+                $(img).data('src','https://placehold.co/714x290')
+            }
+
+            if($(img).attr('src')=='https://placehold.co/958x330'){
+                $(img).attr('src','https://placehold.co/958x290')
+            }
+            if($(img).data('src')=='https://placehold.co/1202x330'){
+                $(img).data('src','https://placehold.co/1202x290')
             }
 
 
@@ -879,23 +879,23 @@ function add_panel(block_key,type,size,scope,scope_metadata){
 
         switch(size){
             case 1:
-                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel panel_1" size_class="panel_1" alt="" link="" data-image_website="" data-height="'+height+'" data-src="https://via.placeholder.com/226x'+height+'" src="https://via.placeholder.com/226x'+height+'"  /></div>');
+                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel panel_1" size_class="panel_1" alt="" link="" data-image_website="" data-height="'+height+'" data-src="https://placehold.co/226x'+height+'" src="https://placehold.co/226x'+height+'"  /></div>');
 
                 break;
             case 2:
-                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_2"  size_class="panel_2" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/470x'+height+'"  src="https://via.placeholder.com/470x'+height+'"  /></div>');
+                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_2"  size_class="panel_2" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://placehold.co/470x'+height+'"  src="https://placehold.co/470x'+height+'"  /></div>');
 
                 break;
             case 3:
-                panel=$('<div class="'+item_class+'" data-type="image""><img class="panel panel_3"   size_class="panel_3" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/714x'+height+'"  src="https://via.placeholder.com/714x'+height+'"  /></div>');
+                panel=$('<div class="'+item_class+'" data-type="image""><img class="panel panel_3"   size_class="panel_3" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://placehold.co/714x'+height+'"  src="https://placehold.co/714x'+height+'"  /></div>');
 
                 break;
             case 4:
-                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_4"   size_class="panel_4" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://via.placeholder.com/958x'+height+'"  src="https://via.placeholder.com/958x'+height+'"  /></div>');
+                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_4"   size_class="panel_4" alt="" link="" data-image_website=""  data-height="'+height+'" data-src="https://placehold.co/958x'+height+'"  src="https://placehold.co/958x'+height+'"  /></div>');
 
                 break;
             case 5:
-                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_5"   size_class="panel_5" alt="" link=""  data-image_website="" data-height="'+height+'"  data-src="https://via.placeholder.com/1202x'+height+'"  src="https://via.placeholder.com/1202x'+height+'"  /></div>');
+                panel=$('<div class="'+item_class+'" data-type="image"><img class="panel  panel_5"   size_class="panel_5" alt="" link=""  data-image_website="" data-height="'+height+'"  data-src="https://placehold.co/1202x'+height+'"  src="https://placehold.co/1202x'+height+'"  /></div>');
 
                 break;
 

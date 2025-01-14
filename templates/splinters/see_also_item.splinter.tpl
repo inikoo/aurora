@@ -35,10 +35,10 @@
     >
         <div class="item_header_text">{$item_data.header_text|strip_tags}</div>
         <div style="position: relative;top:-2px;left:3px" class="wrap_to_center ">
-            <img src="{if $item_data.image_website==''}https://via.placeholder.com/150x120{else}{$item_data.image_website}{/if}"
-                 data-image_mobile_website="{if $item_data.image_mobile_website==''}https://via.placeholder.com/150x120{else}{$item_data.image_mobile_website}{/if}"
-                 data-image_website="{if $item_data.image_website==''}https://via.placeholder.com/150x120{else}{$item_data.image_website}{/if}"
-                 data-src="{if $item_data.image_src==''}https://via.placeholder.com/150x120{else}{$item_data.image_src}{/if}"/>
+            <img src="{if $item_data.image_website==''}https://placehold.co/150x120{else}{$item_data.image_website}{/if}"
+                 data-image_mobile_website="{if $item_data.image_mobile_website==''}https://placehold.co/150x120{else}{$item_data.image_mobile_website}{/if}"
+                 data-image_website="{if $item_data.image_website==''}https://placehold.co/150x120{else}{$item_data.image_website}{/if}"
+                 data-src="{if $item_data.image_src==''}https://placehold.co/150x120{else}{$item_data.image_src}{/if}"/>
         </div>
     </div>
     {if $item_data.type=='category'}
