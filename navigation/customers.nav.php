@@ -1193,11 +1193,14 @@ function get_customer_navigation($data, $smarty, $user, $db) {
 
 
     if (!($store->get('Store Type') == 'External' or $store->get('Store Type') == 'Dropshipping')) {
-        $right_buttons[] = array(
-            'icon'  => 'shopping-cart',
-            'title' => _('New order'),
-            'id'    => 'take_order'
-        );
+
+        if($store->get('Store Type') != 'Fulfilment' ) {
+            $right_buttons[] = array(
+                'icon' => 'shopping-cart',
+                'title' => _('New order'),
+                'id' => 'take_order'
+            );
+        }
     }
 
 

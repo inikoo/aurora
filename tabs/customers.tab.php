@@ -11,6 +11,9 @@
 
 if (in_array($state['store']->id, $user->stores) and $user->can_view('customers')) {
 
+
+    $store = $state['store'];
+
     if($state['store']->get('Type')=='Dropshipping'){
         $tab     = 'customers_dropshipping';
         $ar_file = 'ar_customers_tables.php';
@@ -72,7 +75,8 @@ if (in_array($state['store']->id, $user->stores) and $user->can_view('customers'
 
     $table_buttons = array();
 
-    if ($state['store']->get('Store Type') != 'External') {
+
+    if ($state['store']->get('Store Type') != 'External'  and $store->get('Store Type') != 'Fulfilment' ) {
         $table_buttons[] = array(
             'icon'      => 'plus',
             'title'     => _('New customer'),
