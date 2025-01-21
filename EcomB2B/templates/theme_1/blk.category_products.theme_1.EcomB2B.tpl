@@ -91,7 +91,7 @@
                                     </div>
                                     {if !empty($item.rrp)}
                                         <div style="font-size: smaller;flex-grow: 1;text-align: right" class="code">
-                                            <span style="font-size: smaller">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
+                                            <span style="color: rgb(243, 121, 52);">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
                                                 : {$item.rrp}</span>
                                         </div>
                                     {/if}
@@ -106,9 +106,9 @@
                                         <small class="Product_Code">{$item.variants[0].code}</small>
                                     </div>
                                     {if !empty($item.rrp)}
-                                        <div style="font-size: smaller;flex-grow: 1;text-align: right" class="code">
-                                            <small>{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
-                                                : {$item.rrp}</small>
+                                        <div style="font-size: smaller;flex-grow: 1;text-align: right; color: rgb(243, 121, 52);" class="code">
+                                            {if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
+                                                : {$item.rrp}
                                         </div>
                                     {/if}
                                 </div>

@@ -76,7 +76,7 @@
                         <div class="tw-flex tw-justify-between tw-pr-3 tw-text-[0.7rem]">                        
                             <div class="Product_Code">{$item.code}</div>
                             {if !empty($item.rrp)}
-                                <div style="font-size: smaller">{t}RRP{/t}: {$item.rrp}</div>
+                                <div style="color: rgb(243, 121, 52);">{t}RRP{/t}: {$item.rrp}</div>
                             {/if}
                         </div>
                         
