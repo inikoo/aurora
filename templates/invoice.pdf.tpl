@@ -154,7 +154,7 @@
                 {if $order->get('Order Date')<=$invoice->get('Invoice Date')}
 
                 <div style="text-align: right">
-                    {t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
+                    {t}Order Date{/t}:. <b>{$order->get_date('Order Date')}</b>
                 </div>
                 {/if}
 
