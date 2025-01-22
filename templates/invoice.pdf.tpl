@@ -150,9 +150,14 @@
                 {t}Tax liability date{/t}" <b>{$invoice->get_date('Invoice Tax Liability Date')}</b>
             </div>
             {if $number_orders==1}
+
+                {if $order->get('Order Date')<=$invoice->get('Invoice Date')}
+
                 <div style="text-align: right">
                     {t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
                 </div>
+                {/if}
+
 
                 {if $invoice->get('Invoice Type')!='Invoice'}
                 <div style="text-align: right">
