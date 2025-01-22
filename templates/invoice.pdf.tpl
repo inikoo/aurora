@@ -151,12 +151,15 @@
             </div>
             {if $number_orders==1}
 
-                {if $order->get('Order Date')<=$invoice->get('Invoice Date')}
 
-                <div style="text-align: right">
-                    {t}Order Date{/t}:. <b>{$order->get_date('Order Date')}</b>
-                </div>
+            {if $order->get('Order Date')|strtotime <= $invoice->get('Invoice Date')|strtotime}
+                {t}Order Date{/t}:. <b>{$order->get_date('Order Date')}</b>
+               {else}
+
+                {t}Order Date{/t}:.. <b>{$invoice->get_date('Invoice Date')}</b>
                 {/if}
+
+
 
 
                 {if $invoice->get('Invoice Type')!='Invoice'}
