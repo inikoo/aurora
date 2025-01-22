@@ -152,11 +152,11 @@
             {if $number_orders==1}
 
 
-            {if $order->get('Order Date')|strtotime <= $invoice->get('Invoice Date')|strtotime}
-                .{t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
-               {else}
-
+            {if ($order->get('Order Date')|strtotime > $invoice->get('Invoice Date')|strtotime ) ||  ($order->get('Order Date')|strtotime > $invoice->get('Invoice Tax Liability Date')|strtotime )    }
                 *{t}Order Date{/t}: <b>{$invoice->get_date('Invoice Tax Liability Date')}</b>
+
+            {else}
+                .{t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
                 {/if}
 
 
