@@ -73,7 +73,7 @@
                                     </div>
                                     {if !empty($item.rrp)}
                                         <div style="font-size: smaller;flex-grow: 1;text-align: right" class="code">
-                                            <span style="font-size: smaller">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
+                                            <span style="color: rgb(243, 121, 52);">{if empty($labels._product_rrp)}{t}RRP{/t}{else}{$labels._product_rrp}{/if}
                                                 : {$item.rrp}</span>
                                         </div>
                                     {/if}
@@ -108,7 +108,7 @@
                         {if $logged_in}
 
                             {if !isset($item.number_visible_variants)  or $item.number_visible_variants==0}
-                                <div class="product_prices">
+                                <div class="product_prices tw-relative">
                                     <div style="display:none" class="product_price">
                                         {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
                                         : {$item.price} {if isset($item.price_unit)}
@@ -133,6 +133,12 @@
                                         </tr>
 
                                     </table>
+
+                                {if isset($item.category)}
+                                    <div id="visit_family_page_information_{$item.product_id}" class="tw-absolute tw-bottom-1 tw-left-0 tw-w-full tw-text-center tw-text-gray-400 tw-text-[0.7rem]">
+                                        <i class="fal fa-badge-percent tw-text-xs"></i> {t}More discounts in{/t} <a href="/{$item.category}" class="tw-underline tw-inline tw-text-gray-600">{t}family page{/t}</a>
+                                    </div>
+                                {/if}
 
 
                                     {if !empty($item.rrp) and false }
@@ -200,7 +206,7 @@
                                 {foreach from=$item.variants item=variant name=variant}
                                     <div id="ordering_variant_{$variant.id}"
                                          class="fffff ordering_variant {if !$smarty.foreach.variant.first}hide{/if}">
-                                        <div style="display: flex">
+                                        <div class="tw-relative" style="display: flex">
                                             <div class="product_prices  ">
                                                 <div class="product_price" style="font-size: small">
                                                     {if empty($labels._product_price)}{t}Price{/t}{else}{$labels._product_price}{/if}
@@ -211,12 +217,20 @@
                                             </div>
 
                                             <div style="flex-grow:1">
-                                            <span onclick="open_variant_chooser(this,{$item.product_id})"
-                                                  class="open_variant_chooser"
-                                                  style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
-                                {$variant.label}
-                                <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;"><span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span></div><i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i></span></div>
+                                                <span onclick="open_variant_chooser(this,{$item.product_id})" class="open_variant_chooser" style="cursor:pointer;position:relative;padding:3px 0px 3px 10px;border:1px solid #ccc;width: 105px;display: inline-block;">
+                                                    {$variant.label}
+                                                    <div style="display:none;font-size: xx-small;position: absolute;bottom: -14px;text-align: right;width: 100px;">
+                                                        <span >{if empty($labels._variant_options)}{t}More buying options{/t}{else}{$labels._variant_options}{/if} ☝</span>
+                                                    </div>
+                                                    <i style="position:absolute;right:12px;top:3px" class="fas fa-angle-up"></i>
+                                                </span>
+                                            </div>
 
+                                            {if isset($item.category)}
+                                                <div id="visit_family_page_information_{$item.product_id}" class="tw-absolute tw-bottom-1 tw-left-0 tw-w-full tw-text-center tw-text-gray-400 tw-text-[0.7rem]">
+                                                    <i class="fal fa-badge-percent tw-text-xs"></i> {t}More discounts in{/t} <a href="/{$item.category}" class="tw-underline tw-inline tw-text-gray-600">{t}family page{/t}</a>
+                                                </div>
+                                            {/if}
 
                                         </div>
 

@@ -21,5 +21,18 @@ $account->load_acc_data();
 $warehouse=$state['_object'];
 
 
-$html='';
+$html='
+<div style="background-color: blue;color: whitesmoke;padding: 20px">
+<h1>Hi, aurora fulfilment is being replaced with <a style="font-size: x-large;color: white;text-decoration: underline" href="https://app.aiku.io">aiku</a></h1>
+
+<p>You can log with your same username and password to <a style="color: white;text-decoration: underline"  href="https://app.aiku.io">https://aiku.io</a></p>
+
+
+<p>Data has been transferred there, so please do not use aurora because all changes done here will be probably lost</p>
+
+
+
+</div>
+
+';
 

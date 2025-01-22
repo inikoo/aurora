@@ -17,6 +17,19 @@
 <div id="customer" class="subject_profile" style="padding-bottom: 0px;border-bottom:none"  key="{$customer->id}" store_key="{$customer->get('Store Key')}">
 
 
+    <div style="background-color: blue;color: whitesmoke;padding: 20px">
+        <h1>Hi, aurora fulfilment is being replaced with <a style="font-size: x-large;color: white;text-decoration: underline" href="https://app.aiku.io">aiku</a></h1>
+
+        <p>You can log with your same username and password to <a style="color: white;text-decoration: underline"  href="https://app.aiku.io">https://aiku.io</a></p>
+
+
+        <p>Data has been transferred there, so please do not use aurora because all changes done here will be probably lost</p>
+
+
+
+    </div>
+
+
     <div style="float: left;width: 590px;">
 
         <div class="{if $customer->get('Customer Name')|strlen <50 }hide{/if}">
