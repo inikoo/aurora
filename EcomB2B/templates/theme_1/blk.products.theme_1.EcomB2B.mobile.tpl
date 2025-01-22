@@ -176,7 +176,7 @@
                                                class="ordering_button add_one fa fa-fw  fa-plus-circle color-green-dark"></i>
                                         </div>
 
-                                        <div id="visit-family-page-information" class="tw-hidden tw-absolute tw-bottom-2 tw-text-gray-400 tw-text-[0.7rem] -tw-ml-0.5">
+                                        <div id="visit-family-page-information" class="tw-absolute tw-bottom-1 tw-text-gray-400 tw-text-[0.7rem] -tw-ml-0.5">
                                             <i class="fal fa-badge-percent tw-text-xs"></i>
                                             {t}Visit{/t} <a href="/{$item.category}" class="tw-underline tw-inline tw-text-gray-600">{t}family page{/t}</a> {t}for more discounts{/t}
                                         </div>
