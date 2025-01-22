@@ -134,6 +134,12 @@
 
                                     </table>
 
+                                {if isset($item.category)}
+                                    <div id="visit_family_page_information_{$item.product_id}" class="tw-w-full tw-text-center -tw-bottom-1 tw-text-gray-400 tw-text-[0.7rem]">
+                                        <i class="fal fa-badge-percent tw-text-xs"></i> {t}More discounts in{/t} <a href="/{$item.category}" class="tw-underline tw-inline tw-text-gray-600">{t}family page{/t}</a>
+                                    </div>
+                                {/if}
+
 
                                     {if !empty($item.rrp) and false }
                                         <div>
