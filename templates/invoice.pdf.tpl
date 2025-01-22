@@ -156,7 +156,7 @@
                 *{t}Order Date{/t}: <b>{$invoice->get_date('Invoice Tax Liability Date')}</b>
 
             {else}
-                .{t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
+                {t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
                 {/if}
 
 
