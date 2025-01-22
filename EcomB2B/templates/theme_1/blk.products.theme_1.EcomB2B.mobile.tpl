@@ -245,7 +245,7 @@
                                     </div>
                                 {/foreach}
                                 
-                                <div id="visit_family_page_information_{$item.product_id}" class="tw-hidden tw-absolute tw-bottom-1 tw-text-gray-400 tw-text-[0.7rem] -tw-ml-0.5">
+                                <div id="visit_family_page_information_{$item.product_id}" class="-tw-bottom-1 tw-text-gray-400 tw-text-[0.7rem] -tw-ml-0.5">
                                     <i class="fal fa-badge-percent tw-text-xs"></i>
                                     {t}Visit{/t} <a href="/{$item.category}" class="tw-underline tw-inline tw-text-gray-600">{t}family page{/t}</a> {t}for more discounts{/t}
                                 </div>
