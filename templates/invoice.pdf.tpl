@@ -153,10 +153,10 @@
 
 
             {if $order->get('Order Date')|strtotime <= $invoice->get('Invoice Date')|strtotime}
-                {t}Order Date{/t}:. <b>{$order->get_date('Order Date')}</b>
+                {t}Order Date{/t}: <b>{$order->get_date('Order Date')}</b>
                {else}
 
-                {t}Order Date{/t}:.. <b>{$invoice->get_date('Invoice Date')}</b>
+                {t}Order Date{/t}: <b>{$invoice->get_date('Invoice Tax Liability Date')}</b>
                 {/if}
 
 
