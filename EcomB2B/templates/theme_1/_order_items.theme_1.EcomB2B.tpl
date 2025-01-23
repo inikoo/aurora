@@ -18,7 +18,7 @@
     <tr class="operations" >
 
 
-        <td colspan=4 class="text-right">
+        <td colspan=5 class="text-right">
 
 
             <div style="" class="add_item_form" >
@@ -45,6 +45,11 @@
 
 
     <tr class="basket_order_ths {if !$order->id or $order->get('Order Number Items')==0  }hide{/if}">
+        <th style="width: 50px">
+            {if !empty($item.image_website)}
+                <img src="{$item.image_website}" style="max-width: 50px;max-height: 50px"/>
+            {/if}
+        </th>
         <th class="text-left">{if !empty($labels._items_code)}{$labels._items_code}{else}{t}Code{/t}{/if}</th>
         <th class="text-left">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
         <th class="text-right">{if !empty($labels._items_quantity)}{$labels._items_quantity}{else}{t}Quantity{/t}{/if}</th>
@@ -57,6 +62,12 @@
     {foreach from=$items_data item="item" }
 
     <tr class="order_item_otf_{$item.otf_key}" >
+        <td style="width: 50px">
+            {if !empty($item.image_website)}
+                <img src="{$item.image_website}" style="max-width: 50px;max-height: 50px"/>
+            {/if}
+        </td>
+
         <td class="item_code">{$item.code}</td>
         <td class="item_description">{$item.description}</td>
         {if $edit }
@@ -76,6 +87,7 @@
 
         <tr>
             <td></td>
+            <td></td>
             <td colspan=2 class="text-right">{$item.description}</td>
             <td class="text-right"></td>
         </tr>
@@ -83,6 +95,7 @@
     {foreach from=$interactive_charges_data item="item" }
 
         <tr>
+            <td></td>
             <td></td>
             <td  class="text-right">{$item.description}</td>
             <td  class="text-right">{$item.quantity_edit}</td>
