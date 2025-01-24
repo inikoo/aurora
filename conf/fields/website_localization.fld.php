@@ -209,7 +209,25 @@ $object_fields = array(
                 'required'   => true,
                 'type'       => 'value'
             ),
+            array(
+                'id'         => 'Localised_Labels_more_discounts_in',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_more_discounts_in']) ? _('More discounts in') : $labels['_more_discounts_in']),
+                'label'      => 'More discounts in ...',
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
+            array(
+                'id'         => 'Localised_Labels_family_page',
+                'edit'       => ($supervisor_edit ? 'string' : ''),
+                'right_code' => 'WS-'.$store_key,
+                'value'      => (empty($labels['_family_page']) ? _('Family page') : $labels['_family_page']),
+                'label'      => '... family page',
+                'required'   => true,
+                'type'       => 'value'
+            ),
 
         )
     ),

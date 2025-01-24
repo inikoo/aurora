@@ -136,7 +136,7 @@
 
                                 {if isset($item.category)}
                                     <div id="visit_family_page_information_{$item.product_id}" class="tw-absolute tw-bottom-1 tw-left-0 tw-w-full tw-text-center tw-text-gray-400 tw-text-[0.7rem]">
-                                        <i class="fal fa-badge-percent tw-text-xs"></i> {t}More discounts in{/t} <a href="/{$item.category}" class="tw-underline tw-inline tw-text-gray-600">{t}family page{/t}</a>
+                                        <i class="fal fa-badge-percent tw-text-xs"></i> {if empty($labels._more_discounts_in)}More discounts in{else}{$labels._more_discounts_in}{/if}: <a href="/{$item.category}" class="tw-underline tw-inline tw-text-gray-600">{if empty($labels._family_page)}family page{else}{$labels._family_page}{/if}</a>
                                     </div>
                                 {/if}
 
