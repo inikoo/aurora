@@ -611,7 +611,7 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
     function get_items(): array
     {
         $sql = sprintf(
-            'SELECT  `Category Code`,`Product Price`, is_variant,variant_parent_id,   (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
+            'SELECT `Product Main Image Key`, `Category Code`,`Product Price`, is_variant,variant_parent_id,   (select group_concat(`Deal Info`) from `Order Transaction Deal Bridge` B  where B.`Order Transaction Fact Key`=OTF.`Order Transaction Fact Key` ) as deal_info,  `Order State`,`Delivery Note Quantity`,`Current Dispatching State`,`Deal Info`,OTF.`Product ID`,OTF.`Product Key`,OTF.`Order Transaction Fact Key`,`Order Currency Code`,`Order Transaction Amount`,`Order Quantity`,`Product History Name`,`Product History Units Per Case`,PD.`Product Code`,`Product Name`,`Product Units Per Case` 
 FROM `Order Transaction Fact` OTF 
 LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key`)
  LEFT JOIN `Product Dimension` PD ON (PD.`Product ID`=PHD.`Product ID`)  
@@ -715,6 +715,7 @@ LEFT JOIN `Product History Dimension` PHD ON (OTF.`Product Key`=PHD.`Product Key
                     'edit_qty'         => $edit_quantity,
                     'amount'           => '<span id="transaction_item_net_'.$row['Order Transaction Fact Key'].'" class="item_amount">'.money($row['Order Transaction Amount'], $row['Order Currency Code']).'</span>',
                     'state'            => $row['Current Dispatching State'],
+                    'image_key'=>$row['Product Main Image Key'],
                     'analytics_data'   => json_encode(array(
                                                           'id'       => $row['Product Code'],
                                                           'name'     => ($row['Product History Units Per Case'] > 1 ? $row['Product History Units Per Case'].'x ' : '').$row['Product Name'],
