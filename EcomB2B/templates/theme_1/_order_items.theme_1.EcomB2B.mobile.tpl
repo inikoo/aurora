@@ -69,13 +69,15 @@
         <tr>
             <td style="text-align: left">
 
-
-                {if !empty($item.image_key)}
-                    <img class="hide"  src="rwi/100x100_{$item.image_key}.jpeg" style="max-width: 50px;max-height: 50px"/>
-                {/if}
-
-
-                {$item.code_description}
+                <div class="tw-flex">
+    
+                    {if !empty($item.image_key)}
+                        <img class=""  src="rwi/100x100_{$item.image_key}.jpeg" style="max-width: 50px;max-height: 50px"/>
+                    {/if}
+    
+    
+                    <div>{$item.code_description}</div>
+                </div>
 
                 {if $edit}
                 {if $item.state!='Out of Stock in Basket'}
