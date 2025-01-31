@@ -68,6 +68,7 @@ class Fulfilment_Delivery extends DB_Table
 
     function create($data)
     {
+        exit();
         $this->editor = $data['editor'];
 
 
@@ -278,6 +279,7 @@ class Fulfilment_Delivery extends DB_Table
 
     function update_field_switcher($field, $value, $options = '', $metadata = '')
     {
+        exit();
         switch ($field) {
             case 'Fulfilment Delivery Public ID':
                 $this->update_field($field, $value, $options);
@@ -354,6 +356,8 @@ class Fulfilment_Delivery extends DB_Table
 
     function update_state($value)
     {
+
+        exit();
         $date = gmdate('Y-m-d H:i:s');
 
         $hide=[];
@@ -701,6 +705,7 @@ class Fulfilment_Delivery extends DB_Table
 
     function create_multiple_fulfilment_asset($number, $data)
     {
+        exit();
         $this->calculate_totals = false;
 
         if (!is_numeric($number) or $number < 1) {
@@ -735,6 +740,7 @@ class Fulfilment_Delivery extends DB_Table
 
     function create_fulfilment_asset($data)
     {
+        exit();
         $data['Fulfilment Asset Fulfilment Delivery Key'] = $this->id;
         $data['Fulfilment Asset Warehouse Key']           = $this->get('Fulfilment Delivery Warehouse Key');
         $data['Fulfilment Asset Customer Key']            = $this->get('Fulfilment Delivery Customer Key');
