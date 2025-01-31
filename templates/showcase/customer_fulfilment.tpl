@@ -131,7 +131,7 @@
 
                 </tr>
 
-                <tr id="account_balance_tr" class="main">
+                <tr id="account_balance_tr" class="main hide">
                     <td id="account_balance_label">{t}Account Balance{/t}
 
                         {if $user->can_supervisor('accounting')}
