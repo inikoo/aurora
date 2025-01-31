@@ -172,7 +172,7 @@ function get_fulfilment_asset_fields(Fulfilment_Asset $fulfilment_asset, User $u
     );
     $fulfilment_asset_fields[] = $operations;
 
-
+    $fulfilment_asset_fields=[];
     return $fulfilment_asset_fields;
 }
 
