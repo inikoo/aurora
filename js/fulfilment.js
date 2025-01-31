@@ -569,6 +569,8 @@ function post_fulfilment_delivery_state_change(data,element) {
 
 function save_assets_operation(element) {
 
+    return;
+
     var data = $(element).data("data")
     var table_metadata = $('#table').data("metadata")
     var object_data = $('#object_showcase div.order').data("object")

@@ -43,6 +43,7 @@ class Fulfilment_Asset extends DB_Table
 
     function create($data)
     {
+        exit();
         $this->editor = $data['editor'];
 
         $this->data = $this->base_data();
@@ -280,6 +281,7 @@ class Fulfilment_Asset extends DB_Table
 
     function delete($metadata = ''): string
     {
+        exit();
         $fulfilment_delivery         = get_object('fulfilment_delivery', $this->get('Fulfilment Asset Fulfilment Delivery Key'));
         $fulfilment_delivery->editor = $this->editor;
 
@@ -376,6 +378,8 @@ class Fulfilment_Asset extends DB_Table
         $options = '',
         $metadata = ''
     ) {
+        exit();
+
         if (!$this->deleted and $this->id) {
             switch ($field) {
                 case 'Fulfilment Asset From':

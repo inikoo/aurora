@@ -103,7 +103,7 @@
              <span style="float:left;padding-left:10px;padding-top:5px;text-align: center"
                    class="Fulfilment_Asset_State"> {$asset->get('State')} </span>
 
-            <div id="forward_operations">
+            <div id="forward_operations" class="hide">
                 <div id="booked_out_operations"
                      class=" order_operation booked_out_operation {if $asset->get('Fulfilment Asset State')!='BookedIn'  }hide{/if}">
                     <div class="square_button right" title="{t}Book Out{/t}">
