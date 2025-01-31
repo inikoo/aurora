@@ -84,6 +84,7 @@ class Customer_Fulfilment extends DB_Table
 
     function create_customer_delivery($_data): Fulfilment_Delivery
     {
+        exit();
         $warehouse = get_object('Warehouse', $_data['warehouse_key']);
 
         $customer = get_object('Customer', $this->id);
@@ -119,6 +120,7 @@ class Customer_Fulfilment extends DB_Table
 
     function update_rent_order()
     {
+        exit();
         $number_assets = 0;
 
         $sql = "select count(*) as num from `Fulfilment Asset Dimension`  where `Fulfilment Asset Customer Key`=? and `Fulfilment Asset State` in ('BookedIn','BookedOut')   ";
@@ -163,6 +165,7 @@ class Customer_Fulfilment extends DB_Table
 
     function create_rent_transactions()
     {
+        exit();
         $account = get_object('Account', 1);
         $account->load_acc_data();
 
@@ -326,21 +329,22 @@ class Customer_Fulfilment extends DB_Table
 
     function update_stats()
     {
-        $stored_assets = 0;
 
-        $sql = "select count(*) as num from `Fulfilment Asset Dimension`  where `Fulfilment Asset Customer Key`=? and `Fulfilment Asset State` in ('BookedIn')  ";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$this->id]);
-        if ($row = $stmt->fetch()) {
-            $stored_assets = $row['num'];
-        }
-
-        $this->fast_update(
-            [
-                'Customer Fulfilment Stored Assets' => $stored_assets
-            ]
-        );
+//        $stored_assets = 0;
+//
+//        $sql = "select count(*) as num from `Fulfilment Asset Dimension`  where `Fulfilment Asset Customer Key`=? and `Fulfilment Asset State` in ('BookedIn')  ";
+//
+//        $stmt = $this->db->prepare($sql);
+//        $stmt->execute([$this->id]);
+//        if ($row = $stmt->fetch()) {
+//            $stored_assets = $row['num'];
+//        }
+//
+//        $this->fast_update(
+//            [
+//                'Customer Fulfilment Stored Assets' => $stored_assets
+//            ]
+//        );
     }
 
 }
