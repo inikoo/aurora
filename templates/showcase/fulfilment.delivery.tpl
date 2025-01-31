@@ -165,7 +165,7 @@
 
     <div class="block " style="align-items: stretch;flex: 1;">
         <div class="state" style="height:30px;margin-bottom:10px;position:relative;top:-5px">
-            <div id="back_operations">
+            <div class="hide"  id="back_operations">
                 <div id="delete_operations"
                      class="order_operation {if $delivery->get('Fulfilment Delivery State')!='InProcess'}hide{/if}">
                     <div class="square_button left"
@@ -269,7 +269,7 @@
             </div>
             <span style="float:left;padding-left:10px;padding-top:5px"
                   class="Fulfilment_Delivery_State"> {$delivery->get('State')} </span>
-            <div id="forward_operations">
+            <div class="hide"  id="forward_operations">
 
                 <div id="received_operations"
                      class=" order_operation {if $delivery->get('Fulfilment Delivery State')!='InProcess'  }hide{/if}">
