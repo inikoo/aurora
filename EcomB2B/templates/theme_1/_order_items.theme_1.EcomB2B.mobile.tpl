@@ -67,7 +67,17 @@
     {foreach from=$items_data item="item" }
 
         <tr>
-            <td style="text-align: left">{$item.code_description}
+            <td style="text-align: left">
+
+                <div class="tw-flex tw-gap-x-2 tw-mb-1">
+    
+                    {if !empty($item.image_key)}
+                        <img class=""  src="rwi/100x100_{$item.image_key}.jpeg" style="max-width: 50px;max-height: 50px"/>
+                    {/if}
+    
+    
+                    <div>{$item.code_description}</div>
+                </div>
 
                 {if $edit}
                 {if $item.state!='Out of Stock in Basket'}
@@ -86,7 +96,8 @@
             </td>
 
 
-            <td class="text-right">{if !$edit}{$item.qty}<br>{/if}{$item.amount}</td>
+            <td class="text-right">{if !$edit}{$item.qty}<br>{/if}{$item.amount}
+            </td>
         </tr>
 
 

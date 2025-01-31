@@ -21,7 +21,7 @@
     {if $order->get('Order State')=='InBasket'}
     <tr class="operations" >
 
-        <td colspan=3 class="text-right">
+        <td colspan=4 class="text-right">
 
 
             <div  class="add_item_form" >
@@ -46,7 +46,8 @@
     </tr>
     {/if}
     <tr >
-        <th colspan="2" class="text-left padding_left_10">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
+        <th></th>
+        <th colspan="3" class="text-left padding_left_10">{if !empty($labels._items_description) }{$labels._items_description}{else}{t}Description{/t}{/if}</th>
 
     </tr>
     </thead>
@@ -55,6 +56,11 @@
     {foreach from=$items_data item="item" }
 
         <tr>
+            <td style="width: 50px">
+                {if !empty($item.image_key)}
+                    <img src="rwi/100x100_{$item.image_key}.jpeg" style="max-width: 50px;max-height: 50px"/>
+                {/if}
+            </td>
             <td style="text-align: left">{$item.code_description}</td>
             <td style="min-width: 10em;" >
 
@@ -89,14 +95,14 @@
 
         <tr>
 
-            <td colspan=2 class="text-right" style="line-height: 35px">{$item.description}</td>
+            <td colspan=3 class="text-right" style="line-height: 35px">{$item.description}</td>
             <td class="text-right"></td>
         </tr>
     {/foreach}
     {foreach from=$interactive_charges_data item="item" }
 
         <tr>
-
+            <td></td>
             <td  class="text-right">{$item.description}</td>
             <td  class="text-right">{$item.quantity_edit}</td>
             <td class="text-right">{$item.net}</td>

@@ -63,8 +63,8 @@
 
     <tr class="order_item_otf_{$item.otf_key}" >
         <td style="width: 50px">
-            {if !empty($item.image_website)}
-                <img src="{$item.image_website}" style="max-width: 50px;max-height: 50px"/>
+            {if !empty($item.image_key)}
+                <img src="rwi/100x100_{$item.image_key}.jpeg" style="max-width: 50px;max-height: 50px"/>
             {/if}
         </td>
 
