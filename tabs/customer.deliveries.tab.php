@@ -33,19 +33,17 @@ $parameters = array(
 
 
 $table_buttons   = [];
-$table_buttons[] = array(
-    'icon'  => 'plus',
-    'title' => _('New delivery'),
-    'id'    => 'new_customer_delivery',
-    'attr'  => array(
-        'parent'        => $state['object'],
-        'parent_key'    => $state['key'],
-        'warehouse_key' => $state['parent_key'],
-
-    )
-
-
-);
+//$table_buttons[] = array(
+//    'icon'  => 'plus',
+//    'title' => _('New delivery'),
+//    'id'    => 'new_customer_delivery',
+//    'attr'  => array(
+//        'parent'        => $state['object'],
+//        'parent_key'    => $state['key'],
+//        'warehouse_key' => $state['parent_key'],
+//
+//    )
+//);
 
 $smarty->assign('table_buttons', $table_buttons);
 
