@@ -11,6 +11,8 @@ function get_fulfilment_delivery_fields(Fulfilment_Delivery $fulfilment_delivery
 {
     $edit = $user->can_edit('fulfilment');
 
+    return [];
+
     return array(
         array(
             'label'      => _('Fulfilment Delivery'),
