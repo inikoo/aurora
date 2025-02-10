@@ -60,7 +60,11 @@ function fork_aiku_fetch($job)
 
     $url=AIKU_API_URL.$aiku_organisation_slug;
 
-    print "$url t:".AIKU_TOKEN."  \n";
+    print_r($_data);
+
+    print "$url t:".AIKU_TOKEN."    \n";
+
+
 
 
 
