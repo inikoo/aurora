@@ -44,15 +44,25 @@ while ($worker->work()) {
 }
 
 
-
-function fork_aiku_fetch($job) {
-
-
+function fork_aiku_fetch($job)
+{
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
-    print_r($_data);
+    if (!defined('AIKU_API_URL') || !defined('AIKU_TOKEN'))  {
+        return true;
+    }
+
+
+    $account = $_data[0];
+    $aiku_organisation_slug = getAikuOrganisation($account->get('Account Code'));
+
+    $url=AIKU_API_URL.$aiku_organisation_slug;
+
+    print "$url t:".AIKU_TOKEN."  \n";
+
+
 
 
 
@@ -61,3 +71,12 @@ function fork_aiku_fetch($job) {
 }
 
 
+function getAikuOrganisation($account_code): string
+{
+    switch ($account_code) {
+        case 'AWEU':
+            return 'sk';
+        default:
+            return strtolower($account_code);
+    }
+}
