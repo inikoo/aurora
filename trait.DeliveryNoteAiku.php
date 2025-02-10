@@ -16,7 +16,7 @@ trait DeliveryNoteAiku
 
 
 
-        $this->process_pika_fetch(
+        $this->process_aiku_fetch(
             'DeliveryNote', $key, $field,
             [
                 'new',

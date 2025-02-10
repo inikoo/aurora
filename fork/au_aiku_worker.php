@@ -29,7 +29,7 @@ $servers = implode(",", $servers);
 $worker = new GearmanWorker();
 $worker->addServers($servers);
 
-$worker->addFunction("au_aiku_fetch", "fork_aiku_fetch");
+$worker->addFunction("au_aiku", "fork_aiku_fetch");
 
 
 $db      = false;

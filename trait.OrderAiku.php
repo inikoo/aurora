@@ -10,7 +10,7 @@ trait OrderAiku {
     function model_updated($table, $field, $key)
     {
 
-        $this->process_pika_fetch(
+        $this->process_aiku_fetch(
             'Order', $key, $field,
             [
                 'Order For Collection',

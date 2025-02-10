@@ -9,7 +9,7 @@ trait ProductAiku
 {
     function model_updated($table, $field, $key)
     {
-        $this->process_pika_fetch(
+        $this->process_aiku_fetch(
             'Product', $key, $field,
             [
                 'new',

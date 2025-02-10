@@ -13,7 +13,7 @@ trait InvoiceAiku
             $this->use_field = 'delete_invoice';
         }
 
-        $this->process_pika_fetch(
+        $this->process_aiku_fetch(
             'Invoice', $key, $field,
             [
                 'new',

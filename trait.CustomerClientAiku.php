@@ -15,7 +15,7 @@ trait CustomerClientAiku {
         }
 
 
-        $this->process_pika_fetch(
+        $this->process_aiku_fetch(
             'CustomerClient', $key, $field,
             [
                 'new',

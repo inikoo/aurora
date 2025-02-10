@@ -7,10 +7,12 @@
 
 trait CustomerAiku
 {
-    function model_updated($table, $field, $key)
+    public function model_updated($table, $field, $key)
     {
-        $this->process_pika_fetch(
-            'Customer', $key, $field,
+        $this->process_aiku_fetch(
+            'Customer',
+            $key,
+            $field,
             [
                 'new',
                 'deleted',
