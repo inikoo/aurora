@@ -431,6 +431,11 @@ function get_omega_export_text($invoice, $base_country = 'SK') {
     }
 
 
+    if($invoice_tax_code=='SK-SR23'){
+        $invoice_tax_code='23%';
+    }
+
+
     if ($invoice->get('Invoice Total Tax Amount') != 0) {
         $row_data = array(
             'R02',
@@ -438,7 +443,7 @@ function get_omega_export_text($invoice, $base_country = 'SK') {
             '',
             '',
             343,
-            220,
+            223,
             round($invoice->get('Invoice Total Tax Amount') * $exchange_rate, 2),
             $invoice->get('Invoice Total Tax Amount'),
             'Tax '.$store->get('Code').' '.$invoice_tax_code,
