@@ -20,7 +20,7 @@ include_once 'class.Public_Category.php';
 /** @var PDO $db */
 
 
-$sql = "SELECT `Product ID`,`Product Store Key`,`Product Code` FROM `Product Dimension`   WHERE   `Product Public`='Yes' and  `Product Status`!='Discontinued' and    (`Product Webpage Key` IS NULL OR `Product Webpage Key`=0 )     ORDER BY `Product Code` DESC";
+$sql = "SELECT `Product ID`,`Product Store Key`,`Product Code` FROM `Product Dimension`   WHERE  `Product Web State`!='Offline' and   `Product Public`='Yes' and  `Product Status`!='Discontinued' and    (`Product Webpage Key` IS NULL OR `Product Webpage Key`=0 )     ORDER BY `Product Code` DESC";
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
