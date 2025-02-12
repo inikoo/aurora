@@ -69,7 +69,7 @@ function fork_aiku_fetch($job): bool
     }
     $url = AIKU_API_URL.$aiku_organisation_slug.'/'.$path.'?'.getParameters($fetchData);
 
-   // print "$url t:".AIKU_TOKEN."    \n";
+    // print "$url t:".AIKU_TOKEN."    \n";
 
     //return true;
 
@@ -86,7 +86,8 @@ function fork_aiku_fetch($job): bool
         CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST  => 'POST',
         CURLOPT_HTTPHEADER     => array(
-            'Authorization: '.AIKU_TOKEN
+            'Accept: application/json',
+            'Authorization: Bearer '.AIKU_TOKEN
         ),
     ));
 
@@ -94,6 +95,7 @@ function fork_aiku_fetch($job): bool
 
     curl_close($curl);
     echo $response;
+
     return true;
 }
 
