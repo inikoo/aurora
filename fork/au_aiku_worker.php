@@ -111,6 +111,10 @@ function getParameters($data): string
         $parameters['with'] = 'transactions,payments';
     }
 
+    if ($data['model'] == 'DeliveryNote') {
+        $parameters['with'] = 'transactions';
+    }
+
 
     return http_build_query($parameters);
 }
@@ -125,6 +129,8 @@ function getPath($data): ?string
         case 'Invoice':
         case 'Customer':
             return strtolower($data['model']);
+        case 'DeliveryNote':
+            return 'delivery-note';
         case 'Staff':
             return 'order';
         default:
