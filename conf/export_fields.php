@@ -2027,6 +2027,11 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'label'   => _('Department'),
                 'checked' => 0
             ),
+            array(
+                'name'    => '`Product Valid From`',
+                'label'   => _('Created date'),
+                'checked' => 0
+            ),
 
         ),
         'portfolio_items'         => array(
