@@ -128,6 +128,7 @@ function getPath($data): ?string
         case 'Order':
         case 'Invoice':
         case 'Customer':
+        case 'Stock':
             return strtolower($data['model']);
         case 'DeliveryNote':
             return 'delivery-note';
