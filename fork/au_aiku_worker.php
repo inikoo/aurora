@@ -69,9 +69,6 @@ function fork_aiku_fetch($job): bool
     }
     $url = AIKU_API_URL.$aiku_organisation_slug.'/'.$path.'?'.getParameters($fetchData);
 
-    // print "$url t:".AIKU_TOKEN."    \n";
-
-    //return true;
 
 
     $curl = curl_init();
@@ -104,7 +101,7 @@ function getParameters($data): string
 {
     $parameters = [
         'id' => $data['model_id'],
-        'bg' => true
+        'bg' => false
     ];
 
     if ($data['model'] == 'Order') {
