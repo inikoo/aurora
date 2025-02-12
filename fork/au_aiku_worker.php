@@ -44,34 +44,93 @@ while ($worker->work()) {
 }
 
 
-function fork_aiku_fetch($job)
+function fork_aiku_fetch($job): bool
 {
     if (!$_data = get_fork_metadata($job)) {
         return true;
     }
 
-    if (!defined('AIKU_API_URL') || !defined('AIKU_TOKEN'))  {
+    if (!defined('AIKU_API_URL') || !defined('AIKU_TOKEN')) {
         return true;
     }
 
 
-    $account = $_data[0];
+    $account                = $_data[0];
     $aiku_organisation_slug = getAikuOrganisation($account->get('Account Code'));
 
-    $url=AIKU_API_URL.$aiku_organisation_slug;
-
-    print_r($_data);
-
-    print "$url t:".AIKU_TOKEN."    \n";
+    $fetchData = $_data[2];
 
 
+    $path = getPath($fetchData);
+    if (is_null($path)) {
+        print "Invalid model ".$fetchData['model']."  \n";
+
+        return true;
+    }
+    $url = AIKU_API_URL.$aiku_organisation_slug.'/'.$path.'?'.getParameters($fetchData);
+
+   // print "$url t:".AIKU_TOKEN."    \n";
+
+    //return true;
 
 
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL            => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING       => '',
+        CURLOPT_MAXREDIRS      => 10,
+        CURLOPT_TIMEOUT        => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST  => 'POST',
+        CURLOPT_HTTPHEADER     => array(
+            'Authorization: '.AIKU_TOKEN
+        ),
+    ));
+
+    $response = curl_exec($curl);
+
+    curl_close($curl);
+    echo $response;
+    return true;
+}
 
 
+function getParameters($data): string
+{
+    $parameters = [
+        'id' => $data['model_id'],
+        'bg' => true
+    ];
+
+    if ($data['model'] == 'Order') {
+        $parameters['with'] = 'transactions,payments';
+    }
+    if ($data['model'] == 'Invoice') {
+        $parameters['with'] = 'transactions,payments';
+    }
 
 
+    return http_build_query($parameters);
+}
 
+
+function getPath($data): ?string
+{
+    switch ($data['model']) {
+        case 'CustomerClient':
+            return 'customer-client';
+        case 'Order':
+        case 'Invoice':
+        case 'Customer':
+            return strtolower($data['model']);
+        case 'Staff':
+            return 'order';
+        default:
+            return null;
+    }
 }
 
 
