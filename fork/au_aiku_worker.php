@@ -101,7 +101,7 @@ function getParameters($data): string
 {
     $parameters = [
         'id' => $data['model_id'],
-        'bg' => false
+        'bg' => true
     ];
 
     if ($data['model'] == 'Order') {
