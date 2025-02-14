@@ -430,7 +430,7 @@
 
     {if $with_basket==1 or  $with_checkout==1 and  $account_code=='AWEU'  }
 
-        {if $website->get('Website Code')=='NL'}
+        {if $website->get('Website Code')=='NLXX'}
             <script
                     data-sdk-integration-source="integrationbuilder_sc"
                     src="https://www.paypal.com/sdk/js?client-id={$paypal_client_id}&components=buttons,fields,marks,funding-eligibility&enable-funding=ideal&currency={$paypal_currency}"></script>
