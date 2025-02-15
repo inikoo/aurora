@@ -7,10 +7,12 @@
 
 trait ProductAiku
 {
-    function model_updated($table, $field, $key)
+    public function model_updated($table, $field, $key)
     {
         $this->process_aiku_fetch(
-            'Product', $key, $field,
+            'Product',
+            $key,
+            $field,
             [
                 'new',
                 'deleted',

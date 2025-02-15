@@ -6,9 +6,10 @@
  * Copyright (c) 2020. Aiku.io
  */
 
-trait CustomerClientAiku {
+trait CustomerClientAiku
+{
 
-    function model_updated($table, $field, $key)
+    public function model_updated($table, $field, $key)
     {
         if ($field == 'deleted') {
             $this->use_field = 'delete_customer_client';
@@ -16,7 +17,9 @@ trait CustomerClientAiku {
 
 
         $this->process_aiku_fetch(
-            'CustomerClient', $key, $field,
+            'CustomerClient',
+            $key,
+            $field,
             [
                 'new',
                 'deleted',

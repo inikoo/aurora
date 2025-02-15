@@ -7,14 +7,16 @@
 
 trait InvoiceAiku
 {
-    function model_updated($table, $field, $key)
+    public function model_updated($table, $field, $key)
     {
         if ($field == 'deleted') {
             $this->use_field = 'delete_invoice';
         }
 
         $this->process_aiku_fetch(
-            'Invoice', $key, $field,
+            'Invoice',
+            $key,
+            $field,
             [
                 'new',
                 'deleted',

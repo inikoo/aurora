@@ -13,11 +13,12 @@
 
 
 include_once 'class.DB_Table.php';
+include_once 'trait.PaymentAiku.php';
 
 
 class Payment extends DB_Table
 {
-
+    use PaymentAiku;
 
     function __construct($arg1 = false, $arg2 = false)
     {
@@ -125,6 +126,7 @@ class Payment extends DB_Table
             $this->get_data('id', $this->id);
 
             $this->fork_index_elastic_search();
+            $this->model_updated(null, 'new', $this->id);
         } else {
             print "Error can not create payment\n";
             print "$sql\n";

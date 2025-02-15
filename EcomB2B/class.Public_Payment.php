@@ -13,11 +13,12 @@
 
 
 include_once 'class.DBW_Table.php';
+include_once 'trait.PaymentAiku.php';
 
 
 class Public_Payment extends DBW_Table {
 
-
+    use PaymentAiku;
     function __construct($arg1 = false, $arg2 = false) {
 
         global $db;
@@ -126,6 +127,7 @@ class Public_Payment extends DBW_Table {
             $this->new = true;
             $this->get_data('id', $this->id);
             $this->fork_index_elastic_search();
+            $this->model_updated(null, 'new', $this->id);
         } else {
             print "Error can not create payment\n";
             exit;

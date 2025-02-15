@@ -5,13 +5,15 @@
  * Copyright (c) 2020. Aiku.io
  */
 
-trait OrderAiku {
+trait OrderAiku
+{
 
-    function model_updated($table, $field, $key)
+    public function model_updated($table, $field, $key)
     {
-
         $this->process_aiku_fetch(
-            'Order', $key, $field,
+            'Order',
+            $key,
+            $field,
             [
                 'Order For Collection',
                 'Order Email',
