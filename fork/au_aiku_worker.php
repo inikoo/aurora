@@ -110,6 +110,9 @@ function getParameters($data): string
     if ($data['model'] == 'Invoice') {
         $parameters['with'] = 'transactions,payments';
     }
+    if ($data['model'] == 'DispatchedEmailWithFull') {
+        $parameters['with'] = 'full';
+    }
 
     if ($data['model'] == 'DeliveryNote') {
         $parameters['with'] = 'transactions';
@@ -136,6 +139,9 @@ function getPath($data): ?string
             return 'delivery-note';
         case 'Staff':
             return 'order';
+        case 'DispatchedEmailWithFull':
+        case 'DispatchedEmail':
+            return 'dispatched-email';
         default:
             return null;
     }

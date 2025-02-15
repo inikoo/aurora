@@ -15,7 +15,7 @@ include_once 'trait.Published_Email_Template.send_email.php';
 
 class Published_Email_Template extends DB_Table {
     use Send_Email;
-
+    use PublishedEmailTemplateAiku;
     function __construct($a1, $a2 = false, $a3 = false) {
 
         global $db;
