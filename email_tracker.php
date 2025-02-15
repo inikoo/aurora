@@ -601,6 +601,17 @@ if ($validator->isValid($sns)) {
                 }
 
 
+                include_once 'utils/new_fork.php';
+                new_housekeeping_fork(
+                    'au_aiku',
+                    array(
+                        'model'    => 'EmailTrackingEvent',
+                        'model_id' => $event_key,
+                        'field'    => ''
+                    ),
+                    DNS_ACCOUNT_CODE
+                );
+
             } else {
 
                 $sql = "insert into atest  (`date`,`headers`,`request`) values (NOW(),?,?)  ";
