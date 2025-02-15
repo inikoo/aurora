@@ -284,7 +284,7 @@ class PartLocation extends DB_Table
         }
 
 
-        $this->part->model_updated(null, 'locations', $this->part->id);
+        $this->part->model_updated( 'locations', $this->part->id);
     }
 
     function audit($qty, $note = '', $date = false, $include_current = false, $parent = '')
@@ -524,7 +524,7 @@ class PartLocation extends DB_Table
         );
 
 
-        $this->part->model_updated(null, 'locations', $this->part->id);
+        $this->part->model_updated( 'locations', $this->part->id);
 
         return $audit_key;
     }
@@ -730,7 +730,7 @@ class PartLocation extends DB_Table
                 $value = json_decode($value, true);
                 $this->update_min($value['min'], $options);
                 $this->update_max($value['max'], $options);
-                $this->part->model_updated(null, 'locations', $this->part->id);
+                $this->part->model_updated( 'locations', $this->part->id);
                 break;
             case('Part Location Quantity On Hand'):
             case('Quantity On Hand'):
@@ -741,15 +741,15 @@ class PartLocation extends DB_Table
                 break;
             case('Part Location Minimum Quantity'):
                 $this->update_min($value, $options);
-                $this->part->model_updated(null, 'locations', $this->part->id);
+                $this->part->model_updated( 'locations', $this->part->id);
                 break;
             case('Part Location Maximum Quantity'):
                 $this->update_max($value, $options);
-                $this->part->model_updated(null, 'locations', $this->part->id);
+                $this->part->model_updated( 'locations', $this->part->id);
                 break;
             case('Part Location Moving Quantity'):
                 $this->update_move_qty($value);
-                $this->part->model_updated(null, 'locations', $this->part->id);
+                $this->part->model_updated( 'locations', $this->part->id);
                 break;
         }
     }
@@ -914,7 +914,7 @@ class PartLocation extends DB_Table
             $this->updated                    = true;
         }
 
-        $this->part->model_updated(null, 'locations', $this->part->id);
+        $this->part->model_updated( 'locations', $this->part->id);
     }
 
     function qty_analysis($a, $b)
@@ -1041,7 +1041,7 @@ class PartLocation extends DB_Table
                 break;
             }
         }
-        $this->part->model_updated(null, 'locations', $this->part->id);
+        $this->part->model_updated( 'locations', $this->part->id);
     }
 
     function add_stock($data)
@@ -1283,7 +1283,7 @@ class PartLocation extends DB_Table
                 break;
         }
 
-        $this->part->model_updated(null, 'locations', $this->part->id);
+        $this->part->model_updated( 'locations', $this->part->id);
 
         return $transaction_id;
     }

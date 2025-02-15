@@ -12,10 +12,12 @@
   Version 2.0
 */
 include_once 'class.SubjectSupplier.php';
+include_once 'trait.SupplierAiku.php';
 
 
 class Supplier extends SubjectSupplier {
 
+    use SupplierAiku;
     /**
      * @var \PDO
      */
@@ -290,6 +292,7 @@ class Supplier extends SubjectSupplier {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
             $this->new = true;
+            $this->model_updated( 'new', $this->id);
 
         } else {
             print_r($stmt->errorInfo());

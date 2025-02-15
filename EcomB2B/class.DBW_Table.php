@@ -90,7 +90,7 @@ abstract class DBW_Table extends stdClass {
 
             $affected = $update_op->rowCount();
             if ($affected > 0) {
-                $this->model_updated($table_full_name,$field,$this->id);
+                $this->model_updated($field,$this->id);
 
             }
 
@@ -375,7 +375,7 @@ abstract class DBW_Table extends stdClass {
 
             }
 
-            $this->model_updated($table_full_name,$field,$table_key);
+            $this->model_updated($field,$table_key);
 
 
         }

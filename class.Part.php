@@ -258,7 +258,7 @@ class Part extends Asset
             $this->update_weight_status();
 
             $this->fork_index_elastic_search();
-            $this->model_updated(null, 'new', $this->id);
+            $this->model_updated( 'new', $this->id);
         } else {
             print "Error Part can not be created $sql\n";
             $this->msg = 'Error Part can not be created';
@@ -4509,7 +4509,7 @@ class Part extends Asset
         }
 
         $this->fork_index_elastic_search('delete_elastic_index_object');
-        $this->model_updated(null, 'deleted', $this->id);
+        $this->model_updated( 'deleted', $this->id);
     }
 
     function get_field_label($field)

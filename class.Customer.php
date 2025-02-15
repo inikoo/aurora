@@ -269,7 +269,7 @@ class Customer extends Subject
 
             $this->new = true;
             $this->fork_index_elastic_search();
-            $this->model_updated(null, 'new', $this->id);
+            $this->model_updated( 'new', $this->id);
 
             return $this;
         } else {
@@ -1805,7 +1805,7 @@ class Customer extends Subject
         }
 
 
-        $this->update_aiku('Customer Dimension', 'tax_number_validation');
+        $this->process_aiku_fetch('Customer', $this->id, 'tax_number_validation');
 
         return true;
     }
@@ -2948,7 +2948,7 @@ class Customer extends Subject
         );
 
         $this->fork_index_elastic_search('delete_elastic_index_object');
-        $this->model_updated(null,'deleted',$this->id);
+        $this->model_updated('deleted',$this->id);
         $this->deleted = true;
     }
 

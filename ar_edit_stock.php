@@ -1403,7 +1403,7 @@ function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) 
 
     }
 
-    $part->update_aiku('Part Dimension', 'locations');
+    $part->process_aiku_fetch('Part', $part->sku);
 
 
     echo json_encode($response);

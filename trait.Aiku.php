@@ -8,36 +8,15 @@
 trait Aiku
 {
 
-    protected bool $pika_ignore = false;
 
-    protected string $use_field = '';
-
-
-    public function get_table_name()
-    {
-    }
-
-    public function update_aiku($a, $b)
+    public function model_updated($field, $key)
     {
     }
 
 
-    public function model_updated($table, $field, $key)
+    public function process_aiku_fetch(string $model, int $key, ?string $field = null, ?array $valid_fields = null)
     {
-    }
-
-
-    public function process_aiku_fetch($model, $key, $field, $valid_fields)
-    {
-        if ($this->pika_ignore) {
-            return;
-        }
-
-        if ($this->use_field) {
-            $model = $this->use_field;
-        }
-
-        if (in_array($field, $valid_fields)) {
+        if (is_null($valid_fields) or is_null($field) or in_array($field, $valid_fields)) {
             include_once 'utils/new_fork.php';
             new_housekeeping_fork(
                 'au_aiku',

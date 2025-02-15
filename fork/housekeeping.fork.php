@@ -638,8 +638,6 @@ function fork_housekeeping($job)
         case 'deal_created':
 
 
-
-
             $deal     = get_object('Deal', $data['deal_key']);
             $campaign = get_object('Campaign', $deal->get('Deal Campaign Key'));
             if ($deal->get('Deal Status') == 'Active' and !$deal->get('Deal Voucher Key')) {
@@ -1288,8 +1286,6 @@ function fork_housekeeping($job)
             }
 
 
-
-
             break;
         case 'customer_client_created':
         case 'customer_client_deleted':
@@ -1607,10 +1603,10 @@ function fork_housekeeping($job)
             $customer->editor = $editor;
 
 
-            $marketplace=false;
+            $marketplace = false;
 
 
-            $sql="select `Order Source Type` from `Order Source Dimension` where `Order Source Key`=? ";
+            $sql  = "select `Order Source Type` from `Order Source Dimension` where `Order Source Key`=? ";
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 [
@@ -1618,13 +1614,13 @@ function fork_housekeeping($job)
                 ]
             );
             while ($row = $stmt->fetch()) {
-                if($row['Order Source Type']=='marketplace'){
-                    $marketplace=true;
+                if ($row['Order Source Type'] == 'marketplace') {
+                    $marketplace = true;
                 }
             }
 
 
-            if ($order->get('Order For Collection') == 'No'  and !$marketplace) {
+            if ($order->get('Order For Collection') == 'No' and !$marketplace) {
                 $email_template_type      = get_object('Email_Template_Type', 'Delivery Confirmation|'.$order->get('Order Store Key'), 'code_store');
                 $email_template           = get_object('email_template', $email_template_type->get('Email Campaign Type Email Template Key'));
                 $published_email_template = get_object('published_email_template', $email_template->get('Email Template Published Email Key'));
@@ -1686,10 +1682,12 @@ function fork_housekeeping($job)
             }
 
             $customer->index_elastic_search(
-                $ES_hosts, false, [
-                             'assets',
-                             'assets_interval'
-                         ]
+                $ES_hosts,
+                false,
+                [
+                    'assets',
+                    'assets_interval'
+                ]
             );
 
 
@@ -2516,10 +2514,12 @@ function fork_housekeeping($job)
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_invoices();
             $customer->index_elastic_search(
-                $ES_hosts, false, [
-                             'assets',
-                             'assets_interval'
-                         ]
+                $ES_hosts,
+                false,
+                [
+                    'assets',
+                    'assets_interval'
+                ]
             );
 
             break;
@@ -2782,14 +2782,14 @@ function fork_housekeeping($job)
             $customer = get_object('Customer', $data['customer_key']);
             $customer->update_portfolio();
             if (!empty($data['product_id'])) {
-                $customer->update_aiku('Customer Dimension', 'sync_portfolio', $data['product_id']);
+                $customer->process_aiku_fetch('Customer', $data['product_id'], 'sync_portfolio');
             }
 
             break;
         case 'update_portfolio_aiku':
 
             $customer = get_object('Customer', $data['customer_key']);
-            $customer->update_aiku('Customer Dimension', 'sync_portfolio', $data['product_id']);
+            $customer->process_aiku_fetch('Customer', $data['product_id'], 'sync_portfolio');
 
             break;
         case 'unsubscribe_prospect':
@@ -3098,9 +3098,9 @@ function fork_housekeeping($job)
 
             break;
         case 'set_store_pricing_policy':
-            $store=get_object('Store',$data['store_key']);
+            $store = get_object('Store', $data['store_key']);
 
-            $sql = "select `Product ID` from `Product Dimension`  where `Product Store Key`=?  and `Product Status`!='Discontinued'   ";
+            $sql  = "select `Product ID` from `Product Dimension`  where `Product Store Key`=?  and `Product Status`!='Discontinued'   ";
             $stmt = $db->prepare($sql);
             $stmt->execute(
                 [
@@ -3108,10 +3108,10 @@ function fork_housekeeping($job)
                 ]
             );
             while ($row = $stmt->fetch()) {
-                $product=get_object('Product',$row['Product ID']);
+                $product = get_object('Product', $row['Product ID']);
                 print $product->get('Code')."\n";
-                $product->editor=$data['editor'];
-                $product->update(['Product Pricing Policy Key'=> $store->data['Store Default Product Pricing Policy Key']]);
+                $product->editor = $data['editor'];
+                $product->update(['Product Pricing Policy Key' => $store->data['Store Default Product Pricing Policy Key']]);
             }
 
 

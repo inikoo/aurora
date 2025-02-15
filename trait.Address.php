@@ -11,11 +11,12 @@
 */
 
 
-trait Address {
+trait Address
+{
 
 
-    function get_address($prefix){
-
+    function get_address($prefix)
+    {
         $address = new CommerceGuys\Addressing\Address();
 
         return $address
@@ -31,10 +32,9 @@ trait Address {
             ->withGivenName($this->data[$prefix.' Address Recipient']);
     }
 
-    function update_address($type, $fields, $options = '', $updated_from_invoice = false) {
-
-
-        $old_value = $this->get(($type==''?'':"$type ")."Address");
+    function update_address($type, $fields, $options = '', $updated_from_invoice = false)
+    {
+        $old_value = $this->get(($type == '' ? '' : "$type ")."Address");
 
         $updated_fields_number = 0;
 
@@ -46,61 +46,41 @@ trait Address {
 
 
         foreach ($fields as $field => $value) {
-
-            $this->update_field($this->table_name.' '.($type==''?'':"$type ").$field, $value, 'no_history');
+            $this->update_field($this->table_name.' '.($type == '' ? '' : "$type ").$field, $value, 'no_history');
             if ($this->updated) {
                 $updated_fields_number++;
-
-
             }
         }
 
 
         if ($updated_fields_number > 0) {
             $this->updated = true;
-
-
         }
 
         if ($this->updated) {
-
-
-            switch ($this->table_name){
+            switch ($this->table_name) {
                 case 'Customer':
-                    if($type=='Delivery'){
-                        $this->update_aiku($this->get_table_name(),'delivery_address');
-                    }elseif($type=='Invoice'){
-                        $this->update_aiku($this->get_table_name(),'billing_address');
-                    }
-
+                    $this->process_aiku_fetch('Customer', $this->id);
                     break;
                 case 'Order':
-                    if ( $type == 'Invoice' and !$updated_from_invoice) {
-
-
+                    if ($type == 'Invoice' and !$updated_from_invoice) {
                         $this->validate_order_tax_number();
 
                         $this->update_tax();
-
-
-                    } elseif ( $type == 'Delivery') {
-
-
+                    } elseif ($type == 'Delivery') {
                         $this->update_shipping();
                         $this->update_tax();
 
                         $sql  = "select `Delivery Note Key` from `Delivery Note Dimension` where `Delivery Note Order Key`=? and `Delivery Note State` not in ('Dispatched','Cancelled')  ";
                         $stmt = $this->db->prepare($sql);
                         $stmt->execute(array(
-                                           $this->id
-                                       ));
+                            $this->id
+                        ));
                         while ($row = $stmt->fetch()) {
                             $delivery_note         = get_object('Delivery Note', $row['Delivery Note Key']);
                             $delivery_note->editor = $this->editor;
                             $delivery_note->update(['Delivery Note Address' => $this->get('Order Delivery Address')]);
                         }
-
-
                     }
 
                     break;
@@ -120,24 +100,21 @@ trait Address {
             }
 
 
-
-
-
-
-
             $this->update_address_formatted_fields($type);
 
             if (!preg_match('/no_history/i', $options)) {
-
                 $this->add_changelog_record(
-                    $this->table_name.' '.($type==''?'':"$type Address"), $old_value, $this->get(($type==''?'':"$type ")."Address"), '', $this->table_name, $this->id
+                    $this->table_name.' '.($type == '' ? '' : "$type Address"),
+                    $old_value,
+                    $this->get(($type == '' ? '' : "$type ")."Address"),
+                    '',
+                    $this->table_name,
+                    $this->id
                 );
-
             }
 
 
             if ($type == 'Contact') {
-
                 $this->fast_update(array($this->table_name.' Main Plain Postal Code' => preg_replace('/\s|\n|\r/', '', $this->get($this->table_name.' Contact Address Postal Code'))));
 
 
@@ -154,22 +131,22 @@ trait Address {
                     array(
                         $this->table_name.' Location' => trim(
                             sprintf(
-                                '<img src="/art/flags/%s.png" alt="%s" title="%s"> %s', strtolower($this->get('Contact Address Country 2 Alpha Code')), $this->get('Contact Address Country 2 Alpha Code'), $this->get('Contact Address Country 2 Alpha Code'), $location
+                                '<img src="/art/flags/%s.png" alt="%s" title="%s"> %s',
+                                strtolower($this->get('Contact Address Country 2 Alpha Code')),
+                                $this->get('Contact Address Country 2 Alpha Code'),
+                                $this->get('Contact Address Country 2 Alpha Code'),
+                                $location
                             )
                         )
-                    ), 'no_history'
+                    ),
+                    'no_history'
                 );
-
             }
-
-
         }
-
-
     }
 
-    function update_address_formatted_fields($type) {
-
+    function update_address_formatted_fields($type)
+    {
         include_once 'utils/get_addressing.php';
         $store = get_object('Store', $this->get('Store Key'));
 
@@ -200,7 +177,9 @@ trait Address {
 
 
         $this->update_field(
-            $this->table_name.' '.$type.' Address Checksum', $new_checksum, 'no_history'
+            $this->table_name.' '.$type.' Address Checksum',
+            $new_checksum,
+            'no_history'
         );
 
 
@@ -208,10 +187,8 @@ trait Address {
         $locale  = $account->get('Account Locale');
 
         if ($type == 'Delivery') {
-
             $country = $account->get('Account Country 2 Alpha Code');
         } else {
-
             if ($this->get('Store Key')) {
                 $country = $store->get('Store Home Country Code 2 Alpha');
             } else {
@@ -244,11 +221,8 @@ trait Address {
 
 
         if ($type == 'Contact' or $this->get('Company Name') == '') {
-
-
             if ($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) {
                 $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
-
             }
 
             if ($this->get($type.' Address Organization') == $this->get('Company Name')) {
@@ -257,24 +231,27 @@ trait Address {
 
 
             $xhtml_address = preg_replace(
-                '/class="family-name"/', 'class="recipient fn '.(($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) ? 'hide' : '').'"', $xhtml_address
+                '/class="family-name"/',
+                'class="recipient fn '.(($this->get($type.' Address Recipient') == $this->get('Main Contact Name')) ? 'hide' : '').'"',
+                $xhtml_address
             );
-
         } else {
             // removing contact name from invoices and delivery notes
             $xhtml_address = preg_replace('/(class="family-name">.+<\/span>)<br>/', '$1', $xhtml_address);
             $xhtml_address = preg_replace(
-                '/class="family-name"/', 'class="recipient fn hide"', $xhtml_address
+                '/class="family-name"/',
+                'class="recipient fn hide"',
+                $xhtml_address
             );
 
             if ($this->get($type.' Address Organization') == $this->get('Company Name')) {
                 $xhtml_address = preg_replace('/(class="organization">.+<\/span>)<br>/', '$1', $xhtml_address);
             }
-
-
         }
         $xhtml_address = preg_replace(
-            '/class="organization"/', 'class="organization org '.(($this->get($type.' Address Organization') == $this->get('Company Name')) ? 'hide' : '').'"', $xhtml_address
+            '/class="organization"/',
+            'class="organization org '.(($this->get($type.' Address Organization') == $this->get('Company Name')) ? 'hide' : '').'"',
+            $xhtml_address
         );
 
 
@@ -291,39 +268,31 @@ trait Address {
         $this->update_field($this->table_name.' '.$type.' Address Postal Label', $postal_label_formatter->format($address), 'no_history');
 
         if ($this->table_name == 'Customer') {
-
-
             if ($type == 'Invoice') {
-
                 $_value = $this->get('Customer Invoice Address');
                 if ($this->data['Customer Billing Address Link'] == 'Contact') {
-
-
                     $metadata['no_propagate_addresses'] = true;
                     $this->update_field_switcher('Customer Contact Address', $_value, 'no_history', $metadata);
 
 
-                    if (  !in_array($store->get('Store Type') ,['External','Dropshipping'])) {
+                    if (!in_array($store->get('Store Type'), ['External', 'Dropshipping'])) {
                         if ($this->data['Customer Delivery Address Link'] == 'Contact') {
                             $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
                         }
                     }
-
-
                 }
-                if (  !in_array($store->get('Store Type') ,['External','Dropshipping'])) {
+                if (!in_array($store->get('Store Type'), ['External', 'Dropshipping'])) {
                     if ($this->data['Customer Delivery Address Link'] == 'Billing') {
                         $metadata['no_propagate_addresses'] = true;
                         $this->update_field_switcher('Customer Delivery Address', $_value, 'no_history', $metadata);
                     }
                 }
-
             }
 
             // print $type;
 
 
-            if (  !in_array($store->get('Store Type') ,['External','Dropshipping'])) {
+            if (!in_array($store->get('Store Type'), ['External', 'Dropshipping'])) {
                 if ($type == 'Invoice') {
                     $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
                     // print "$sql\n";
@@ -342,8 +311,7 @@ trait Address {
                             $order->update(array('Order Invoice Address' => $this->get('Customer Invoice Address')), 'no_history', array('no_propagate_customer' => true));
                         }
                     }
-                }
-                elseif ($type == 'Delivery') {
+                } elseif ($type == 'Delivery') {
                     $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Key`=%d ", $this->id);
 
                     if ($result = $this->db->query($sql)) {
@@ -356,11 +324,7 @@ trait Address {
                     }
                 }
             }
-
-
         } elseif ($this->table_name == 'Customer Client') {
-
-
             $sql = sprintf("SELECT `Order Key` FROM `Order Dimension` WHERE  `Order State` IN ('InBasket')   AND `Order Customer Client Key`=%d ", $this->id);
 
             if ($result = $this->db->query($sql)) {

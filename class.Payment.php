@@ -126,7 +126,7 @@ class Payment extends DB_Table
             $this->get_data('id', $this->id);
 
             $this->fork_index_elastic_search();
-            $this->model_updated(null, 'new', $this->id);
+            $this->model_updated( 'new', $this->id);
         } else {
             print "Error can not create payment\n";
             print "$sql\n";

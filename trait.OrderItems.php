@@ -358,7 +358,7 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
                     );
                 }
 
-                $this->update_aiku('Order Dimension', 'refresh_basket');
+                $this->model_updated('refresh_basket',$this->id);
             } elseif ($this->get('Order State') == 'InProcess') {
                 if ($this->get('Order Number Items') == 0) {
                     $operations = array(

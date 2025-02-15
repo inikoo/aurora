@@ -229,7 +229,7 @@ class DeliveryNote extends DB_Table
 
             $this->fork_index_elastic_search();
 
-            $this->model_updated(null,'new',$this->id);
+            $this->model_updated('new',$this->id);
 
         } else {
             exit ("$sql \n Error can not create dn header");
@@ -2704,7 +2704,7 @@ class DeliveryNote extends DB_Table
 
 
         $this->fork_index_elastic_search();
-        $this->model_updated(null,'deleted',$this->id);
+        $this->model_updated('deleted',$this->id);
 
         return 'orders/'.$order->get('Order Store Key').'/'.$order->id;
     }

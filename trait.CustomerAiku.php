@@ -7,7 +7,7 @@
 
 trait CustomerAiku
 {
-    public function model_updated($table, $field, $key)
+    public function model_updated($field, $key)
     {
         $this->process_aiku_fetch(
             'Customer',
@@ -16,6 +16,8 @@ trait CustomerAiku
             [
                 'new',
                 'deleted',
+                'sync_portfolio',
+                'tax_number_validation',
                 'Customer Main Contact Name',
                 'Customer Company Name',
                 'Customer Type by Activity',

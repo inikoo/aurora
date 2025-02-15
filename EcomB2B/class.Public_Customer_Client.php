@@ -157,7 +157,7 @@ class Public_Customer_Client extends DBW_Table {
             );
 
             $this->new = true;
-            $this->model_updated(null,'new',$this->id);
+            $this->model_updated('new',$this->id);
 
         } else {
             $this->error = true;
@@ -820,7 +820,7 @@ class Public_Customer_Client extends DBW_Table {
 
         if ($number_orders > 0) {
             $this->deactivate();
-            $this->model_updated(null,'deactivate',$this->id);
+            $this->model_updated('deactivate',$this->id);
 
             return;
         }
@@ -857,7 +857,7 @@ class Public_Customer_Client extends DBW_Table {
         );
 
         $this->fork_index_elastic_search('delete_elastic_index_object');
-        $this->model_updated(null,'deleted',$this->id);
+        $this->model_updated('deleted',$this->id);
 
         $this->deleted = true;
     }
@@ -920,7 +920,7 @@ class Public_Customer_Client extends DBW_Table {
 
         $this->deleted = true;
 
-        $this->update_aiku('Customer Client Dimension', 'deactivate');
+        $this->model_updated('deactivate',$this->id);
 
 
     }

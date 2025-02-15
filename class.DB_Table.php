@@ -227,7 +227,7 @@ abstract class DB_Table extends stdClass
                 $this->add_changelog_record($field, $old_formatted_value, $new_formatted_value, $options, $table_name, $table_key);
             }
 
-            $this->model_updated($table_full_name,$field,$table_key);
+            $this->model_updated($field,$table_key);
 
         }
     }
@@ -696,7 +696,7 @@ abstract class DB_Table extends stdClass
 
             $affected = $stmt->rowCount();
             if ($affected > 0) {
-                $this->model_updated($table_full_name,$field,$this->id);
+                $this->model_updated($field,$this->id);
             }
         }
     }

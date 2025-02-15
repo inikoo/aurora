@@ -7,7 +7,7 @@
 
 trait DeliveryNoteAiku
 {
-    public function model_updated($table, $field, $key)
+    public function model_updated($field, $key)
     {
         if ($field == 'deleted') {
             $this->use_field = 'delete_delivery_note';

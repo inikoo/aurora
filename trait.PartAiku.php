@@ -7,7 +7,7 @@
 
 trait PartAiku
 {
-    public function model_updated($table, $field, $key)
+    public function model_updated($field, $key)
     {
         $this->process_aiku_fetch(
             'Stock',

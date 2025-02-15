@@ -17,6 +17,7 @@ class Product extends Asset
 {
 
     use ProductAiku;
+
     public ?Page $webpage;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false, $_db = false)
@@ -131,18 +132,15 @@ class Product extends Asset
 
 
         switch ($key) {
-
-
-
-
             case 'Video':
 
-                if($this->data['Product Video']) {
+                if ($this->data['Product Video']) {
                     $url      = $this->data['Product Video'];
                     $video_id = explode('vimeo.com/', $url)[1];
 
                     return '<iframe src="https://player.vimeo.com/video/'.$video_id.'?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&background=true"   frameborder="0"  style="background: #000;height: 200px" ></iframe>';
                 }
+
                 return '';
 
             case 'Units Per Case':
@@ -213,8 +211,6 @@ class Product extends Asset
                 return $this->webpage->get('Webpage Name');
 
 
-
-
             case 'Webpage RRP':
 
                 if ($this->data['Product RRP'] == '') {
@@ -265,7 +261,6 @@ class Product extends Asset
 
 
                 return _('Out of stock');
-
 
 
             case 'Webpage Price':
@@ -423,6 +418,7 @@ class Product extends Asset
                 if ($parts == '') {
                     $parts = '<span class="discreet">'._('No parts assigned').'</span>';
                 }
+
                 return preg_replace('/^, /', '', $parts);
 
 
@@ -606,20 +602,20 @@ class Product extends Asset
 
                 return $stock_status;
             case 'Pricing Policy Key':
-                if(!$this->data['Product Pricing Policy Key']){
+                if (!$this->data['Product Pricing Policy Key']) {
                     return _('No policy');
                 }
 
-                $label='';
-                $sql="select `Product Pricing Policy Label` from `Product Pricing Policy Dimension` where `Product Pricing Policy Key`=? ";
-                $stmt = $this->db->prepare($sql);
+                $label = '';
+                $sql   = "select `Product Pricing Policy Label` from `Product Pricing Policy Dimension` where `Product Pricing Policy Key`=? ";
+                $stmt  = $this->db->prepare($sql);
                 $stmt->execute(
                     [
                         $this->data['Product Pricing Policy Key']
                     ]
                 );
                 if ($row = $stmt->fetch()) {
-                  $label=$row['Product Pricing Policy Label'];
+                    $label = $row['Product Pricing Policy Label'];
                 }
 
                 return $label;
@@ -725,8 +721,8 @@ class Product extends Asset
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->id
-                       ));
+            $this->id
+        ));
         while ($row = $stmt->fetch()) {
             $part_data = array(
                 'Key'            => $row['Product Part Key'],
@@ -844,9 +840,9 @@ class Product extends Asset
         $sql  = "SELECT count(*) AS num ,`Product ID` FROM `Product Dimension` WHERE `Product Code`=%s AND `Product Store Key`=%d AND `Product Status`!='Discontinued' ";
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $code,
-                           $this->id
-                       ));
+            $code,
+            $this->id
+        ));
         if ($row = $stmt->fetch()) {
             if ($row['num'] > 0) {
                 $this->error      = true;
@@ -871,7 +867,7 @@ class Product extends Asset
 
         $variant_data['Product Variant Position'] = 10000;
 
-        $variant_data['Product Show Variant']='No';
+        $variant_data['Product Show Variant'] = 'No';
 
         $store         = get_object('Store', $this->get('Product Store Key'));
         $store->editor = $this->editor;
@@ -947,7 +943,7 @@ class Product extends Asset
         $number_visible_variants = 0;
 
 
-        if($this->data['is_variant']=='No') {
+        if ($this->data['is_variant'] == 'No') {
             $sql  = "select count(*) as num from `Product Dimension` where `variant_parent_id`=?  and `Product ID`!=?  ";
             $stmt = $this->db->prepare($sql);
             $stmt->execute(
@@ -1066,10 +1062,10 @@ class Product extends Asset
 
 
             $this->fast_update([
-                                   'Product Properties'        => '{}',
-                                   'Product Tax Category Data' => '{}'
+                'Product Properties'        => '{}',
+                'Product Tax Category Data' => '{}'
 
-                               ]);
+            ]);
 
             $this->update_product_targeted_marketing_customers();
             $this->update_product_spread_marketing_customers();
@@ -1080,14 +1076,14 @@ class Product extends Asset
 
             if ($this->data['is_variant'] == 'No') {
                 $this->fast_update([
-                                       'variant_parent_id' => $this->id,
+                    'variant_parent_id' => $this->id,
 
-                                   ]);
+                ]);
             }
 
 
             $this->fork_index_elastic_search();
-            $this->model_updated(null,'new',$this->id);
+            $this->model_updated('new', $this->id);
         } else {
             $this->error = true;
 
@@ -1161,12 +1157,12 @@ class Product extends Asset
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->data['Product Code'],
-                           $this->data['Product Units Per Case'],
-                           round($this->data['Product Price'], 2),
-                           $this->data['Product Name'],
-                           $this->id
-                       ));
+            $this->data['Product Code'],
+            $this->data['Product Units Per Case'],
+            round($this->data['Product Price'], 2),
+            $this->data['Product Name'],
+            $this->id
+        ));
         if ($row = $stmt->fetch()) {
             $this->update(
                 array('Product Current Key' => $row['Product Key']),
@@ -1174,22 +1170,23 @@ class Product extends Asset
             );
             $changed = true;
         } else {
-            $sql  = "INSERT INTO `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,`Product History Price`, `Product History Name`,`Product History Valid From`,`Product History Short Description`,`Product History XHTML Short Description`,`Product History Special Characteristic`) VALUES (?,?,?, ?,?,?, ?,?,?) ";
+            $sql  =
+                "INSERT INTO `Product History Dimension` (`Product ID`,`Product History Code`,`Product History Units Per Case`,`Product History Price`, `Product History Name`,`Product History Valid From`,`Product History Short Description`,`Product History XHTML Short Description`,`Product History Special Characteristic`) VALUES (?,?,?, ?,?,?, ?,?,?) ";
             $stmt = $this->db->prepare($sql);
 
             if ($stmt->execute(array(
-                                   $this->id,
-                                   $this->data['Product Code'],
-                                   $this->data['Product Units Per Case'],
+                $this->id,
+                $this->data['Product Code'],
+                $this->data['Product Units Per Case'],
 
-                                   round($this->data['Product Price'], 2),
-                                   $this->data['Product Name'],
-                                   gmdate('Y-m-d H:i:s'),
+                round($this->data['Product Price'], 2),
+                $this->data['Product Name'],
+                gmdate('Y-m-d H:i:s'),
 
-                                   $desc,
-                                   $desc,
-                                   $this->get('Product Special Characteristic')
-                               ))) {
+                $desc,
+                $desc,
+                $this->get('Product Special Characteristic')
+            ))) {
                 $this->update(
                     array(
                         'Product Current Key' => $this->db->lastInsertId()
@@ -1218,7 +1215,7 @@ class Product extends Asset
                 );
             }
         }
-        $this->update_aiku($this->get_table_name(), 'historic_props');
+        $this->process_aiku_fetch('Product', $this->id);
     }
 
     function get_field_label($field)
@@ -1425,9 +1422,9 @@ class Product extends Asset
                 $this->update(array('Product Status' => 'Active'));
             }
         } elseif ($status == 'Discontinuing') {
-           // if ($this->get('Product Status') == 'Active') {
-                $this->update(array('Product Status' => 'Discontinuing'));
-           // }
+            // if ($this->get('Product Status') == 'Active') {
+            $this->update(array('Product Status' => 'Discontinuing'));
+            // }
         } elseif ($status == 'Discontinued') {
             $this->update(array('Product Status' => 'Discontinued'));
         }
@@ -1447,8 +1444,8 @@ class Product extends Asset
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->id
-                       ));
+            $this->id
+        ));
         while ($row = $stmt->fetch()) {
             if ($scope == 'objects') {
                 $parts[$row['Part SKU']] = get_object('Part', $row['Part SKU']);
@@ -1467,15 +1464,15 @@ class Product extends Asset
             return;
         }
 
-        if($this->data['Product Web Configuration']=='Online Force Out of Stock' or  $this->data['Product Web Configuration']=='Offline'){
+        if ($this->data['Product Web Configuration'] == 'Online Force Out of Stock' or $this->data['Product Web Configuration'] == 'Offline') {
             $this->fast_update(array(
-                                   'Product Availability'       => 0,
-                                   'Product Availability State' => 'OutofStock',
+                'Product Availability'       => 0,
+                'Product Availability State' => 'OutofStock',
 
-                               ));
+            ));
+
             return;
         }
-
 
 
         $use_pipelines = true;
@@ -1514,9 +1511,9 @@ class Product extends Asset
                         $stmt2 = $this->db->prepare($sql);
 
                         $stmt2->execute(array(
-                                            $row['Part SKU'],
-                                            $this->data['Product Store Key']
-                                        ));
+                            $row['Part SKU'],
+                            $this->data['Product Store Key']
+                        ));
                         while ($row2 = $stmt2->fetch()) {
                             // print_r($row2);
                             if ($row2['Location Picking Pipeline Location Key']) {
@@ -1534,11 +1531,12 @@ class Product extends Asset
                         $stock_reserved_other_stores = 0;
                         $stock_reserved_this_store   = 0;
 
-                        $sql   = "SELECT `Required`+`Given`-`Picked` as reserved ,   `Store Key`    FROM `Inventory Transaction Fact` left join `Order Transaction Fact` on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  WHERE `Part SKU`=? AND `Inventory Transaction Type`='Order In Process'";
+                        $sql   =
+                            "SELECT `Required`+`Given`-`Picked` as reserved ,   `Store Key`    FROM `Inventory Transaction Fact` left join `Order Transaction Fact` on (`Map To Order Transaction Fact Key`=`Order Transaction Fact Key`)  WHERE `Part SKU`=? AND `Inventory Transaction Type`='Order In Process'";
                         $stmt2 = $this->db->prepare($sql);
                         $stmt2->execute(array(
-                                            $row['Part SKU']
-                                        ));
+                            $row['Part SKU']
+                        ));
                         while ($row2 = $stmt2->fetch()) {
                             //print_r($row2);
                             if ($row2['Store Key'] == $this->data['Product Store Key']) {
@@ -1552,12 +1550,13 @@ class Product extends Asset
 
                         // Paid ordered stock
 
-                        $sql = "SELECT (`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio` AS reserved , `Store Key`  FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) LEFT JOIN `Order Dimension` O ON (OTF.`Order Key`=O.`Order Key`)  WHERE `Order State`='InProcess'  and `Order To Pay Amount`<=0 and `Product Part Part SKU`=?   ";
+                        $sql =
+                            "SELECT (`Order Quantity`+`Order Bonus Quantity`)*`Product Part Ratio` AS reserved , `Store Key`  FROM `Order Transaction Fact` OTF LEFT JOIN `Product Part Bridge` PPB ON (OTF.`Product ID`=PPB.`Product Part Product ID`) LEFT JOIN `Order Dimension` O ON (OTF.`Order Key`=O.`Order Key`)  WHERE `Order State`='InProcess'  and `Order To Pay Amount`<=0 and `Product Part Part SKU`=?   ";
 
                         $stmt2 = $this->db->prepare($sql);
                         $stmt2->execute(array(
-                                            $row['Part SKU']
-                                        ));
+                            $row['Part SKU']
+                        ));
                         while ($row2 = $stmt2->fetch()) {
                             // print_r($row2);
                             if ($row2['Store Key'] == $this->data['Product Store Key']) {
@@ -1673,10 +1672,10 @@ class Product extends Asset
 
 
         $this->fast_update(array(
-                               'Product Availability'       => $stock,
-                               'Product Availability State' => $tipo,
+            'Product Availability'       => $stock,
+            'Product Availability State' => $tipo,
 
-                           ));
+        ));
 
         $this->update_status_availability_state();
 
@@ -1750,26 +1749,26 @@ class Product extends Asset
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
 
         $this->db->prepare($sql)->execute([
-                                              $date,
-                                              $date,
-                                              'store_data_feed',
-                                              $this->get('Product Store Key'),
-                                              $date,
+            $date,
+            $date,
+            'store_data_feed',
+            $this->get('Product Store Key'),
+            $date,
 
-                                          ]);
+        ]);
 
         if ($this->data['Product Department Category Key'] > 0) {
             $sql = 'insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? ,`Stack Counter`=`Stack Counter`+1 ';
 
             $this->db->prepare($sql)->execute([
-                                                  $date,
-                                                  $date,
-                                                  'department_data_feed',
-                                                  $this->data['Product Department Category Key'],
-                                                  $date,
+                $date,
+                $date,
+                'department_data_feed',
+                $this->data['Product Department Category Key'],
+                $date,
 
-                                              ]);
+            ]);
         }
     }
 
@@ -1795,8 +1794,8 @@ class Product extends Asset
 
 
         $this->fast_update([
-                               'Product Web State' => $web_state
-                           ]);
+            'Product Web State' => $web_state
+        ]);
 
 
         if ($web_state == 'For Sale') {
@@ -1814,8 +1813,8 @@ class Product extends Asset
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute(array(
-                               $this->id
-                           ));
+                $this->id
+            ));
             while ($row = $stmt->fetch()) {
                 /**
                  * @var $category Category
@@ -1836,8 +1835,8 @@ class Product extends Asset
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute(array(
-                               $this->id
-                           ));
+                $this->id
+            ));
             if ($row = $stmt->fetch()) {
                 $last_record_key  = $row['Product Availability Key'];
                 $last_record_date = $row['date'];
@@ -1908,11 +1907,7 @@ class Product extends Asset
             } else {
                 $this->update_web_state_slow_forks($web_availability_updated);
             }
-
         }
-
-
-
     }
 
     function get_web_state(): string
@@ -2128,19 +2123,20 @@ class Product extends Asset
                     $date = gmdate('Y-m-d H:i:s');
                     foreach ($webpages_to_reindex as $webpage_to_reindex_key) {
                         if ($webpage_to_reindex_key > 0) {
-                            $sql = "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (?,?,?, ?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? , `Stack Metadata`=? , `Stack Counter`=`Stack Counter`+1";
+                            $sql =
+                                "insert into `Stack Dimension` (`Stack Creation Date`,`Stack Last Update Date`,`Stack Operation`,`Stack Object Key`,`Stack Metadata`) values (?,?,?, ?,?) ON DUPLICATE KEY UPDATE `Stack Last Update Date`=? , `Stack Metadata`=? , `Stack Counter`=`Stack Counter`+1";
 
 
                             $this->db->prepare($sql)->execute(array(
-                                                                  $date,
-                                                                  $date,
-                                                                  'reindex_webpage',
-                                                                  $webpage_to_reindex_key,
-                                                                  'from_product_'.$change_type,
-                                                                  $date,
-                                                                  'from_product_'.$change_type
+                                $date,
+                                $date,
+                                'reindex_webpage',
+                                $webpage_to_reindex_key,
+                                'from_product_'.$change_type,
+                                $date,
+                                'from_product_'.$change_type
 
-                                                              ));
+                            ));
                         }
                     }
             }
@@ -2303,7 +2299,7 @@ class Product extends Asset
             exit;
         }
 
-//print_r($sales_data);
+        //print_r($sales_data);
         return $sales_data;
     }
 
@@ -2493,7 +2489,7 @@ class Product extends Asset
             $this->deleted = true;
 
             $this->fork_index_elastic_search('delete_elastic_index_object');
-            $this->model_updated(null,'new',$this->id);
+            $this->model_updated('new', $this->id);
         }
     }
 
@@ -2542,8 +2538,8 @@ class Product extends Asset
             $new_value = (!$next_delivery_time ? '' : gmdate('Y-m-d H:i:s', $next_delivery_time));
             if ($old_value != $new_value) {
                 $this->fast_update(array(
-                                       'Product Next Supplier Shipment' => $new_value
-                                   ));
+                    'Product Next Supplier Shipment' => $new_value
+                ));
 
                 require_once 'utils/new_fork.php';
                 new_housekeeping_fork(
@@ -3067,10 +3063,10 @@ class Product extends Asset
                 $sql  = "SELECT count(*) AS num FROM `Product Dimension` WHERE `Product Code`=? AND `Product Store Key`=? AND  `Product Status`!='Discontinued'  AND `Product ID`!=? ";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(array(
-                                   $value,
-                                   $this->get('Product Store Key'),
-                                   $this->id
-                               ));
+                    $value,
+                    $this->get('Product Store Key'),
+                    $this->id
+                ));
                 if ($row = $stmt->fetch()) {
                     if ($row['num'] > 0) {
                         $this->error = true;
@@ -3124,7 +3120,7 @@ class Product extends Asset
                 $this->update_metadata = array(
 
                     'class_html' => array(
-                        'Units_And_Name'               => $this->get('Units And Name'),
+                        'Units_And_Name' => $this->get('Units And Name'),
 
 
                     )
@@ -3243,8 +3239,6 @@ class Product extends Asset
                 }
 
 
-
-
                 foreach ($positions as $product_id => $position) {
                     $sql = "update `Product Dimension` set `Product Variant Position`=? where`Product ID` =?  ";
                     $this->db->prepare($sql)->execute(
@@ -3285,11 +3279,9 @@ class Product extends Asset
 
                 $id = $this->id;
                 if ($this->data['is_variant'] == 'Yes') {
-                    $id = $this->data['variant_parent_id'];
-                    $parent=get_object('Product',$id);
+                    $id     = $this->data['variant_parent_id'];
+                    $parent = get_object('Product', $id);
                     $parent->update_variants_stats();
-
-
                 }
                 include_once 'utils/new_fork.php';
                 new_housekeeping_fork(
@@ -3373,8 +3365,6 @@ class Product extends Asset
                     }
 
                     $this->update_updated_markers('Price');
-
-
 
 
                     $id = $this->id;
@@ -3976,8 +3966,8 @@ class Product extends Asset
             $num_parts_edited++;
             $sql = "delete from `Product Part Bridge` where `Product Part Key`=? ";
             $this->db->prepare($sql)->execute(array(
-                                                  $product_part_key
-                                              ));
+                $product_part_key
+            ));
         }
 
 
@@ -4069,27 +4059,26 @@ class Product extends Asset
         if ($number_parts == 1) {
             $part = get_object('Part', array_pop($parts));
             $this->fast_update(array(
-                                   'Product Tariff Code'                  => $part->get('Part Tariff Code'),
-                                   'Product HTSUS Code'                   => $part->get('Part HTSUS Code'),
-                                   'Product Duty Rate'                    => $part->get('Part Duty Rate'),
-                                   'Product Origin Country Code'          => $part->get('Part Origin Country Code'),
-                                   'Product UN Number'                    => $part->get('Part UN Number'),
-                                   'Product UN Class'                     => $part->get('Part UN Class'),
-                                   'Product Packing Group'                => $part->get('Part Packing Group'),
-                                   'Product Proper Shipping Name'         => $part->get('Part Proper Shipping Name'),
-                                   'Product Hazard Identification Number' => $part->get('Part Hazard Identification Number'),
-                                   'Product Unit Weight'                  => $part->get('Part Unit Weight'),
-                                   'Product Unit Dimensions'              => $part->get('Part Unit Dimensions'),
-                                   'Product Materials'                    => $part->data['Part Materials'],
-                                   'Product Barcode Number'               => $part->data['Part Barcode Number'],
-                                   'Product Barcode Key'                  => $part->data['Part Barcode Key'],
+                'Product Tariff Code'                  => $part->get('Part Tariff Code'),
+                'Product HTSUS Code'                   => $part->get('Part HTSUS Code'),
+                'Product Duty Rate'                    => $part->get('Part Duty Rate'),
+                'Product Origin Country Code'          => $part->get('Part Origin Country Code'),
+                'Product UN Number'                    => $part->get('Part UN Number'),
+                'Product UN Class'                     => $part->get('Part UN Class'),
+                'Product Packing Group'                => $part->get('Part Packing Group'),
+                'Product Proper Shipping Name'         => $part->get('Part Proper Shipping Name'),
+                'Product Hazard Identification Number' => $part->get('Part Hazard Identification Number'),
+                'Product Unit Weight'                  => $part->get('Part Unit Weight'),
+                'Product Unit Dimensions'              => $part->get('Part Unit Dimensions'),
+                'Product Materials'                    => $part->data['Part Materials'],
+                'Product Barcode Number'               => $part->data['Part Barcode Number'],
+                'Product Barcode Key'                  => $part->data['Part Barcode Key'],
 
-                               ));
+            ));
 
-            if($this->get('Product Materials')!=''){
-
+            if ($this->get('Product Materials') != '') {
                 $this->fast_update(array('Product Unit XHTML Materials' => $this->get('Materials')));
-            }else{
+            } else {
                 $this->fast_update(array('Product Unit XHTML Materials' => ''));
             }
 
@@ -4153,7 +4142,7 @@ class Product extends Asset
             DNS_ACCOUNT_CODE
         );
 
-        $this->update_aiku($this->get_table_name(), 'parts');
+        $this->process_aiku_fetch('Product', $this->id, 'parts');
     }
 
 
@@ -4197,8 +4186,8 @@ class Product extends Asset
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute(array(
-                           $this->id
-                       ));
+            $this->id
+        ));
         while ($row = $stmt->fetch()) {
             if (is_numeric($row['Part Package Weight']) and $row['Part Package Weight'] > 0) {
                 $weight += $row['Part Package Weight'] * $row['Product Part Ratio'];
@@ -4206,10 +4195,10 @@ class Product extends Asset
         }
 
         $this->fast_update(array(
-                               'Product Package Weight' => $weight,
+            'Product Package Weight' => $weight,
 
 
-                           ));
+        ));
 
         if ($old_weight != $weight) {
             $this->update_updated_markers('Data');
@@ -4248,10 +4237,10 @@ class Product extends Asset
 
 
         $this->fast_update(array(
-                               'Product Number of Parts' => $number_parts,
+            'Product Number of Parts' => $number_parts,
 
 
-                           ));
+        ));
     }
 
     function get_category_data()
@@ -4274,8 +4263,8 @@ class Product extends Asset
 
                 $stmt2 = $this->db->prepare($sql);
                 $stmt2->execute(array(
-                                    $row['Category Root Key']
-                                ));
+                    $row['Category Root Key']
+                ));
                 if ($row2 = $stmt2->fetch()) {
                     $root_label = $row2['Category Label'];
                     $root_code  = $row2['Category Code'];
@@ -4323,8 +4312,8 @@ class Product extends Asset
         }
 
         $this->fast_update([
-                               'Product Cost' => $cost
-                           ]);
+            'Product Cost' => $cost
+        ]);
     }
 
     function get_deal_components($scope = 'keys', $options = 'Active')
@@ -4744,8 +4733,8 @@ class Product extends Asset
                                     from `Product History Dimension` where `Product ID`=?";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(array(
-                                   $this->id
-                               ));
+                    $this->id
+                ));
                 while ($row = $stmt->fetch()) {
                     $product_historic_data[] = $row;
                 }
@@ -4760,8 +4749,8 @@ class Product extends Asset
                 $sql  = "select * from `Product Part Bridge` where `Product Part Product ID`=?";
                 $stmt = $this->db->prepare($sql);
                 $stmt->execute(array(
-                                   $this->id
-                               ));
+                    $this->id
+                ));
                 while ($row = $stmt->fetch()) {
                     $parts[] = $row;
                 }

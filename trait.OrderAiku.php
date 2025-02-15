@@ -8,13 +8,14 @@
 trait OrderAiku
 {
 
-    public function model_updated($table, $field, $key)
+    public function model_updated($field, $key)
     {
         $this->process_aiku_fetch(
             'Order',
             $key,
             $field,
             [
+                'refresh_basket',
                 'Order For Collection',
                 'Order Email',
                 'Order Telephone',

@@ -1385,7 +1385,7 @@ class Invoice extends DB_Table
             );
 
             $this->fork_index_elastic_search();
-            $this->model_updated(null,'new',$this->id);
+            $this->model_updated('new',$this->id);
         }
     }
 
@@ -2310,7 +2310,7 @@ FROM `Order Transaction Fact` O  left join `Product History Dimension` PH on (O.
             ),
             $account->get('Account Code')
         );
-        $this->model_updated(null,'deleted',$this->id);
+        $this->model_updated('deleted',$this->id);
 
         if ($order->id) {
             return sprintf('/orders/%d/%d', $store_key, $order->id);

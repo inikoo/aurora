@@ -2092,7 +2092,7 @@ class Order extends DB_Table
         );
 
 
-        $this->model_updated(null, 'Order State', $this->id);
+        $this->model_updated( 'Order State', $this->id);
 
         if ($this->data['Order State'] != 'Cancelled') {
             new_housekeeping_fork(

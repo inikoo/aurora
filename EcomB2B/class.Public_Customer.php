@@ -212,7 +212,7 @@ class Public_Customer extends DBW_Table {
 
             $this->new = true;
             $this->fork_index_elastic_search();
-            $this->model_updated(null,'new',$this->id);
+            $this->model_updated('new',$this->id);
 
         } else {
             $this->error = true;
@@ -1024,7 +1024,7 @@ class Public_Customer extends DBW_Table {
             );
         }
 
-        $this->update_aiku('Customer Dimension', 'tax_number_validation');
+        $this->model_updated( 'tax_number_validation',$this->id);
 
     }
 

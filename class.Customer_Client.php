@@ -149,7 +149,7 @@ class Customer_Client extends Subject
             );
 
             $this->new = true;
-            $this->model_updated(null,'new',$this->id);
+            $this->model_updated('new',$this->id);
         } else {
             $this->error = true;
             print_r($stmt->errorInfo());
