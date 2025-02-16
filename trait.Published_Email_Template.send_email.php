@@ -13,7 +13,6 @@
 
 use Aws\Ses\SesClient;
 use Aws\Exception\AwsException;
-include_once 'trait.Aiku.php';
 
 
 trait Send_Email
