@@ -70,7 +70,6 @@ function fork_aiku_fetch($job): bool
     $url = AIKU_API_URL.$aiku_organisation_slug.'/'.$path.'?'.getParameters($fetchData);
 
 
-
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
@@ -91,7 +90,15 @@ function fork_aiku_fetch($job): bool
     $response = curl_exec($curl);
 
     curl_close($curl);
-    print_r(json_decode($response, true));
+
+    $res = json_decode($response, true);
+
+    if ($res and isset($res['class']) and !in_array($res['class'], [
+            'FetchAuroraEmailTrackingEvents',
+            'FetchAuroraOrders'
+        ])) {
+        print_r($res);
+    }
 
     return true;
 }
