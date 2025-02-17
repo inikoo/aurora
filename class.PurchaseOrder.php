@@ -2,10 +2,12 @@
 
 include_once 'class.DB_Table.php';
 include_once 'trait.NotesSubject.php';
+include_once 'trait.PurchaseOrderAiku.php';
 
 
 class PurchaseOrder extends DB_Table {
     use  NotesSubject;
+    use PurchaseOrderAiku;
 
     public $table_name = 'Purchase Order';
 

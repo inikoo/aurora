@@ -114,7 +114,15 @@ function getParameters($data): string
         $parameters['with'] = 'full';
     }
 
+    if ($data['model'] == 'SupplierDelivery') {
+        $parameters['with'] = 'transactions';
+    }
+
     if ($data['model'] == 'DeliveryNote') {
+        $parameters['with'] = 'transactions';
+    }
+
+    if ($data['model'] == 'PurchaseOrder') {
         $parameters['with'] = 'transactions';
     }
 
@@ -134,6 +142,7 @@ function getPath($data): ?string
         case 'Stock':
         case 'Product':
         case 'Payment':
+        case 'Supplier':
             return strtolower($data['model']);
         case 'DeliveryNote':
             return 'delivery-note';
@@ -146,6 +155,10 @@ function getPath($data): ?string
             return 'email-tracking-event';
         case 'OrgStockMovement':
             return 'org-stock-movement';
+        case 'SupplierDelivery':
+            return 'stock-delivery';
+        case 'PurchaseOrder':
+            return 'purchase-order';
         default:
             return null;
     }
