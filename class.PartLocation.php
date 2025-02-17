@@ -271,6 +271,8 @@ class PartLocation extends DB_Table
 
         $this->db->exec($sql);
         $associate_transaction_key = $this->db->lastInsertId();
+        $this->process_aiku_fetch('OrgStockMovement',$associate_transaction_key);
+
 
 
         $audit_key = $this->audit(0, _('Part associated with location'), $base_data['date'], $include_current = false, $parent = 'associate');
@@ -452,6 +454,8 @@ class PartLocation extends DB_Table
 
 
             $this->db->exec($sql);
+            $leakage_transaction_key = $this->db->lastInsertId();
+            $this->process_aiku_fetch('OrgStockMovement',$leakage_transaction_key);
 
 
             if ($qty_change != 0 and $this->location_key != $warehouse->get('Warehouse Unknown Location Key')) {
@@ -486,7 +490,8 @@ class PartLocation extends DB_Table
                     prepare_mysql($audit_key)
                 );
                 $this->db->exec($sql);
-
+                $leakage_detail_key = $this->db->lastInsertId();
+                $this->process_aiku_fetch('OrgStockMovement',$leakage_detail_key);
 
                 $part_unk_location->update_stock(true);
                 $this->part->update_unknown_location();
@@ -1012,6 +1017,8 @@ class PartLocation extends DB_Table
 
         $this->db->exec($sql);
         $disassociate_transaction_key = $this->db->lastInsertId();
+        $this->process_aiku_fetch('OrgStockMovement',$disassociate_transaction_key);
+
 
         $this->deleted     = true;
         $this->deleted_msg = _('Part no longer associated with location');
@@ -1253,7 +1260,7 @@ class PartLocation extends DB_Table
 
         $this->db->exec($sql);
         $transaction_id = $this->db->lastInsertId();
-
+        $this->process_aiku_fetch('OrgStockMovement',$transaction_id);
 
         $this->part->update_stock();
 
