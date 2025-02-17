@@ -14,8 +14,13 @@ trait Aiku
     }
 
 
-    public function process_aiku_fetch(string $model, int $key, ?string $field = null, ?array $valid_fields = null)
+    public function process_aiku_fetch(string $model, ?int $key, ?string $field = null, ?array $valid_fields = null)
     {
+
+        if(!$key){
+            return;
+        }
+
         if (is_null($valid_fields) or is_null($field) or in_array($field, $valid_fields)) {
             include_once 'utils/new_fork.php';
             new_housekeeping_fork(
