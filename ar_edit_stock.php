@@ -1403,7 +1403,7 @@ function set_as_picking_location($account, $db, $user, $editor, $data, $smarty) 
 
     }
 
-    $part->process_aiku_fetch('Part', $part->sku);
+    $part->process_aiku_fetch('Part', $part->id);
 
 
     echo json_encode($response);
