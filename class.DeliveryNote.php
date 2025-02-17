@@ -1946,6 +1946,8 @@ class DeliveryNote extends DB_Table
                         );
                         $this->db->exec($sql);
 
+                        $this->process_aiku_fetch('OrgStockMovement',$row['Inventory Transaction Key']);
+
 
                         //print "$sql\n";
 
@@ -2011,6 +2013,10 @@ class DeliveryNote extends DB_Table
                         // print "$sql\n";
 
                         $this->db->exec($sql);
+                        $itf_new_key = $this->db->lastInsertId();
+                        if($itf_new_key){
+                            $this->process_aiku_fetch('OrgStockMovement',$itf_new_key);
+                        }
 
 
                         $returned_part_locations[] = $row['Part SKU'].'_'.$row['Location Key'];
