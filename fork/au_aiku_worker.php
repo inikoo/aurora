@@ -144,6 +144,8 @@ function getPath($data): ?string
             return 'dispatched-email';
         case 'EmailTrackingEvent':
             return 'email-tracking-event';
+        case 'OrgStockMovement':
+            return 'org-stock-movement';
         default:
             return null;
     }
