@@ -1621,6 +1621,8 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
                 'UPDATE `Inventory Transaction Fact` SET `Inventory Transaction Amount`=%.2f WHERE `Inventory Transaction Key`=%d ', $amount, $row['Inventory Transaction Key']
             );
 
+            $itf_key=$row['Inventory Transaction Key'];
+
             $db->exec($sql);
             $part = get_object('Part', $row['Part SKU']);
 
@@ -1649,6 +1651,9 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
 
                 )
             );
+            stand_alone_process_aiku_fetch('OrgStockMovement',$itf_key);
+
+
             echo json_encode($response);
 
 

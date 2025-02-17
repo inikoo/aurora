@@ -2169,6 +2169,7 @@ class SupplierDelivery extends DB_Table {
                                         );
                                         $this->db->exec($sql);
 
+                                        $this->process_aiku_fetch('OrgStockMovement',$placement_data['oif_key']);
 
                                     }
 
