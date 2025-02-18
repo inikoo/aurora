@@ -13,11 +13,13 @@
 include_once 'class.DB_Table.php';
 include_once 'class.Part.php';
 include_once 'trait.NotesSubject.php';
-
 include_once 'utils/natural_language.php';
+include_once 'trait.NotesSubject.php';
+include_once 'trait.SupplierPartAiku.php';
 
 class SupplierPart extends DB_Table {
     use NotesSubject;
+    use SupplierPartAiku;
 
     /**
      * @var \Part
@@ -251,7 +253,7 @@ class SupplierPart extends DB_Table {
                 $history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id
             );
             $this->fork_index_elastic_search();
-
+            $this->model_updated( 'new', $this->id);
 
             return;
         } else {
