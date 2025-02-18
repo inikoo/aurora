@@ -158,11 +158,12 @@ function getPath($data): ?string
         case 'Product':
         case 'Payment':
         case 'Supplier':
+        case 'Timesheet':
             return strtolower($data['model']);
         case 'DeliveryNote':
             return 'delivery-note';
         case 'Staff':
-            return 'order';
+            return 'employee';
         case 'DispatchedEmailWithFull':
         case 'DispatchedEmail':
             return 'dispatched-email';
