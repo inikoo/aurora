@@ -133,6 +133,14 @@ function getParameters($data): string
         $parameters['with'] = 'transactions';
     }
 
+    if ($data['model'] == 'EmailTrackingEvent') {
+        $parameters['delay'] = 60;
+    }
+
+    if ($data['model'] == 'SupplierPart') {
+        $parameters['delay'] = 120;
+    }
+
 
     return http_build_query($parameters);
 }
@@ -166,6 +174,8 @@ function getPath($data): ?string
             return 'stock-delivery';
         case 'PurchaseOrder':
             return 'purchase-order';
+        case 'SupplierPart':
+            return 'supplier-product';
         default:
             return null;
     }

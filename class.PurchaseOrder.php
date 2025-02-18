@@ -153,6 +153,7 @@ class PurchaseOrder extends DB_Table {
             $this->new = true;
 
             $parent->update_purchase_orders();
+            $this->model_updated( 'new', $this->id);
 
 
         }

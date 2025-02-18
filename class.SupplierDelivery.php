@@ -216,6 +216,7 @@ class SupplierDelivery extends DB_Table {
                 $parent->update_purchase_orders();
             }
 
+            $this->model_updated( 'new', $this->id);
 
         } else {
             print_r($stmt->errorInfo());
