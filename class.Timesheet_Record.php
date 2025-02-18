@@ -10,9 +10,9 @@
 
  Version 2.0
 */
-
+include_once 'trait.TimesheetRecordAiku.php';
 class Timesheet_Record extends DB_Table {
-
+    use TimesheetRecordAiku;
     /**
      * @var \PDO
      */
@@ -95,6 +95,8 @@ class Timesheet_Record extends DB_Table {
                 );
 
             }
+
+            $this->model_updated( 'new', $this->id);
 
         } else {
             $this->error = true;

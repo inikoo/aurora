@@ -19,6 +19,7 @@ use libphonenumber\PhoneNumberFormat;
 require_once 'class.User.php';
 require_once 'trait.AttachmentSubject.php';
 require_once 'trait.ImageSubject.php';
+require_once 'trait.StaffAiku.php';
 
 class Staff extends DB_Table
 {
@@ -30,7 +31,7 @@ class Staff extends DB_Table
 
     use AttachmentSubject;
     use ImageSubject;
-
+    use StaffAiku;
     function __construct($arg1 = false, $arg2 = false, $arg3 = false)
     {
         global $db;
@@ -317,6 +318,8 @@ class Staff extends DB_Table
                 }
                 $staff_user->editor = $data['editor'];
             }
+
+            $this->model_updated( 'new', $this->id);
         } else {
             $this->error = true;
             $this->msg   = 'Error inserting staff record';

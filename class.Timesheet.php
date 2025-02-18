@@ -11,9 +11,11 @@
  Version 2.0
 */
 
+include_once 'class.DB_Table.php';
+include_once 'trait.TimesheetAiku.php';
 
 class Timesheet extends DB_Table {
-
+    use TimesheetAiku;
 
     function __construct($arg1 = false, $arg2 = false, $arg3 = false) {
         global $db;
@@ -147,6 +149,7 @@ class Timesheet extends DB_Table {
 
             $this->id  = $this->db->lastInsertId();
             $this->new = true;
+            $this->model_updated( 'new', $this->id);
 
             $this->get_data('id', $this->id);
         } else {
@@ -190,6 +193,8 @@ class Timesheet extends DB_Table {
 
 
         }
+
+        $this->model_updated( 'new', $this->id);
 
         return $timesheet_record;
 
@@ -312,6 +317,7 @@ class Timesheet extends DB_Table {
             array('Timesheet Missing Clocking Records' => $missing_records), 'no_history'
         );
 
+        $this->model_updated( 'new', $this->id);
     }
 
     function update_clocked_time() {
@@ -402,7 +408,7 @@ class Timesheet extends DB_Table {
 
                 break;
         }
-
+        $this->model_updated( 'new', $this->id);
     }
 
     function get($key = '') {
@@ -609,6 +615,7 @@ class Timesheet extends DB_Table {
                 break;
         }
 
+        $this->model_updated( 'new', $this->id);
 
     }
 
