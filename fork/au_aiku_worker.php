@@ -134,7 +134,7 @@ function getParameters($data): string
     }
 
     if ($data['model'] == 'EmailTrackingEvent') {
-        $parameters['delay'] = 60;
+        $parameters['delay'] = 5;
     }
 
     if ($data['model'] == 'SupplierPart') {
