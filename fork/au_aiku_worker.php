@@ -108,7 +108,7 @@ function getParameters($data): string
 {
     $parameters = [
         'id' => $data['model_id'],
-        'bg' => true
+        'bg' => false
     ];
 
     if ($data['model'] == 'Order') {
@@ -139,6 +139,7 @@ function getParameters($data): string
 
     if ($data['model'] == 'SupplierPart') {
         $parameters['delay'] = 120;
+        $parameters['bg']    = true;
     }
 
 
