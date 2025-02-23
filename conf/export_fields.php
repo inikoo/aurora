@@ -1506,7 +1506,7 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'checked' => 1
             ),
             array(
-                'name'    => '`Category Status`',
+                'name'    => '`Part Category Status`',
                 'label'   => _('Status'),
                 'checked' => 1
             ),
