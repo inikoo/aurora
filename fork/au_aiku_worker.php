@@ -112,13 +112,20 @@ function getParameters($data): string
 {
     $parameters = [
         'id' => $data['model_id'],
-        'bg' => false
+        'bg' => true
     ];
 
     if ($data['model'] == 'Order') {
         $parameters['with'] = 'transactions,payments';
+        $parameters['delay'] = 10;
     }
+
+    if ($data['model'] == 'Customer') {
+        $parameters['delay'] = 2;
+    }
+
     if ($data['model'] == 'Invoice') {
+        $parameters['bg']    = false;
         $parameters['with'] = 'transactions,payments';
     }
     if ($data['model'] == 'DispatchedEmailWithFull') {
@@ -131,10 +138,13 @@ function getParameters($data): string
 
     if ($data['model'] == 'DeliveryNote') {
         $parameters['with'] = 'transactions';
+        $parameters['delay'] = 10;
     }
 
     if ($data['model'] == 'PurchaseOrder') {
         $parameters['with'] = 'transactions';
+        $parameters['delay'] = 5;
+
     }
 
     if ($data['model'] == 'EmailTrackingEvent') {
@@ -143,7 +153,7 @@ function getParameters($data): string
 
     if ($data['model'] == 'SupplierPart') {
         $parameters['delay'] = 120;
-        $parameters['bg']    = true;
+
     }
 
     if ($data['model'] == 'DeleteFavourite') {
