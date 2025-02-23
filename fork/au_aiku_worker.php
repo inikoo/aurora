@@ -97,13 +97,12 @@ function fork_aiku_fetch($job): bool
     curl_close($curl);
 
     $res = json_decode($response, true);
-    print_r($res);
-//    if ($res and isset($res['class']) and !in_array($res['class'], [
-//            'FetchAuroraEmailTrackingEvents',
-//            'FetchAuroraOrders'
-//        ])) {
-//        print_r($res);
-//    }
+    if ($res and isset($res['model']) and !in_array($res['model'], [
+            'EmailTrackingEvent',
+            'Order'
+        ])) {
+        print_r($res);
+    }
 
     return true;
 }
