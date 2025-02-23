@@ -101,7 +101,7 @@ function update_favourite($data, $customer, $editor, $db)
         );
         $db->exec($sql);
         $favourite_key = $db->lastInsertId();
-        stand_alone_process_aiku_fetch('Favourite', $data['favourite_key']);
+        stand_alone_process_aiku_fetch('Favourite', $favourite_key);
 
 
         if (!$favourite_key) {
