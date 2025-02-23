@@ -11,6 +11,7 @@
 */
 
 include_once 'ar_web_common_logged_in.php';
+require_once 'utils/aiku_stand_alone_process_aiku_fetch.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -24,15 +25,15 @@ if (!isset($_REQUEST['tipo'])) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
-
     case 'get_favourites_html':
         $data = prepare_values(
-            $_REQUEST, array(
-                         'device_prefix' => array(
-                             'type'     => 'string',
-                             'optional' => true
-                         )
-                     )
+            $_REQUEST,
+            array(
+                'device_prefix' => array(
+                    'type'     => 'string',
+                    'optional' => true
+                )
+            )
         );
 
         get_favourites_html($data, $customer, $db);
@@ -43,18 +44,18 @@ switch ($tipo) {
 
     case 'update_favourite':
         $data = prepare_values(
-            $_REQUEST, array(
-                         'pid'           => array('type' => 'key'),
-                         'favourite_key' => array('type' => 'numeric'),
+            $_REQUEST,
+            array(
+                'pid'           => array('type' => 'key'),
+                'favourite_key' => array('type' => 'numeric'),
 
-                     )
+            )
         );
 
         update_favourite($data, $customer, $editor, $db);
 
 
         break;
-
 }
 
 /**
@@ -63,13 +64,11 @@ switch ($tipo) {
  * @param $editor
  * @param $db \PDO
  */
-function update_favourite($data, $customer, $editor, $db) {
-
-
+function update_favourite($data, $customer, $editor, $db)
+{
     $customer->editor = $editor;
 
     if ($data['favourite_key']) {
-
         $sql = sprintf('DELETE FROM `Customer Favourite Product Fact` WHERE `Customer Favourite Product Key`=%d ', $data['favourite_key']);
 
 
@@ -77,28 +76,41 @@ function update_favourite($data, $customer, $editor, $db) {
 
         $favourite_key = 0;
         $pid           = $data['pid'];
-
+        stand_alone_process_aiku_fetch(
+            'DeleteFavourite',
+            $data['favourite_key'],
+            null,
+            null,
+            [
+                'unfavourited_at'=>gmdate('Y-m-d H:i:s')
+            ]
+        );
     } else {
-
         $product = get_object('Product', $data['pid']);
         $sql     = sprintf(
             'INSERT INTO  `Customer Favourite Product Fact` (`Customer Favourite Product Customer Key`,`Customer Favourite Product Product ID`,`Customer Favourite Product Store Key`,`Customer Favourite Product Creation Date`) VALUES
 		(%d,%d,%d,%s) ON DUPLICATE KEY UPDATE `Customer Favourite Product Store Key`=%d
-		', $customer->id, $product->id, $product->data['Product Store Key'],
+		',
+            $customer->id,
+            $product->id,
+            $product->data['Product Store Key'],
 
-            prepare_mysql(gmdate('Y-m-d H:i:s')), $product->data['Product Store Key']
+            prepare_mysql(gmdate('Y-m-d H:i:s')),
+            $product->data['Product Store Key']
 
         );
         $db->exec($sql);
         $favourite_key = $db->lastInsertId();
-        if(!$favourite_key){
+        stand_alone_process_aiku_fetch('Favourite', $data['favourite_key']);
+
+
+        if (!$favourite_key) {
             throw new Exception('Error inserting Customer Favourite Product Fact');
         }
-        $pid           = $product->id;
-
+        $pid = $product->id;
     }
 
-    $customer->fork_index_elastic_search('create_elastic_index_object',['favourites']);
+    $customer->fork_index_elastic_search('create_elastic_index_object', ['favourites']);
 
     $response = array(
         'state'         => 200,
@@ -106,14 +118,11 @@ function update_favourite($data, $customer, $editor, $db) {
         'pid'           => $pid
     );
     echo json_encode($response);
-
-
 }
 
-function get_favourites_html($data, $customer, $db) {
-
-
-    $smarty = new Smarty();
+function get_favourites_html($data, $customer, $db)
+{
+    $smarty               = new Smarty();
     $smarty->caching_type = 'redis';
     $smarty->setTemplateDir('templates');
     $smarty->setCompileDir('server_files/smarty/templates_c');
@@ -177,7 +186,6 @@ function get_favourites_html($data, $customer, $db) {
 
     if ($result = $db->query($sql)) {
         foreach ($result as $row) {
-
             $product = get_object('Product', $row['Customer Favourite Product Product ID']);
 
             $product->load_webpage();
@@ -222,7 +230,6 @@ function get_favourites_html($data, $customer, $db) {
 
 
     echo json_encode($response);
-
 }
 
 

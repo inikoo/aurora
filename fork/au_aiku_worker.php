@@ -142,10 +142,13 @@ function getParameters($data): string
         $parameters['bg']    = true;
     }
 
+    if ($data['model'] == 'DeleteFavourite') {
+        $parameters['unfavourited_at']    = $data['unfavourited_at'];
+    }
+
 
     return http_build_query($parameters);
 }
-
 
 function getPath($data): ?string
 {
@@ -160,9 +163,12 @@ function getPath($data): ?string
         case 'Payment':
         case 'Supplier':
         case 'Timesheet':
+        case 'Favourite':
             return strtolower($data['model']);
         case 'DeliveryNote':
             return 'delivery-note';
+        case 'DeleteFavourite':
+            return 'delete-favourite';
         case 'Staff':
             return 'employee';
         case 'DispatchedEmailWithFull':
