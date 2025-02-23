@@ -157,13 +157,16 @@ function fork_export($job)
     $sql_data = strtr($sql_data, $placeholders);
 
 
-    //print $sql_data."\n";
+    print $sql_data."\n";
 
     $show_feedback = microtime(true) + .250;
 
 
     if ($result = $db->query($sql_data)) {
         foreach ($result as $row) {
+
+            print_r($row);
+
             if ($row_index == 1) {
                 $char_index = 1;
 
