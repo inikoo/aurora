@@ -58,6 +58,11 @@ function fork_aiku_fetch($job): bool
     $account                = $_data[0];
     $aiku_organisation_slug = getAikuOrganisation($account->get('Account Code'));
 
+
+    if($aiku_organisation_slug=='indo'){
+        return true;
+    }
+
     $fetchData = $_data[2];
 
 
