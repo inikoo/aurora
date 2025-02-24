@@ -101,6 +101,9 @@ function fork_aiku_fetch($job): bool
             'EmailTrackingEvent',
             'Order'
         ])) {
+
+        print '>> '.$url." <<\n||";
+
         print_r($res);
     }
 
