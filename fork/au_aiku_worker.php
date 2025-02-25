@@ -38,7 +38,7 @@ $account = false;
 $count=0;
 
 while ($worker->work()) {
-    if ($count>1000 and $worker->returnCode() == GEARMAN_SUCCESS) {
+    if ( $worker->returnCode() == GEARMAN_SUCCESS) {
         $db = null;
         exec("kill -9 ".getmypid());
         die();
