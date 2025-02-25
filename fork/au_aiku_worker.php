@@ -35,12 +35,15 @@ $worker->addFunction("au_aiku", "fork_aiku_fetch");
 $db      = false;
 $account = false;
 
+$count=0;
+
 while ($worker->work()) {
-    if ($worker->returnCode() == GEARMAN_SUCCESS) {
+    if ($count>1000 and $worker->returnCode() == GEARMAN_SUCCESS) {
         $db = null;
         exec("kill -9 ".getmypid());
         die();
     }
+    $count++;
 }
 
 
