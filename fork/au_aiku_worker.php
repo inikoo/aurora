@@ -13,12 +13,9 @@ include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';
 include 'utils/natural_language.php';
-include 'slow_low_priority.fork.php';
 
-include 'asset_sales.fork.php';
 
 include_once 'utils/object_functions.php';
-include_once 'utils/new_fork.php';
 
 
 include_once 'keyring/au_deploy_conf.php';
@@ -49,7 +46,7 @@ while ($worker->work()) {
 
 function fork_aiku_fetch($job): bool
 {
-    if (!$_data = get_fork_metadata($job)) {
+    if (!$_data = get_fork_metadata_v2($job)) {
         return true;
     }
 

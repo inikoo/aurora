@@ -197,4 +197,71 @@ function get_fork_data($job) {
 }
 
 
+function get_fork_metadata_v2($job) {
+
+
+    $editor = array(
+        'Author Type'  => '',
+        'Author Key'   => '',
+        'User Key'     => 0,
+        'Date'         => gmdate('Y-m-d H:i:s'),
+        'Subject'      => 'System',
+        'Subject Key'  => 0,
+        'Author Name'  => 'Fork',
+        'Author Alias' => 'Fork',
+    );
+
+
+    $fork_raw_data = $job->workload();
+    $fork_metadata = json_decode($fork_raw_data, true);
+
+
+    $inikoo_account_code = $fork_metadata['code'];
+    if (!ctype_alnum($inikoo_account_code)) {
+        print "can't find account code ***  ->".$inikoo_account_code."<-  \n";
+        print_r($fork_metadata);
+
+        return false;
+    }
+
+    include __DIR__."/keyring/dns.$inikoo_account_code.php";
+    include __DIR__."/keyring/key.$inikoo_account_code.php";
+
+
+    if (defined('SENTRY_DNS_FORK')) {
+        Sentry\init(['dsn' => SENTRY_DNS_FORK]);
+    }
+
+
+    /**
+     * @var string $dns_host
+     * @var string $dns_db
+     * @var string $dns_user
+     * @var string $dns_pwd
+     * @var string $dns_port
+     */
+
+    $db = new PDO(
+        "mysql:host=$dns_host;port=$dns_port;dbname=$dns_db;charset=utf8mb4", $dns_user, $dns_pwd
+    );
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+
+    $account = new Account($db);
+
+    if (!date_default_timezone_set($account->get('Account Timezone'))) {
+        date_default_timezone_set('UTC');
+    }
+
+
+
+    return array(
+        $account,
+        $db,
+        $fork_metadata['data'],
+        $editor,
+    );
+
+
+}
 
