@@ -102,7 +102,7 @@ function fork_aiku_fetch($job): bool
             'Order'
         ])) {
 
-        print '>> '.$url." <<\n||";
+        //print '>> '.$url." <<\n||";
 
         print_r($res);
     }
