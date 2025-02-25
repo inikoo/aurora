@@ -12,7 +12,7 @@ function fork_elastic($job)
 {
     global $account, $db;// remove the global $db and $account is removed
 
-    if (!$_data = get_fork_metadata($job)) {
+    if (!$_data = get_fork_metadata_for_es($job)) {
         return true;
     }
 

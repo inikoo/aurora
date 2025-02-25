@@ -31,12 +31,13 @@ $worker->addFunction("au_elastic", "fork_elastic");
 
 $db      = false;
 $account = false;
-
+$count=0;
 while ($worker->work()) {
-    if ($worker->returnCode() == GEARMAN_SUCCESS) {
+    if ($count>200 and $worker->returnCode() == GEARMAN_SUCCESS) {
         $db = null;
         exec("kill -9 ".getmypid());
         die();
     }
+    $count++;
 }
 
