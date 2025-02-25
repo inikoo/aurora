@@ -19,7 +19,6 @@ include_once 'utils/object_functions.php';
 include 'utils/aes.php';
 include 'utils/general_functions.php';
 include 'utils/system_functions.php';
-
 include 'utils/natural_language.php';
 
 include 'web_analytics.fork.php';
@@ -38,12 +37,13 @@ $worker->addFunction("au_web_analytics", "fork_web_analytics");
 
 $db      = false;
 $account = false;
-
+$count=0;
 while ($worker->work()) {
-    if ($worker->returnCode() == GEARMAN_SUCCESS) {
+    if ($count>200 and $worker->returnCode() == GEARMAN_SUCCESS) {
         $db = null;
         exec("kill -9 ".getmypid());
         die();
     }
+    $count++;
 }
 

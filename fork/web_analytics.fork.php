@@ -16,11 +16,11 @@ function fork_web_analytics($job): bool {
 
     global $account, $db;// remove the global $db and $account is removed
 
-    if (!$_data = get_fork_metadata($job)) {
+    if (!$_data = get_fork_metadata_v2($job)) {
         return true;
     }
 
-    list($account, $db, $data, $editor, $ES_hosts) = $_data;
+    list($account, $db, $data, $editor) = $_data;
 
 
 
