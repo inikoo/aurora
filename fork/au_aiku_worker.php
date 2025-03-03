@@ -129,13 +129,13 @@ function getParameters($data): string
 
     if ($data['model'] == 'Invoice') {
         $parameters['bg']    = true;
-        $parameters['delay'] = 5;
+        $parameters['delay'] = 15;
         $parameters['with'] = 'transactions,payments';
     }
 
     if ($data['model'] == 'DeleteInvoice') {
         $parameters['bg']    = true;
-        $parameters['delay'] = 20;
+        $parameters['delay'] = 30;
     }
     
     if ($data['model'] == 'DispatchedEmailWithFull') {

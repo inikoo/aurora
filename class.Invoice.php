@@ -577,6 +577,7 @@ class Invoice extends DB_Table
                 $this->db
             );
 
+            $this->model_updated('new',$this->id);
 
             return $this;
         }
@@ -1389,7 +1390,7 @@ class Invoice extends DB_Table
         }
     }
 
-    function categorize($skip_update_sales = false)
+    function categorize($skip_update_sales = false, $fetch_aiku = true)
     {
         $category_key = 0;
 
@@ -1435,6 +1436,11 @@ class Invoice extends DB_Table
                                    )
 
                 );
+
+                if($fetch_aiku){
+                    $this->model_updated('new',$this->id);
+                }
+
             }
         }
     }
