@@ -140,6 +140,7 @@ function getParameters($data): string
     
     if ($data['model'] == 'DispatchedEmailWithFull') {
         $parameters['with'] = 'full';
+        $parameters['delay'] = 10;
     }
 
     if ($data['model'] == 'SupplierDelivery') {
@@ -158,7 +159,7 @@ function getParameters($data): string
     }
 
     if ($data['model'] == 'EmailTrackingEvent') {
-        $parameters['delay'] = 5;
+        $parameters['delay'] = 15;
     }
 
     if ($data['model'] == 'SupplierPart') {
