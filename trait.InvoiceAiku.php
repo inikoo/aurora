@@ -11,10 +11,13 @@ trait InvoiceAiku
     {
         if ($field == 'deleted') {
             $this->use_field = 'delete_invoice';
+            $model='DeleteInvoice';
+        }else{
+            $model='Invoice';
         }
 
         $this->process_aiku_fetch(
-            'Invoice',
+            $model,
             $key,
             $field,
             [

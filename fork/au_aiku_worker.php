@@ -128,9 +128,16 @@ function getParameters($data): string
     }
 
     if ($data['model'] == 'Invoice') {
-        $parameters['bg']    = false;
+        $parameters['bg']    = true;
+        $parameters['delay'] = 5;
         $parameters['with'] = 'transactions,payments';
     }
+
+    if ($data['model'] == 'DeleteInvoice') {
+        $parameters['bg']    = true;
+        $parameters['delay'] = 20;
+    }
+    
     if ($data['model'] == 'DispatchedEmailWithFull') {
         $parameters['with'] = 'full';
     }
@@ -186,6 +193,8 @@ function getPath($data): ?string
             return 'delivery-note';
         case 'DeleteFavourite':
             return 'delete-favourite';
+        case 'DeleteInvoice':
+            return 'delete-invoice';
         case 'Staff':
             return 'employee';
         case 'DispatchedEmailWithFull':
