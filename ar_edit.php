@@ -4127,7 +4127,7 @@ function transfer_customer_credit_to($account, $db, $data, $editor, $user)
     $payment_data = array(
         'Payment Store Key' => $customer->get('Store Key'),
 
-        'Payment Customer Key'       => $store->id,
+        'Payment Customer Key'       => $customer->id,
         'Payment Transaction Amount' => -$data['amount'],
         'Payment Currency Code'      => $store->get('Store Currency Code'),
 
