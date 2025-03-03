@@ -548,7 +548,7 @@ class Invoice extends DB_Table
                 $this->id
             );
 
-            $this->categorize();
+            $this->categorize(false, false);
 
             new_housekeeping_fork(
                 'au_housekeeping',
@@ -1372,7 +1372,7 @@ class Invoice extends DB_Table
                 $this->id
             );
 
-            $this->categorize(true);
+            $this->categorize(true,false);
 
             new_housekeeping_fork(
                 'au_housekeeping',
