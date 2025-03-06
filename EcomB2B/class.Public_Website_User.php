@@ -12,9 +12,10 @@
 
 
 include_once 'class.DBW_Table.php';
+include_once 'trait.WebsiteUserAiku.php';
 
 class Public_Website_User extends DBW_Table {
-
+    use WebsiteUserAiku;
 
     function __construct($a1 = 'id', $a2 = false, $a3 = false) {
         global $db;
@@ -129,7 +130,7 @@ class Public_Website_User extends DBW_Table {
             $this->add_subject_history($history_data, true, 'No', 'Changes', $this->get_object_name(), $this->id);
 
             $this->msg = 'User added successfully';
-
+            $this->model_updated('new',$this->id);
 
             return $this;
         } else {

@@ -115,7 +115,8 @@ function getParameters($data): string
 {
     $parameters = [
         'id' => $data['model_id'],
-        'bg' => true
+        'bg' => true,
+        'delay' => 5
     ];
 
     if ($data['model'] == 'Order') {
@@ -154,7 +155,7 @@ function getParameters($data): string
 
     if ($data['model'] == 'PurchaseOrder') {
         $parameters['with'] = 'transactions';
-        $parameters['delay'] = 5;
+
 
     }
 
@@ -211,6 +212,8 @@ function getPath($data): ?string
             return 'purchase-order';
         case 'SupplierPart':
             return 'supplier-product';
+        case 'WebsiteUser':
+            return 'web-user';
         default:
             return null;
     }

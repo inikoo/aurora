@@ -12,9 +12,10 @@
 
 
 include_once 'class.DB_Table.php';
-
+include_once 'trait.WebsiteUserAiku.php';
 class Website_User extends DB_Table {
 
+    use WebsiteUserAiku;
 
     function __construct($a1 = 'id', $a2 = false, $a3 = false) {
         global $db;
