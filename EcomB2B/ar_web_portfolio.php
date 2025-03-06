@@ -12,7 +12,7 @@
 include_once 'ar_web_common_logged_in.php';
 require_once 'utils/table_functions.php';
 include_once 'utils/shopify_connect.php';
-
+require_once 'utils/aiku_stand_alone_process_aiku_fetch.php';
 
 if (!isset($_REQUEST['tipo'])) {
     $response = array(
@@ -144,6 +144,10 @@ function update_portfolio_product_reference($data, $db, $customer) {
     shopify_update_portfolio_item($store,$data['customer_portfolio_key'],['product_code'=>$reference]);
 
 
+    stand_alone_process_aiku_fetch(
+        'Portfolio',
+        $data['customer_portfolio_key']
+    );
     echo json_encode(
         array(
             'state'               => 200,
@@ -513,13 +517,20 @@ function add_product_to_portfolio($data, $db, $customer) {
                     'class_html' => []
                 ]
             );
+
+            stand_alone_process_aiku_fetch(
+                'Portfolio',
+                $row['Customer Portfolio Key'],
+            );
+
             echo json_encode($response);
             exit;
 
         }
 
 
-    } else {
+    }
+    else {
         $date = gmdate('Y-m-d H:i:s');
 
         $sql  =
@@ -550,6 +561,11 @@ function add_product_to_portfolio($data, $db, $customer) {
                     $date
 
                 )
+            );
+
+            stand_alone_process_aiku_fetch(
+                'Portfolio',
+                $customer_portfolio_key,
             );
 
 
@@ -645,6 +661,11 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
             'product_id'   => $product->id
 
         ), $account->get('Account Code')
+        );
+
+        stand_alone_process_aiku_fetch(
+            'Portfolio',
+            $row['Customer Portfolio Key']
         );
 
 
@@ -745,7 +766,13 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
                 )
             );
 
-        } else {
+            stand_alone_process_aiku_fetch(
+                'Portfolio',
+                $row2['Customer Portfolio Key']
+            );
+
+        }
+        else {
 
 
             $sql  =
@@ -762,6 +789,12 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
             );
             $customer_portfolio_key = $db->lastInsertId();
             shopify_create_portfolio_item($store,$customer->id, $customer_portfolio_key);
+
+            stand_alone_process_aiku_fetch(
+                'Portfolio',
+                $customer_portfolio_key
+            );
+
 
             if ($customer_portfolio_key) {
                 $sql  = "INSERT INTO `Customer Portfolio Timeline` (`Customer Portfolio Timeline Customer Portfolio Key`,`Customer Portfolio Timeline Action`,`Customer Portfolio Timeline Date`) VALUES (?,?,?)";
