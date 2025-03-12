@@ -32,10 +32,10 @@ $worker->addFunction("au_aiku", "fork_aiku_fetch");
 $db      = false;
 $account = false;
 
-$count=0;
+$count = 0;
 
 while ($worker->work()) {
-    if ($count>200 and  $worker->returnCode() == GEARMAN_SUCCESS) {
+    if ($count > 200 and $worker->returnCode() == GEARMAN_SUCCESS) {
         $db = null;
         exec("kill -9 ".getmypid());
         die();
@@ -59,7 +59,7 @@ function fork_aiku_fetch($job): bool
     $aiku_organisation_slug = getAikuOrganisation($account->get('Account Code'));
 
 
-    if($aiku_organisation_slug=='indo'){
+    if ($aiku_organisation_slug == 'indo') {
         return true;
     }
 
@@ -67,6 +67,11 @@ function fork_aiku_fetch($job): bool
 
 
     $path = getPath($fetchData);
+
+    if ($path == 'dispatched-email' or $path == 'email-tracking-event') {
+        return true;
+    }
+
     if (is_null($path)) {
         print "Invalid model ".$fetchData['model']."  \n";
 
@@ -101,7 +106,6 @@ function fork_aiku_fetch($job): bool
             'EmailTrackingEvent',
             'Order'
         ])) {
-
         //print '>> '.$url." <<\n||";
 
         print_r($res);
@@ -114,13 +118,13 @@ function fork_aiku_fetch($job): bool
 function getParameters($data): string
 {
     $parameters = [
-        'id' => $data['model_id'],
-        'bg' => true,
+        'id'    => $data['model_id'],
+        'bg'    => true,
         'delay' => 5
     ];
 
     if ($data['model'] == 'Order') {
-        $parameters['with'] = 'transactions,payments';
+        $parameters['with']  = 'transactions,payments';
         $parameters['delay'] = 10;
     }
 
@@ -131,16 +135,16 @@ function getParameters($data): string
     if ($data['model'] == 'Invoice') {
         $parameters['bg']    = true;
         $parameters['delay'] = 15;
-        $parameters['with'] = 'transactions,payments';
+        $parameters['with']  = 'transactions,payments';
     }
 
     if ($data['model'] == 'DeleteInvoice') {
         $parameters['bg']    = true;
         $parameters['delay'] = 30;
     }
-    
+
     if ($data['model'] == 'DispatchedEmailWithFull') {
-        $parameters['with'] = 'full';
+        $parameters['with']  = 'full';
         $parameters['delay'] = 10;
     }
 
@@ -149,14 +153,12 @@ function getParameters($data): string
     }
 
     if ($data['model'] == 'DeliveryNote') {
-        $parameters['with'] = 'transactions';
+        $parameters['with']  = 'transactions';
         $parameters['delay'] = 10;
     }
 
     if ($data['model'] == 'PurchaseOrder') {
         $parameters['with'] = 'transactions';
-
-
     }
 
     if ($data['model'] == 'EmailTrackingEvent') {
@@ -165,11 +167,10 @@ function getParameters($data): string
 
     if ($data['model'] == 'SupplierPart') {
         $parameters['delay'] = 120;
-
     }
 
     if ($data['model'] == 'DeleteFavourite') {
-        $parameters['unfavourited_at']    = $data['unfavourited_at'];
+        $parameters['unfavourited_at'] = $data['unfavourited_at'];
     }
 
 
