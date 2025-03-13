@@ -143,7 +143,7 @@ function getParameters($data): string
         $parameters['delay'] = 30;
     }
 
-    if ($data['model'] == 'DeleteDeliveryNote') {
+    if ($data['model'] == 'DeleteDeliveryNote' || $data['model'] == 'DeleteCustomerClient') {
         $parameters['bg']    = true;
         $parameters['delay'] = 10;
     }
@@ -187,6 +187,8 @@ function getPath($data): ?string
     switch ($data['model']) {
         case 'CustomerClient':
             return 'customer-client';
+        case 'DeleteCustomerClient':
+            return 'delete-customer-client';
         case 'Order':
         case 'Invoice':
         case 'Customer':

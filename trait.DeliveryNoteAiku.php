@@ -13,7 +13,7 @@ trait DeliveryNoteAiku
             $this->use_field = 'delete_delivery_note';
             $model='DeleteDeliveryNote';
         }else{
-            $model='DeliveryNote';
+                $model='DeliveryNote';
         }
 
 

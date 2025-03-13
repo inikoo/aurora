@@ -13,11 +13,14 @@ trait CustomerClientAiku
     {
         if ($field == 'deleted') {
             $this->use_field = 'delete_customer_client';
+            $model='DeleteCustomerClient';
+        }else{
+            $model='CustomerClient';
         }
 
 
         $this->process_aiku_fetch(
-            'CustomerClient',
+            $model,
             $key,
             $field,
             [
