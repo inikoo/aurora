@@ -1083,6 +1083,7 @@ class DeliveryNote extends DB_Table
 
 
             $this->update_totals();
+            $this->model_updated('new',$this->id);
         } else {
             exit ("$sql \n Error can not create dn header");
         }
@@ -2117,6 +2118,7 @@ class DeliveryNote extends DB_Table
             'state_index' => $this->get('State Index')
         );
 
+        $this->model_updated('change',$this->id);
         if ($old_state != $this->get('Delivery Note State')) {
             $this->fork_index_elastic_search();
 

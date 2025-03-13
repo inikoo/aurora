@@ -11,16 +11,20 @@ trait DeliveryNoteAiku
     {
         if ($field == 'deleted') {
             $this->use_field = 'delete_delivery_note';
+            $model='DeleteDeliveryNote';
+        }else{
+            $model='DeliveryNote';
         }
 
 
         $this->process_aiku_fetch(
-            'DeliveryNote',
+            $model,
             $key,
             $field,
             [
                 'new',
                 'deleted',
+                'change',
                 'Delivery Note State',
                 'Delivery Note Date',
                 'Delivery Note Weight',

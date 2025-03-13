@@ -143,6 +143,11 @@ function getParameters($data): string
         $parameters['delay'] = 30;
     }
 
+    if ($data['model'] == 'DeleteDeliveryNote') {
+        $parameters['bg']    = true;
+        $parameters['delay'] = 10;
+    }
+
     if ($data['model'] == 'DispatchedEmailWithFull') {
         $parameters['with']  = 'full';
         $parameters['delay'] = 10;
@@ -195,6 +200,8 @@ function getPath($data): ?string
             return strtolower($data['model']);
         case 'DeliveryNote':
             return 'delivery-note';
+        case 'DeleteDeliveryNote':
+            return 'delete-delivery-note';
         case 'DeleteFavourite':
             return 'delete-favourite';
         case 'DeleteInvoice':
