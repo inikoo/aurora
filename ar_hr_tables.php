@@ -519,6 +519,10 @@ function timesheets($_data, $db, $user) {
 
             $alert = ($data['Timesheet Missing Clocking Records'] > 0 ? '<i class="fa fa-exclamation-circle warning"></i>' : '');
 
+            if($data['clocked_in']==$data['clocked_out']){
+                $data['clocked_out']='';
+            }
+
 
             $clocked_in=$data['clocked_in'];
             if($clocked_in){
