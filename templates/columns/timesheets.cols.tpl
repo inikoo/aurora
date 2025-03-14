@@ -145,6 +145,23 @@ headerCell: integerHeaderCell
 },
 
 
+{
+name: "clocked_in",
+label: "{t}In{/t}",
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
+
+{
+name: "clocked_out",
+label: "{t}Out{/t}",
+sortType: "toggle",
+cell: Backgrid.HtmlCell.extend({ className: "aright"} ),
+headerCell: integerHeaderCell
+},
+
 ]
 
 function change_table_view(view,save_state){}

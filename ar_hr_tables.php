@@ -545,7 +545,8 @@ function timesheets($_data, $db, $user) {
                 'unpaid_overtime'    => ($unpaid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>' : '<span class="disabled">-</span>'),
                 'paid_overtime'      => ($paid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>' : '<span class="disabled">-</span>'),
                 'worked_time'        => ($worked_time != 0 ? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>' : '<span class="disabled">-</span>'),
-
+                'clocked_in'=>$data['clocked_in']?strftime('%H:%M',strtotime($data['clocked_in'].' +0:00')):'',
+                'clocked_out'=>$data['clocked_out']?strftime('%H:%M',strtotime($data['clocked_out'].' +0:00')):'',
 
                 'clocking_records' => number(
                     $data['Timesheet Clocking Records']

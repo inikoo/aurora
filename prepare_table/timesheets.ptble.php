@@ -100,6 +100,12 @@ $fields
 `Timesheet Working Time` work_time,
 `Timesheet Breaks Time` breaks,
 `Timesheet Clocked Time` clocked_time,
+(select `Timesheet Record Date` from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=TD.`Timesheet Key` and `Timesheet Record Type`='ClockingRecord' 
+ order by `Timesheet Record Date` limit 1
+ ) as clocked_in,
+ (select `Timesheet Record Date` from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=TD.`Timesheet Key` and `Timesheet Record Type`='ClockingRecord' 
+ order by `Timesheet Record Date` desc limit 1
+ ) as clocked_out,
  
  
  
