@@ -106,6 +106,7 @@ $fields
  (select `Timesheet Record Date` from `Timesheet Record Dimension` where `Timesheet Record Timesheet Key`=TD.`Timesheet Key` and `Timesheet Record Type`='ClockingRecord' 
  order by `Timesheet Record Date` desc limit 1
  ) as clocked_out,
+ `Timesheet Timezone`,
  
  
  

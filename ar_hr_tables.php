@@ -519,6 +519,29 @@ function timesheets($_data, $db, $user) {
 
             $alert = ($data['Timesheet Missing Clocking Records'] > 0 ? '<i class="fa fa-exclamation-circle warning"></i>' : '');
 
+
+            $clocked_in=$data['clocked_in'];
+            if($clocked_in){
+                $_date = new DateTime($clocked_in, new DateTimeZone($data['Timesheet Timezone']));
+
+
+                $clocked_in = sprintf(
+                    '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M:%S %Z", $_date->getTimestamp()), strftime("%H:%M", $_date->getTimestamp())
+                );
+            }
+
+            $clocked_out=$data['clocked_out'];
+            if($clocked_out){
+                $_date = new DateTime($clocked_out, new DateTimeZone($data['Timesheet Timezone']));
+
+
+                $clocked_out = sprintf(
+                    '<span title="%s">%s</span>', strftime("%a %e %b %Y %H:%M:%S %Z", $_date->getTimestamp()), strftime("%H:%M", $_date->getTimestamp())
+                );
+            }
+
+
+
             $adata[] = array(
                 'id'           => (integer)$data['Timesheet Key'],
                 'staff_key'    => (integer)$data['Timesheet Staff Key'],
@@ -545,8 +568,8 @@ function timesheets($_data, $db, $user) {
                 'unpaid_overtime'    => ($unpaid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($unpaid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['unpaid_overtime']).'</span>' : '<span class="disabled">-</span>'),
                 'paid_overtime'      => ($paid_overtime != 0 ? '<span title="'.sprintf("%s %s", number($paid_overtime, 3), _('h')).'">'.seconds_to_hourminutes($data['paid_overtime']).'</span>' : '<span class="disabled">-</span>'),
                 'worked_time'        => ($worked_time != 0 ? '<span title="'.sprintf("%s %s", number($worked_time, 3), _('h')).'">'.seconds_to_hourminutes($data['worked_time']).'</span>' : '<span class="disabled">-</span>'),
-                'clocked_in'=>$data['clocked_in']?strftime('%H:%M',strtotime($data['clocked_in'].' +0:00')):'',
-                'clocked_out'=>$data['clocked_out']?strftime('%H:%M',strtotime($data['clocked_out'].' +0:00')):'',
+                'clocked_in'=>$clocked_in,
+                'clocked_out'=>$clocked_out,
 
                 'clocking_records' => number(
                     $data['Timesheet Clocking Records']
