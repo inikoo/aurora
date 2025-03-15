@@ -152,7 +152,7 @@ trait Send_Email
 
                 $this->error = true;
                 $this->msg   = _('Error, email not send');
-                $this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
+                //$this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
 
                 return false;
             }
@@ -161,7 +161,7 @@ trait Send_Email
         if ($this->store->get('Send Email Address') == '') {
             $this->error = true;
             $this->msg   = 'Sender email address not configured';
-            $this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
+            //$this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
             return false;
         }
 
@@ -324,7 +324,7 @@ trait Send_Email
             if ($request['Message']['Subject']['Data'] == '') {
                 $this->error = true;
                 $this->msg   = _('Empty email subject');
-                $this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
+                //$this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
 
                 return false;
             }
@@ -525,7 +525,7 @@ trait Send_Email
         }
 
 
-        $this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
+       // $this->process_aiku_fetch('DispatchedEmailWithFull',$email_tracking->id);
 
         return $email_tracking;
     }
