@@ -314,6 +314,7 @@ function get_client_basket_html($data, $website, $customer_key, $editor) {
         );
     } else {
         $order = $customer_client->create_order();
+        $order->model_updated('_new',$order->id);
     }
 
 

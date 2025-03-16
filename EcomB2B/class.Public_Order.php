@@ -23,7 +23,7 @@ include_once __DIR__.'/trait.Order_Calculate_Totals.php';
 include_once __DIR__.'/trait.OrderOperations.php';
 include_once __DIR__.'/trait.OrderTax.php';
 include_once __DIR__.'/trait.OrderGet.php';
-include_once __DIR__.'/trait.OrderAiku.php';
+include_once __DIR__.'/trait.PublicOrderAiku.php';
 include_once __DIR__.'/trait.Address.php';
 
 
@@ -31,7 +31,7 @@ include_once 'class.DBW_Table.php';
 
 
 class Public_Order extends DBW_Table {
-    use Address,OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax,OrderGet,OrderAiku;
+    use Address,OrderShippingOperations, OrderChargesOperations, OrderDiscountOperations, OrderItems, OrderPayments, Order_Calculate_Totals, OrderOperations, OrderTax,OrderGet,PublicOrderAiku;
     use ObjectTaxNumberTrait;
 
 
