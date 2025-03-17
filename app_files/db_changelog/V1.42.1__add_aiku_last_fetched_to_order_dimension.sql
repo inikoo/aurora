@@ -1,0 +1,1 @@
+ALTER TABLE `Order Dimension` ADD  last_fetched_at DATETIME NULL DEFAULT NULL , ADD INDEX (last_fetched_at);
