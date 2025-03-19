@@ -302,7 +302,7 @@
         <div class="state" style="height:30px;">
 
 
-            {if $order->get('Order Type')!='FulfilmentRent'}
+
             <div id="back_operations">
 
                 <div id="cancel_operations" class="order_operation {if $order->get('State Index')<0 or  $order->get('State Index')>=40 }hide{/if}">
@@ -364,10 +364,10 @@
                     </div>
                 </div>
             </div>
-            {/if}
+
 
             <span style="float:left;padding-left:10px;padding-top:5px" class="Order_State"> {$order->get('State')} </span>
-            {if $order->get('Order Type')!='FulfilmentRent'}
+
             <div id="forward_operations">
 
 
@@ -545,7 +545,7 @@
                 </div>
 
             </div>
-            {/if}
+
 
 
         </div>
