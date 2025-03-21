@@ -26,7 +26,7 @@
 
             <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                 <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
-                    <img style="max-width: 330px;max-height: 330px"   src="wi.php?id={$data.image.key}&s=800x800'"  itemprop="image" title="{$data.image.caption}" alt="{$data.image.caption}">
+                    <img style="max-width: 330px;max-height: 330px"   src="wi.php?id={$data.image.key}&s=800x800" itemprop="image" title="{$data.image.caption}" alt="{$data.image.caption}">
                 </a>
             </figure>
 
@@ -59,7 +59,7 @@
                 {foreach from=$data.other_images item=image name=foo}
                     <figure style="margin: 0px 5px 5px 5px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                         <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                            <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
+                            <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400" itemprop="thumbnail" alt="{$image.caption}"/>
                         </a>
                     </figure>
                 {/foreach}

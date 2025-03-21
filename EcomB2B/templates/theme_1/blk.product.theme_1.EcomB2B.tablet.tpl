@@ -96,7 +96,7 @@
                         {foreach from=$data.other_images item=image name=foo}
                             <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                                    <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
+                                    <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400" itemprop="thumbnail" alt="{$image.caption}"/>
                                 </a>
                             </figure>
                         {/foreach}

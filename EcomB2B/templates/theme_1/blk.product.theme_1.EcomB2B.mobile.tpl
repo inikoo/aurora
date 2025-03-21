@@ -15,7 +15,7 @@
 <div class="images tw-mb-2">
     <figure class="main_image" style="margin: 0px;padding:0px" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
         <a href="{$data.image.src}" itemprop="contentUrl" data-w="{$data.image.width}" data-h="{$data.image.height}">
-            <img class="tw-h-auto tw-aspect-square tw-w-[90%] tw-mx-auto"  src="wi.php?id={$data.image.key}&s=800x800'" itemprop="image" alt="{$data.image.caption}">
+            <img class="tw-h-auto tw-aspect-square tw-w-[90%] tw-mx-auto"  src="wi.php?id={$data.image.key}&s=800x800" itemprop="image" alt="{$data.image.caption}">
         </a>
     </figure>
 
@@ -79,7 +79,7 @@
         {foreach from=$data.other_images item=image name=foo}
             <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
                 <a href="{$image.src}" itemprop="contentUrl" data-w="{$image.width}" data-h="{$image.height}">
-                    <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400'" itemprop="thumbnail" alt="{$image.caption}"/>
+                    <img style="height: 100px" src="wi.php?id={$image.key}&s=400x400" itemprop="thumbnail" alt="{$image.caption}"/>
                 </a>
             </figure>
         {/foreach}
