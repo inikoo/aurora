@@ -38,13 +38,13 @@ $account = new Account();
 
 //$account->update_orders();
 
-
-$root = get_object('Category', 4);
+// for UK
+$root = get_object('Category', 13879);
 
 
 $data = array(
-    'Category Code'      => 'ankorstore',
-    'Category Label'     => 'ankorstore',
+    'Category Code'      => 'Showroom',
+    'Category Label'     => 'Showroom',
     'Category Scope'     => 'Invoice',
     'Category Subject'   => 'Invoice',
     'editor' => $editor

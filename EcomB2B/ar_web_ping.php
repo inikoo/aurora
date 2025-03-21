@@ -199,13 +199,13 @@ from `Deal Dimension` D left join `Deal Campaign Dimension` C on (C.`Deal Campai
 //            ];
 //        }
 //
-//        if($order->data['Order Store Key'] != 3 and DNS_ACCOUNT_CODE=='ES' and !$first_order_bonus_applicable){
-//                    $is_gold_reward_member = true;
-//                    $gold_reward_member = [
-//                        'label' => '<a href="https://'.$website->get('Website URL').'/gra">'.(!empty($labels['_gra_t1']) ? $labels['_gra_t1'] : 'Gold Reward Amnesty Week').'</a>',
-//                        'until' => (!empty($labels['_gra_t2']) ? $labels['_gra_t2'] : 'GR for all! until').' '.strftime("%a %e %b", strtotime('2025-01-12')),
-//                    ];
-//        }
+        if($order->data['Order Store Key'] != 3 and DNS_ACCOUNT_CODE=='ES' and !$first_order_bonus_applicable){
+                    $is_gold_reward_member = true;
+                    $gold_reward_member = [
+                        'label' => '<a href="https://'.$website->get('Website URL').'/gra">'.(!empty($labels['_gra_t1']) ? $labels['_gra_t1'] : 'Gold Reward Amnesty Week').'</a>',
+                        'until' => (!empty($labels['_gra_t2']) ? $labels['_gra_t2'] : 'GR for all! until').' '.strftime("%a %e %b", strtotime('2025-03-24')),
+                    ];
+        }
 //
 //        if($order->data['Order Store Key'] == 1 and DNS_ACCOUNT_CODE=='AW' and !$first_order_bonus_applicable){
 //            $is_gold_reward_member = true;
