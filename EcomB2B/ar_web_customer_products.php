@@ -355,6 +355,7 @@ function category_products($data, $db, $customer_key, $order)
 //        }
 
 
+
         if ($gr_member and count($families) > 0) {
             $sql = sprintf(
                 "select `Deal Component Trigger Key` from `Deal Component Dimension` where `Deal Component Status`='Active'  and `Deal Component Trigger`='Category' and `Deal Component Trigger Key` in (%s) and `Deal Component Terms Type`='Order Interval'  ",
