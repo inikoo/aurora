@@ -5,6 +5,8 @@ chdir('../');
 /** @var Smarty $smarty */
 /** @var Account $account */
 
+ini_set("pcre.backtrack_limit", "100000000");
+
 require_once 'vendor/autoload.php';
 require_once 'utils/common.pick_aid.php';
 require_once 'common.php';
