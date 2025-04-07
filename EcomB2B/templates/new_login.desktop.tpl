@@ -17,11 +17,11 @@
                 </section>
             </fieldset>
 
-{*            {if !empty($settings.fu_key)}*}
-{*                <footer>*}
-{*                    <div class="cf-turnstile" data-action="reset_password_desktop" data-sitekey="{$settings.fu_key}"></div>*}
-{*                </footer>*}
-{*            {/if}*}
+            {if !empty($settings.fu_key)}
+                <footer>
+                    <div class="cf-turnstile" data-action="reset_password_desktop" data-sitekey="{$settings.fu_key}"></div>
+                </footer>
+            {/if}
 
             <footer>
                 <button id="recovery_button" type="submit" name="submit" class="button">{$data.labels._submit_label} <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
@@ -76,11 +76,11 @@
                     </section>
                 </fieldset>
 
-{*                {if !empty($settings.fu_key)}*}
-{*                    <div class="tw-w-full"  style="margin-bottom: 20px" >*}
-{*                        <div class="cf-turnstile" data-action="login_desktop" data-sitekey="{$settings.fu_key}"></div>*}
-{*                    </div>*}
-{*                {/if}*}
+                {if !empty($settings.fu_key)}
+                    <div class="tw-w-full"  style="margin-bottom: 20px" >
+                        <div class="cf-turnstile" data-action="login_desktop" data-sitekey="{$settings.fu_key}"></div>
+                    </div>
+                {/if}
 
                 <div class="tw-w-full">
                     <button id="login_button" type="submit" class="tw-bg-color1 hover:tw-gray-600 tw-border-none tw-cursor-pointer tw-mb-2.5 tw-text-white tw-block tw-rounded-md tw-w-full tw-text-center" style="font-weight: 700; padding: 10px 14px; font-size: 17px;">

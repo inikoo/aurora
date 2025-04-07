@@ -59,8 +59,8 @@ switch ($tipo) {
 
 function login($db, $data, $website) {
 
-    // do not use turnstile
-    if (false || $website->settings('fu_secret') != ''  ) {
+
+    if ($website->settings('fu_secret') != ''  ) {
 
         if (empty($data['cf-turnstile-response'])) {
             echo json_encode(
