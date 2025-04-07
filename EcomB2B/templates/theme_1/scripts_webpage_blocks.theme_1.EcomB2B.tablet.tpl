@@ -605,7 +605,9 @@
 
 
                                     } else if (data.state == '400') {
-                                      turnstile.reset()
+                                        {if $website->settings('fu_key') }
+                                          turnstile.reset()
+                                        {/if}
                                         swal("{t}Error{/t}!", data.msg, "error")
                                     }
 
@@ -615,7 +617,9 @@
 
                                 }, error: function () {
 
+                                    {if $website->settings('fu_key') }
                                 turnstile.reset()
+                                    {/if}
                                     $('#register_button').removeClass('wait')
                                     $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 
@@ -1409,7 +1413,9 @@
 
 
                                     } else if (data.state == '400') {
-                                        turnstile.reset()
+                                        {if $website->settings('fu_key') }
+                                      turnstile.reset()
+                                        {/if}
                                         swal("{t}Error{/t}!", data.msg, "error")
                                         button.removeClass('wait')
                                         button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -1419,7 +1425,9 @@
 
 
                                 }, error: function () {
-                                    turnstile.reset()
+                                    {if $website->settings('fu_key') }
+                                turnstile.reset()
+                                    {/if}
                                     button.removeClass('wait')
                                     button.find('i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin f')
 
@@ -1504,7 +1512,9 @@
 
                                     } else if (data.state == '400') {
 
+                                        {if $website->settings('fu_key') }
                                       turnstile.reset()
+                                        {/if}
 
                                         console.log('#password_recovery_' + data.error_code + '_error_msg')
 
@@ -1519,7 +1529,9 @@
 
 
                                 }, error: function () {
+                                    {if $website->settings('fu_key') }
                                 turnstile.reset()
+                                    {/if}
                                     $('#recovery_button').removeClass('wait')
                                     $('#recovery_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
 

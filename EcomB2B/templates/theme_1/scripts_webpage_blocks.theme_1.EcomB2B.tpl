@@ -808,7 +808,9 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                                 } else if (data.state == '400') {
+                                    {if $website->settings('fu_key') }
                                   turnstile.reset()
+                                    {/if}
                                     swal("{t}Error{/t}!", data.msg, "error")
                                     $('#register_button').removeClass('wait')
                                     $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')
@@ -816,7 +818,9 @@ function show_gold_reward(GRDiscount, GRFamilies){
 
 
                             }, error: function () {
+                                {if $website->settings('fu_key') }
                             turnstile.reset()
+                                {/if}
 
                                 $('#register_button').removeClass('wait')
                                 $('#register_button i').addClass('fa-arrow-right').removeClass('fa-spinner fa-spin')

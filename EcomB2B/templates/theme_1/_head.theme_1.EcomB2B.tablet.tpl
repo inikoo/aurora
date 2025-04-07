@@ -251,7 +251,9 @@
         }
     </script>
 
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    {if !empty($settings.fu_key)}
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    {/if}
 
     <link rel="stylesheet" href="js/luigi_theme.css?v=13" type="text/css"/>
 
