@@ -81,11 +81,11 @@
                 </section>
             </fieldset>
 
-            {if !empty($settings.fu_key)}
-                <footer>
-                    <div class="cf-turnstile" data-action="reset_password_desktop" data-sitekey="{$settings.fu_key}"></div>
-                </footer>
-            {/if}
+{*            {if !empty($settings.fu_key)}*}
+{*                <footer>*}
+{*                    <div class="cf-turnstile" data-action="reset_password_desktop" data-sitekey="{$settings.fu_key}"></div>*}
+{*                </footer>*}
+{*            {/if}*}
             <footer>
                 <button id="recovery_button" type="submit" name="submit" class="button">{$data.labels._submit_label} <i  class="fa fa-fw  fa-arrow-right" aria-hidden="true"></i> </button>
                 <button id="close_recovery" class="button button-secondary modal-closer">{$data.labels._close_label}</button>
