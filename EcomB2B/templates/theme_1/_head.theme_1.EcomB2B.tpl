@@ -460,8 +460,9 @@
         <link rel="stylesheet" href="assets/image_gallery.min.css" type="text/css"/>
     {/if}
 
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
-
+    {if !empty($settings.fu_key)}
+       <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+    {/if}
 
 
 
