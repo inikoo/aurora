@@ -46,7 +46,7 @@ while ($worker->work()) {
 
 function fork_aiku_fetch($job): bool
 {
-
+    return true;
     if (!$_data = get_fork_metadata_v2($job)) {
         return true;
     }
