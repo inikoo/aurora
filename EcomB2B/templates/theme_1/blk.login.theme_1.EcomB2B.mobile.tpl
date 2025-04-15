@@ -76,14 +76,17 @@
                                         <i class="icon-append icon-lock"></i>
                                         <input id="pwd" type="password" name="password">
                                     </label>
-                                    <div><a href="login.sys?reset=1"  class="like_link">{$data.labels._forgot_password_label}</a> *</div>
+                                    <div><a href="login.sys?reset=1"  class="like_link">{$data.labels._forgot_password_label}</a> ***</div>
                                 </div>
                             </div>
                         </section >
 
+
+
                         {if !empty($settings.fu_key)}
+
                             <footer>
-                                <div class="cf-turnstile-xx" data-action="login_mobile" data-sitekey="{$settings.fu_key}"></div>
+                                <div class="cf-turnstile" data-action="login_mobile" data-sitekey="{$settings.fu_key}">XXX</div>
                             </footer>
                         {/if}
 
