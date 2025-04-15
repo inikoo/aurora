@@ -1393,7 +1393,9 @@
                         ajaxData.append("handle", $('#handle').val())
                         ajaxData.append("pwd", sha256_digest($('#pwd').val()))
                         ajaxData.append("keep_logged", $('#keep_logged').is(':checked'))
+                        {if $website->settings('fu_key') }
                       ajaxData.append("cf-turnstile-response", turnstile.getResponse())
+                      {/if}
 
                         $.ajax({
                             url: "/ar_web_login.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
@@ -1510,7 +1512,9 @@
                         ajaxData.append("webpage_key", '{$webpage->id}')
 
                         ajaxData.append("recovery_email", $('#recovery_email').val())
-                        ajaxData.append("cf-turnstile-response", turnstile.getResponse())
+                        {if $website->settings('fu_key') }
+                      ajaxData.append("cf-turnstile-response", turnstile.getResponse())
+                        {/if}
 
                         $.ajax({
                             url: "/ar_web_recover_password.php", type: 'POST', data: ajaxData, dataType: 'json', cache: false, contentType: false, processData: false, complete: function () {
