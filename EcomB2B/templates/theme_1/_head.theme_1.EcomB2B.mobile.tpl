@@ -15,9 +15,6 @@
       window.dataLayer = window.dataLayer || [];
     </script>
 
-    {if !empty($settings.fu_key)}
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
-    {/if}
 
 
     {if  $account_code=='AW'  }
