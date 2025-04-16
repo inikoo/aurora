@@ -46,6 +46,7 @@ if ($result = $db->query($sql)) {
 
         $familyCode=$row['Deal Component Allowance Target Label'];
 
+        print $familyCode."\n";
         $sql="update  `Deal Component Dimension` set `Deal Component Trigger Key` = `Deal Component Allowance Target Key`  where `Deal Component Key`=? ";
 
         $db->prepare($sql)->execute(
