@@ -36,7 +36,8 @@ $where = '  ';
 
 
 $sql = sprintf(
-    "select * from `Deal Component Dimension` WHERE (`Deal Component Trigger` = 'Category') AND (`Deal Component Trigger Key` = 0)  "
+    "select * from `Deal Component Dimension` WHERE (`Deal Component Trigger` = 'Category') AND (`Deal Component Trigger Key` = 0)  
+                                        (`Deal Component Allowance Target` = 'Category')     AND (`Deal Component Allowance Target Key` > 0)   "
 );
 
 
@@ -44,7 +45,11 @@ if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
         $familyCode=$row['Deal Component Allowance Target Label'];
-        print $familyCode."\n";
+
+        $sql="update  `Deal Component Dimension` set `Deal Component Trigger Key` = `Deal Component Allowance Target Key`  where `Deal Component Key`= ".$row['Deal Component Key'];
+
+        print "$sql\n";
+
 
     }
 }
