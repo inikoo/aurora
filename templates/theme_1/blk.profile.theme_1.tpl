@@ -809,8 +809,8 @@
 
                             <label class="input">
                                 <i id="_email" onclick="show_edit_input(this)" class="icon-append far fa-envelope"></i>
-                                <input class="register_field" type="email" name="email" id="_email_placeholder" placeholder="{$data.labels._email_placeholder}">
-                                <b id="_email_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._email_tooltip}</b>
+                                <input class="register_field" type="email" name="email" id="_email_placeholder" placeholder="{$data.labels._client_email_placeholder}">
+                                <b id="_client_email_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._client_email_tooltip}</b>
                             </label>
                         </section>
 
