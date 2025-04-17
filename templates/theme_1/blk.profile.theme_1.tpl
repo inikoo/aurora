@@ -796,12 +796,11 @@
 
 
                         <section>
-                            <label id="_mobile_label" contenteditable="true" class="label">{$data.labels._mobile_label}</label>
-
+                            <label id="_client_mobile_label" contenteditable="true" class="label">{$data.labels._client_mobile_label}</label>
                             <label class="input">
-                                <i id="_mobile" onclick="show_edit_input(this)" class="icon-append far fa-mobile"></i>
-                                <input class="register_field" type="text" name="mobile" id="_mobile_placeholder" placeholder="{$data.labels._mobile_placeholder}">
-                                <b id="_mobile_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._mobile_tooltip}</b>
+                                <i id="_client_mobile" onclick="show_edit_input(this)" class="icon-append far fa-mobile"></i>
+                                <input class="register_field" type="text" name="client_mobile" id="_client_mobile_placeholder" placeholder="{$data.labels._client_mobile_placeholder}">
+                                <b id="_client_mobile_tooltip" class="tooltip tooltip-bottom-right">{$data.labels._client_mobile_tooltip}</b>
                             </label>
                         </section>
 
