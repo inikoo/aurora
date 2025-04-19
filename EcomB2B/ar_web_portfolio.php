@@ -145,6 +145,7 @@ function update_portfolio_product_reference($data, $db, $customer) {
 
 
     stand_alone_process_aiku_fetch(
+        $db,
         'Portfolio',
         $data['customer_portfolio_key']
     );
@@ -519,6 +520,7 @@ function add_product_to_portfolio($data, $db, $customer) {
             );
 
             stand_alone_process_aiku_fetch(
+                $db,
                 'Portfolio',
                 $row['Customer Portfolio Key'],
             );
@@ -564,6 +566,7 @@ function add_product_to_portfolio($data, $db, $customer) {
             );
 
             stand_alone_process_aiku_fetch(
+                $db,
                 'Portfolio',
                 $customer_portfolio_key,
             );
@@ -664,6 +667,7 @@ function remove_product_from_portfolio($data, $db, $customer, $account) {
         );
 
         stand_alone_process_aiku_fetch(
+            $db,
             'Portfolio',
             $row['Customer Portfolio Key']
         );
@@ -767,6 +771,7 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
             );
 
             stand_alone_process_aiku_fetch(
+                $db,
                 'Portfolio',
                 $row2['Customer Portfolio Key']
             );
@@ -791,6 +796,7 @@ function add_category_to_portfolio($data, $db, $customer, $account) {
             shopify_create_portfolio_item($store,$customer->id, $customer_portfolio_key);
 
             stand_alone_process_aiku_fetch(
+                $db,
                 'Portfolio',
                 $customer_portfolio_key
             );

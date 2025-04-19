@@ -12,7 +12,7 @@
 
 
 
-function stand_alone_process_aiku_fetch(string $model, ?int $key, ?string $field = null, ?array $valid_fields = null,?array $extra_fields=null)
+function stand_alone_process_aiku_fetch($db,string $model, ?int $key, ?string $field = null, ?array $valid_fields = null,?array $extra_fields=null)
 {
 
     if(!$key){
@@ -31,11 +31,28 @@ function stand_alone_process_aiku_fetch(string $model, ?int $key, ?string $field
     }
 
     if (is_null($valid_fields) or is_null($field) or in_array($field, $valid_fields)) {
-        include_once 'utils/new_fork.php';
-        new_housekeeping_fork(
-            'au_aiku',
-            $_data,
-            DNS_ACCOUNT_CODE
+
+
+        $date = gmdate('Y-m-d H:i:s');
+        $sql = 'insert into `Stack Aiku nDimension` (`Stack Aiku Creation Date`,`Stack Aiku Last Update Date`,`Stack Aiku Operation`,`Stack Aiku Operation Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Aiku Last Update Date`=? ,`Stack Aiku Counter`=`Stack Aiku Counter`+1 ';
+
+        $db->prepare($sql)->execute(
+            [
+                $date,
+                $date,
+                $model,
+                $key, $date,
+
+            ]
         );
+
+
+//        include_once 'utils/new_fork.php';
+//        new_housekeeping_fork(
+//            'au_aiku',
+//            $_data,
+//            DNS_ACCOUNT_CODE
+//        );
     }
 }

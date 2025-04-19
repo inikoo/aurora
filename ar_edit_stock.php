@@ -422,7 +422,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
                             );
                             $db->exec($sql);
 
-                            stand_alone_process_aiku_fetch('OrgStockMovement',$placement_data['oif_key']);
+                            stand_alone_process_aiku_fetch($db,'OrgStockMovement',$placement_data['oif_key']);
 
                             $sql = sprintf('insert into `ITF POTF Costing Done Bridge`   (`ITF POTF Costing Done ITF Key`,`ITF POTF Costing Done POTF Key`) values (%d,%d)  ', $placement_data['oif_key'], $row['Purchase Order Transaction Fact Key']);
 
@@ -463,7 +463,7 @@ function set_delivery_costing($account, $db, $user, $editor, $data, $smarty) {
     ), $account->get('Account Code')
     );
 
-    stand_alone_process_aiku_fetch('SupplierDelivery',$delivery->id);
+    stand_alone_process_aiku_fetch($db,'SupplierDelivery',$delivery->id);
 
 
     $response = array(
@@ -1651,7 +1651,7 @@ function itf_cost($account, $db, $user, $editor, $data, $smarty) {
 
                 )
             );
-            stand_alone_process_aiku_fetch('OrgStockMovement',$itf_key);
+            stand_alone_process_aiku_fetch($db,'OrgStockMovement',$itf_key);
 
 
             echo json_encode($response);

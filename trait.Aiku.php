@@ -22,16 +22,31 @@ trait Aiku
         }
 
         if (is_null($valid_fields) or is_null($field) or in_array($field, $valid_fields)) {
-            include_once 'utils/new_fork.php';
-            new_housekeeping_fork(
-                'au_aiku',
-                array(
-                    'model'    => $model,
-                    'model_id' => $key,
-                    'field'    => $field
-                ),
-                DNS_ACCOUNT_CODE
+
+            $date = gmdate('Y-m-d H:i:s');
+            $sql = 'insert into `Stack Aiku nDimension` (`Stack Aiku Creation Date`,`Stack Aiku Last Update Date`,`Stack Aiku Operation`,`Stack Aiku Operation Key`) values (?,?,?,?) 
+                      ON DUPLICATE KEY UPDATE `Stack Aiku Last Update Date`=? ,`Stack Aiku Counter`=`Stack Aiku Counter`+1 ';
+
+            $this->db->prepare($sql)->execute(
+                [
+                    $date,
+                    $date,
+                    $model,
+                    $key, $date,
+
+                ]
             );
+
+//            include_once 'utils/new_fork.php';
+//            new_housekeeping_fork(
+//                'au_aiku',
+//                array(
+//                    'model'    => $model,
+//                    'model_id' => $key,
+//                    'field'    => $field
+//                ),
+//                DNS_ACCOUNT_CODE
+//            );
         }
     }
 
