@@ -34,7 +34,7 @@ function stand_alone_process_aiku_fetch($db,string $model, ?int $key, ?string $f
 
 
         $date = gmdate('Y-m-d H:i:s');
-        $sql = 'insert into `Stack Aiku nDimension` (`Stack Aiku Creation Date`,`Stack Aiku Last Update Date`,`Stack Aiku Operation`,`Stack Aiku Operation Key`) values (?,?,?,?) 
+        $sql = 'insert into `Stack Aiku Dimension` (`Stack Aiku Creation Date`,`Stack Aiku Last Update Date`,`Stack Aiku Operation`,`Stack Aiku Operation Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Aiku Last Update Date`=? ,`Stack Aiku Counter`=`Stack Aiku Counter`+1 ';
 
         $db->prepare($sql)->execute(
