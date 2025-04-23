@@ -150,8 +150,14 @@ elseif ($url == 'sitemap.xml') {
     exit;
 }
 
+if($website_key==24){
+    $url_cache_key = 'pwc2_v2|'.DNS_ACCOUNT_CODE.'|'.$website_key.'_'.$url;
 
-$url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$website_key.'_'.$url;
+}else{
+    $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$website_key.'_'.$url;
+
+}
+
 
 if ($redis->exists($url_cache_key)) {
     $webpage_id = $redis->get($url_cache_key);
