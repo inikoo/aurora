@@ -231,7 +231,7 @@ function get_url($db, $website_key, $url)
     if ($row = $stmt->fetch()) {
         return $row['Webpage Alias Webpage Key'];
     } else {
-        return "/404.php?url=$url&original_url=$original_url&w=".$website_key;
+        return "/404.php?url=$url&original_url=$original_url&w=".$website_key.'&d='.gmdate("Y-m-d\TH:i:s\Z");
     }
 }
 
