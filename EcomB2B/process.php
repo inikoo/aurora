@@ -150,16 +150,11 @@ elseif ($url == 'sitemap.xml') {
     exit;
 }
 
-if($website_key==24){
-    $url_cache_key = 'pwc2_v2|'.DNS_ACCOUNT_CODE.'|'.$website_key.'_'.$url;
 
-}else{
-    $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$website_key.'_'.$url;
-
-}
+$url_cache_key = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$website_key.'_'.$url;
 
 
-if ($redis->exists($url_cache_key)) {
+if ($redis->exists($url_cache_key) && $redis->get($url_cache_key) ) {
     $webpage_id = $redis->get($url_cache_key);
     $db         = null;
 } else {
@@ -170,10 +165,13 @@ if ($redis->exists($url_cache_key)) {
 
     $webpage_id = get_url($db, $website_key, $url);
 
+    if(is_numeric($webpage_id) and $webpage_id > 0){
+        $redis_write = new Redis();
+        $redis_write->connect(REDIS_HOST, REDIS_PORT);
+        $redis_write->set($url_cache_key, $webpage_id);
+    }
 
-    $redis_write = new Redis();
-    $redis_write->connect(REDIS_HOST, REDIS_PORT);
-    $redis_write->set($url_cache_key, $webpage_id);
+
 }
 
 

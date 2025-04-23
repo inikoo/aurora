@@ -629,11 +629,11 @@ class Page extends DB_Table
 
         $redis = new Redis();
         if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
-            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
+            $url_cache_key = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.$this->get('Webpage Code');
             $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
+            $url_cache_key = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtoupper($this->get('Webpage Code'));
             $redis->set($url_cache_key, $this->id);
-            $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
+            $url_cache_key = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_'.strtolower($this->get('Webpage Code'));
             $redis->set($url_cache_key, $this->id);
         }
 
@@ -883,7 +883,7 @@ class Page extends DB_Table
 
         $redis = new Redis();
         if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
-            $cache_id_prefix = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_';
+            $cache_id_prefix = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$this->get('Webpage Website Key').'_';
 
             $redis->del($cache_id_prefix.$this->data['Webpage Code']);
             $redis->del($cache_id_prefix.strtolower($this->data['Webpage Code']));
@@ -3559,7 +3559,7 @@ class Page extends DB_Table
 
         $redis = new Redis();
         if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
-            $cache_id_prefix = 'pwc2|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
+            $cache_id_prefix = 'pwc3|'.$account->get('Code').'|'.$this->get('Webpage Website Key').'_';
 
             $redis->del($cache_id_prefix.$this->data['Webpage Code']);
             $redis->del($cache_id_prefix.strtolower($this->data['Webpage Code']));

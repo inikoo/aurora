@@ -2455,11 +2455,11 @@ function fork_housekeeping($job)
 
 
             if ($redis->connect(REDIS_HOST, REDIS_PORT)) {
-                $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.$webpage->get('Webpage Code');
+                $url_cache_key = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.$webpage->get('Webpage Code');
                 $redis->set($url_cache_key, $webpage->id);
-                $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtoupper($webpage->get('Webpage Code'));
+                $url_cache_key = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtoupper($webpage->get('Webpage Code'));
                 $redis->set($url_cache_key, $webpage->id);
-                $url_cache_key = 'pwc2|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtolower($webpage->get('Webpage Code'));
+                $url_cache_key = 'pwc3|'.DNS_ACCOUNT_CODE.'|'.$webpage->get('Webpage Website Key').'_'.strtolower($webpage->get('Webpage Code'));
                 $redis->set($url_cache_key, $webpage->id);
             }
 
