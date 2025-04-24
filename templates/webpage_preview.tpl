@@ -91,18 +91,18 @@
             <td>
 
 
-                <input id="add_category" type="hidden" class=" input_field" value="" has_been_valid="0"/>
-                <input id="add_category_dropdown_select_label_see_also" field="add_category" style="width:200px" scope="category_webpages" parent="store" data-metadata='{ "splinter":"see_also_item","parent_category_key":"{$webpage->get('Webpage Scope Key')}"}'
+                <input id="add_category_to_see_also" type="hidden" class=" input_field" value="" has_been_valid="0"/>
+                <input id="add_category_to_see_also_dropdown_select_label" field="add_category_to_see_also" style="width:200px" scope="category_webpages" parent="store" data-metadata='{ "splinter":"see_also_item","parent_category_key":"{$webpage->get('Webpage Scope Key')}"}'
 
-                       parent_key="{$website->get('Website Store Key')}" class=" dropdown_select" value="" has_been_valid="0" placeholder="{t}Family / category code{/t}" action="add_category_to_webpage"
+                       parent_key="{$website->get('Website Store Key')}" class=" dropdown_select" value="" has_been_valid="0" placeholder="{t}Family / category code{/t}" action="add_category_to_see_also_to_webpage"
 
                 />
-                <span id="add_category_msg" class="msg"></span>
-                <div id="add_category_results_container" class="search_results_container hide" style="position: relative;left:-430px" >
+                <span id="add_category_to_see_also_msg" class="msg"></span>
+                <div id="add_category_to_see_also_results_container" class="search_results_container hide" style="position: relative;left:-430px" >
                     **
-                    <table id="add_category_results" >
+                    <table id="add_category_to_see_also_results" >
 
-                        <tr class="hide" id="add_category_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_add_item_to_see_also(this)">
+                        <tr class="hide" id="add_category_to_see_also_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_add_item_to_see_also(this)">
                             <td class="code"></td>
                             <td style="width:85%" class="label"></td>
 
@@ -112,7 +112,7 @@
                 </div>
                 <script>
                   console.log('hello')
-                    $("#add_category_dropdown_select_label_see_also").on("input propertychange", function (evt) {
+                    $("#add_category_to_see_also_dropdown_select_label").on("input propertychange", function (evt) {
                         console.log('aaa')
                         var delay = 100;
                         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
@@ -270,12 +270,12 @@
     function close_add_category_dialog(){
 
         $('#see_also_add_item_dialog').addClass('hide')
-        $('#add_category_dropdown_select_label').val('');
+        $('#add_category_to_see_also_dropdown_select_label').val('');
 
 
-        $('#add_category_results .result').remove();
+        $('#add_category_to_see_also_results .result').remove();
 
-        $('#add_category_results_container').addClass('hide').removeClass('show')
+        $('#add_category_to_see_also_results_container').addClass('hide').removeClass('show')
 
     }
 
