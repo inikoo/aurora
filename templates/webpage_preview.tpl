@@ -99,7 +99,7 @@
                 />
                 <span id="add_category_msg" class="msg"></span>
                 <div id="add_category_results_container" class="search_results_container hide" style="position: relative;left:-430px" >
-
+                    **
                     <table id="add_category_results" >
 
                         <tr class="hide" id="add_category_search_result_template" field="" value="" formatted_value="" onClick="select_dropdown_add_item_to_see_also(this)">
@@ -111,8 +111,9 @@
 
                 </div>
                 <script>
+                  console.log('cacaca')
                     $("#add_category_dropdown_select_label").on("input propertychange", function (evt) {
-
+                        console.log('aaa')
                         var delay = 100;
                         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
                         delayed_on_change_dropdown_select_field($(this), delay)
