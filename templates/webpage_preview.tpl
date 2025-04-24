@@ -92,7 +92,7 @@
 
 
                 <input id="add_category" type="hidden" class=" input_field" value="" has_been_valid="0"/>
-                <input id="add_category_dropdown_select_label" field="add_category" style="width:200px" scope="category_webpages" parent="store" data-metadata='{ "splinter":"see_also_item","parent_category_key":"{$webpage->get('Webpage Scope Key')}"}'
+                <input id="add_category_dropdown_select_label_see_also" field="add_category" style="width:200px" scope="category_webpages" parent="store" data-metadata='{ "splinter":"see_also_item","parent_category_key":"{$webpage->get('Webpage Scope Key')}"}'
 
                        parent_key="{$website->get('Website Store Key')}" class=" dropdown_select" value="" has_been_valid="0" placeholder="{t}Family / category code{/t}" action="add_category_to_webpage"
 
@@ -111,8 +111,8 @@
 
                 </div>
                 <script>
-                  console.log('cacaca')
-                    $("#add_category_dropdown_select_label").on("input propertychange", function (evt) {
+                  console.log('hello')
+                    $("#add_category_dropdown_select_label_see_also").on("input propertychange", function (evt) {
                         console.log('aaa')
                         var delay = 100;
                         if (window.event && event.type == "propertychange" && event.propertyName != "value") return;
