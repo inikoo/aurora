@@ -120,14 +120,11 @@ class WebAuth {
         $customer_key     = '';
 
         $sql = sprintf(
-            "SELECT `Customer Type by Activity`,`Website User Key`,`Website User Customer Key`,`Website User Password`,`Website User Active` FROM `Website User Dimension`  left join `Customer Dimension` on (`Customer Key`=`Website User Customer Key`)   WHERE `Website User Handle`=%s  AND `Website User Website Key`=%d ",
+            "SELECT `Customer Type by Activity`,`Website User Key`,`Website User Customer Key`,`Website User Password`,`Website User Active` FROM `Website User Dimension`  left join `Customer Dimension` on (`Customer Key`=`Website User Customer Key`)   WHERE  `Customer Key` is not null and   `Website User Handle`=%s  AND `Website User Website Key`=%d ",
             prepare_mysql($handle), $website_key
         );
 
-        if($handle=='tomas@awgifts.sk' or  $handle=='rulovico@gmail.com' ){
-            print $sql;
-            exit;
-        }
+
 
 
 
