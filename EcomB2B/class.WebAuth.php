@@ -124,6 +124,12 @@ class WebAuth {
             prepare_mysql($handle), $website_key
         );
 
+        if($handle=='tomas@awgifts.sk' or  $handle=='rulovico@gmail.com' ){
+            print $sql;
+            exit;
+        }
+
+
 
         if ($result = $this->db->query($sql)) {
             if ($row = $result->fetch()) {
