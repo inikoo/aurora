@@ -17,6 +17,7 @@ include_once 'class.DB_Table.php';
 include_once 'class.Image.php';
 include_once 'trait.ImageSubject.php';
 include_once 'trait.NotesSubject.php';
+include_once 'trait.WebpageAiku.php';
 
 use Nesk\Puphpeteer\Puppeteer;
 use Nesk\Rialto\Exceptions\Node;
@@ -24,7 +25,7 @@ use Nesk\Rialto\Exceptions\Node;
 
 class Page extends DB_Table
 {
-    use ImageSubject, NotesSubject;
+    use ImageSubject, NotesSubject, WebpageAiku;
 
     var $new = false;
     var $logged = false;
@@ -290,6 +291,8 @@ class Page extends DB_Table
                 $account->get('Account Code'),
                 $this->db
             );
+
+            $this->model_updated('new', $this->id);
 
             return $this;
 
@@ -3012,6 +3015,9 @@ class Page extends DB_Table
             'show_by_id'    => array('unpublish_webpage_field'),
             'visible_by_id' => array('link_to_live_webpage'),
         );
+
+        $this->model_published($this->id);
+
     }
 
     function reindex_category_categories($block_index)
