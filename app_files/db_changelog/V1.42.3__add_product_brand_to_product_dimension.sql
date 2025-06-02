@@ -1,0 +1,1 @@
+ALTER TABLE `Product Dimension` ADD COLUMN `Product Brand` varchar(255) DEFAULT NULL COMMENT '';

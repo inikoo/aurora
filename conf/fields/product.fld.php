@@ -176,6 +176,7 @@ function get_product_variant_fields(Product $product, User $user, PDO $db, $opti
 
                 ),
 
+
             )
         ),
         array(
@@ -681,6 +682,19 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
                     'value'           => htmlspecialchars($product->get('Product Variant Short Name')),
                     'formatted_value' => $product->get('Variant Short Name'),
                     'label'           => ucfirst($product->get_field_label('Product Variant Short Name')),
+                    'required'        => true,
+                    'type'            => 'value'
+
+
+                ),
+
+                array(
+                    'id'              => 'Product_Brand',
+                    'class'           => 'product_field  '.((!$new and  ( $product->get('Product Type') == 'Service' )  )    ? 'hide' : ''),
+                    'edit'            => ($edit ? 'string' : ''),
+                    'value'           => htmlspecialchars($product->get('Product Brand')),
+                    'formatted_value' => $product->get('Brand'),
+                    'label'           => ucfirst($product->get_field_label('Product Brand')),
                     'required'        => true,
                     'type'            => 'value'
 
