@@ -695,7 +695,7 @@ function get_product_fields(Product $product, User $user, PDO $db, $options): ar
                     'value'           => htmlspecialchars($product->get('Product Brand')),
                     'formatted_value' => $product->get('Brand'),
                     'label'           => ucfirst($product->get_field_label('Product Brand')),
-                    'required'        => true,
+                    'required'        => false,
                     'type'            => 'value'
 
 
