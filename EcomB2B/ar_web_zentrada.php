@@ -61,9 +61,8 @@ $sql = "select `Product Code`,`Product Name`,
      
        
        `Product Published Webpage Description` ,`Product Units Per Case`,`Product Price`,`Product Availability`,
-       `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`,`Barcode Number`
+       `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`,`Product Barcode Number`
 from `Product Dimension` P 
-  left join `Barcode Dimension` B on (B.`Barcode Key`=P.`Product Barcode Key`)
 
 where `Product Store Key`=? and `Product Web State` in ('For Sale','Out of Stock')  and  `Product Price`>0  ";
 
@@ -101,7 +100,7 @@ while ($row = $stmt->fetch()) {
     $data[] = [
         'market_place_allocation'                 => 'EU',
         'item_number'                             => $row['Product Code'],
-        'ean_code'                                => $row['Barcode Number'],
+        'ean_code'                                => $row['Product Barcode Number'],
         'ean_ve'                                  => '',
         'product_description'                     => $row['Product Name'],
         'short_product_description'               => ($short_product_description == '' ? $row['Product Name'] : $short_product_description),
