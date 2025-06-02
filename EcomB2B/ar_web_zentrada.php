@@ -1,4 +1,5 @@
 <?php
+
 /*
 
  About:
@@ -50,16 +51,21 @@ if (!isset($db) or is_null($db)) {
 }
 
 $website = get_object('Website', $_SESSION['website_key']);
-$store = get_object('Store', $website->get('Website Store Key'));
+$store   = get_object('Store', $website->get('Website Store Key'));
 
 
 $sql = "select `Product Code`,`Product Name`,
 (select concat('[image_address]',`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`='Product' and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`='Yes'  order by `Image Subject Order` limit 1 offset 0) as img1,
        (select concat('[image_address]',`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`='Product' and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`='Yes'  order by `Image Subject Order` limit 1 offset 1) as img2,
     (select concat('[image_address]',`Image Subject Image Key`)  from `Image Subject Bridge` where `Image Subject Object`='Product' and `Image Subject Object Key`=P.`Product ID` and `Image Subject Is Public`='Yes'  order by `Image Subject Order` limit 1 offset 2) as img3 ,
+     
+       
        `Product Published Webpage Description` ,`Product Units Per Case`,`Product Price`,`Product Availability`,
-       `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`
-from `Product Dimension` P where `Product Store Key`=? and `Product Web State` in ('For Sale','Out of Stock')  and  `Product Price`>0  ";
+       `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`,`Barcode Number`
+from `Product Dimension` P 
+  left join `Barcode Dimension` B on (B.`Barcode Key`=P,`Product Barcode Key`)
+
+where `Product Store Key`=? and `Product Web State` in ('For Sale','Out of Stock')  and  `Product Price`>0  ";
 
 
 $placeholders = array(
@@ -77,56 +83,54 @@ $stmt->execute(
 );
 
 
-
 while ($row = $stmt->fetch()) {
-    $short_product_description=$row['Product Published Webpage Description'];
+    $short_product_description = $row['Product Published Webpage Description'];
     $short_product_description = trim(preg_replace('/\s\s+/', ' ', $short_product_description));
 
-    $short_product_description=str_replace("\r\n"," ",$short_product_description);
-    $short_product_description=str_replace("\n"," ",$short_product_description);
+    $short_product_description = str_replace("\r\n", " ", $short_product_description);
+    $short_product_description = str_replace("\n", " ", $short_product_description);
 
     $short_product_description = preg_replace("/<p[^>]*?>/", "", $short_product_description);
     $short_product_description = str_replace("</p>", "<br />", $short_product_description);
 
 
-    if($row['Product Units Per Case']==0){
-        $row['Product Units Per Case']=1;
+    if ($row['Product Units Per Case'] == 0) {
+        $row['Product Units Per Case'] = 1;
     }
 
     $data[] = [
-        'market_place_allocation'      => 'EU',
-        'item_number'                  => $row['Product Code'],
-        'ean_code'                     => '',
-        'ean_ve'                       => '',
-        'product_description'          => $row['Product Name'],
-        'short_product_description'    => ($short_product_description==''?$row['Product Name']:$short_product_description),
-        'detailed_product_description' => '',
-        'brand_name'                   => '',
-        'image'=>$row['img1'],
-        'image2'=>$row['img2'],
-        'image3'=>$row['img3'],
-        'currency'=>$store->get('Store Currency Code'),
-        'VAT'=>'20',
-        'quantity_of_units_per_package'=>$row['Product Units Per Case'],
-        'minimum_order_quantity_in_packing_units'=>1,
-        'net_price_per_unit'=>$row['Product Price']/$row['Product Units Per Case'],
-        'promotion_discount'=>'',
-        'volumedbasedpricing_quantity1'=>'',
-        'volumebasedpricing_price1'=>'',
-        'volumedbasedpricing_quantity2'=>'',
-        'volumedbasedpricing_quantity3'=>'',
-        'available_quantity_in_packing_units'=>floor($row['Product Availability']),
-        'promotion_discount'=>'',
-        'recommended_retail_price'=>$row['Product RRP']/$row['Product Units Per Case'],
-        'activ_until'=>'',
-        'weight'=>$row['Product Unit Weight'],
-        'collection'=>'',
-        'statistical_number'=>$row['Product Tariff Code'],
-        'country_of_origin'=>$row['Product Origin Country Code'],
-        'dangerous_goods'=>'',
-        'energyEfficiency'=>'',
-        'energyEffImage'=>''
-
+        'market_place_allocation'                 => 'EU',
+        'item_number'                             => $row['Product Code'],
+        'ean_code'                                => $row['Barcode Number'],
+        'ean_ve'                                  => '',
+        'product_description'                     => $row['Product Name'],
+        'short_product_description'               => ($short_product_description == '' ? $row['Product Name'] : $short_product_description),
+        'detailed_product_description'            => '',
+        'brand_name'                              => '',
+        'image'                                   => $row['img1'],
+        'image2'                                  => $row['img2'],
+        'image3'                                  => $row['img3'],
+        'currency'                                => $store->get('Store Currency Code'),
+        'VAT'                                     => '20',
+        'quantity_of_units_per_package'           => $row['Product Units Per Case'],
+        'minimum_order_quantity_in_packing_units' => 1,
+        'net_price_per_unit'                      => $row['Product Price'] / $row['Product Units Per Case'],
+        'promotion_discount'                      => '',
+        'volumedbasedpricing_quantity1'           => '',
+        'volumebasedpricing_price1'               => '',
+        'volumedbasedpricing_quantity2'           => '',
+        'volumedbasedpricing_quantity3'           => '',
+        'available_quantity_in_packing_units'     => floor($row['Product Availability']),
+        'promotion_discount'                      => '',
+        'recommended_retail_price'                => $row['Product RRP'] / $row['Product Units Per Case'],
+        'activ_until'                             => '',
+        'weight'                                  => $row['Product Unit Weight'],
+        'collection'                              => '',
+        'statistical_number'                      => $row['Product Tariff Code'],
+        'country_of_origin'                       => $row['Product Origin Country Code'],
+        'dangerous_goods'                         => '',
+        'energyEfficiency'                        => '',
+        'energyEffImage'                          => ''
 
 
     ];
@@ -137,7 +141,8 @@ while ($row = $stmt->fetch()) {
 outputCsv('items.csv', $data);
 
 
-function outputCsv($fileName, $assocDataArray) {
+function outputCsv($fileName, $assocDataArray)
+{
     ob_clean();
     header('Pragma: public');
     header('Expires: 0');
@@ -147,9 +152,9 @@ function outputCsv($fileName, $assocDataArray) {
     header('Content-Disposition: attachment;filename='.$fileName);
     if (isset($assocDataArray['0'])) {
         $fp = fopen('php://output', 'w');
-        fputcsv($fp, array_keys($assocDataArray['0']),';');
+        fputcsv($fp, array_keys($assocDataArray['0']), ';');
         foreach ($assocDataArray as $values) {
-            fputcsv($fp, $values,';');
+            fputcsv($fp, $values, ';');
         }
         fclose($fp);
     }
