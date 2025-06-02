@@ -63,7 +63,7 @@ $sql = "select `Product Code`,`Product Name`,
        `Product Published Webpage Description` ,`Product Units Per Case`,`Product Price`,`Product Availability`,
        `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`,`Barcode Number`
 from `Product Dimension` P 
-  left join `Barcode Dimension` B on (B.`Barcode Key`=P,`Product Barcode Key`)
+  left join `Barcode Dimension` B on (B.`Barcode Key`=P.`Product Barcode Key`)
 
 where `Product Store Key`=? and `Product Web State` in ('For Sale','Out of Stock')  and  `Product Price`>0  ";
 
