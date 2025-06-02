@@ -61,7 +61,7 @@ $sql = "select `Product Code`,`Product Name`,
      
        
        `Product Published Webpage Description` ,`Product Units Per Case`,`Product Price`,`Product Availability`,
-       `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`,`Product Barcode Number`
+       `Product RRP`,`Product Unit Weight`,`Product Origin Country Code`,`Product Tariff Code`,`Product Barcode Number`,`Product Brand`
 from `Product Dimension` P 
 
 where `Product Store Key`=? and `Product Web State` in ('For Sale','Out of Stock')  and  `Product Price`>0  ";
@@ -105,7 +105,7 @@ while ($row = $stmt->fetch()) {
         'product_description'                     => $row['Product Name'],
         'short_product_description'               => ($short_product_description == '' ? $row['Product Name'] : $short_product_description),
         'detailed_product_description'            => '',
-        'brand_name'                              => '',
+        'brand_name'                              => $row['Product Brand'],
         'image'                                   => $row['img1'],
         'image2'                                  => $row['img2'],
         'image3'                                  => $row['img3'],
