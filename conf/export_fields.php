@@ -1928,6 +1928,12 @@ function get_export_fields($element, $account_currency_code = ''): array
                 'checked' => 1
             ),
 
+            array(
+                'name'    => '`Product Brand`',
+                'label'   => _('Brand'),
+                'checked' => 1
+            ),
+
 
             array(
                 'name'    => '`Product RRP`/`Product Units Per Case`',

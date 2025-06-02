@@ -1239,6 +1239,17 @@ function get_export_edit_template_fields($object) {
             array(
                 'default_value' => '',
                 'show_for_new'  => true,
+                'required'      => true,
+                'header'        => 'Brand',
+                'name'          => 'Product Brand',
+                'label'         => _('Brand'),
+                'checked'       => 0,
+                'cell_type'     => 'string'
+            ),
+
+            array(
+                'default_value' => '',
+                'show_for_new'  => true,
                 'required'      => false,
                 'header'        => 'Unit RRP',
                 'name'          => 'Product Unit RRP',
