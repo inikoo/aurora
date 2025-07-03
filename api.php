@@ -249,6 +249,9 @@ function authenticate($db) {
 
     }
 
+    if(!$token and isset($_headers['AKEY'])){
+        $token=$_headers['AKEY'];
+    }
 
 
     if (!$token) {
