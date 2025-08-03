@@ -222,11 +222,15 @@ function authenticate($db) {
     $token = false;
 
 
+    //print_r($_headers);
+
     if (empty($_SERVER['HTTP_X_AUTH_KEY'])) {
         if (!empty($_headers['HTTP_X_AUTH_KEY'])) {
             $token = $_headers['HTTP_X_AUTH_KEY'];
         } elseif (!empty($_headers['http_x_auth_key'])) {
             $token = $_headers['http_x_auth_key'];
+        } elseif (!empty($_headers['AUTHKEY'])) {
+            $token = $_headers['AUTHKEY'];
         }elseif (!empty($_REQUEST['AUTH_KEY'])) {
             $token = $_REQUEST['AUTH_KEY'];
         }else{
@@ -265,6 +269,8 @@ function authenticate($db) {
     } else {
         $api_key = $token;
 
+       // print $api_key;
+       // exit;
 
         if (preg_match('/^([a-z0-9]{8})(.+)$/', $api_key, $matches)) {
 

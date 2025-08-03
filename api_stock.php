@@ -25,7 +25,9 @@ include_once 'api_stock_picking_common_actions.php';
 
 
 switch ($_REQUEST['action']) {
-
+    case 'ping':
+        echo 'pong';
+        exit;
     case 'update_part_symbol':
 
         if (!isset($_REQUEST['part_sku'])) {
