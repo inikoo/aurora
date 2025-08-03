@@ -28,7 +28,7 @@ include_once 'api_stock_picking_common_actions.php';
 
 
 switch ($_REQUEST['action']) {
-    case 'pick_aiku':
+    case 'aiku_picking':
 
 
         print_r($_REQUEST);
