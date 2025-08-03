@@ -1257,6 +1257,7 @@ class PartLocation extends DB_Table
         if(isset($data['aiku_picking_id'])){
             $aiku_picking_key=$data['aiku_picking_id'];
         }
+        $aiku_picking_key=111;
 
         $sql = sprintf(
             "INSERT INTO `Inventory Transaction Fact` (aiku_picking_id,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
