@@ -1253,9 +1253,15 @@ class PartLocation extends DB_Table
         $editor = $this->get_editor_data();
 
 
+        $aiku_picking_key='';
+        if(isset($data['aiku_picking_key'])){
+            $aiku_picking_key=$data['aiku_picking_key'];
+        }
+
         $sql = sprintf(
-            "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
-		VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s)",
+            "INSERT INTO `Inventory Transaction Fact` (aiku_picking_id,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
+		VALUES (%s,%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s)",
+            prepare_mysql($aiku_picking_key),
             prepare_mysql($record_type),
             prepare_mysql($section),
             $this->part_sku,

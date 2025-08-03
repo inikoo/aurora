@@ -31,6 +31,25 @@ switch ($_REQUEST['action']) {
     case 'aiku_picking':
 
 
+        $sql="select `Inventory Transaction Key` from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            [
+                $_REQUEST['picking_key'],
+            ]
+        );
+        if ($row = $stmt->fetch()) {
+            $response = array(
+                'state' => 'Found',
+                'msg'   => 'itf found for this picking',
+                'itf_key'=>$row['Inventory Transaction Key']
+            );
+            echo json_encode($response);
+            exit;
+
+        }
+
 
         include_once 'class.PartLocation.php';
 
@@ -43,11 +62,11 @@ switch ($_REQUEST['action']) {
 
 
         $response = array(
-            'status'  => 'Pass debug 2',
+            'state'  => 'Pass debug 2',
             'Location Key' => $_REQUEST['location_key'],
             'Part SKU'     => $_REQUEST['part_sku'],
             'editor'       => $editor,
-            'Quantity'         => -$_REQUEST['qty'],
+            'Quantity'         => $_REQUEST['qty'],
             'Transaction Type' => 'AikuPick',
             'Note'             => $_REQUEST['note']
 
