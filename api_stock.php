@@ -41,6 +41,7 @@ $editor = array(
 switch ($_REQUEST['action']) {
     case 'aiku_picking':
 
+        $editor['Date']=$_REQUEST['date'];
 
         $sql = "select `Inventory Transaction Key` from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
 
@@ -71,18 +72,18 @@ switch ($_REQUEST['action']) {
         );
 
 
-//        $response = array(
-//            'state'            => 'Pass debug 2',
-//            'Location Key'     => $_REQUEST['location_key'],
-//            'Part SKU'         => $_REQUEST['part_sku'],
-//            'editor'           => $editor,
-//            'Quantity'         => $_REQUEST['qty'],
-//            'Transaction Type' => 'AikuPick',
-//            'Note'             => $_REQUEST['note']
-//
-//        );
-//        echo json_encode($response);
-//        exit;
+        $response = array(
+            'state'            => 'Pass debug 2',
+            'Location Key'     => $_REQUEST['location_key'],
+            'Part SKU'         => $_REQUEST['part_sku'],
+            'editor'           => $editor,
+            'Quantity'         => $_REQUEST['qty'],
+            'Transaction Type' => 'AikuPick',
+            'Note'             => $_REQUEST['note']
+
+        );
+        echo json_encode($response);
+        exit;
 
 
         $part_location = new PartLocation('find', $part_location_data, 'create');
