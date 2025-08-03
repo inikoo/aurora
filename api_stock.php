@@ -30,6 +30,10 @@ include_once 'api_stock_picking_common_actions.php';
 switch ($_REQUEST['action']) {
     case 'pick_aiku':
 
+
+        print_r($_REQUEST);
+        exit;
+
         include_once 'class.PartLocation.php';
 
 
