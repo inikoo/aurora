@@ -1122,6 +1122,19 @@ class PartLocation extends DB_Table
         // print $transaction_type."\n";
 
         switch ($transaction_type) {
+            case('AikuPick'):
+
+                if ($qty_change > 0) {
+                    $record_type = 'Movement';
+                    $section     = 'In';
+                    $details     = sprintf(_('%s SKO %s due to cancelled picking'), $qty_change, '<b>'._('send back to location').'</b>').' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+                } else {
+                    $record_type = 'Movement';
+                    $section     = 'Out';
+                    $details     = sprintf(_('%s SKO pick in aiku'), -$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+                }
+
+                break;
             case('Production'):
 
                 if ($qty_change > 0) {

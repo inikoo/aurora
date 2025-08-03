@@ -15,7 +15,10 @@ $account = get_object('Account', 1);
 
 if (empty($_REQUEST['action'])) {
     $response = log_api_key_access_failure(
-        $db, $api_key_key, 'Fail_Operation', "Action missing"
+        $db,
+        $api_key_key,
+        'Fail_Operation',
+        "Action missing"
     );
     echo json_encode($response);
     exit;
@@ -25,6 +28,36 @@ include_once 'api_stock_picking_common_actions.php';
 
 
 switch ($_REQUEST['action']) {
+    case 'pick_aiku':
+
+        include_once 'class.PartLocation.php';
+
+
+        $part_location_data = array(
+            'Location Key' => $_REQUEST['location_key'],
+            'Part SKU'     => $_REQUEST['part_sku'],
+            'editor'       => $editor
+        );
+
+
+        $part_location = new PartLocation('find', $part_location_data, 'create');
+
+
+        $_data = array(
+            'Quantity'         => -$_REQUEST['qty'],
+            'Transaction Type' => 'AikuPick',
+            'Note'             => $_REQUEST['note']
+        );
+
+        $itf_key = $part_location->stock_transfer($_data);
+
+        $response = array(
+            'status'  => 'Success',
+            'itf_key' => $itf_key
+        );
+        echo json_encode($response);
+
+        exit;
     case 'ping':
         echo 'pong';
         exit;
@@ -40,7 +73,7 @@ switch ($_REQUEST['action']) {
         }
 
 
-        $part = get_object('part', $_REQUEST['part_sku']);
+        $part         = get_object('part', $_REQUEST['part_sku']);
         $part->editor = $editor;
 
         if (!$part->id) {
@@ -54,8 +87,6 @@ switch ($_REQUEST['action']) {
 
 
         if (empty($_REQUEST['symbol'])) {
-
-
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'symbol needed'
@@ -65,18 +96,17 @@ switch ($_REQUEST['action']) {
         }
 
         if (!in_array(
-            $_REQUEST['symbol'], array(
-                                   'none',
-                                   'star',
-                                   'skull',
-                                   'radioactive',
-                                   'peace',
-                                   'gear',
-                                   'love'
-                               )
+            $_REQUEST['symbol'],
+            array(
+                'none',
+                'star',
+                'skull',
+                'radioactive',
+                'peace',
+                'gear',
+                'love'
+            )
         )) {
-
-
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'Invalid symbol value ('.$_REQUEST['symbol'].')  '
@@ -113,7 +143,7 @@ switch ($_REQUEST['action']) {
         }
 
 
-        $part = get_object('part', $_REQUEST['part_sku']);
+        $part         = get_object('part', $_REQUEST['part_sku']);
         $part->editor = $editor;
 
         if (!$part->id) {
@@ -127,8 +157,6 @@ switch ($_REQUEST['action']) {
 
 
         if (empty($_REQUEST['feedback'])) {
-
-
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'feedback needed'
@@ -139,8 +167,6 @@ switch ($_REQUEST['action']) {
 
 
         if (empty($_REQUEST['scope'])) {
-
-
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'scope needed'
@@ -150,14 +176,13 @@ switch ($_REQUEST['action']) {
         }
 
         if (!in_array(
-            $_REQUEST['scope'], array(
-                                   'Marketing',
-                                   'Supplier',
+            $_REQUEST['scope'],
+            array(
+                'Marketing',
+                'Supplier',
 
-                               )
+            )
         )) {
-
-
             $response = array(
                 'state' => 'Error',
                 'msg'   => 'Invalid scope value ('.$_REQUEST['symbol'].')  '
@@ -165,8 +190,6 @@ switch ($_REQUEST['action']) {
             echo json_encode($response);
             exit;
         }
-
-
 
 
         $response = array(
@@ -186,9 +209,6 @@ switch ($_REQUEST['action']) {
         );
         echo json_encode($response);
         exit;
-
-
-
 }
 
 
