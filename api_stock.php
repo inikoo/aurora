@@ -96,6 +96,17 @@ switch ($_REQUEST['action']) {
             'aiku_picking_id'  => $_REQUEST['picking_key'],
         );
 
+                $response = array(
+                    'Quantity'         => -$_REQUEST['qty'],
+                    'Transaction Type' => 'AikuPick',
+                    'Note'             => $_REQUEST['note'],
+                    'aiku_picking_id'  => $_REQUEST['picking_key'],
+
+                );
+                echo json_encode($response);
+                exit;
+
+
         $itf_key = $part_location->stock_transfer($_data);
 
         $response = array(
