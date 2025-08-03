@@ -257,6 +257,11 @@ function authenticate($db) {
         $token=$_headers['AKEY'];
     }
 
+    if(!$token and isset($_headers['SECRET'])){
+        $token=$_headers['SECRET'];
+    }
+
+
 
     if (!$token) {
 
