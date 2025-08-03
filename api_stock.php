@@ -12,6 +12,8 @@
 
 $account = get_object('Account', 1);
 
+print_r($_REQUEST);
+exit;
 
 if (empty($_REQUEST['action'])) {
     $response = log_api_key_access_failure(
