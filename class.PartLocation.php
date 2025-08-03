@@ -1254,8 +1254,8 @@ class PartLocation extends DB_Table
 
 
         $aiku_picking_key='';
-        if(isset($data['aiku_picking_key'])){
-            $aiku_picking_key=$data['aiku_picking_key'];
+        if(isset($data['aiku_picking_id'])){
+            $aiku_picking_key=$data['aiku_picking_id'];
         }
 
         $sql = sprintf(
