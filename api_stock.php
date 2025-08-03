@@ -30,12 +30,7 @@ include_once 'api_stock_picking_common_actions.php';
 switch ($_REQUEST['action']) {
     case 'aiku_picking':
 
-        $response = array(
-            'status'  => 'Pass 1',
 
-        );
-        echo json_encode($response);
-        exit;
 
         include_once 'class.PartLocation.php';
 
@@ -45,6 +40,20 @@ switch ($_REQUEST['action']) {
             'Part SKU'     => $_REQUEST['part_sku'],
             'editor'       => $editor
         );
+
+
+        $response = array(
+            'status'  => 'Pass debug 2',
+            'Location Key' => $_REQUEST['location_key'],
+            'Part SKU'     => $_REQUEST['part_sku'],
+            'editor'       => $editor,
+            'Quantity'         => -$_REQUEST['qty'],
+            'Transaction Type' => 'AikuPick',
+            'Note'             => $_REQUEST['note']
+
+        );
+        echo json_encode($response);
+        exit;
 
 
         $part_location = new PartLocation('find', $part_location_data, 'create');
