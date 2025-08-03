@@ -26,12 +26,23 @@ if (empty($_REQUEST['action'])) {
 
 include_once 'api_stock_picking_common_actions.php';
 
+$editor = array(
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s'),
+    'Subject'      => 'System',
+    'Subject Key'  => 0,
+    'Author Name'  => $_REQUEST['picker_name'].' (via aiku)',
+);
+
 
 switch ($_REQUEST['action']) {
     case 'aiku_picking':
 
 
-        $sql="select `Inventory Transaction Key` from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
+        $sql = "select `Inventory Transaction Key` from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
 
         $stmt = $db->prepare($sql);
         $stmt->execute(
@@ -41,13 +52,12 @@ switch ($_REQUEST['action']) {
         );
         if ($row = $stmt->fetch()) {
             $response = array(
-                'state' => 'Found',
-                'msg'   => 'itf found for this picking',
-                'itf_key'=>$row['Inventory Transaction Key']
+                'state'   => 'Found',
+                'msg'     => 'itf found for this picking',
+                'itf_key' => $row['Inventory Transaction Key']
             );
             echo json_encode($response);
             exit;
-
         }
 
 
@@ -62,10 +72,10 @@ switch ($_REQUEST['action']) {
 
 
         $response = array(
-            'state'  => 'Pass debug 2',
-            'Location Key' => $_REQUEST['location_key'],
-            'Part SKU'     => $_REQUEST['part_sku'],
-            'editor'       => $editor,
+            'state'            => 'Pass debug 2',
+            'Location Key'     => $_REQUEST['location_key'],
+            'Part SKU'         => $_REQUEST['part_sku'],
+            'editor'           => $editor,
             'Quantity'         => $_REQUEST['qty'],
             'Transaction Type' => 'AikuPick',
             'Note'             => $_REQUEST['note']
