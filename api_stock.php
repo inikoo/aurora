@@ -13,7 +13,6 @@
 $account = get_object('Account', 1);
 
 
-
 if (empty($_REQUEST['action'])) {
     $response = log_api_key_access_failure(
         $db,
@@ -31,8 +30,11 @@ include_once 'api_stock_picking_common_actions.php';
 switch ($_REQUEST['action']) {
     case 'aiku_picking':
 
+        $response = array(
+            'status'  => 'Pass 1',
 
-        print_r($_REQUEST);
+        );
+        echo json_encode($response);
         exit;
 
         include_once 'class.PartLocation.php';
