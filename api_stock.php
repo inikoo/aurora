@@ -40,7 +40,7 @@ $editor = array(
 
 switch ($_REQUEST['action']) {
 
-    case 'aiku_delete_picking':
+    case 'aiku_delete_pickingx':
         $editor['Date'] = $_REQUEST['date'];
 
         $sql = "delete  from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
@@ -67,7 +67,7 @@ switch ($_REQUEST['action']) {
         );
         echo json_encode($response);
         exit;
-    case 'aiku_picking':
+    case 'aiku_pickingx':
 
         $editor['Date'] = $_REQUEST['date'];
 
