@@ -298,6 +298,7 @@ class PartLocation extends DB_Table
         if (!is_numeric($qty) or $qty < 0) {
             $this->error = true;
             $this->msg   = _('Quantity On Hand should be a number');
+            return null;
         }
 
 
@@ -317,6 +318,9 @@ class PartLocation extends DB_Table
         if ($row = $stmt->fetch()) {
             if ($row['stock'] != '') {
                 $old_qty = $row['stock'];
+                if (!is_numeric($old_qty) ) {
+                    $old_qty=0;
+                }
             }
         }
 
