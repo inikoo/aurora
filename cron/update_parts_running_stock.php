@@ -45,6 +45,13 @@ if ($result = $db->query($sql)) {
 
         $part->update_stock_run();
 
+        foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
+            $part_location->update_stock();
+        }
+
+        $part->update_stock();
+
+
 
         $contador++;
         $lap_time1 = date('U');

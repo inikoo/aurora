@@ -39,6 +39,34 @@ $editor = array(
 
 
 switch ($_REQUEST['action']) {
+
+    case 'aiku_delete_picking':
+        $editor['Date'] = $_REQUEST['date'];
+
+        $sql = "delete  from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            [
+                $_REQUEST['picking_key'],
+            ]
+        );
+
+        $part = get_object('Part', $_REQUEST['part_sku']);
+
+
+        $part->update_stock_run();
+
+        foreach ($part->get_locations('part_location_object', '', true) as $part_location) {
+            $part_location->update_stock();
+        }
+
+        $part->update_stock();
+        $response = array(
+            'state'   => 'Deleted',
+            'msg'     => 'itf deleted',
+        );
+        echo json_encode($response);
+        exit;
     case 'aiku_picking':
 
         $editor['Date'] = $_REQUEST['date'];
