@@ -554,7 +554,7 @@
     {elseif $website->get('Website Code')=='de.eu'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622457&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=de&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='SE'}
-        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622292&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=se&currency_symbol=kr"></script>
+        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622292&device_type=mobile&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=en&currency_symbol=kr"></script>
     {/if}
 
 {elseif  $account_code=='ES'  }
