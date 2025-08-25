@@ -881,7 +881,7 @@
     {elseif $website->get('Website Code')=='pl.eu'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622535&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=pl&currency_symbol=zł"></script>
     {elseif $website->get('Website Code')=='NL'}
-        <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622609&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=nl&currency_symbol=€"></script>
+        <script type="module" src="../../js/vika_luigi.js?v=40&trackerId=483878-622609&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=nl&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='de.eu'}
         <script type="module" src="../../js/vika_luigi.js?v=39&trackerId=483878-622457&device_type=desktop&color1=4b5058&color2=957a65&color3=e87928&logged_in={if $logged_in}true{else}false{/if}&language=de&currency_symbol=€"></script>
     {elseif $website->get('Website Code')=='SE'}

@@ -104,6 +104,7 @@ const replaceSearchIcon = async () => {
 
 // Init: Search result
 const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, localeList) => {
+    console.log('v-40')
     await import("https://cdn.luigisbox.com/search.js")
     await Luigis.Search(
         {
@@ -117,6 +118,7 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, l
             Theme: "boo",
             Size: 12,
             Facets: searchFacets,
+            QuicksearchTypes: searchFacets,
             DefaultFilters: {
                 type: 'item'
             },
