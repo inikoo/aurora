@@ -9,26 +9,32 @@ trait CustomerAiku
 {
     public function model_updated($field, $key)
     {
-        $this->process_aiku_fetch(
-            'Customer',
-            $key,
-            $field,
-            [
-                'new',
-                'deleted',
-                'sync_portfolio',
-                'tax_number_validation',
-                'Customer Main Contact Name',
-                'Customer Company Name',
-                'Customer Type by Activity',
-                'Customer Main Plain Email',
-                'Customer Main Plain Mobile',
-                'Customer Registration Number',
-                'Customer Website',
-                'Customer Tax Number',
-                'Customer Tax Number Valid'
-            ]
-        );
+
+        if($field!='new'){
+            $this->process_aiku_fetch(
+                'Customer',
+                $key,
+                $field,
+                [
+                    'new',
+                    'deleted',
+                    'sync_portfolio',
+                    'tax_number_validation',
+                    'Customer Main Contact Name',
+                    'Customer Company Name',
+                    'Customer Type by Activity',
+                    'Customer Main Plain Email',
+                    'Customer Main Plain Mobile',
+                    'Customer Registration Number',
+                    'Customer Website',
+                    'Customer Tax Number',
+                    'Customer Tax Number Valid'
+                ]
+            );
+        }
+
+
+
     }
 
 }
