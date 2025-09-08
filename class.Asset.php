@@ -430,8 +430,6 @@ class Asset extends DB_Table {
                     );
 
 
-                    // print ">>".$this->data[$this->table_name.' Materials']."<<";
-
 
                     foreach ($materials_data as $material_data) {
 
