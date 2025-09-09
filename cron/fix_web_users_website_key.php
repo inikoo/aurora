@@ -43,7 +43,7 @@ left join `Store Dimension` on (`Store Key`=`Customer Store Key`) `
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
-       if($row['Website User Website Key']!=$row['Store Website Key']){
+       if($row['Store Website Key'] && $row['Website User Website Key']!=$row['Store Website Key']){
             $sql = sprintf(
                 "update `Website User Dimension` set `Website User Website Key`=%d where `Website User Key`=%d ",$row['Store Website Key'],$row['Website User Key']
             );
