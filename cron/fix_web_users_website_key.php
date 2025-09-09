@@ -47,7 +47,7 @@ if ($result = $db->query($sql)) {
                 "update `Website User Dimension` set `Website User Website Key`=%d where `Website User Key`=%d ",$row['Store Website Key'],$row['Website User Key']
             );
             print 'Current: '.$row['Website User Website Key']."  $sql\n";;
-          //  $db->exec($sql);
+            $db->exec($sql);
         }
 
     }
