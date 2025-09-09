@@ -36,8 +36,7 @@ print date('l jS \of F Y h:i:s A')."\n";
 
 $sql = sprintf(
     "select `Website User Key`,`Customer Store Key`,`Website User Website Key`,`Store Website Key` from `Website User Dimension`  left join `Customer Dimension` on (`Customer Key`=`Website User Customer Key`) 
-left join `Store Dimension` on (`Store Key`=`Customer Store Key`) `
-`  "
+left join `Store Dimension` on (`Store Key`=`Customer Store Key`) "
 );
 
 
