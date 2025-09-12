@@ -266,7 +266,7 @@ trait OrderDiscountOperations
                     (!in_array( $this->data['Order Store Key'],[18,22]) and DNS_ACCOUNT_CODE=='AWEU')
                    or
              //       ($this->data['Order Store Key'] != 3 and DNS_ACCOUNT_CODE=='ES')
-                   ($this->data['Order Store Key']==1 and DNS_ACCOUNT_CODE=='AW')
+                     ($this->data['Order Store Key']==1 and DNS_ACCOUNT_CODE=='AW')
                 ){
                     $this->deals['Order']['Terms'] = true;
                     $this->create_allowances_from_deal_component_data($deal_component_data);
