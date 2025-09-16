@@ -40,7 +40,7 @@ $editor = array(
 
 switch ($_REQUEST['action']) {
 
-    case 'aiku_delete_pickingx':
+    case 'aiku_delete_picking':
         $editor['Date'] = $_REQUEST['date'];
 
         $sql = "delete  from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
@@ -67,7 +67,7 @@ switch ($_REQUEST['action']) {
         );
         echo json_encode($response);
         exit;
-    case 'aiku_pickingx':
+    case 'aiku_picking':
 
         $editor['Date'] = $_REQUEST['date'];
 
@@ -135,7 +135,7 @@ switch ($_REQUEST['action']) {
 //                exit;
 
 
-        $itf_key = $part_location->stock_transfer($_data);
+        $itf_key = $part_location->aiku_stock_transfer($_data);
 
         $response = array(
             'status'  => 'Success',

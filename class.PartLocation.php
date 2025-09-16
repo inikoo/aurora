@@ -1080,6 +1080,128 @@ class PartLocation extends DB_Table
         return $transaction_id;
     }
 
+    function aiku_stock_transfer($data)
+    {
+        $account = get_object('Account', 1);
+
+        if (!is_numeric($this->data['Quantity On Hand'])) {
+            $this->error;
+            $this->msg = 'Stock quantity not numeric';
+        }
+
+
+        $qty_change       = $data['Quantity'];
+        $transaction_type = $data['Transaction Type'];
+
+
+        if (isset($data['Amount'])) {
+            $value_change = $data['Amount'];
+        } else {
+            $value_change = $this->get_sko_cost() * $qty_change;
+        }
+
+
+        // print "qyy $qty_change  value  $value_change ";
+
+        $sql = sprintf(
+            "UPDATE `Part Location Dimension` SET `Quantity On Hand`=%f ,`Stock Value`=%.3f, `Last Updated`=NOW()  WHERE `Part SKU`=%d AND `Location Key`=%d ",
+            $this->data['Quantity On Hand'] + $qty_change,
+            ($this->data['Quantity On Hand'] + $qty_change) * $this->get_sko_cost(),
+            $this->part_sku,
+            $this->location_key
+        );
+
+
+        $trigger_discontinued = $this->part->trigger_discontinued;
+
+        $this->db->exec($sql);
+        $this->get_data();
+
+        $this->part->trigger_discontinued = $trigger_discontinued;
+
+
+        $details = '';
+
+
+        // print $transaction_type."\n";
+
+        if ($qty_change > 0) {
+            $record_type = 'Movement';
+            $section     = 'In';
+            $details     = sprintf(_('%s SKO %s due to cancelled picking'), $qty_change, '<b>'._('send back to location').'</b>').' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+        } else {
+            $record_type = 'Movement';
+            $section     = 'Out';
+            $details     = sprintf(_('%s SKO pick in aiku'), -$qty_change).' ('.($value_change > 0 ? '+' : '').money($value_change, $account->get('Account Currency')).') '.$data['Note'];
+        }
+
+
+
+
+        $editor = $this->get_editor_data();
+
+
+        $aiku_picking_key=(int) $data['aiku_picking_id'];
+
+
+
+        $sql = sprintf(
+            "INSERT INTO `Inventory Transaction Fact` (`aiku_picking_id`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
+		VALUES (%d,%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s)",
+                 $aiku_picking_key,
+            prepare_mysql($record_type),
+            prepare_mysql($section),
+            $this->part_sku,
+            $this->location_key,
+            prepare_mysql($transaction_type),
+            $qty_change,
+            $value_change,
+            $this->editor['User Key'],
+            prepare_mysql($details, false),
+            prepare_mysql($editor['Date'])
+
+        );
+
+
+        //print "$sql\n\n\n";
+
+        $this->db->exec($sql);
+        $transaction_id = $this->db->lastInsertId();
+        $this->process_aiku_fetch('OrgStockMovement',$transaction_id);
+
+        $this->part->update_stock();
+
+        $this->part->update_unknown_location();
+
+        $this->location->update_parts();
+        $this->update_stock_value();
+
+        $this->updated = true;
+
+
+        switch ($transaction_type) {
+            case('Lost'):
+                $this->part->update_leakages('Lost');
+                break;
+            case('Broken'):
+                $this->part->update_leakages('Damaged');
+                break;
+            case('Found'):
+                $this->part->update_leakages('Found');
+                break;
+            case('Other Out'):
+
+                $this->part->update_leakages('Errors');
+
+
+                break;
+        }
+
+        $this->part->model_updated( 'locations', $this->part->id);
+
+        return $transaction_id;
+    }
+
     function stock_transfer($data)
     {
         $account = get_object('Account', 1);
