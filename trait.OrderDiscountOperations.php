@@ -263,8 +263,8 @@ trait OrderDiscountOperations
                 );
 
                 if(
-                    (!in_array( $this->data['Order Store Key'],[18,22]) and DNS_ACCOUNT_CODE=='AWEU')
-                   or
+//                    (!in_array( $this->data['Order Store Key'],[18,22]) and DNS_ACCOUNT_CODE=='AWEU')
+//                   or
              //       ($this->data['Order Store Key'] != 3 and DNS_ACCOUNT_CODE=='ES')
                      ($this->data['Order Store Key']==1 and DNS_ACCOUNT_CODE=='AW')
                 ){
