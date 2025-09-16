@@ -460,7 +460,7 @@ trait Send_Email
             //echo $e->getAwsErrorCode()."\n";
             //echo $e->getAwsErrorMessage();
             if ($e->getAwsErrorCode() == 'Throttling') {
-                usleep(47620);
+                usleep(37620);
             } else {
                 $email_tracking->fast_update(
                     array(
