@@ -33,6 +33,11 @@ trait Aiku
                     DNS_ACCOUNT_CODE
                 );
             } else {
+
+                if($model=='Product' && $field=='parts'){
+                    $model='Product_Parts';
+                }
+
                 $date = gmdate('Y-m-d H:i:s');
                 $sql  = 'insert into `Stack Aiku Dimension` (`Stack Aiku Creation Date`,`Stack Aiku Last Update Date`,`Stack Aiku Operation`,`Stack Aiku Operation Key`) values (?,?,?,?) 
                       ON DUPLICATE KEY UPDATE `Stack Aiku Last Update Date`=? ,`Stack Aiku Counter`=`Stack Aiku Counter`+1 ';
