@@ -40,6 +40,11 @@ $editor = array(
 
 switch ($_REQUEST['action']) {
 
+    case 'create_customer':
+
+        include_once 'api_aiku_create_customer.php';
+        exit;
+
     case 'unsubscribe':
 
         include_once 'api_unsubscribe.php';
