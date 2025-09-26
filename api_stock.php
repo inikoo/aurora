@@ -40,6 +40,10 @@ $editor = array(
 
 switch ($_REQUEST['action']) {
 
+    case 'unsubscribe':
+
+        include_once 'api_unsubscribe.php';
+        exit;
     case 'aiku_delete_picking':
         $editor['Date'] = $_REQUEST['date'];
 
