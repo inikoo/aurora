@@ -1,6 +1,6 @@
 <?php
 
-
+require_once 'class.Customer.php';
 $shop_key = $_REQUEST['store_key'];
 
 $store = get_object('Store', $shop_key);
