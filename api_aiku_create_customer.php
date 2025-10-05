@@ -6,6 +6,14 @@ $shop_key = $_REQUEST['store_key'];
 $store = get_object('Store', $shop_key);
 
 
+$response = array(
+    'customer_key' => $_REQUEST,
+
+
+);
+echo json_encode($response);
+exit;
+
 $data = array(
     'Customer Main Contact Name'    => $_REQUEST['contact_name'],
     'Customer Company Name'         => $_REQUEST['company_name'],
@@ -39,9 +47,9 @@ list($customer, $website_user) = $store->create_customer($data, array('Website U
 
 
 $response = array(
-    'customer_key'  => $customer->id,
-    'website_user_key'   => $website_user->id,
-    'customer_data' => $data,
+    'customer_key'     => $customer->id,
+    'website_user_key' => $website_user->id,
+    'customer_data'    => $data,
 
 
 );
