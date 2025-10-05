@@ -27,7 +27,7 @@ if (array_key_exists('identity_document_number', $_REQUEST)) {
 }
 
 if (array_key_exists('company_name', $_REQUEST)) {
-    $data['Customer Main Contact Nam'] = $_REQUEST['company_name'];
+    $data['Customer Main Contact Name'] = $_REQUEST['company_name'];
 }
 
 if (array_key_exists('company_name', $_REQUEST)) {
