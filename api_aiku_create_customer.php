@@ -3,7 +3,7 @@
 
 $shop_key = $_REQUEST['store_key'];
 
-$store = get_object('Website', $shop_key);
+$store = get_object('Store', $shop_key);
 
 
 $data = array(
@@ -17,7 +17,7 @@ $data = array(
 );
 
 
-$data['editor']                         = $this->editor;
+$data['editor']                         = $editor;
 $data['Customer Store Key']             = $store->id;
 $data['Customer Billing Address Link']  = 'Contact';
 $data['Customer Delivery Address Link'] = 'Billing';
