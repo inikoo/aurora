@@ -35,12 +35,14 @@ $data['Customer Contact Address sortingCode']        = $_REQUEST['sorting_code']
 $data['Customer Contact Address country']            = $_REQUEST['country_code'];
 
 
-//list($customer, $website_user) = $store->create_customer($data, array('Website User Password' => random_string_a(16)));
+list($customer, $website_user) = $store->create_customer($data, array('Website User Password' => random_string_a(16)));
 
 
 $response = array(
+    'customer_key'  => $customer->id,
+    'website_user_key'   => $website_user->id,
     'customer_data' => $data,
-    'pwd'           => random_string_a(16)
+
 
 );
 echo json_encode($response);
