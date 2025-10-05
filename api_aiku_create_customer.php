@@ -6,8 +6,6 @@ $shop_key = $_REQUEST['store_key'];
 $store = get_object('Store', $shop_key);
 
 
-
-
 $data = array(
     'Customer Main Plain Email'     => $_REQUEST['email'],
     'Customer Send Newsletter'      => $_REQUEST['send_newsletter'] ? 'Yes' : 'No',
@@ -78,6 +76,8 @@ list($customer, $website_user) = $store->create_customer($data, array('Website U
 
 
 $response = array(
+    'error'            => $store->error,
+    'error_info'       => $store->msg,
     'customer_key'     => $customer->id,
     'website_user_key' => $website_user->id,
     'customer_data'    => $data,
