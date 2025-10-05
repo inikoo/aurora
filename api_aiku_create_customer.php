@@ -1,6 +1,34 @@
 <?php
 
 require_once 'class.Customer.php';
+
+
+$sql = "select `Customer Key` from `Customer Dimension` where `from_aiku_id`=? ";
+
+$stmt = $db->prepare($sql);
+$stmt->execute(
+    [
+        $_REQUEST['aiku_id'],
+    ]
+);
+if ($row = $stmt->fetch()) {
+    $customer = get_object('Customer', $row['Customer Key']);
+    $customer->fast_update([
+        'Customer Send Newsletter'      => $_REQUEST['send_newsletter'] ? 'Yes' : 'No',
+        'Customer Send Email Marketing' => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
+        'Customer Main Plain Email'     => $_REQUEST['email'],
+    ]);
+
+    $response = array(
+        'state'        => 'Found',
+        'msg'          => 'customer found and updated',
+        'customer_key' => $customer->id
+    );
+    echo json_encode($response);
+    exit;
+}
+
+
 $shop_key = $_REQUEST['store_key'];
 
 $store = get_object('Store', $shop_key);
@@ -73,6 +101,13 @@ if (array_key_exists('country_code', $_REQUEST)) {
 
 
 list($customer, $website_user) = $store->create_customer($data, array('Website User Password' => random_string_a(16)));
+
+
+if ($customer) {
+    $customer->fast_update([
+        'from_aiku_id' => $_REQUEST['aiku_id'],
+    ]);
+}
 
 
 $response = array(
