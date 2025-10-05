@@ -15,32 +15,69 @@ echo json_encode($response);
 exit;
 
 $data = array(
-    'Customer Main Contact Name'    => $_REQUEST['contact_name'],
-    'Customer Company Name'         => $_REQUEST['company_name'],
-    'Customer Registration Number'  => $_REQUEST['identity_document_number'],
-    'Customer Tax Number'           => $_REQUEST['tax_number'],
     'Customer Main Plain Email'     => $_REQUEST['email'],
-    'Customer Main Plain Mobile'    => $_REQUEST['phone'],
     'Customer Send Newsletter'      => $_REQUEST['send_newsletter'] ? 'Yes' : 'No',
     'Customer Send Email Marketing' => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
 
 );
 
 
+if (array_key_exists('phone', $_REQUEST)) {
+    $data['Customer Main Plain Mobile'] = $_REQUEST['phone'];
+}
+
+if (array_key_exists('tax_number', $_REQUEST)) {
+    $data['Customer Tax Number'] = $_REQUEST['tax_number'];
+}
+
+if (array_key_exists('identity_document_number', $_REQUEST)) {
+    $data['Customer Registration Number'] = $_REQUEST['identity_document_number'];
+}
+
+if (array_key_exists('company_name', $_REQUEST)) {
+    $data['Customer Main Contact Nam'] = $_REQUEST['company_name'];
+}
+
+if (array_key_exists('company_name', $_REQUEST)) {
+    $data['Customer Company Name'] = $_REQUEST['company_name'];
+}
+
 $data['editor']                         = $editor;
 $data['Customer Store Key']             = $store->id;
 $data['Customer Billing Address Link']  = 'Contact';
 $data['Customer Delivery Address Link'] = 'Billing';
 
+if (array_key_exists('locality', $_REQUEST)) {
+    $data['Customer Contact Address locality'] = $_REQUEST['locality'];
+}
 
-$data['Customer Contact Address locality']           = $_REQUEST['locality'];
-$data['Customer Contact Address postalCode']         = $_REQUEST['postal_code'];
-$data['Customer Contact Address addressLine1']       = $_REQUEST['address_line_1'];
-$data['Customer Contact Address addressLine2']       = $_REQUEST['address_line_2'];
-$data['Customer Contact Address administrativeArea'] = $_REQUEST['administrative_area'];
-$data['Customer Contact Address dependentLocality']  = $_REQUEST['dependent_locality'];
-$data['Customer Contact Address sortingCode']        = $_REQUEST['sorting_code'];
-$data['Customer Contact Address country']            = $_REQUEST['country_code'];
+if (array_key_exists('postal_code', $_REQUEST)) {
+    $data['Customer Contact Address postalCode'] = $_REQUEST['postal_code'];
+}
+
+if (array_key_exists('address_line_1', $_REQUEST)) {
+    $data['Customer Contact Address addressLine1'] = $_REQUEST['address_line_1'];
+}
+
+if (array_key_exists('address_line_2', $_REQUEST)) {
+    $data['Customer Contact Address addressLine2'] = $_REQUEST['address_line_2'];
+}
+
+if (array_key_exists('administrative_area', $_REQUEST)) {
+    $data['Customer Contact Address administrativeArea'] = $_REQUEST['administrative_area'];
+}
+
+if (array_key_exists('dependent_locality', $_REQUEST)) {
+    $data['Customer Contact Address dependentLocality'] = $_REQUEST['dependent_locality'];
+}
+
+if (array_key_exists('sorting_code', $_REQUEST)) {
+    $data['Customer Contact Address sortingCode'] = $_REQUEST['sorting_code'];
+}
+
+if (array_key_exists('country_code', $_REQUEST)) {
+    $data['Customer Contact Address country'] = $_REQUEST['country_code'];
+}
 
 
 list($customer, $website_user) = $store->create_customer($data, array('Website User Password' => random_string_a(16)));
