@@ -6,13 +6,7 @@ $shop_key = $_REQUEST['store_key'];
 $store = get_object('Store', $shop_key);
 
 
-$response = array(
-    'customer_key' => $_REQUEST,
 
-
-);
-echo json_encode($response);
-exit;
 
 $data = array(
     'Customer Main Plain Email'     => $_REQUEST['email'],
