@@ -274,7 +274,16 @@ class Customer extends Subject
             return $this;
         } else {
             $this->error = true;
-            $this->msg   = 'Error inserting customer record';
+            $errorInfo = $stmt->errorInfo();
+            $errorDetail = '';
+            if (is_array($errorInfo)) {
+                if (!empty($errorInfo[2])) {
+                    $errorDetail = $errorInfo[2];
+                } else {
+                    $errorDetail = implode(' | ', array_filter($errorInfo));
+                }
+            }
+            $this->msg = 'Error inserting customer record' . ($errorDetail ? ': ' . $errorDetail : '');
         }
 
         return false;
