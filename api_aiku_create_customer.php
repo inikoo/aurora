@@ -115,7 +115,7 @@ $response = array(
     'error_info'       => $store->msg,
     'customer_key'     => $customer->id,
     'website_user_key' => $website_user->id,
-    'customer_data'    => $data,
+  //  'customer_data'    => $data,
 
 
 );
