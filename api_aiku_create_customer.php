@@ -103,7 +103,9 @@ if (array_key_exists('country_code', $_REQUEST)) {
 list($customer, $website_user) = $store->create_customer($data, array('Website User Password' => random_string_a(16)));
 
 
-if ($customer) {
+if ($store->new_customer_id) {
+    $customer=get_object('Customer',$store->new_customer_id);
+
     $customer->fast_update([
         'from_aiku_id' => $_REQUEST['aiku_id'],
     ]);
@@ -111,11 +113,12 @@ if ($customer) {
 
 
 $response = array(
+    'customer_key'     => $store->new_customer_id,
     'error'            => $store->error,
     'error_info'       => $store->msg,
-    'customer_key'     => $customer->id,
+    //  'customer_key'     => $customer->id,
     'website_user_key' => $website_user->id,
-  //  'customer_data'    => $data,
+    //  'customer_data'    => $data,
 
 
 );

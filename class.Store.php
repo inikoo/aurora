@@ -3495,6 +3495,7 @@ return;
 
                 $customer->fast_update_json_field('Customer Metadata', 'cur', $this->get('Store Currency Code'));
                 $this->new_customer = true;
+                $this->new_customer_id = $customer->id;
 
                 include_once 'utils/new_fork.php';
 
