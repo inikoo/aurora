@@ -28,7 +28,9 @@ if ($row = $stmt->fetch()) {
         'Customer Send Email Marketing' => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
         'Customer Send Basket Emails'   => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
         'Customer Main Plain Email'     => $_REQUEST['email'],
-        'Customer First Contacted Date' => $_REQUEST['created_at']
+        'Customer First Contacted Date' => $_REQUEST['created_at'] ?? '',
+        'Customer Main Contact Name'    => $_REQUEST['company_name'] ?? '',
+        'Customer Company Name'         => $_REQUEST['email'],
     ]);
 
     $response = array(
@@ -73,8 +75,8 @@ if (array_key_exists('identity_document_number', $_REQUEST)) {
     $data['Customer Registration Number'] = $_REQUEST['identity_document_number'];
 }
 
-if (array_key_exists('company_name', $_REQUEST)) {
-    $data['Customer Main Contact Name'] = $_REQUEST['company_name'];
+if (array_key_exists('contact_name', $_REQUEST)) {
+    $data['Customer Main Contact Name'] = $_REQUEST['contact_name'];
 }
 
 if (array_key_exists('company_name', $_REQUEST)) {
