@@ -136,12 +136,10 @@ $response = array(
     'customer_key'     => $store->new_customer_id,
     'error'            => $store->error,
     'error_info'       => $store->msg,
-    //  'customer_key'     => $customer->id,
     'website_user_key' => $website_user->id,
-    //  'customer_data'    => $data,
-
-
+    'aiku_id'          => $_REQUEST['aiku_id'],
 );
+
 echo json_encode($response);
 exit;
 
