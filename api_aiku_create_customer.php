@@ -3,6 +3,16 @@
 require_once 'class.Customer.php';
 
 
+if ($_REQUEST['customer_key']) {
+    $customer = get_object('Customer', $_REQUEST['customer_key']);
+    if ($customer) {
+        $customer->fast_update([
+            'from_aiku_id' => $_REQUEST['aiku_id'],
+        ]);
+    }
+}
+
+
 $sql = "select `Customer Key` from `Customer Dimension` where `from_aiku_id`=? ";
 
 $stmt = $db->prepare($sql);
