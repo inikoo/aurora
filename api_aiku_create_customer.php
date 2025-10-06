@@ -17,6 +17,7 @@ if ($row = $stmt->fetch()) {
         'Customer Send Newsletter'      => $_REQUEST['send_newsletter'] ? 'Yes' : 'No',
         'Customer Send Email Marketing' => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
         'Customer Main Plain Email'     => $_REQUEST['email'],
+        'Customer First Contacted Date' => $_REQUEST['create_at']
     ]);
 
     $response = array(
@@ -104,10 +105,11 @@ list($customer, $website_user) = $store->create_customer($data, array('Website U
 
 
 if ($store->new_customer_id) {
-    $customer=get_object('Customer',$store->new_customer_id);
+    $customer = get_object('Customer', $store->new_customer_id);
 
     $customer->fast_update([
-        'from_aiku_id' => $_REQUEST['aiku_id'],
+        'from_aiku_id'                  => $_REQUEST['aiku_id'],
+        'Customer First Contacted Date' => $_REQUEST['create_at']
     ]);
 }
 
