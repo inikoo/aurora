@@ -140,6 +140,7 @@ $response = array(
     'error_info'       => $store->msg,
     'website_user_key' => $website_user->id,
     'aiku_id'          => $_REQUEST['aiku_id'],
+    'email'          => $_REQUEST['email'],
 );
 
 echo json_encode($response);
