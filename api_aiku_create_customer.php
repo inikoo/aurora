@@ -23,7 +23,13 @@ if ($row = $stmt->fetch()) {
     $response = array(
         'state'        => 'Found',
         'msg'          => 'customer found and updated',
-        'customer_key' => $customer->id
+        'customer_key' => $customer->id,
+        'data'         => [
+            'Customer Send Newsletter'      => $_REQUEST['send_newsletter'] ? 'Yes' : 'No',
+            'Customer Send Email Marketing' => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
+            'Customer Main Plain Email'     => $_REQUEST['email'],
+            'Customer First Contacted Date' => $_REQUEST['created_at']
+        ]
     );
     echo json_encode($response);
     exit;
