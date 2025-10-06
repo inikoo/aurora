@@ -26,6 +26,7 @@ if ($row = $stmt->fetch()) {
     $customer->fast_update([
         'Customer Send Newsletter'      => $_REQUEST['send_newsletter'] ? 'Yes' : 'No',
         'Customer Send Email Marketing' => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
+        'Customer Send Basket Emails'   => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
         'Customer Main Plain Email'     => $_REQUEST['email'],
         'Customer First Contacted Date' => $_REQUEST['created_at']
     ]);
@@ -37,6 +38,7 @@ if ($row = $stmt->fetch()) {
         'data'         => [
             'Customer Send Newsletter'      => $_REQUEST['send_newsletter'] ? 'Yes' : 'No',
             'Customer Send Email Marketing' => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
+            'Customer Send Basket Emails'   => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
             'Customer Main Plain Email'     => $_REQUEST['email'],
             'Customer First Contacted Date' => $_REQUEST['created_at']
         ]
