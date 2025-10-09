@@ -29,8 +29,8 @@ if ($row = $stmt->fetch()) {
         'Customer Send Basket Emails'   => $_REQUEST['send_marketing'] ? 'Yes' : 'No',
         'Customer Main Plain Email'     => $_REQUEST['email'],
         'Customer First Contacted Date' => $_REQUEST['created_at'] ?? '',
-        'Customer Main Contact Name'    => $_REQUEST['company_name'] ?? '',
-        'Customer Company Name'         => $_REQUEST['email'],
+        'Customer Main Contact Name'    => $_REQUEST['contact_name'] ?? '',
+        'Customer Company Name'         => $_REQUEST['company_name']??'',
     ]);
 
     $response = array(

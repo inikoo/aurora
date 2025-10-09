@@ -3549,6 +3549,7 @@ return;
     function create_prospect($data)
     {
         $this->new_prospect = false;
+        $this->new_prospect_id=null;
 
         $data['editor']             = $this->editor;
         $data['Prospect Store Key'] = $this->id;
@@ -3627,6 +3628,7 @@ return;
 
             if ($prospect->new) {
                 $this->new_prospect = true;
+                $this->new_prospect_id=$prospect->id;
             } else {
                 $this->error      = true;
                 $this->msg        = $prospect->msg;

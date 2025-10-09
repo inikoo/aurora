@@ -45,6 +45,11 @@ switch ($_REQUEST['action']) {
         include_once 'api_aiku_create_customer.php';
         exit;
 
+    case 'create_prospect':
+
+        include_once 'api_aiku_create_prospect.php';
+        exit;
+
     case 'unsubscribe':
 
         include_once 'api_unsubscribe.php';
