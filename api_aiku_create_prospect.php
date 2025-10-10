@@ -3,8 +3,7 @@ include_once 'keyring/key.php';
 
 require_once 'class.Prospect.php';
 
-echo json_encode($_REQUEST);
-exit;
+
 
 if (isset($_REQUEST['prospect_key']) && $_REQUEST['prospect_key']) {
     $prospect = get_object('Prospect', $_REQUEST['prospect_key']);
