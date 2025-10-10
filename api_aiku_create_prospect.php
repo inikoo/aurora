@@ -1,7 +1,7 @@
 <?php
 include_once 'keyring/key.php';
 
-require_once 'class.Prospct.php';
+require_once 'class.Prospect.php';
 
 echo json_encode($_REQUEST);
 exit;
