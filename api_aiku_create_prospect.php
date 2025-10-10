@@ -5,7 +5,7 @@ require_once 'class.Prospct.php';
 echo json_encode($_REQUEST);
 exit;
 
-if ($_REQUEST['prospect_key']) {
+if (isset($_REQUEST['prospect_key']) && $_REQUEST['prospect_key']) {
     $prospect = get_object('Prospect', $_REQUEST['prospect_key']);
     if ($prospect) {
         $prospect->fast_update([
@@ -56,9 +56,13 @@ $store = get_object('Store', $shop_key);
 $data = array(
     'Prospect Main Plain Email' => $_REQUEST['email'],
     'Prospect Status'           => $_REQUEST['status'],
+    'Prospect Opt In'           => $_REQUEST['opt_in'],
 
 );
 
+if (array_key_exists('customer_key', $_REQUEST)) {
+    $data['Prospect Customer Key'] = $_REQUEST['customer_key'];
+}
 
 if (array_key_exists('phone', $_REQUEST)) {
     $data['Prospect Main Plain Mobile'] = $_REQUEST['phone'];

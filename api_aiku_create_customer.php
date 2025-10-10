@@ -3,7 +3,7 @@
 require_once 'class.Customer.php';
 
 
-if ($_REQUEST['customer_key']) {
+if ( isset($_REQUEST['customer_key']) &&  $_REQUEST['customer_key']) {
     $customer = get_object('Customer', $_REQUEST['customer_key']);
     if ($customer) {
         $customer->fast_update([
