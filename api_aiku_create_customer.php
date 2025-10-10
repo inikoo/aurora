@@ -1,9 +1,11 @@
 <?php
 
+include_once 'keyring/key.php';
+
 require_once 'class.Customer.php';
 
 
-if ( isset($_REQUEST['customer_key']) &&  $_REQUEST['customer_key']) {
+if (isset($_REQUEST['customer_key']) && $_REQUEST['customer_key']) {
     $customer = get_object('Customer', $_REQUEST['customer_key']);
     if ($customer) {
         $customer->fast_update([
@@ -30,7 +32,7 @@ if ($row = $stmt->fetch()) {
         'Customer Main Plain Email'     => $_REQUEST['email'],
         'Customer First Contacted Date' => $_REQUEST['created_at'] ?? '',
         'Customer Main Contact Name'    => $_REQUEST['contact_name'] ?? '',
-        'Customer Company Name'         => $_REQUEST['company_name']??'',
+        'Customer Company Name'         => $_REQUEST['company_name'] ?? '',
     ]);
 
     $response = array(
@@ -121,7 +123,7 @@ if (array_key_exists('country_code', $_REQUEST)) {
 }
 
 
-list($customer, $website_user) = $store->create_customer($data, array('Website User Password' => random_string_a(16)));
+$store->create_customer($data, array('Website User Password' => random_string_a(16)));
 
 
 if ($store->new_customer_id) {
@@ -135,12 +137,11 @@ if ($store->new_customer_id) {
 
 
 $response = array(
-    'customer_key'     => $store->new_customer_id,
-    'error'            => $store->error,
-    'error_info'       => $store->msg,
-    'website_user_key' => $website_user->id,
-    'aiku_id'          => $_REQUEST['aiku_id'],
-    'email'          => $_REQUEST['email'],
+    'customer_key' => $store->new_customer_id,
+    'error'        => $store->error,
+    'error_info'   => $store->msg,
+    'aiku_id'      => $_REQUEST['aiku_id'],
+    'email'        => $_REQUEST['email'],
 );
 
 echo json_encode($response);

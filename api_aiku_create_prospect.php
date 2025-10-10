@@ -1,4 +1,5 @@
 <?php
+include_once 'keyring/key.php';
 
 require_once 'class.Prospct.php';
 
