@@ -210,13 +210,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     searchAttributesRemoved = ['price', 'price_amount']
                     // searchFacets = ['price_amount', 'brand', 'category', 'color']
-                    searchFacets = ['brand', 'category', 'color']
+                    searchFacets = ['brand', 'category:12', 'color']
                 } else {
                     autoCompleteAttributes = ['product_code']
                     autoCompleteAttributesRemoved = ['price', 'formatted_price', 'price_amount']         
                     
                     searchAttributesRemoved = ['price', 'formatted_price', 'price_amount']
-                    searchFacets = ['brand', 'category', 'color']
+                    searchFacets = ['brand', 'category:12', 'color']
 
                 }
             
