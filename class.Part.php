@@ -3447,14 +3447,21 @@ class Part extends Asset
         $stock_external = $stock_data[3];
 
 
+        $new_stock_in_process= $required - $picked;
+
         $this->fast_update(array(
             'Part Current Value'                  => $value,
-            'Part Current Stock In Process'       => $required - $picked,
+            'Part Current Stock In Process'       => $new_stock_in_process,
             'Part Current Stock Picked'           => $picked,
             'Part Current On Hand Stock'          => $stock,
             'Part Current On Hand Stock External' => $stock_external
 
         ));
+
+        if($new_stock_in_process!=$old_stock_in_progress ){
+            $this->model_updated( 'StockLocations', $this->id);
+        }
+
         /*
                 print "Stock $stock Picked  $picked\n";
                 print "b* $old_value   ** ".$this->data['Part Current Value']."  \n"   ;
@@ -4235,6 +4242,7 @@ class Part extends Asset
 
         if ($old_value != $stock_in_paid_orders) {
             $this->update_stock(true);
+            $this->model_updated( 'StockLocations', $this->id);
         }
     }
 

@@ -23,7 +23,8 @@ trait PartAiku
                 'Part Active From',
                 'Part Units Per Package',
                 'Part Valid To',
-                'Part Status'
+                'Part Status',
+                'StockLocations'
 
             ]
         );
