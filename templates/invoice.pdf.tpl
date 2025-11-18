@@ -12,7 +12,6 @@
         p {
             margin: 0pt;
         }
-
         h1 {
             font-size: 14pt
         }

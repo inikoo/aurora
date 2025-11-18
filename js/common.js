@@ -3,7 +3,6 @@
  Copyright (c) 2015, Inikoo
  Version 3.0*/
 
-
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }

@@ -13,7 +13,6 @@ function confirm_item(transaction_key) {
 
 }
 
-
 function mark_as_received(transaction_key) {
 
     var request = '/ar_agents_edit.php?tipo=mark_as_received&key=' + transaction_key

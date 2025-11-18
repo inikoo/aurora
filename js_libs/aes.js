@@ -30,7 +30,6 @@ function Cipher(input, w) {    // main Cipher function [§5.1]
         state = MixColumns(state, Nb);
         state = AddRoundKey(state, w, round, Nb);
     }
-
     state = SubBytes(state, Nb);
     state = ShiftRows(state, Nb);
     state = AddRoundKey(state, w, Nr, Nb);
