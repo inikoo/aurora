@@ -445,7 +445,9 @@ class Part extends Asset
           left join  `Supplier Part Dimension` SP on (POTF.`Supplier Part Key`=SP.`Supplier Part Key`) left join 
                 `Part Dimension` Pa on (SP.`Supplier Part Part SKU`=Pa.`Part SKU`)
         
-        WHERE POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ('Placed','Cancelled','InvoiceChecked','NoReceived') ",
+        WHERE 
+             PO. `Purchase Order Key` is not null and
+            POTF.`Supplier Part Key`IN (%s) AND  POTF.`Supplier Delivery Key` IS NULL AND POTF.`Purchase Order Transaction State` NOT IN ('Placed','Cancelled','InvoiceChecked','NoReceived') ",
                 implode(',', $supplier_parts)
             );
 
