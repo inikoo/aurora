@@ -17,13 +17,15 @@ require_once __DIR__.'/cron_common.php';
 
 
 $sql = sprintf(
-    'SELECT `Part SKU` FROM `Part Dimension`   ORDER BY `Part SKU`  DESC '
+    'SELECT `Part SKU`,`Part Reference` FROM `Part Dimension`  where `Part Status` in ("Discontinuing","In Use")   ORDER BY `Part Reference`  '
 );
 
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
+
         $part =  get_object('Part',$row['Part SKU']);
         $part->update_next_deliveries_data();
+        print $row['Part Reference']."\r";
 
     }
 
