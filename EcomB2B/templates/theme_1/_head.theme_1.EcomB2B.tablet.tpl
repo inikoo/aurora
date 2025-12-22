@@ -20,63 +20,63 @@
 
     {if  $account_code=='AW'  }
     {if $website->get('Website Code')=='AW.biz'}
-        <script src="https://scripts.luigisbox.com/LBX-588294.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-588294.js"></script>
     {elseif $website->get('Website Code')=='AWD'}
-        <script src="https://scripts.luigisbox.com/LBX-621865.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-621865.js"></script>
     {/if}
 
 
     {elseif  $account_code=='AROMA'  }
     {if $website->get('Website Code')=='Aroma'}
-        <script src="https://scripts.luigisbox.com/LBX-621871.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-621871.js"></script>
     {elseif $website->get('Website Code')=='AC'}
-        <script src="https://scripts.luigisbox.com/LBX-621949.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-621949.js"></script>
     {/if}
 
 
     {elseif  $account_code=='AWEU'  }
     {if $website->get('Website Code')=='aw.eu'}
-        <script src="https://scripts.luigisbox.com/LBX-622491.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622491.js"></script>
     {elseif $website->get('Website Code')=='AWD'}
-        <script src="https://scripts.luigisbox.com/LBX-622636.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622636.js"></script>
     {elseif $website->get('Website Code')=='HR'}
-        <script src="https://scripts.luigisbox.com/LBX-622391.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622391.js"></script>
     {elseif $website->get('Website Code')=='it.eu'}
-        <script src="https://scripts.luigisbox.com/LBX-622449.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622449.js"></script>
     {elseif $website->get('Website Code')=='RO'}
-        <script src="https://scripts.luigisbox.com/LBX-622387.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622387.js"></script>
     {elseif $website->get('Website Code')=='hu.eu'}
-        <script src="https://scripts.luigisbox.com/LBX-622237.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622237.js"></script>
     {elseif $website->get('Website Code')=='fr.eu'}
-        <script src="https://scripts.luigisbox.com/LBX-622603.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622603.js"></script>
     {elseif $website->get('Website Code')=='sk.com'}
-        <script src="https://scripts.luigisbox.com/LBX-622511.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622511.js"></script>
     {elseif $website->get('Website Code')=='cz.eu'}
-        <script src="https://scripts.luigisbox.com/LBX-622467.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622467.js"></script>
     {elseif $website->get('Website Code')=='pl.eu'}
-        <script src="https://scripts.luigisbox.com/LBX-622535.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622535.js"></script>
     {elseif $website->get('Website Code')=='NL'}
-        <script src="https://scripts.luigisbox.com/LBX-622609.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622609.js"></script>
     {elseif $website->get('Website Code')=='de.eu'}
-        <script src="https://scripts.luigisbox.com/LBX-622457.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622457.js"></script>
     {elseif $website->get('Website Code')=='SE'}
-        <script src="https://scripts.luigisbox.com/LBX-622292.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622292.js"></script>
     {/if}
 
 
     {elseif  $account_code=='ES'  }
     {if $website->get('Website Code')=='ADE'}
-        <script src="https://scripts.luigisbox.com/LBX-622183.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622183.js"></script>
     {elseif $website->get('Website Code')=='EU'}
-        <script src="https://scripts.luigisbox.com/LBX-622130.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622130.js"></script>
     {elseif $website->get('Website Code')=='PT'}
-        <script src="https://scripts.luigisbox.com/LBX-622079.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622079.js"></script>
     {elseif $website->get('Website Code')=='ES'}
-        <script src="https://scripts.luigisbox.com/LBX-622012.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622012.js"></script>
     {elseif $website->get('Website Code')=='FR'}
-        <script src="https://scripts.luigisbox.com/LBX-621970.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-621970.js"></script>
     {elseif $website->get('Website Code')=='DSE'}
-        <script src="https://scripts.luigisbox.com/LBX-622153.js"></script>
+        <script src="https://scripts.luigisbox.tech/LBX-622153.js"></script>
     {/if}
     {/if}
 

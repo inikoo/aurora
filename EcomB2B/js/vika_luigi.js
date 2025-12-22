@@ -8,7 +8,7 @@ function stringToBoolean(str) {
 
 // Init: Auto Complete
 const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes, localeList, deviceType) => {
-    await import("https://cdn.luigisbox.com/autocomplete.js")
+    await import("https://cdn.luigisbox.tech/autocomplete.js")
     await AutoComplete(
         {
             Layout: "heromobile",
@@ -105,7 +105,7 @@ const replaceSearchIcon = async () => {
 // Init: Search result
 const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, localeList) => {
     console.log('v-40')
-    await import("https://cdn.luigisbox.com/search.js")
+    await import("https://cdn.luigisbox.tech/search.js")
     await Luigis.Search(
         {
             TrackerId: luigiTrackerId,
@@ -139,7 +139,7 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, l
 const importStyleCSS = () => {
     const link = document.createElement("link")
     link.rel = "stylesheet"
-    link.href = "https://cdn.luigisbox.com/autocomplete.css"
+    link.href = "https://cdn.luigisbox.tech/autocomplete.css"
     document.head.appendChild(link)
 }
 
