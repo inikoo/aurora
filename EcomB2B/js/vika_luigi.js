@@ -6,9 +6,19 @@ function stringToBoolean(str) {
     }
 }
 
+const loadScript = (url) => {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+};
+
 // Init: Auto Complete
 const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAttributes, localeList, deviceType) => {
-    await import("https://cdn.luigisbox.tech/autocomplete.js")
+    await loadScript("https://cdn.luigisbox.tech/autocomplete.js")
     await AutoComplete(
         {
             Layout: "heromobile",
@@ -105,7 +115,7 @@ const replaceSearchIcon = async () => {
 // Init: Search result
 const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, localeList) => {
     console.log('v-40')
-    await import("https://cdn.luigisbox.tech/search.js")
+    await loadScript("https://cdn.luigisbox.tech/search.js")
     await Luigis.Search(
         {
             TrackerId: luigiTrackerId,
