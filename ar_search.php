@@ -328,13 +328,11 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
                         ],
 
                         "should" => [
-                            [
-                                "rank_feature" => [
-                                    "field" => "weight",
-                                    "factor" => 1.2,
-                                    "modifier" => "log1p"
-                                ]
-                            ],
+//                            [
+//                                "rank_feature" => [
+//                                    "field" => "weight",
+//                                ]
+//                            ],
                             [
                                 'match' => [
                                     'code^2' => $query,
@@ -389,14 +387,13 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
     }
 
     foreach ($scopes as $scope => $boost) {
-        $params['body']['query']['bool']['should'][] = array(
-            "rank_feature" => [
-                "field" => "scopes.".$scope,
-                "boost" => $boost,
-                "factor" => 1.2,
-                "modifier" => "log1p"
-            ]
-        );
+//        $params['body']['query']['bool']['should'][] = array(
+//            "rank_feature" => [
+//                "field" => "scopes.".$scope,
+//                "boost" => $boost,
+//
+//            ]
+//        );
     }
 
     if (count($stores) > 0) {
