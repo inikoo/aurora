@@ -415,6 +415,8 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
     $now = DateTime::createFromFormat('U.u', sprintf('%.f', microtime(true)));
 
 
+    print_r($params);
+    exit;
 
     $result = $client->search($params);
 
