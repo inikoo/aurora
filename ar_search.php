@@ -330,7 +330,9 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
                         "should" => [
                             [
                                 "rank_feature" => [
-                                    "field" => "weight"
+                                    "field" => "weight",
+                                    "factor" => 1.2,
+                                    "modifier" => "log1p"
                                 ]
                             ],
                             [
@@ -390,7 +392,9 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
         $params['body']['query']['bool']['should'][] = array(
             "rank_feature" => [
                 "field" => "scopes.".$scope,
-                "boost" => $boost
+                "boost" => $boost,
+                "factor" => 1.2,
+                "modifier" => "log1p"
             ]
         );
     }
@@ -415,8 +419,8 @@ function search_ES($query_data, $user_code, $modules, $scopes = [], $stores = []
     $now = DateTime::createFromFormat('U.u', sprintf('%.f', microtime(true)));
 
 
-    print_r($params);
-    exit;
+//    print_r($params);
+//    exit;
 
     $result = $client->search($params);
 
