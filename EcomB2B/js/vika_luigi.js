@@ -43,14 +43,24 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
                     type: "item",
                     size: 7,
                     attributes: autoCompleteAttributes,
+                    recommend: {
+                        heroName: "Suggested products",
+                    }
                 },
                 {
                     name: "Query",
                     type: "query",
+                    recommend: {
+                        name: "Suggested Searches",
+                        size: 2,
+                    }
                 },
                 {
-                    name: "Category",
+                    name: "Categories",
                     type: "category",
+                    recommend: {
+                        name: "Suggested categories",
+                    }
                 },
             ],
             ShowAllCallback: () => {  // Called when 'Show All Product' clicked
