@@ -108,6 +108,12 @@ if ($_SESSION['logged_in_page'] != 0) {
 $user = get_object('User', $_SESSION['user_key']);
 
 if ($user->id) {
+
+    if($user->get('User Active')=='No'  ){
+        exit();
+    }
+
+
     $locale = $user->get('User Preferred Locale');
 
     $user->read_groups();
