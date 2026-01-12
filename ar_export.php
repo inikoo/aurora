@@ -38,6 +38,10 @@ $_data = prepare_values(
              )
 );
 
+if($_data['tipo']=='customers'){
+    exit();
+}
+
 $dont_save_table_state = true;
 $_data['nr']           = 1000000;
 $_data['page']         = 1;
