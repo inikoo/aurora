@@ -145,8 +145,10 @@ function invoice_address($data, $order, $editor, $website)
             $key = 'Address Country 2 Alpha Code';
         }
 
-        $address_data[$key] = $value;
+
+        $address_data[$key] = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', strip_tags($value));
     }
+
 
 
     $order->editor = $editor;
@@ -239,8 +241,7 @@ function delivery_address($data, $order, $editor, $website)
             } elseif ($key == 'country') {
                 $key = 'Address Country 2 Alpha Code';
             }
-
-            $address_data[$key] = $value;
+            $address_data[$key] = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', strip_tags($value));
         }
 
         $order->update(array('Order Delivery Address' => json_encode($address_data)));
