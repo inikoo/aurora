@@ -47,6 +47,7 @@ if ($account->get('Account State') != 'Active') {
 
 
 require_once 'utils/modules.php';
+ini_set("session.cookie_httponly", 1);
 session_start();
 
 $_SESSION['account'] = $account->get('Code');
