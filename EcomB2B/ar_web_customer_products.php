@@ -350,9 +350,9 @@ function category_products($data, $db, $customer_key, $order)
 //        if(    $store->id != 3 and DNS_ACCOUNT_CODE=='ES'){
 //            $gr_member = true;
 //        }
-//        if($store->id==1 and DNS_ACCOUNT_CODE=='AW'){
-//            $gr_member = true;
-//        }
+        if($store->id==1 and DNS_ACCOUNT_CODE=='AW'){
+            $gr_member = true;
+        }
 
 
 
