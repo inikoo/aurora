@@ -126,6 +126,14 @@ function register($db, $website, $data, $editor)
         }
 
 
+        foreach ($raw_data as $_key => $value) {
+            if ($_key === 'new-password') {
+                continue;
+            }
+            $value=preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', strip_tags($value));
+            $raw_data[$_key]=$value;
+        }
+
 
         $customer_data = array(
             'Customer Main Contact Name'   => $raw_data['name'],
