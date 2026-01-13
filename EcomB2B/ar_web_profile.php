@@ -152,7 +152,7 @@ function invoice_address($db, $data, $customer, $editor) {
             $key = 'Address Country 2 Alpha Code';
         }
 
-        $address_data[$key] = $value;
+        $address_data[$key] = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', strip_tags($value));
 
     }
 
@@ -221,7 +221,7 @@ function delivery_address($db, $data, $customer, $editor) {
                 $key = 'Address Country 2 Alpha Code';
             }
 
-            $address_data[$key] = $value;
+            $address_data[$key] = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', strip_tags($value));
 
         }
 
@@ -271,7 +271,8 @@ function contact_details($db, $data, $customer, $editor) {
             $key   = 'Customer Send Postal Marketing';
             $value = ($value ? 'Yes' : 'No');
         }
-        $update_data[$key] = $value;
+
+        $update_data[$key] = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', strip_tags($value));
 
     }
 
@@ -352,6 +353,9 @@ function update_poll($db, $data, $customer, $editor) {
         if (preg_match('/^poll_(\d+)/i', $_key, $matches)) {
 
             $poll_key = $matches[1];
+
+            $value=preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', strip_tags($value));
+
             $customer->update(array('Customer Poll Query '.$poll_key => $value));
 
 
