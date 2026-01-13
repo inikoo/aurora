@@ -299,7 +299,8 @@ function update_special_instructions($data, $order, $editor)
 {
     $order->editor = $editor;
 
-    $order->fast_update(array('Order Customer Message' => $data['value']));
+
+    $order->fast_update(array('Order Customer Message' => strip_tags($data['value'], '<b><i><u><em><strong><br><p><ul><ol><li><a>')));
 
 
     if ($order->get('Order State') == 'InBasket') {
