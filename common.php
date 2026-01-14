@@ -48,6 +48,7 @@ if ($account->get('Account State') != 'Active') {
 
 require_once 'utils/modules.php';
 ini_set("session.cookie_httponly", 1);
+header("Content-Security-Policy-Report-Only: default-src 'self'; report-uri /csp_log.php");
 session_start();
 
 $_SESSION['account'] = $account->get('Code');
@@ -156,5 +157,6 @@ $smarty->assign('locale', $locale);
 set_locale($locale);
 $smarty->assign('account', $account);
 $smarty->assign('page_name', basename($_SERVER["PHP_SELF"], ".php"));
+
 
 
