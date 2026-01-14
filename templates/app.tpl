@@ -11,7 +11,7 @@
 
 
         {if !empty($sentry_js)}
-            <script
+            <script nonce="{$csp_nonce}"
                     src="https://browser.sentry-cdn.com/6.6.0/bundle.min.js"
                     integrity="sha384-vPBC54nCGwq3pbZ+Pz+wRJ/AakVC5QupQkiRoGc7OuSGE9NDfsvOKeHVvx0GUSYp"
                     crossorigin="anonymous"
@@ -54,7 +54,7 @@
 
 
 {if !$is_devel}
-    <script>
+    <script nonce="{$csp_nonce}">
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
             i[r] = i[r] || function () {
@@ -89,7 +89,7 @@
     </script>
 {/if}
 {if $jira_widget!=''}
-    <script data-jsd-embedded data-key="{$jira_widget}" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>
+    <script nonce="{$csp_nonce}" data-jsd-embedded data-key="{$jira_widget}" data-base-url="https://jsd-widget.atlassian.com" src="https://jsd-widget.atlassian.com/assets/embed.js"></script>
 {/if}
 <div id="top_bar">
 
@@ -279,10 +279,10 @@
 {if !$is_devel}
 
 {if !empty($firebase)}
-    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-messaging.js"></script>
-    <script>
+    <script nonce="{$csp_nonce}" src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+    <script nonce="{$csp_nonce}" src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
+    <script nonce="{$csp_nonce}" src="https://www.gstatic.com/firebasejs/7.7.0/firebase-messaging.js"></script>
+    <script nonce="{$csp_nonce}">
         var firebaseConfig = {
             apiKey: "{$firebase.apiKey}",
             authDomain: "{$firebase.projectId}.firebaseapp.com",
@@ -307,11 +307,11 @@
 {/if}
 {/if}
 {if $status_page_widget!=''}
-    <script src="https://{$status_page_widget}.statuspage.io/embed/script.js"></script>
+    <script nonce="{$csp_nonce}" src="https://{$status_page_widget}.statuspage.io/embed/script.js"></script>
 {/if}
 {if $jira_widget!=''}
 
-<script>
+<script nonce="{$csp_nonce}">
     $(document).ready(function() {
         $('#jsd-widget').ready(function() {
 
