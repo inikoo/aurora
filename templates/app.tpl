@@ -19,22 +19,22 @@
         {/if}
 
     {/if}
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script nonce="{$csp_nonce}" src="https://d3js.org/d3.v4.min.js"></script>
 
-    <script src="/assets/aurora_libs.min.js"></script>
-    <script src="/assets/aurora.min.js"></script>
+    <script nonce="{$csp_nonce}" src="/assets/aurora_libs.min.js"></script>
+    <script nonce="{$csp_nonce}" src="/assets/aurora.min.js"></script>
 
-    <script src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
+    <script nonce="{$csp_nonce}" src="/utils/country_data.js.php?v=v190124&locale={$locale}"></script>
 
 
     {if $user->get('User Type')=='Staff' or $user->get('User Type')=='Contractor'}
 
     {elseif $user->get('User Type')=='Agent' }
-        <script src="/js/agent.order.js?v181115"></script>
+        <script nonce="{$csp_nonce}" src="/js/agent.order.js?v181115"></script>
     {/if}
 
 
-    <script src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" async></script>
+    <script nonce="{$csp_nonce}" src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" async></script>
 
 </head>
 <body
