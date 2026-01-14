@@ -12,6 +12,7 @@
 
 require_once 'common.php';
 require_once 'utils/timezones.php';
+header("Content-Security-Policy-Report-Only: default-src 'self'; report-uri /csp_log.php");
 
 
 $smarty->assign('_request', $_SERVER['REQUEST_URI']);

@@ -3,7 +3,6 @@
 <head>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Content-Security-Policy-Report-Only" content="default-src 'self'; report-uri /csp_log.php" />
     <title>Aurora</title>
     <link href="/art/aurora_log_v2_orange_small.png" rel="shortcut icon" type="image/x-icon"/>
     <link href="/assets/au_app.min.css?v3" rel="stylesheet">
