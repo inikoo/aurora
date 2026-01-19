@@ -71,7 +71,7 @@ class BeeFree implements BeeFreeAdapter {
         $fields = array(
             'grant_type'    => urlencode($grant_type),
             'client_id'     => urlencode($this->_client_id),
-           // 'client_secret' => urlencode($this->_client_secret)
+            'client_secret' => urlencode($this->_client_secret)
         );
 
         //url-ify the data for the POST
