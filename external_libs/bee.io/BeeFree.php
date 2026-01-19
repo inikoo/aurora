@@ -132,6 +132,9 @@ class BeeFree implements BeeFreeAdapter {
         $responseBody = curl_exec($ch);
         $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
+        print_r($statusCode);
+        print_r($responseBody);
+
         if (curl_errno($ch)) {
             $error = curl_error($ch);
             return json_decode($error);
