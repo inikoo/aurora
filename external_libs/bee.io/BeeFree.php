@@ -25,8 +25,8 @@ class BeeFree implements BeeFreeAdapter {
     private $_client_secret = null;
 
     //Url to call when authenicating
-    //private $_auth_url = 'https://auth.getbee.io/loginV2';
-    private $_auth_url = 'https://auth.getbee.io/apiauth';
+    private $_auth_url = 'https://auth.getbee.io/loginV2';
+    //private $_auth_url = 'https://auth.getbee.io/apiauth';
 
     /**
      * The constructor
@@ -71,7 +71,8 @@ class BeeFree implements BeeFreeAdapter {
         $fields = array(
             'grant_type'    => urlencode($grant_type),
             'client_id'     => urlencode($this->_client_id),
-            'client_secret' => urlencode($this->_client_secret)
+            'client_secret' => urlencode($this->_client_secret),
+            'uid'=>'CmsUserName'
         );
 
         //url-ify the data for the POST
@@ -90,7 +91,7 @@ class BeeFree implements BeeFreeAdapter {
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-       // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
         //execute post
         $result = curl_exec($ch);
