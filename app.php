@@ -17,21 +17,40 @@ $smarty->assign('csp_nonce', $nonce);
 
 //header("Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' 'nonce-$nonce' https://www.google-analytics.com https://www.googletagmanager.com https://loader.getbee.io https://jsd-widget.atlassian.com; style-src 'self' 'unsafe-inline'; report-uri /csp_log.php");
 header(
-  "Content-Security-Policy-Report-Only: 
-   default-src 'self';
-   script-src 'self' 'unsafe-inline' 'nonce-$nonce'
-     https://app-rsrc.getbee.io
-     https://www.google-analytics.com
-     https://www.googletagmanager.com
-     https://jsd-widget.atlassian.com;
-   frame-src https://app.getbee.io;
-   connect-src 'self'
-     https://app.getbee.io
-     https://app-rsrc.getbee.io;
-   img-src 'self' data: https://*;
-   style-src 'self' 'unsafe-inline';
-   report-uri /csp_log.php"
+  "Content-Security-Policy-Report-Only: ".
+  "default-src 'self'; ".
+
+  "script-src 'self' 'unsafe-inline' 'nonce-$nonce' ".
+    "https://app-rsrc.getbee.io ".
+    "https://rsrc.getbee.io ".
+    "https://*.getbee.io ".
+    "https://www.google-analytics.com ".
+    "https://www.googletagmanager.com ".
+    "https://jsd-widget.atlassian.com; ".
+
+  "frame-src ".
+    "https://app.getbee.io ".
+    "https://*.getbee.io; ".
+
+  "connect-src 'self' ".
+    "https://app.getbee.io ".
+    "https://app-rsrc.getbee.io ".
+    "https://rsrc.getbee.io ".
+    "https://*.getbee.io; ".
+
+  "img-src 'self' data: ".
+    "https://*.getbee.io; ".
+
+  "style-src 'self' 'unsafe-inline' ".
+    "https://fonts.googleapis.com; ".
+
+  "font-src 'self' ".
+    "https://fonts.gstatic.com ".
+    "https://*.getbee.io; ".
+
+  "report-uri /csp_log.php;"
 );
+
 
 $smarty->assign('_request', $_SERVER['REQUEST_URI']);
 $smarty->assign('_side_block', (!empty($_SESSION['side_block']) ? $_SESSION['side_block'] : 'real_time_users'));
