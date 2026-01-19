@@ -242,7 +242,6 @@ function bee_token() {
     include_once('external_libs/bee.io/BeeFree.php');
     $beefree = new BeeFree(BEE_IO_ID, BEE_IO_KEY);
 
-    print_r($beefree->getCredentials());
 
     $response = array(
         'state' => 200,

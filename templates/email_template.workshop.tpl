@@ -157,9 +157,10 @@
         onSend: open_send_test_email_dialog, //onError: function(errorMessage) { /* Implements function to handle error messages */ } // [optional]
     };
 
+    console.log('--- Bee plg in ---')
     $.getJSON('/ar_edit_email_template.php?tipo=bee_token', function (data) {
 
-
+      console.log(data)
         BeePlugin.create(data.token, beeConfig, function (beePluginInstance) {
 
             $.ajax({
@@ -168,7 +169,7 @@
 
                     var templateString = data;
                     var template = JSON.parse(templateString);
-                    // console.log(data)
+                     console.log(data)
                     beePluginInstance.start(template);
 
                 }

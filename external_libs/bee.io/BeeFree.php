@@ -25,8 +25,8 @@ class BeeFree implements BeeFreeAdapter {
     private $_client_secret = null;
 
     //Url to call when authenicating
-    private $_auth_url = 'https://auth.getbee.io/loginV2';
-    //private $_auth_url = 'https://auth.getbee.io/apiauth';
+    //private $_auth_url = 'https://auth.getbee.io/loginV2';
+    private $_auth_url = 'https://auth.getbee.io/apiauth';
 
     /**
      * The constructor
