@@ -109,43 +109,38 @@ class BeeFree implements BeeFreeAdapter {
 
 
     public function getCredentialsNew($grant_type = 'password', $json_decode = 'object') {
-        //set POST variables
-        $fields = array(
-            'grant_type'    => urlencode($grant_type),
-            'client_id'     => urlencode($this->_client_id),
-            'client_secret' => urlencode($this->_client_secret),
-            'uid'=>'CmsUserName'
-        );
 
-        //url-ify the data for the POST
-        $fields_string = '';
 
-        foreach ($fields as $key => $value) {
-            $fields_string .= $key.'='.$value.'&';
+        $clientId=$this->_client_id;
+        $clientSecret=$this->_client_secret;
+
+        $data = [
+            'client_id' => $clientId ?? null,
+            'client_secret' => $clientSecret ?? null,
+            'uid' => 'CmsUserName',
+        ];
+
+        $ch = curl_init('https://auth.getbee.io/loginV2');
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+        ]);
+
+        $responseBody = curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            $error = curl_error($ch);
+            $result = json_decode($responseBody, true);
+            return json_decode($result);
         }
 
-        //open connection
-        $ch = curl_init();
-
-
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch, CURLOPT_URL, $this->_auth_url);
-        curl_setopt($ch, CURLOPT_POST, count($fields));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-
-        //execute post
-        $result = curl_exec($ch);
-
-
-        //close connection
         curl_close($ch);
 
-        if ($json_decode == 'array') {
-            return json_decode($result, true);
-        }
-
+        $result = json_decode($responseBody, true);
         return json_decode($result);
 
     }
