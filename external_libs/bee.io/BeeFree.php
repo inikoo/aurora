@@ -71,8 +71,7 @@ class BeeFree implements BeeFreeAdapter {
         $fields = array(
             'grant_type'    => urlencode($grant_type),
             'client_id'     => urlencode($this->_client_id),
-            'client_secret' => urlencode($this->_client_secret),
-            'uid'=>'CmsUserName'
+           // 'client_secret' => urlencode($this->_client_secret)
         );
 
         //url-ify the data for the POST
@@ -91,7 +90,7 @@ class BeeFree implements BeeFreeAdapter {
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+       // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
         //execute post
         $result = curl_exec($ch);
