@@ -93,6 +93,8 @@ class BeeFree implements BeeFreeAdapter {
 
         //execute post
         $result = curl_exec($ch);
+        Sentry\captureMessage('Curl error: '.curl_error($result));
+
 
         //close connection
         curl_close($ch);
