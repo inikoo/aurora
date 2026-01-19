@@ -84,16 +84,17 @@ class BeeFree implements BeeFreeAdapter {
 
         //open connection
         $ch = curl_init();
+        
 
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $this->_auth_url);
         curl_setopt($ch, CURLOPT_POST, count($fields));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 
         //execute post
         $result = curl_exec($ch);
-        Sentry\captureMessage('Curl error: '.curl_error($result));
 
 
         //close connection
