@@ -20,7 +20,7 @@ header(
   "Content-Security-Policy-Report-Only: ".
   "default-src 'self'; ".
 
-  "script-src 'self' 'unsafe-inline' 'nonce-$nonce' ".
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-$nonce' ".
     "https://app-rsrc.getbee.io ".
     "https://rsrc.getbee.io ".
     "https://*.getbee.io ".
