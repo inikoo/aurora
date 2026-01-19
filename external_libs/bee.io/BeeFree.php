@@ -134,8 +134,7 @@ class BeeFree implements BeeFreeAdapter {
 
         if (curl_errno($ch)) {
             $error = curl_error($ch);
-            $result = json_decode($responseBody, true);
-            return json_decode($result);
+            return json_decode($error);
         }
 
         curl_close($ch);
