@@ -25,8 +25,8 @@ class BeeFree implements BeeFreeAdapter {
     private $_client_secret = null;
 
     //Url to call when authenicating
-    private $_auth_url = 'https://auth.getbee.io/loginV2';
-    //private $_auth_url = 'https://auth.getbee.io/apiauth';
+    //private $_auth_url = 'https://auth.getbee.io/loginV2';
+    private $_auth_url = 'https://auth.getbee.io/apiauth';
 
     /**
      * The constructor
@@ -72,7 +72,6 @@ class BeeFree implements BeeFreeAdapter {
             'grant_type'    => urlencode($grant_type),
             'client_id'     => urlencode($this->_client_id),
             'client_secret' => urlencode($this->_client_secret),
-            'uid'=>'CmsUserName'
         );
 
         //url-ify the data for the POST
@@ -85,6 +84,49 @@ class BeeFree implements BeeFreeAdapter {
         //open connection
         $ch = curl_init();
         
+
+        //set the url, number of POST vars, POST data
+        curl_setopt($ch, CURLOPT_URL, $this->_auth_url);
+        curl_setopt($ch, CURLOPT_POST, count($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+       // curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+
+        //execute post
+        $result = curl_exec($ch);
+
+
+        //close connection
+        curl_close($ch);
+
+        if ($json_decode == 'array') {
+            return json_decode($result, true);
+        }
+
+        return json_decode($result);
+
+    }
+
+
+    public function getCredentialsNew($grant_type = 'password', $json_decode = 'object') {
+        //set POST variables
+        $fields = array(
+            'grant_type'    => urlencode($grant_type),
+            'client_id'     => urlencode($this->_client_id),
+            'client_secret' => urlencode($this->_client_secret),
+            'uid'=>'CmsUserName'
+        );
+
+        //url-ify the data for the POST
+        $fields_string = '';
+
+        foreach ($fields as $key => $value) {
+            $fields_string .= $key.'='.$value.'&';
+        }
+
+        //open connection
+        $ch = curl_init();
+
 
         //set the url, number of POST vars, POST data
         curl_setopt($ch, CURLOPT_URL, $this->_auth_url);
@@ -107,5 +149,6 @@ class BeeFree implements BeeFreeAdapter {
         return json_decode($result);
 
     }
+
 
 }
