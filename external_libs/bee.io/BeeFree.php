@@ -66,7 +66,7 @@ class BeeFree implements BeeFreeAdapter {
      *
      * @return $mixed credentials
      */
-    public function getCredentialsOld($grant_type = 'password', $json_decode = 'object') {
+    public function getCredentials($grant_type = 'password', $json_decode = 'object') {
         //set POST variables
         $fields = array(
             'grant_type'    => urlencode($grant_type),
@@ -108,7 +108,7 @@ class BeeFree implements BeeFreeAdapter {
     }
 
 
-    public function getCredentials($grant_type = 'password', $json_decode = 'object') {
+    public function getCredentialsNew($grant_type = 'password', $json_decode = 'object') {
 
 
         $clientId=$this->_client_id;
@@ -132,8 +132,7 @@ class BeeFree implements BeeFreeAdapter {
         $responseBody = curl_exec($ch);
         $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        print_r($statusCode);
-        print_r($responseBody);
+
 
         if (curl_errno($ch)) {
             $error = curl_error($ch);
@@ -143,6 +142,7 @@ class BeeFree implements BeeFreeAdapter {
         curl_close($ch);
 
         $result = json_decode($responseBody, true);
+      //  print_r($result);
         return json_decode($result);
 
     }
