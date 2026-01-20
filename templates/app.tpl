@@ -34,7 +34,6 @@
     {/if}
 
 
-    //<script nonce="{$csp_nonce}" src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" async></script>
     <script nonce="{$csp_nonce}" src="https://app-rsrc.getbee.io/plugin/BeePlugin.js" defer></script>
 
 
