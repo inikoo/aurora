@@ -161,7 +161,7 @@
     $.getJSON('/ar_edit_email_template.php?tipo=bee_token', function (data) {
 
       console.log(data)
-        BeePlugin.create(data, beeConfig, function (beePluginInstance) {
+        BeePlugin.create(data.token, beeConfig, function (beePluginInstance) {
 
             $.ajax({
                 url: '/ar_email_template.php?tipo=template_data&field=json&key={$email_template_key}', success: function (data) {
