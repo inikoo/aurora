@@ -43,6 +43,9 @@ const LBInitAutocomplete = async (luigiTrackerId, fieldsRemoved, autoCompleteAtt
                     type: "item",
                     size: 7,
                     attributes: autoCompleteAttributes,
+                    defaultFilters: {
+                        availability_rank: '1|7'  // Show products with availability rank 1 to 7
+                    },
                     recommend: {
                         heroName: "Suggested products",
                     }
@@ -140,7 +143,8 @@ const LBInitSearchResult = async (luigiTrackerId, fieldsRemoved, searchFacets, l
             Facets: searchFacets,
             QuicksearchTypes: searchFacets,
             DefaultFilters: {
-                type: 'item'
+                type: 'item',
+                availability_rank: '1|7'
             },
             UrlParamName: {
                 QUERY: "q",
