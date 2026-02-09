@@ -14,7 +14,7 @@ require_once __DIR__.'/cron_common.php';
 
 
 $sql = sprintf(
-    "SELECT `Product ID`  FROM `Product Dimension` WHERE `Product Store Key`=1  and `Product Status`!='Discontinued' order by `Product Code File As` "
+    "SELECT `Product ID`  FROM `Product Dimension` WHERE `Product Store Key`=2  and `Product Status`!='Discontinued' order by `Product Code File As` "
 );
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
