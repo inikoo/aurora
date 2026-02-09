@@ -61,7 +61,7 @@ if ($result = $db->query($sql)) {
 
 
                 if($product->get('Product Units Per Case')!=$export_product->get('Product Units Per Case')){
-                    printf('Error different units per case: %s -> %s   =====\n', $product->get('Product Units Per Case'), $export_product->get('Product Units Per Case'));
+                    printf('Error different units per case: %s -> %s   ====='."\n", $product->get('Product Units Per Case'), $export_product->get('Product Units Per Case'));
                 }else{
                     if ($price > 0) {
                         if (floatval(delta($price, $export_product->get('Product Price'))) > 30) {
