@@ -30,6 +30,7 @@ $editor = array(
 
 $where = ' where `Product Store Key`=19 ';
 //$where = ' where `Product ID`=226780 ';
+$where = ' where ( `Product Availability`>0   and  `Product Availability`<2 ) ';
 
 //$where = '';
 $total = 0;
