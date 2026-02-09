@@ -50,10 +50,13 @@ $sql = "SELECT `Product ID` FROM `Product Dimension` $where order by `Product ID
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
+        $contador++;
 
         $product         = new Product($row['Product ID']);
         $product->editor = $editor;
         $product->update_availability(false);
+
+        print $contador.' '.$product->get('ID')." ".$product->get('Code')."  \n";
 
 
     }
