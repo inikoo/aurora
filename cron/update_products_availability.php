@@ -56,7 +56,7 @@ if ($result = $db->query($sql)) {
         $product->editor = $editor;
         $product->update_availability(false);
 
-        print $contador.' '.$product->get('ID')." ".$product->get('Code')."  \n";
+        print $contador.'/ '.$total.'  '.$product->get('ID')." ".$product->get('Code')."  \n";
 
 
     }
