@@ -1636,7 +1636,7 @@ class Product extends Asset
             }
 
 
-            if ($stock < 0) {
+            if ($stock < 1) {
                 $stock = 0;
             } elseif (!$change or $stock_error) {
                 $stock = 0;
