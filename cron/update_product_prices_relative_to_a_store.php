@@ -60,17 +60,24 @@ if ($result = $db->query($sql)) {
                 $price = round($product->get('Product Price') * $factor);
 
 
-                if ($price > 0) {
-                    if (floatval(delta($price, $export_product->get('Product Price'))) > 30) {
-                        printf("%s (%s): %.2f->%.2f %s\n", $product->get('Code'), $export_product->get('Store Code'), $export_product->get('Product Price'), $price, delta($price, $export_product->get('Product Price')));
-                    }
+                if($product->get('Product Units Per Case')!=$export_product->get('Product Units Per Case')){
+                    printf('Error different units per case: %s -> %s   =====\n', $product->get('Product Units Per Case'), $export_product->get('Product Units Per Case'));
+                }else{
+                    if ($price > 0) {
+                        if (floatval(delta($price, $export_product->get('Product Price'))) > 30) {
+                            printf("%s (%s): %.2f->%.2f %s\n", $product->get('Code'), $export_product->get('Store Code'), $export_product->get('Product Price'), $price, delta($price, $export_product->get('Product Price')));
+                        }
 
-                    if (floatval(delta($export_product->get('Product Price'), $price)) > 30) {
-                        printf("%s (%s): %.2f->%.2f %s\n", $product->get('Code'), $export_product->get('Store Code'), $export_product->get('Product Price'), $price, delta($price, $export_product->get('Product Price')));
-                    }
-                    // $export_product->update(array('Product Price'=>$price));
+                        if (floatval(delta($export_product->get('Product Price'), $price)) > 30) {
+                            printf("%s (%s): %.2f->%.2f %s\n", $product->get('Code'), $export_product->get('Store Code'), $export_product->get('Product Price'), $price, delta($price, $export_product->get('Product Price')));
+                        }
+                        // $export_product->update(array('Product Price'=>$price));
 
+                    }
                 }
+
+
+
             }
         } else {
             print_r($error_info = $db->errorInfo());
