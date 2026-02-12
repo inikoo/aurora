@@ -30,6 +30,7 @@ $editor = array(
 
 $where = ' where `Product Store Key`=19 ';
 //$where = ' where `Product ID`=226780 ';
+$where = ' where ( `Product Availability`>0   and  `Product Availability`<2 )  and `Product Store Key` NOT IN (19,25,24,22) ';
 
 //$where = '';
 $total = 0;
@@ -49,10 +50,13 @@ $sql = "SELECT `Product ID` FROM `Product Dimension` $where order by `Product ID
 if ($result = $db->query($sql)) {
     foreach ($result as $row) {
 
+        $contador++;
 
         $product         = new Product($row['Product ID']);
         $product->editor = $editor;
         $product->update_availability(false);
+
+        print $contador.'/ '.$total.'  '.$product->get('ID')." ".$product->get('Code')."  \n";
 
 
     }
