@@ -97,6 +97,10 @@ while ($row = $stmt->fetch()) {
 
     if($product->id) {
 
+        if($product->get('Product Web Configuration')=='Offline'){
+            continue;
+        }
+
         $product_data = [
             'title'=>$product->get('Product Name'),
             'identity' => $row['Webpage Scope Key'],
@@ -116,6 +120,8 @@ while ($row = $stmt->fetch()) {
             'product_code'=>$product->get('Product Code'),
             'ean'=>$product->get('Product Barcode Number'),
             'introduced_at'=>$product->get('Product Valid From'),
+            'is_offline'=> $product->get('Product Web Configuration')=='Offline'?1:0,
+            'ping'=>'hello'
 
         ];
 
