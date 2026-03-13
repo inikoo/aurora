@@ -28,6 +28,14 @@ while ($row = $stmt->fetch()) {
 
     print $webpage->id.' '.$webpage->get_browser_title()."\n";
 
-   // $webpage->fast_update(array('browser_title'=>$webpage->get_browser_title()));
+
+    $sql             = 'update `Page Store Dimension` set `browser_title`=? where `Page Key`=?  ';
+    $db->prepare($sql)->execute(
+        array(
+           $webpage->get_browser_title(),
+           $webpage->id
+        )
+    );
+
 
 }
