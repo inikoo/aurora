@@ -26,6 +26,8 @@ $stmt->execute();
 while ($row = $stmt->fetch()) {
     $webpage = get_object('Webpage', $row['Page Key']);
 
-    $webpage->fast_update(array('browser_title'=>$webpage->get_browser_title()));
+    print $webpage->id.' '.$webpage->get_browser_title()."\n";
+
+   // $webpage->fast_update(array('browser_title'=>$webpage->get_browser_title()));
 
 }
