@@ -22,6 +22,59 @@ $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
     ->setSSLVerification(ES_SSL)
     ->build();
 
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_part_isf',
+                'alias'   => 'au_part_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);
+
+
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_part_location_isf',
+                'alias'   => 'au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);
+
+$params['body'] = array(
+    'actions' => array(
+        array(
+            'add' => array(
+                'index'   => 'au_warehouse_isf',
+                'alias'   => 'au_warehouse_isf_'.strtolower(DNS_ACCOUNT_CODE),
+                "filter"  => [
+                    "term" => [
+                        "tenant" => DNS_ACCOUNT_CODE
+                    ]
+                ]
+            )
+        )
+    )
+);
+$client->indices()->updateAliases($params);
+
+exit();
 
 $params['body'] = array(
     'actions' => array(
@@ -119,54 +172,3 @@ $params['body'] = array(
 );
 $client->indices()->updateAliases($params);
 
-$params['body'] = array(
-    'actions' => array(
-        array(
-            'add' => array(
-                'index'   => 'au_part_isf',
-                'alias'   => 'au_part_isf_'.strtolower(DNS_ACCOUNT_CODE),
-                "filter"  => [
-                    "term" => [
-                        "tenant" => DNS_ACCOUNT_CODE
-                    ]
-                ]
-            )
-        )
-    )
-);
-$client->indices()->updateAliases($params);
-
-
-$params['body'] = array(
-    'actions' => array(
-        array(
-            'add' => array(
-                'index'   => 'au_part_location_isf',
-                'alias'   => 'au_part_location_isf_'.strtolower(DNS_ACCOUNT_CODE),
-                "filter"  => [
-                    "term" => [
-                        "tenant" => DNS_ACCOUNT_CODE
-                    ]
-                ]
-            )
-        )
-    )
-);
-$client->indices()->updateAliases($params);
-
-$params['body'] = array(
-    'actions' => array(
-        array(
-            'add' => array(
-                'index'   => 'au_warehouse_isf',
-                'alias'   => 'au_warehouse_isf_'.strtolower(DNS_ACCOUNT_CODE),
-                "filter"  => [
-                    "term" => [
-                        "tenant" => DNS_ACCOUNT_CODE
-                    ]
-                ]
-            )
-        )
-    )
-);
-$client->indices()->updateAliases($params);
