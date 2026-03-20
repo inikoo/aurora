@@ -10,17 +10,19 @@
  Version 3.0
 */
 
-require '../../keyring/dns.php';
-require '../../keyring/au_deploy_conf.php';
+require '../keyring/dns.php';
+require '../keyring/au_deploy_conf.php';
 
 use Elasticsearch\ClientBuilder;
 
-require '../../vendor/autoload.php';
+require '../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
     ->setApiKey(ES_KEY1,ES_KEY2)
     ->setSSLVerification(ES_SSL)
     ->build();
+
+
 $params = [
     'index' => strtolower('au_warehouse_isf'),
     'body'  => array(
