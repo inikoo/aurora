@@ -15,6 +15,7 @@ require '../keyring/au_deploy_conf.php';
 
 use Elasticsearch\ClientBuilder;
 
+
 require '../vendor/autoload.php';
 
 $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
