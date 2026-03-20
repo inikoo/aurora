@@ -81,6 +81,7 @@ try {
         )
     );
     $client->indices()->updateAliases($params);
+    print_r($params);
 } catch (Exception $e) {
     echo $e->getMessage();
 }
