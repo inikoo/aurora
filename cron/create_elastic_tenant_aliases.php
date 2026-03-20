@@ -40,7 +40,8 @@ try {
     );
     $client->indices()->updateAliases($params);
 } catch (Exception $e) {
-    // echo $e->getMessage();
+     echo $e->getMessage();
+     print_r($params);
 }
 
 try {
@@ -61,7 +62,8 @@ try {
     );
     $client->indices()->updateAliases($params);
 } catch (Exception $e) {
-    //echo $e->getMessage();
+    echo $e->getMessage();
+    print_r($params);
 }
 
 try {
