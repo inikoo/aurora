@@ -5305,7 +5305,7 @@ class Part extends Asset
                     ];
 
 
-                    // print_r($params);
+                     print_r($params);
 
                     $client->bulk($params);
                 }
