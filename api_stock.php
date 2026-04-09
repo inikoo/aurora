@@ -81,7 +81,7 @@ switch ($_REQUEST['action']) {
         echo json_encode($response);
         exit;
     case 'associate_location':
-
+        include_once 'class.PartLocation.php';
 
         if (!isset($_REQUEST['part_sku'])) {
             $response = array(
