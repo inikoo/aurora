@@ -57,7 +57,7 @@ switch ($_REQUEST['action']) {
     case 'aiku_delete_picking':
         $editor['Date'] = $_REQUEST['date'];
 
-        $sql = "delete  from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
+        $sql  = "delete  from `Inventory Transaction Fact` where `aiku_picking_id`=? ";
         $stmt = $db->prepare($sql);
         $stmt->execute(
             [
@@ -76,10 +76,46 @@ switch ($_REQUEST['action']) {
 
         $part->update_stock();
         $response = array(
-            'state'   => 'Deleted',
-            'msg'     => 'itf deleted',
+            'state' => 'Deleted',
+            'msg'   => 'itf deleted',
         );
         echo json_encode($response);
+        exit;
+    case 'associate_location':
+
+
+        if (!isset($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!isset($_REQUEST['location_id'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+//        $part_location_data = array(
+//            'Location Key'         => $_REQUEST['location_key'],
+//            'Part SKU'             => $_REQUEST['part_sku'],
+//            'editor'               => $editor,
+//        );
+//        $part_location      = new PartLocation('find', $part_location_data, 'create');
+
+        $response = array(
+            'status'  => 'Success',
+        );
+        echo json_encode($response);
+
+
         exit;
     case 'aiku_picking':
 
@@ -138,15 +174,15 @@ switch ($_REQUEST['action']) {
             'aiku_picking_id'  => $_REQUEST['picking_key'],
         );
 
-//                $response = array(
-//                    'Quantity'         => -$_REQUEST['qty'],
-//                    'Transaction Type' => 'AikuPick',
-//                    'Note'             => $_REQUEST['note'],
-//                    'aiku_picking_id'  => $_REQUEST['picking_key'],
-//
-//                );
-//                echo json_encode($response);
-//                exit;
+        //                $response = array(
+        //                    'Quantity'         => -$_REQUEST['qty'],
+        //                    'Transaction Type' => 'AikuPick',
+        //                    'Note'             => $_REQUEST['note'],
+        //                    'aiku_picking_id'  => $_REQUEST['picking_key'],
+        //
+        //                );
+        //                echo json_encode($response);
+        //                exit;
 
 
         $itf_key = $part_location->aiku_stock_transfer($_data);
