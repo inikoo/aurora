@@ -101,12 +101,12 @@ switch ($_REQUEST['action']) {
             exit;
         }
 
-
         $part_location_data = array(
-            'Location Key' => $_REQUEST['location_key'],
+            'Location Key' => $_REQUEST['location_id'],
             'Part SKU'     => $_REQUEST['part_sku'],
             'editor'       => $editor,
         );
+
         $part_location      = new PartLocation('find', $part_location_data, 'create');
 
         $response = array(
