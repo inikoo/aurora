@@ -139,10 +139,8 @@ switch ($_REQUEST['action']) {
         }
 
 
-        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
-        print_r($part_location);
+        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_id']);
 
-        exit;
         $part_location->editor = $editor;
         $part_location_id      = $part_location->id;
 
