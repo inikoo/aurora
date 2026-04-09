@@ -107,11 +107,47 @@ switch ($_REQUEST['action']) {
             'editor'       => $editor,
         );
 
-        $part_location      = new PartLocation('find', $part_location_data, 'create');
+        $part_location = new PartLocation('find', $part_location_data, 'create');
 
         $response = array(
             'status'           => 'Success',
             'part_location_id' => $part_location->id
+        );
+        echo json_encode($response);
+
+
+        exit;
+    case 'disassociate_location':
+        include_once 'class.PartLocation.php';
+
+        if (!isset($_REQUEST['part_sku'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+        if (!isset($_REQUEST['location_id'])) {
+            $response = array(
+                'state' => 'Error',
+                'msg'   => 'part_sku needed'
+            );
+            echo json_encode($response);
+            exit;
+        }
+
+
+        $part_location         = new PartLocation($_REQUEST['part_sku'], $_REQUEST['location_key']);
+        $part_location->editor = $editor;
+        $part_location_id      = $part_location->id;
+
+        $part_location->disassociate();
+
+        $response = array(
+            'status'           => 'Success',
+            'part_location_id' => $part_location_id
         );
         echo json_encode($response);
 
