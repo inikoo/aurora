@@ -39,7 +39,6 @@ $editor = array(
 
 
 switch ($_REQUEST['action']) {
-
     case 'create_customer':
 
         include_once 'api_aiku_create_customer.php';
@@ -103,15 +102,16 @@ switch ($_REQUEST['action']) {
         }
 
 
-//        $part_location_data = array(
-//            'Location Key'         => $_REQUEST['location_key'],
-//            'Part SKU'             => $_REQUEST['part_sku'],
-//            'editor'               => $editor,
-//        );
-//        $part_location      = new PartLocation('find', $part_location_data, 'create');
+        $part_location_data = array(
+            'Location Key' => $_REQUEST['location_key'],
+            'Part SKU'     => $_REQUEST['part_sku'],
+            'editor'       => $editor,
+        );
+        $part_location      = new PartLocation('find', $part_location_data, 'create');
 
         $response = array(
-            'status'  => 'Success',
+            'status'           => 'Success',
+            'part_location_id' => $part_location->id
         );
         echo json_encode($response);
 
