@@ -5164,7 +5164,6 @@ class Part extends Asset
                     }
                 }
 
-
                 if ($found_pl_in_date) {
                     $stock_left_1_year_ago = 0;
                     if ($stock_on_hand > 0) {
