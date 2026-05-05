@@ -93,8 +93,15 @@ class PartLocation extends DB_Table
         $this->found = false;
         $create      = '';
         $update      = '';
+
+        $create_from_delivery = false;
+
         if (preg_match('/create/i', $options)) {
             $create = 'create';
+        }
+        if (preg_match('/create_from_delivery/i', $options)) {
+            $create               = 'create';
+            $create_from_delivery = true;
         }
         if (preg_match('/update/i', $options)) {
             $update = 'update';
@@ -140,7 +147,7 @@ class PartLocation extends DB_Table
 
 
         if ($create and !$this->found) {
-            $this->create($data, $options);
+            $this->create($data, $create_from_delivery);
         }
 
         if ($update and $this->found) {
@@ -169,7 +176,7 @@ class PartLocation extends DB_Table
         $this->location = get_object('Location', $this->location_key);
     }
 
-    function create($data)
+    function create($data, $create_from_delivery)
     {
         //print_r($data);
 
@@ -221,14 +228,17 @@ class PartLocation extends DB_Table
                 $date = $this->editor['Date'];
             }
 
-            $associate_data = array('date' => $date);
+            $associate_data = array(
+                'date' => $date,
+                'audit_from_delivery'=>$create_from_delivery?'Yes':'No',
+            );
             $this->associate($associate_data);
 
             if (!$this->part->get_picking_location_key()) {
                 $this->update_field_switcher('Can Pick', 'Yes', 'no_history');
             }
 
-            $this->process_aiku_fetch('StockLocations',$this->part_sku);
+            $this->process_aiku_fetch('StockLocations', $this->part_sku);
 
             $this->new = true;
         } else {
@@ -272,8 +282,7 @@ class PartLocation extends DB_Table
 
         $this->db->exec($sql);
         $associate_transaction_key = $this->db->lastInsertId();
-        $this->process_aiku_fetch('OrgStockMovement',$associate_transaction_key);
-
+        $this->process_aiku_fetch('OrgStockMovement', $associate_transaction_key);
 
 
         $audit_key = $this->audit(0, _('Part associated with location'), $base_data['date'], $include_current = false, $parent = 'associate');
@@ -285,8 +294,6 @@ class PartLocation extends DB_Table
         if ($this->location->get('Location Pipeline') == 'Yes') {
             $this->location->update_pipelines_data();
         }
-
-
     }
 
     function audit($qty, $note = '', $date = false, $include_current = false, $parent = '')
@@ -298,6 +305,7 @@ class PartLocation extends DB_Table
         if (!is_numeric($qty) or $qty < 0) {
             $this->error = true;
             $this->msg   = _('Quantity On Hand should be a number');
+
             return null;
         }
 
@@ -318,8 +326,8 @@ class PartLocation extends DB_Table
         if ($row = $stmt->fetch()) {
             if ($row['stock'] != '') {
                 $old_qty = $row['stock'];
-                if (!is_numeric($old_qty) ) {
-                    $old_qty=0;
+                if (!is_numeric($old_qty)) {
+                    $old_qty = 0;
                 }
             }
         }
@@ -459,7 +467,7 @@ class PartLocation extends DB_Table
 
             $this->db->exec($sql);
             $leakage_transaction_key = $this->db->lastInsertId();
-            $this->process_aiku_fetch('OrgStockMovement',$leakage_transaction_key);
+            $this->process_aiku_fetch('OrgStockMovement', $leakage_transaction_key);
 
 
             if ($qty_change != 0 and $this->location_key != $warehouse->get('Warehouse Unknown Location Key')) {
@@ -495,7 +503,7 @@ class PartLocation extends DB_Table
                 );
                 $this->db->exec($sql);
                 $leakage_detail_key = $this->db->lastInsertId();
-                $this->process_aiku_fetch('OrgStockMovement',$leakage_detail_key);
+                $this->process_aiku_fetch('OrgStockMovement', $leakage_detail_key);
 
                 $part_unk_location->update_stock(true);
                 $this->part->update_unknown_location();
@@ -533,8 +541,7 @@ class PartLocation extends DB_Table
         );
 
 
-
-        $this->process_aiku_fetch('StockLocations',$this->part->id);
+        $this->process_aiku_fetch('StockLocations', $this->part->id);
 
         return $audit_key;
     }
@@ -654,7 +661,7 @@ class PartLocation extends DB_Table
 
             $account = get_object('Account', 1);
 
-            $this->process_aiku_fetch('StockLocations',$this->part->id);
+            $this->process_aiku_fetch('StockLocations', $this->part->id);
 
             new_housekeeping_fork(
                 'au_housekeeping',
@@ -741,7 +748,7 @@ class PartLocation extends DB_Table
                 $value = json_decode($value, true);
                 $this->update_min($value['min'], $options);
                 $this->update_max($value['max'], $options);
-                $this->process_aiku_fetch('StockLocations',$this->part->id);
+                $this->process_aiku_fetch('StockLocations', $this->part->id);
                 break;
             case('Part Location Quantity On Hand'):
             case('Quantity On Hand'):
@@ -752,15 +759,15 @@ class PartLocation extends DB_Table
                 break;
             case('Part Location Minimum Quantity'):
                 $this->update_min($value, $options);
-                $this->process_aiku_fetch('StockLocations',$this->part->id);
+                $this->process_aiku_fetch('StockLocations', $this->part->id);
                 break;
             case('Part Location Maximum Quantity'):
                 $this->update_max($value, $options);
-                $this->process_aiku_fetch('StockLocations',$this->part->id);
+                $this->process_aiku_fetch('StockLocations', $this->part->id);
                 break;
             case('Part Location Moving Quantity'):
                 $this->update_move_qty($value);
-                $this->process_aiku_fetch('StockLocations',$this->part->id);
+                $this->process_aiku_fetch('StockLocations', $this->part->id);
                 break;
         }
     }
@@ -925,7 +932,7 @@ class PartLocation extends DB_Table
             $this->updated                    = true;
         }
 
-        $this->process_aiku_fetch('StockLocations',$this->part->id);
+        $this->process_aiku_fetch('StockLocations', $this->part->id);
     }
 
     function qty_analysis($a, $b)
@@ -1023,7 +1030,7 @@ class PartLocation extends DB_Table
 
         $this->db->exec($sql);
         $disassociate_transaction_key = $this->db->lastInsertId();
-        $this->process_aiku_fetch('OrgStockMovement',$disassociate_transaction_key);
+        $this->process_aiku_fetch('OrgStockMovement', $disassociate_transaction_key);
 
 
         $this->deleted     = true;
@@ -1056,7 +1063,7 @@ class PartLocation extends DB_Table
         }
 
 
-        $this->process_aiku_fetch('StockLocations',$this->part->id);
+        $this->process_aiku_fetch('StockLocations', $this->part->id);
     }
 
     function add_stock($data)
@@ -1140,19 +1147,16 @@ class PartLocation extends DB_Table
         }
 
 
-
-
         $editor = $this->get_editor_data();
 
 
-        $aiku_picking_key=(int) $data['aiku_picking_id'];
-
+        $aiku_picking_key = (int)$data['aiku_picking_id'];
 
 
         $sql = sprintf(
             "INSERT INTO `Inventory Transaction Fact` (`aiku_picking_id`,`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
 		VALUES (%d,%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s)",
-                 $aiku_picking_key,
+            $aiku_picking_key,
             prepare_mysql($record_type),
             prepare_mysql($section),
             $this->part_sku,
@@ -1171,7 +1175,7 @@ class PartLocation extends DB_Table
 
         $this->db->exec($sql);
         $transaction_id = $this->db->lastInsertId();
-        $this->process_aiku_fetch('OrgStockMovement',$transaction_id);
+        $this->process_aiku_fetch('OrgStockMovement', $transaction_id);
 
         $this->part->update_stock();
 
@@ -1202,7 +1206,7 @@ class PartLocation extends DB_Table
         }
 
 
-        $this->process_aiku_fetch('StockLocations',$this->part->id);
+        $this->process_aiku_fetch('StockLocations', $this->part->id);
 
         return $transaction_id;
     }
@@ -1384,15 +1388,15 @@ class PartLocation extends DB_Table
         $editor = $this->get_editor_data();
 
 
-//        $aiku_picking_key=null;
-//        if(isset($data['aiku_picking_id'])){
-//            $aiku_picking_key=(int) $data['aiku_picking_id'];
-//        }
+        //        $aiku_picking_key=null;
+        //        if(isset($data['aiku_picking_id'])){
+        //            $aiku_picking_key=(int) $data['aiku_picking_id'];
+        //        }
 
         $sql = sprintf(
             "INSERT INTO `Inventory Transaction Fact` (`Inventory Transaction Record Type`,`Inventory Transaction Section`,`Part SKU`,`Location Key`,`Inventory Transaction Type`,`Inventory Transaction Quantity`,`Inventory Transaction Amount`,`User Key`,`Note`,`Date`)
 		VALUES (%s,%s,%d,%d,%s,%f,%.3f,%s,%s,%s)",
-       //     $aiku_picking_key,
+            //     $aiku_picking_key,
             prepare_mysql($record_type),
             prepare_mysql($section),
             $this->part_sku,
@@ -1411,7 +1415,7 @@ class PartLocation extends DB_Table
 
         $this->db->exec($sql);
         $transaction_id = $this->db->lastInsertId();
-        $this->process_aiku_fetch('OrgStockMovement',$transaction_id);
+        $this->process_aiku_fetch('OrgStockMovement', $transaction_id);
 
         $this->part->update_stock();
 
@@ -1441,7 +1445,7 @@ class PartLocation extends DB_Table
                 break;
         }
 
-        $this->process_aiku_fetch('StockLocations',$this->part->id);
+        $this->process_aiku_fetch('StockLocations', $this->part->id);
 
         return $transaction_id;
     }
@@ -1475,7 +1479,7 @@ class PartLocation extends DB_Table
 
             $account = get_object('Account', 1);
 
-            $this->process_aiku_fetch('StockLocations',$this->part->id);
+            $this->process_aiku_fetch('StockLocations', $this->part->id);
 
             new_housekeeping_fork(
                 'au_housekeeping',
@@ -1681,9 +1685,9 @@ class PartLocation extends DB_Table
     function update_stock_history_date($date)
     {
         $client = ClientBuilder::create()->setHosts(get_elasticsearch_hosts())
-        ->setApiKey(ES_KEY1,ES_KEY2)
-        ->setSSLVerification(ES_SSL)
-        ->build();
+            ->setApiKey(ES_KEY1, ES_KEY2)
+            ->setSSLVerification(ES_SSL)
+            ->build();
 
 
         if ($this->exist_on_date($date)) {
