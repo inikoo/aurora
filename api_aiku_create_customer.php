@@ -83,6 +83,8 @@ if (array_key_exists('contact_name', $_REQUEST)) {
 
 if (array_key_exists('company_name', $_REQUEST)) {
     $data['Customer Company Name'] = $_REQUEST['company_name'];
+}else{
+    $data['Customer Company Name'] = '';
 }
 
 $data['editor']                         = $editor;
