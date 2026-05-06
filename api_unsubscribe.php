@@ -12,7 +12,19 @@ $website = get_object('Website', $website_key);
 list($unsubscribe_subject_type, $unsubscribe_subject_key) = $auth->get_customer_from_unsubscribe_link(($_REQUEST['s'] ?? ''), ($_REQUEST['a'] ?? ''));
 
 if ($unsubscribe_subject_type == 'Customer') {
-    $customer         = get_object('Customer', $unsubscribe_subject_key);
+    $customer = get_object('Customer', $unsubscribe_subject_key);
+
+    if (!$customer ||  !$customer->id) {
+        $response = array(
+
+            'state' => 'Error',
+            'msg'   => 'customer not found',
+
+        );
+        echo json_encode($response);
+        exit;
+    }
+
     $customer->editor = $editor;
 
     $old_email_marketing = $customer->get('Customer Send Email Marketing');
