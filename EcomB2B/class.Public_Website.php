@@ -385,7 +385,7 @@ class Public_Website
                     if($options=='GB' or (  DNS_ACCOUNT_CODE == 'ES'  and
 
                             in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
-                                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH'
+                                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH','HR'
                             ])
 
 
@@ -405,7 +405,7 @@ class Public_Website
 
 
                             in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
-                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH'
+                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH','HR'
                             ])) {
                                 $pass=true;
                         }
