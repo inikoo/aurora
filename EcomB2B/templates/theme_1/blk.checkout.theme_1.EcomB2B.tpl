@@ -224,7 +224,7 @@
                                 <div id="checkout-flow-button-container" style="width: 400px">
                                     New Checkout Flow (Coming Soon)
 
-                                   xx  {{$payment_account.data.url}} yyy
+                                   xx  {{$payment_account._data.url}} yyy
 
                                 </div>
                             {elseif $block=='Pastpay' }
