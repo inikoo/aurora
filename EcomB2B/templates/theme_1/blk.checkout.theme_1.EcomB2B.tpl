@@ -220,7 +220,7 @@
 
                             {if $block=='Checkout' }
                                 <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;border:none;"></iframe>
-                            {elseif $block=='Checkout_Flow' }
+                            {elseif $block=='CheckoutFlow' }
                                 <div id="checkout-flow-button-container" style="width: 400px">
                                     New Checkout Flow (Coming Soon)
                                 </div>
