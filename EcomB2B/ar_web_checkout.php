@@ -66,6 +66,14 @@ if (!$customer->id) {
 $tipo = $_REQUEST['tipo'];
 
 switch ($tipo) {
+    case 'get_checkout_html_debug':
+        $order = get_object('Order', $customer->get_order_in_process_key());
+        $website->get_payment_accounts($order->get('Order Delivery Address Country 2 Alpha Code'),
+            $order->get('Order Invoice Address Country 2 Alpha Code'),
+            $customer);
+
+        exit;
+        break;
     case 'get_checkout_html':
         $data = prepare_values(
             $_REQUEST, array(
