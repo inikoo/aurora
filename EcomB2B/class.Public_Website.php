@@ -342,42 +342,45 @@ class Public_Website
                     }
 
                     $settings = json_decode($payment_account->get('Payment Account Settings'), true);
-//                    $data     = [
-//                        'url'      => $settings['url'],
-//                        'response' => function () use ($settings) {
-//                            $payload = json_encode([
-//                                "amount"       => 1000,
-//                                "currency"     => "GBP",
-//                                "reference"    => "ORD-123A",
-//                                "display_name" => "Online shop",
-//                                "billing"      => [
-//                                    "address" => [
-//                                        "country" => "GB"
-//                                    ]
-//                                ],
-//                                "customer"     => [
-//                                    "name"  => "Jia Tsang",
-//                                    "email" => "jia.tsang@example.com"
-//                                ],
-//                                "success_url"  => "https://example.com/payments/success",
-//                                "failure_url"  => "https://example.com/payments/failure"
-//                            ]);
-//
-//                            $ch = curl_init($settings['url']);
-//                            curl_setopt($ch, CURLOPT_POST, 1);
-//                            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-//                            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//                            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-//                                'Content-Type: application/json',
-//                                'Content-Length: '.strlen($payload)
-//                            ]);
-//
-//                            $response = curl_exec($ch);
-//                            curl_close($ch);
-//
-//                            return $response;
-//                        }
-//                    ];
+
+                    $payload = json_encode([
+                        "amount"       => 1000,
+                        "currency"     => "GBP",
+                        "reference"    => "ORD-123A",
+                        "display_name" => "Online shop",
+                        "billing"      => [
+                            "address" => [
+                                "country" => "GB"
+                            ]
+                        ],
+                        "customer"     => [
+                            "name"  => "Jia Tsang",
+                            "email" => "jia.tsang@example.com"
+                        ],
+                        "success_url"  => "https://example.com/payments/success",
+                        "failure_url"  => "https://example.com/payments/failure"
+                    ]);
+
+
+
+                    $ch = curl_init($settings['url']);
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                        'Content-Type: application/json',
+                        'Content-Length: '.strlen($payload)
+                    ]);
+
+                    $response = curl_exec($ch);
+                    curl_close($ch);
+                    print_r($response);
+                    exit;
+
+                    $data     = [
+                        'url'      => $settings['url'],
+                        'response' =>$response
+                    ];
 
 
 
