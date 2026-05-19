@@ -374,12 +374,11 @@ class Public_Website
 
                     $response = curl_exec($ch);
                     curl_close($ch);
-                    print_r($response);
-                    exit;
+
 
                     $data     = [
                         'url'      => $settings['url'],
-                        'response' =>$response
+                   //     'response' =>$response
                     ];
 
 
