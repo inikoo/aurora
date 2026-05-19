@@ -708,7 +708,7 @@
 
                             {elseif $block=='Bank'}
                                 <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header id="_form_title_bank">{$data.labels._form_title_bank}</header> ,
+                                    <header id="_form_title_bank">{$data.labels._form_title_bank} XX</header>
 
 
                                     <div style="padding:20px">
