@@ -350,8 +350,21 @@ class Public_Website
                     $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>*';
                     $analytics_label = 'Credit card';
                     break;
-                case 'BTree':
+
                 case 'Checkout':
+
+                    if($customer->get('Store Key')==1 && ($customer->id==444764 || $customer->id==69318) ){
+                        $ok = false;
+                    }
+
+                    $icon            = 'fa fa-credit-card';
+                    $tab_label_index = '_credit_card_label';
+                    $tab_label       = '';
+                    $short_label     = '<i class="fa fa-credit-card" aria-hidden="true"></i>';
+                    $analytics_label = 'Credit card';
+                    break;
+                case 'BTree':
+
                     $icon            = 'fa fa-credit-card';
                     $tab_label_index = '_credit_card_label';
                     $tab_label       = '';
