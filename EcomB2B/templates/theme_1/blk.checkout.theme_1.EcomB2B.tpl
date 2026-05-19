@@ -215,7 +215,6 @@
 
                         {assign "block" $payment_account.object->get("Block")  }
 
-                    B:{$block} <
 
                         <div id="payment_account_item_{$block}" class="tabs-panel3" >
 

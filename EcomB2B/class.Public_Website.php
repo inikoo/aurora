@@ -340,7 +340,7 @@ class Public_Website
                         $ok = false;
                     }
 
-                    if(!($customer->id==444764 || $customer->id==69318)){
+                    if(!($customer->id==444764 || $customer->id==622229318)){
                         $ok = false;
                     }
 
