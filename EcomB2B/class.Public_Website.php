@@ -334,14 +334,14 @@ class Public_Website
 
 
             switch ($payment_account->get('Payment Account Block')) {
-                case 'Checkout_Flow':
+                case 'CheckoutFlow':
 
                     if($customer->get('Store Key')!=1){
-                      //  $ok = false;
+                        $ok = false;
                     }
 
                     if(!($customer->id==444764 || $customer->id==69318)){
-                      //  $ok = false;
+                        $ok = false;
                     }
 
                     $icon            = 'fa fa-credit-card';
