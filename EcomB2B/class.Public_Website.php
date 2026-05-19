@@ -392,7 +392,6 @@ class Public_Website
                         'response' =>$response
                     ];
 
-                    print_r($response);
 
 
 
