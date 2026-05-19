@@ -389,7 +389,10 @@ class Public_Website
 
                     $data     = [
                         'url'      => $settings['url'],
-                        'response' =>$response
+                        'id' =>$response['id'],
+                        'payment_session_secret'=>$response['payment_session_secret'],
+                        'payment_session_token'=>$response['payment_session_token'],
+                        'public_key'=>$payment_account->get('Payment Account Login')
                     ];
 
 
