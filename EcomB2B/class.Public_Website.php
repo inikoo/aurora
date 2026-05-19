@@ -374,7 +374,7 @@ class Public_Website
 
                     $response = curl_exec($ch);
                     curl_close($ch);
-                    print "====xxx=====";
+                    print "====xxx".$settings['url']." =====";
                     print_r($response);
                     exit;
 
