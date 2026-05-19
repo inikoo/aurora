@@ -358,22 +358,35 @@ class Public_Website
                             "email" => "jia.tsang@example.com"
                         ],
                         "success_url"  => "https://example.com/payments/success",
-                        "failure_url"  => "https://example.com/payments/failure"
+                        "failure_url"  => "https://example.com/payments/failure",
+                        'processing_channel_id'=>'pc_edxuk74b2s5ufklugpanbx4bzq'
                     ]);
 
+                    $curl = curl_init();
 
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => $settings['url'],
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS =>$payload,
+                        CURLOPT_HTTPHEADER => array(
+                            'Content-Type: application/json',
+                            'Authorization: '.$payment_account->get('Payment Account Password')
+                        ),
+                    ));
 
-                    $ch = curl_init($settings['url']);
-                    curl_setopt($ch, CURLOPT_POST, 1);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                        'Content-Type: application/json',
-                        'Content-Length: '.strlen($payload)
-                    ]);
+                    $response = curl_exec($curl);
 
-                    $response = curl_exec($ch);
-                    curl_close($ch);
+                    curl_close($curl);
+                    echo $response;
+
+exit;
+
 
 
 
