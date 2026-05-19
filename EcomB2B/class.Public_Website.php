@@ -332,6 +332,7 @@ class Public_Website
 
             $ok = true;
 
+            $data=[];
 
             switch ($payment_account->get('Payment Account Block')) {
                 case 'CheckoutFlow':
@@ -343,6 +344,14 @@ class Public_Website
                     if(!($customer->id==444764 || $customer->id==69318)){
                         $ok = false;
                     }
+
+
+                    $url="https://{prefix}.api.sandbox.checkout.com/payment-sessions";
+
+
+
+
+
 
                     $icon            = 'fa fa-credit-card';
                     $tab_label_index = '_credit_card_label';
@@ -487,7 +496,8 @@ class Public_Website
                     'tab_label'       => $tab_label,
                     'short_label'     => $short_label,
                     'analytics_label' => $analytics_label,
-                    'hide'            => $row['hide']
+                    'hide'            => $row['hide'],
+                    '_data'           => $data
                 );
             }
         }
