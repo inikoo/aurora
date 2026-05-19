@@ -215,7 +215,7 @@
 
                         {assign "block" $payment_account.object->get("Block")  }
 
-
+                    B:{$block} <
 
                         <div id="payment_account_item_{$block}" class="tabs-panel3" >
 
@@ -708,7 +708,7 @@
 
                             {elseif $block=='Bank'}
                                 <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header id="_form_title_bank">{$data.labels._form_title_bank} XX</header>
+                                    <header id="_form_title_bank">{$data.labels._form_title_bank}</header>
 
 
                                     <div style="padding:20px">
