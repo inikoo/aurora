@@ -384,6 +384,7 @@ class Public_Website
 
                     curl_close($curl);
 
+                    $response=json_decode($response,true);
 
 
                     $data     = [
