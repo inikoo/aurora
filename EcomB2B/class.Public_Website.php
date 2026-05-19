@@ -337,11 +337,11 @@ class Public_Website
                 case 'Checkout_Flow':
 
                     if($customer->get('Store Key')!=1){
-                        $ok = false;
+                      //  $ok = false;
                     }
 
                     if(!($customer->id==444764 || $customer->id==69318)){
-                        $ok = false;
+                      //  $ok = false;
                     }
 
                     $icon            = 'fa fa-credit-card';
