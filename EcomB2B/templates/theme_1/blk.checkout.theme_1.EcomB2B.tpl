@@ -221,6 +221,8 @@
 
                             {if $block=='Checkout' }
                                 <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;border:none;"></iframe>
+                            {elseif $block=='Checkout_Flow' }
+                               x
                             {elseif $block=='Pastpay' }
                                 <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:500px;width:100%;border:none;overflow:hidden;" ></iframe>
                             {elseif $block=='Paypal' }
@@ -706,7 +708,7 @@
 
                             {elseif $block=='Bank'}
                                 <form action="" class="sky-form" style="max-width: 500px;">
-                                    <header id="_form_title_bank">{$data.labels._form_title_bank}</header>
+                                    <header id="_form_title_bank">{$data.labels._form_title_bank}</header> ,
 
 
                                     <div style="padding:20px">
