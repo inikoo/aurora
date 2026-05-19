@@ -174,14 +174,13 @@ class Public_Website
 
 
         switch ($key) {
-
-
             case 'wowsbar_footer_data':
 
 
-                if($this->data['wowsbar_footer']!=''){
-                    return json_decode($this->data['wowsbar_footer'],true);
+                if ($this->data['wowsbar_footer'] != '') {
+                    return json_decode($this->data['wowsbar_footer'], true);
                 }
+
                 return null;
 
 
@@ -304,7 +303,7 @@ class Public_Website
         return (isset($this->settings[$key]) ? $this->settings[$key] : '');
     }
 
-    function get_payment_accounts($delivery_2alpha_country = '', $options = '',$customer =false)
+    function get_payment_accounts($delivery_2alpha_country = '', $options = '', $customer = false)
     {
         $payments_accounts = array();
 
@@ -323,34 +322,29 @@ class Public_Website
         $count = 0;
 
 
-
         while ($row = $stmt->fetch()) {
-
-
             $payment_account = get_object('Payment_Account', $row['Payment Account Store Payment Account Key']);
 
 
             $ok = true;
 
-            $data=[];
+            $data = [];
 
             switch ($payment_account->get('Payment Account Block')) {
                 case 'CheckoutFlow':
 
-                    if($customer->get('Store Key')!=1){
+                    if ($customer->get('Store Key') != 1) {
                         $ok = false;
                     }
 
-                    if(!($customer->id==444764 || $customer->id==69318)){
+                    if (!($customer->id == 444764 || $customer->id == 69318)) {
                         $ok = false;
                     }
 
-
-                    $url="https://{prefix}.api.sandbox.checkout.com/payment-sessions";
-
-
-
-
+                    $settings = json_decode($payment_account->get('Payment Account Settings'), true);
+                    $data     = [
+                        'url' => $settings['url']
+                    ];
 
 
                     $icon            = 'fa fa-credit-card';
@@ -362,7 +356,7 @@ class Public_Website
 
                 case 'Checkout':
 
-                    if($customer->get('Store Key')==1 && ($customer->id==444764 || $customer->id==69318) ){
+                    if ($customer->get('Store Key') == 1 && ($customer->id == 444764 || $customer->id == 69318)) {
                         $ok = false;
                     }
 
@@ -419,36 +413,69 @@ class Public_Website
                 case 'Pastpay':
 
 
-                    $pass=false;
-                    if($options=='GB' or (  DNS_ACCOUNT_CODE == 'ES'  and
+                    $pass = false;
+                    if ($options == 'GB' or (DNS_ACCOUNT_CODE == 'ES' and
 
-                            in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
-                                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH','HR'
+                            in_array($options, [
+                                'HU',
+                                'PL',
+                                'SK',
+                                'CZ',
+                                'DE',
+                                'RO',
+                                'IT',
+                                'FR',
+                                'NL',
+                                'BE',
+                                'ES',
+                                'DK',
+                                'SE',
+                                'PT',
+                                'EE',
+                                'LV',
+                                'BG',
+                                'SI',
+                                'CH',
+                                'HR'
                             ])
 
 
-
-                    )    ){
-                        $pass=true;
-                    }else{
-
+                        )) {
+                        $pass = true;
+                    } else {
                         if (
 
                             $customer and
 
-                            $customer->get('Customer Tax Number Valid')=='Yes' and
-                            $customer->get('Customer Tax Number')!=''  and
+                            $customer->get('Customer Tax Number Valid') == 'Yes' and
+                            $customer->get('Customer Tax Number') != '' and
 
 
-
-
-                            in_array($options, ['HU','PL','SK','CZ','DE','RO','IT',
-                                'FR','NL','BE','ES','DK','SE','PT','EE','LV','BG','SI','CH','HR'
+                            in_array($options, [
+                                'HU',
+                                'PL',
+                                'SK',
+                                'CZ',
+                                'DE',
+                                'RO',
+                                'IT',
+                                'FR',
+                                'NL',
+                                'BE',
+                                'ES',
+                                'DK',
+                                'SE',
+                                'PT',
+                                'EE',
+                                'LV',
+                                'BG',
+                                'SI',
+                                'CH',
+                                'HR'
                             ])) {
-                                $pass=true;
+                            $pass = true;
                         }
                     }
-
 
 
                     if ($pass) {
@@ -459,7 +486,7 @@ class Public_Website
                         $analytics_label = 'Pastpay';
                     } else {
                         $ok = false;
-                   }
+                    }
                     break;
                 case 'ConD':
 
@@ -501,7 +528,6 @@ class Public_Website
                 );
             }
         }
-
 
 
         return $payments_accounts;
@@ -629,8 +655,7 @@ class Public_Website
 
     function get_api_key($code)
     {
-
-        if (ENVIRONMENT=='DEVEL' and $code=='Hokodo' ) {
+        if (ENVIRONMENT == 'DEVEL' and $code == 'Hokodo') {
             return HOKODO_DEVEL_KEY;
         }
 
@@ -683,8 +708,6 @@ WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='
 
     function get_payment_account__key($code)
     {
-
-
         $payment_account__key = '';
         $sql                  =
             "SELECT `Payment Account Store Payment Account Key`

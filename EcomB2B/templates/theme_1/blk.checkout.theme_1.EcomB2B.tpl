@@ -223,6 +223,9 @@
                             {elseif $block=='CheckoutFlow' }
                                 <div id="checkout-flow-button-container" style="width: 400px">
                                     New Checkout Flow (Coming Soon)
+
+                                   xx  {{$payment_account.data.url}} yyy
+
                                 </div>
                             {elseif $block=='Pastpay' }
                                 <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:500px;width:100%;border:none;overflow:hidden;" ></iframe>
