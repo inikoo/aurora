@@ -383,10 +383,6 @@ class Public_Website
                     $response = curl_exec($curl);
 
                     curl_close($curl);
-                    echo $response;
-
-exit;
-
 
 
 

@@ -224,7 +224,9 @@
                                 <div id="checkout-flow-button-container" style="width: 400px">
                                     New Checkout Flow (Coming Soon)
 
-                                    xx  yyy
+                                    id: {$payment_account._data.response.id}  ||
+                                    payment_session_secret: {$payment_account._data.response.payment_session_secret}  ||
+                                    payment_session_token: {$payment_account._data.response.payment_session_token}  ||
 
 
                                 </div>
