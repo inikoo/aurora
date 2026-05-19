@@ -224,10 +224,10 @@
                                 <div id="checkout-flow-button-container" style="width: 400px">
                                     New Checkout Flow (Coming Soon)
 
-                                    id: {{$payment_account._data.id}}  <--
-                                    payment_session_secret: {{$payment_account._data.payment_session_secret}}  <--
-                                    payment_session_token: {{$payment_account._data.payment_session_token}}  <--
-                                    public_key: {{$payment_account._data.public_key}}  <--
+                                    id: --> {{$payment_account._data.id}}  <--
+                                    payment_session_secret:==> {{$payment_account._data.payment_session_secret}}  <--
+                                    payment_session_token:--> {{$payment_account._data.payment_session_token}}  <--
+                                    public_key:--> {{$payment_account._data.public_key}}  <--
 
 
                                 </div>
