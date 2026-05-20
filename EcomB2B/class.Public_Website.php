@@ -367,7 +367,7 @@ class Public_Website
                         "failure_url"           => $failure_url,
                         'processing_channel_id' => $row['login'],
                         "3ds"=>[
-                            "enabled" => true
+                            "enabled" => false
                         ]
                     ]);
 
