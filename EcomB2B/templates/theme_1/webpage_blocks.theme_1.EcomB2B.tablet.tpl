@@ -22,9 +22,9 @@
         {* Start of Announcement *}
         <script>
             window.addEventListener('message', function(event) {
-                console.log('received message', event.data)
 
                 if (event?.data?.height) {
+                    console.log('received message height', event.data)
                     document.getElementById('wowsbar_announcement_iframe').style.height = event.data.height
                 }
             })
