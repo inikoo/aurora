@@ -222,7 +222,6 @@
                                 <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;border:none;"></iframe>
                             {elseif $block=='CheckoutFlow' }
 
-                                <script src="https://checkout-web-components.checkout.com/index.js"></script>
                                 <div id="checkout-flow-button-container" style="width: 400px">
                                     New Checkout Flow (Coming Soon)
 
@@ -234,22 +233,26 @@
                                 </div>
 
                                 <script>
-                                    (async () => {
-                                        console.log('helloxyz');
-                                        const paymentSession = {$payment_account._data|json_encode};
-                                        const publicKey = '{$payment_account._data.public_key}';
+                                    (function() {
+                                        var ckoScript = document.createElement('script');
+                                        ckoScript.src = 'https://checkout-web-components.checkout.com/index.js';
+                                        ckoScript.onload = async function() {
+                                            const paymentSession = {$payment_account._data|json_encode};
+                                            const publicKey = '{$payment_account._data.public_key}';
 
-                                        const checkout = await CheckoutWebComponents({
-                                            paymentSession,
-                                            publicKey,
-                                            environment: 'sandbox', // Use 'production' for Production environment
-                                            onPaymentCompleted: async (_self, paymentResponse) => {
-                                                console.log('Payment successful', paymentResponse);
-                                            },
-                                        });
-                                        console.log('helloxyz 111111');
+                                            const checkout = await CheckoutWebComponents({
+                                                paymentSession,
+                                                publicKey,
+                                                environment: 'sandbox', // Use 'production' for Production environment
+                                                onPaymentCompleted: async (_self, paymentResponse) => {
+                                                    console.log('Payment successful', paymentResponse);
+                                                },
+                                            });
 
-
+                                            const flowComponent = checkout.create('flow');
+                                            flowComponent.mount('#checkout-flow-button-container');
+                                        };
+                                        document.head.appendChild(ckoScript);
                                     })();
                                 </script>
 
