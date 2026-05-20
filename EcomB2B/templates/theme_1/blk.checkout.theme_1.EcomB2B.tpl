@@ -232,7 +232,6 @@
                                             $payment_account._data.public_key,
                                             environment: 'sandbox', // Use 'production' for Production environment
                                         });
-                                        console.log('helloxyz 123', checkout);
                                     })();
                                 </script>
 
