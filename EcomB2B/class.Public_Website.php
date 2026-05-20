@@ -371,8 +371,7 @@ class Public_Website
                         ]
                     ]);
 
-                    print_r($payload);
-                    exit;
+
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
