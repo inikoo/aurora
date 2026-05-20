@@ -308,7 +308,7 @@ class Public_Website
         $payments_accounts = array();
 
         $sql =
-            "SELECT `Payment Account Store Payment Account Key`,`hide` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=? 
+            "SELECT `Payment Account Store Payment Account Key`,`hide`,`login` FROM `Payment Account Store Bridge` WHERE `Payment Account Store Website Key`=? 
             AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes'  ORDER BY `Payment Account Store Show Cart Order`";
 
 
@@ -343,38 +343,44 @@ class Public_Website
 
                     $settings = json_decode($payment_account->get('Payment Account Settings'), true);
 
+                    $order = get_object('Order', $customer->get_order_in_process_key());
+                    $toPay = (int)$order->get('Basket To Pay Amount') * 100;
+
+                    $success_url = 'https://'.$this->get('Website URL')."/ar_web_process_checkout.php";
+                    $failure_url = 'https://'.$this->get('Website URL')."/ar_web_process_checkout.php";
+
                     $payload = json_encode([
-                        "amount"       => 1000,
-                        "currency"     => "GBP",
-                        "reference"    => "ORD-123A",
-                        "display_name" => "Online shop",
-                        "billing"      => [
+                        "amount"                => $toPay,
+                        "currency"              => $order->get('Currency Code'),
+                        "reference"             => $order->get('Public ID'),
+                        "display_name"          => "Checkout",
+                        "billing"               => [
                             "address" => [
-                                "country" => "GB"
+                                "country" => $order->get('Order Invoice Address Country 2 Alpha Code'),
                             ]
                         ],
-                        "customer"     => [
-                            "name"  => "Jia Tsang",
-                            "email" => "jia.tsang@example.com"
+                        "customer"              => [
+                            "name"  => $customer->get('Name'),
+                            "email" => $customer->get('Main Plain Email'),
                         ],
-                        "success_url"  => "https://example.com/payments/success",
-                        "failure_url"  => "https://example.com/payments/failure",
-                        'processing_channel_id'=>'pc_edxuk74b2s5ufklugpanbx4bzq'
+                        "success_url"           => $success_url,
+                        "failure_url"           => $failure_url,
+                        'processing_channel_id' => $row['login']
                     ]);
 
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
-                        CURLOPT_URL => $settings['url'],
+                        CURLOPT_URL            => $settings['url'],
                         CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_ENCODING       => '',
+                        CURLOPT_MAXREDIRS      => 10,
+                        CURLOPT_TIMEOUT        => 0,
                         CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS =>$payload,
-                        CURLOPT_HTTPHEADER => array(
+                        CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST  => 'POST',
+                        CURLOPT_POSTFIELDS     => $payload,
+                        CURLOPT_HTTPHEADER     => array(
                             'Content-Type: application/json',
                             'Authorization: '.$payment_account->get('Payment Account Password')
                         ),
@@ -384,18 +390,16 @@ class Public_Website
 
                     curl_close($curl);
 
-                    $response=json_decode($response,true);
+                    $response = json_decode($response, true);
 
 
-                    $data     = [
-                        'url'      => $settings['url'],
-                        'id' =>$response['id'],
-                        'payment_session_secret'=>$response['payment_session_secret'],
-                        'payment_session_token'=>$response['payment_session_token'],
-                        'public_key'=>$payment_account->get('Payment Account Login')
+                    $data = [
+                        'url'                    => $settings['url'],
+                        'id'                     => $response['id'],
+                        'payment_session_secret' => $response['payment_session_secret'],
+                        'payment_session_token'  => $response['payment_session_token'],
+                        'public_key'             => $payment_account->get('Payment Account Login')
                     ];
-
-
 
 
                     $icon            = 'fa fa-credit-card';
