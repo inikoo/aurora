@@ -221,9 +221,17 @@
                             {if $block=='Checkout' }
                                 <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;border:none;"></iframe>
                             {elseif $block=='CheckoutFlow' }
+
                                 <script src="https://checkout-web-components.checkout.com/index.js"></script>
                                 <script>
-                                    console.log('helloxyz')
+                                    console.log('helloxyz');
+
+                                    const checkout = await CheckoutWebComponents({
+                                        $payment_account._data,
+                                        $payment_account._data.public_key,
+                                        environment: 'sandbox', // Use 'production' for Production environment
+                                    });
+                                    console.log('helloxyz 123', checkout);
                                 </script>
 
                                 <div id="checkout-flow-button-container" style="width: 400px">
@@ -234,8 +242,8 @@
                                     payment_session_token:--> {{$payment_account._data.payment_session_token}}  <--
                                     public_key:--> {{$payment_account._data.public_key}}  <--
 
-
                                 </div>
+
                             {elseif $block=='Pastpay' }
                                 <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:500px;width:100%;border:none;overflow:hidden;" ></iframe>
                             {elseif $block=='Paypal' }
