@@ -251,7 +251,7 @@
 
 
                                     })();
-                                </div>
+                                </script>
 
                             {elseif $block=='Pastpay' }
                                 <iframe src="ar_web_payment_account_pastpay_iframe.php?order_key={$order->id}" title="Pastpay" style="height:500px;width:100%;border:none;overflow:hidden;" ></iframe>
