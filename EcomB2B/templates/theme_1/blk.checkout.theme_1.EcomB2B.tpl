@@ -223,7 +223,7 @@
                             {elseif $block=='CheckoutFlow' }
 
                                 <script src="https://checkout-web-components.checkout.com/index.js"></script>
-                                <script>
+                                <script async>
                                     console.log('helloxyz');
 
                                     const checkout = await CheckoutWebComponents({
