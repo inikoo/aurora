@@ -365,7 +365,10 @@ class Public_Website
                         ],
                         "success_url"           => $success_url,
                         "failure_url"           => $failure_url,
-                        'processing_channel_id' => $row['login']
+                        'processing_channel_id' => $row['login'],
+                        "3ds"=>[
+                            "enabled" => true
+                        ]
                     ]);
 
                     $curl = curl_init();
