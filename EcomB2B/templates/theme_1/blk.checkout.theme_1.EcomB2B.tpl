@@ -223,13 +223,6 @@
                             {elseif $block=='CheckoutFlow' }
 
                                 <script src="https://checkout-web-components.checkout.com/index.js"></script>
-                                <script>
-                                    (async () => {
-                                        console.log('helloxyz');
-
-                                    })();
-                                </script>
-
                                 <div id="checkout-flow-button-container" style="width: 400px">
                                     New Checkout Flow (Coming Soon)
 
@@ -238,6 +231,26 @@
                                     payment_session_token:--> {{$payment_account._data.payment_session_token}}  <--
                                     public_key:--> {{$payment_account._data.public_key}}  <--
 
+                                </div>
+
+                                <script>
+                                    (async () => {
+                                        console.log('helloxyz');
+                                        const paymentSession = {$payment_account._data|json_encode};
+                                        const publicKey = '{$payment_account._data.public_key}';
+
+                                        const checkout = await CheckoutWebComponents({
+                                            paymentSession,
+                                            publicKey,
+                                            environment: 'sandbox', // Use 'production' for Production environment
+                                            onPaymentCompleted: async (_self, paymentResponse) => {
+                                                console.log('Payment successful', paymentResponse);
+                                            },
+                                        });
+                                        console.log('helloxyz 111111');
+
+
+                                    })();
                                 </div>
 
                             {elseif $block=='Pastpay' }
