@@ -223,15 +223,17 @@
                             {elseif $block=='CheckoutFlow' }
 
                                 <script src="https://checkout-web-components.checkout.com/index.js"></script>
-                                <script async>
-                                    console.log('helloxyz');
+                                <script>
+                                    (async () => {
+                                        console.log('helloxyz');
 
-                                    const checkout = await CheckoutWebComponents({
-                                        $payment_account._data,
-                                        $payment_account._data.public_key,
-                                        environment: 'sandbox', // Use 'production' for Production environment
-                                    });
-                                    console.log('helloxyz 123', checkout);
+                                        const checkout = await CheckoutWebComponents({
+                                            $payment_account._data,
+                                            $payment_account._data.public_key,
+                                            environment: 'sandbox', // Use 'production' for Production environment
+                                        });
+                                        console.log('helloxyz 123', checkout);
+                                    })();
                                 </script>
 
                                 <div id="checkout-flow-button-container" style="width: 400px">
