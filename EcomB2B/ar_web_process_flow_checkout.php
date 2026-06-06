@@ -7,6 +7,9 @@ use Checkout\Environment;
 
 include_once 'payment_account_flow_checkout_common_functions.php';
 
+//print "================";
+//print_r($_REQUEST);
+//exit;
 
 if (!empty($_REQUEST['cko-session-id'])) {
     $payment_id = $_REQUEST['cko-session-id'];
@@ -29,27 +32,9 @@ $smarty->addPluginsDir('./smarty_plugins');
 $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
-if ($website->get('Website Type') == 'EcomDS') {
-    if (empty($_REQUEST['client_order_key']) or !is_numeric($_REQUEST['client_order_key']) or $_REQUEST['client_order_key'] <= 0) {
-        echo '<div style="margin:100px auto;text-align: center">Client order key not provided (a)</div>';
-        exit;
-    }
 
+$order = get_object('Order', $customer->get_order_in_process_key());
 
-    $order = get_object('Order', $_REQUEST['client_order_key']);
-
-    if (!$order->id or $order->get('Order Customer Key') != $customer->id) {
-        echo '<div style="margin:100px auto;text-align: center">Incorrect order id</div>';
-        exit;
-    }
-
-    if ($order->get('Order State') != 'InBasket') {
-        echo '<div style="margin:100px auto;text-align: center">Order not in basket</div>';
-        exit;
-    }
-} else {
-    $order = get_object('Order', $customer->get_order_in_process_key());
-}
 
 if (!$order->id) {
     echo '<div style="margin:100px auto;text-align: center">Order not found</div>';
