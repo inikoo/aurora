@@ -346,8 +346,8 @@ class Public_Website
                     $order = get_object('Order', $customer->get_order_in_process_key());
                     $toPay = (int)$order->get('Order Basket To Pay Amount') * 100;
 
-                    $success_url = 'https://'.$this->get('Website URL')."/ar_web_process_checkout.php";
-                    $failure_url = 'https://'.$this->get('Website URL')."/ar_web_process_checkout.php";
+                    $success_url = 'https://'.$this->get('Website URL')."/ar_web_process_flow_checkout.php";
+                    $failure_url = 'https://'.$this->get('Website URL')."/ar_web_process_flow_checkout.php";
 
                     $payload = json_encode([
                         "amount"                => $toPay,
