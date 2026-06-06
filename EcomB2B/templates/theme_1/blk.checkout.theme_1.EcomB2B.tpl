@@ -245,7 +245,7 @@
                                                 environment: 'sandbox', // Use 'production' for Production environment
                                                 onPaymentCompleted: async (_self, paymentResponse) => {
                                                     console.log('Payment successful', paymentResponse);
-                                                   // window.location.replace(paymentSession.success_url);
+                                                    window.location.replace(paymentSession.success_url+'?id='+paymentResponse.id);
                                                 },
                                                 onError: (_self, error) => {
                                                     console.log('Payment failed', error);
