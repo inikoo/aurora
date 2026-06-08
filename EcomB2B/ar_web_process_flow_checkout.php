@@ -11,11 +11,7 @@ include_once 'payment_account_flow_checkout_common_functions.php';
 //print_r($_REQUEST);
 //exit;
 
-if (!empty($_REQUEST['cko-session-id'])) {
-    $payment_id = $_REQUEST['cko-session-id'];
-} else {
-    exit;
-}
+
 
 
 include_once 'ar_web_common_logged_in.php';
@@ -33,21 +29,14 @@ $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
 
-$order = get_object('Order', $customer->get_order_in_process_key());
 
 
-if (!$order->id) {
-    echo '<div style="margin:100px auto;text-align: center">Order not found</div>';
-    exit;
-}
 
-
-$to_pay = $order->get('Order To Pay Amount');
 
 
 $sql =
     "SELECT `Payment Account Store Payment Account Key` FROM `Payment Account Store Bridge` B left join `Payment Account Dimension` PAD on PAD.`Payment Account Key`=B.`Payment Account Store Payment Account Key`
-WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`='Checkout' ";
+WHERE `Payment Account Store Website Key`=? AND `Payment Account Store Status`='Active' AND `Payment Account Store Show in Cart`='Yes' and `Payment Account Block`='CheckoutFlow' ";
 /** @var TYPE_NAME $db */
 $stmt = $db->prepare($sql);
 $stmt->execute(
@@ -66,6 +55,37 @@ if (!$payment_account_key) {
 
 
 $payment_account = get_object('Payment_Account', $payment_account_key);
+
+
+if (!empty($_REQUEST['id'])) {
+    $payment_id = $_REQUEST['id'];
+    $payment_data=get_flow_payment($payment_account,$payment_id);
+
+} else {
+    exit;
+}
+
+
+
+
+
+
+
+
+
+$order = get_object('Order', $customer->get_order_in_process_key());
+
+
+if (!$order->id) {
+    echo '<div style="margin:100px auto;text-align: center">Order not found</div>';
+    exit;
+}
+
+
+$to_pay = $order->get('Order To Pay Amount');
+
+
+
 /** @var TYPE_NAME $editor */
 $payment_account->editor = $editor;
 
@@ -87,6 +107,9 @@ $CheckoutAPI = CheckoutSdk::builder()->staticKeys()
 try {
     $response = $CheckoutAPI->getPaymentsClient()->getPaymentDetails($payment_id);
 
+    print_r($response);
+    exit;
+
 } catch (CheckoutApiException $e) {
     print_r($e);
     exit;
@@ -95,7 +118,7 @@ try {
 $res      = process_flow_payment_response($response, $order, $website, $payment_account, $customer, $editor, $smarty, $account, $store, $db);
 
 
-//exit;
+
 if ($res['state'] == 400) {
     $_SESSION['checkout_payment_error'] = strip_tags($res['msg']);
 

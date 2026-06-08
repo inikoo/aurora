@@ -375,7 +375,7 @@ class Public_Website
                     $curl = curl_init();
 
                     curl_setopt_array($curl, array(
-                        CURLOPT_URL            => $settings['url'],
+                        CURLOPT_URL            => $settings['url'].'/payment-sessions',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING       => '',
                         CURLOPT_MAXREDIRS      => 10,

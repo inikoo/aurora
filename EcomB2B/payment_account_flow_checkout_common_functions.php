@@ -123,3 +123,31 @@ function process_flow_payment_response($response, $order, $website, $payment_acc
     );
 }
 
+function get_flow_payment($payment_account,$payment_id)
+{
+
+    $settings = json_decode($payment_account->get('Payment Account Settings'), true);
+
+
+    $curl = curl_init();
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => $settings['url'].'/payments/'.$payment_id,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: '.$payment_account->get('Payment Account Password')
+        ),
+    ));
+
+    $response = curl_exec($curl);
+    print_r($response);exit;
+    curl_close($curl);
+    echo $response;
+}
+
