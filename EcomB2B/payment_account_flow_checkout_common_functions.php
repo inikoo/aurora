@@ -166,6 +166,9 @@ function get_flow_payment($payment_account, $payment_id)
 
 function create_checkout_flow_payment($order, $payment_data)
 {
+
+    $payment_data=json_decode($payment_data,true);
+
     $website = get_object('Website', $_SESSION['website_key']);
 
     $payment_method = 'Credit Card';
