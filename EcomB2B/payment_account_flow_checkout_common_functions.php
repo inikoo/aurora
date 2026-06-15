@@ -92,11 +92,11 @@ function process_flow_payment_response($response, $order, $website, $payment_acc
     } else {
         $payment_data['Payment Transaction Status'] = 'Declined';
 
-        if(isset($response['actions'])) {
+        if (isset($response['actions'])) {
             foreach ($response['actions'] as $action) {
-                if($action['type']=='Authorization'){
+                if ($action['type'] == 'Authorization') {
                     if (isset($action['response_summary'])) {
-                        $info .=$action['response_summary'];
+                        $info .= $action['response_summary'];
                     }
                     if (isset($action['response_code'])) {
                         $info .= ' ('.$action['response_code'].') ';
@@ -123,24 +123,22 @@ function process_flow_payment_response($response, $order, $website, $payment_acc
     );
 }
 
-function get_flow_payment($payment_account,$payment_id)
+function get_flow_payment($payment_account, $payment_id)
 {
-
     $settings = json_decode($payment_account->get('Payment Account Settings'), true);
-
 
     $curl = curl_init();
 
     curl_setopt_array($curl, array(
-        CURLOPT_URL => $settings['url'].'/payments/'.$payment_id,
+        CURLOPT_URL            => $settings['url'].'/payments/'.$payment_id,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
+        CURLOPT_ENCODING       => '',
+        CURLOPT_MAXREDIRS      => 10,
+        CURLOPT_TIMEOUT        => 0,
         CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
+        CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST  => 'GET',
+        CURLOPT_HTTPHEADER     => array(
             'Authorization: '.$payment_account->get('Payment Account Password')
         ),
     ));
@@ -151,28 +149,27 @@ function get_flow_payment($payment_account,$payment_id)
     if (curl_errno($curl)) {
         $error_msg = curl_error($curl);
         curl_close($curl);
+
         return array('error' => $error_msg);
     }
 
     $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
 
-
-
     $response_data = json_decode($response, true);
 
-    return (array(
+    return array(
         'status'   => $http_status,
         'response' => $response_data
-    ));
+    );
 }
 
-public function create_checkout_flow_payment($order,$payment_data)
+function create_checkout_flow_payment($order, $payment_data)
 {
     $website = get_object('Website', $_SESSION['website_key']);
 
     $payment_method = 'Credit Card';
-    $card_type = '';
+    $card_type      = '';
     if (isset($payment_data['source']['product_type'])) {
         $card_type = $payment_data['source']['product_type'];
     }
@@ -213,8 +210,7 @@ public function create_checkout_flow_payment($order,$payment_data)
         'Payment Transaction Status Info' => $info
 
     );
-
     print_r($payment_data);
     exit;
-
 }
+
