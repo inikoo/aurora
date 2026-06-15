@@ -56,23 +56,6 @@ if (!$payment_account_key) {
 
 $payment_account = get_object('Payment_Account', $payment_account_key);
 
-
-if (!empty($_REQUEST['id'])) {
-    $payment_id = $_REQUEST['id'];
-    $payment_data=get_flow_payment($payment_account,$payment_id);
-
-} else {
-    exit;
-}
-
-
-
-
-
-
-
-
-
 $order = get_object('Order', $customer->get_order_in_process_key());
 
 
@@ -80,6 +63,54 @@ if (!$order->id) {
     echo '<div style="margin:100px auto;text-align: center">Order not found</div>';
     exit;
 }
+
+if (!empty($_REQUEST['id'])) {
+    $payment_id = $_REQUEST['id'];
+    $payment_data=get_flow_payment($payment_account,$payment_id);
+
+    if($payment_data['status']!=200){
+
+        $_SESSION['checkout_payment_error'] = 'Unknown error';
+        if($payment_data['status']=='404'){
+            $_SESSION['checkout_payment_error']='Payment not found';
+        }
+
+
+
+        $redirect="Location: checkout.sys?error=payment&t=1xx";
+        if ($website->get('Website Type') == 'EcomDS') {
+            $redirect.='&order_key='.$order->id;
+        }
+
+
+        header($redirect);
+        exit;
+    }
+
+
+} else {
+    $_SESSION['checkout_payment_error'] = 'Unknown error';
+
+    $redirect="Location: checkout.sys?error=payment&t=1xx";
+    if ($website->get('Website Type') == 'EcomDS') {
+        $redirect.='&order_key='.$order->id;
+    }
+
+
+    header($redirect);
+    exit;
+}
+
+// Create payment
+   $payment=create_checkout_flow_payment($order,$payment_data);
+
+
+
+
+exit('xxxx');
+
+
+
 
 
 $to_pay = $order->get('Order To Pay Amount');
@@ -96,26 +127,6 @@ $secretKey=$payment_account->get('Payment Account Password');
 
 
 $store = get_object('Store', $order->get('Order Store Key'));
-
-$CheckoutAPI = CheckoutSdk::builder()->staticKeys()
-
-    ->secretKey($secretKey)
-    ->environment(ENVIRONMENT == 'DEVEL' ?Environment::sandbox(): Environment::production())
-    ->build();
-
-
-try {
-    $response = $CheckoutAPI->getPaymentsClient()->getPaymentDetails($payment_id);
-
-    print_r($response);
-    exit;
-
-} catch (CheckoutApiException $e) {
-    print_r($e);
-    exit;
-}
-
-$res      = process_flow_payment_response($response, $order, $website, $payment_account, $customer, $editor, $smarty, $account, $store, $db);
 
 
 

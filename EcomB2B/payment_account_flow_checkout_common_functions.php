@@ -62,8 +62,8 @@ function process_flow_payment_response($response, $order, $website, $payment_acc
 
     );
 
-   // print_r($payment_data);
-   // exit;
+    // print_r($payment_data);
+    // exit;
 
     //print_r($response);
 
@@ -146,8 +146,75 @@ function get_flow_payment($payment_account,$payment_id)
     ));
 
     $response = curl_exec($curl);
-    print_r($response);exit;
+
+
+    if (curl_errno($curl)) {
+        $error_msg = curl_error($curl);
+        curl_close($curl);
+        return array('error' => $error_msg);
+    }
+
+    $http_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
     curl_close($curl);
-    echo $response;
+
+
+
+    $response_data = json_decode($response, true);
+
+    return (array(
+        'status'   => $http_status,
+        'response' => $response_data
+    ));
 }
 
+public function create_checkout_flow_payment($order,$payment_data)
+{
+    $website = get_object('Website', $_SESSION['website_key']);
+
+    $payment_method = 'Credit Card';
+    $card_type = '';
+    if (isset($payment_data['source']['product_type'])) {
+        $card_type = $payment_data['source']['product_type'];
+    }
+    if ($card_type == '' and isset($payment_data['source']['scheme'])) {
+        $card_type = $payment_data['source']['scheme'];
+    }
+
+    $date = gmdate('Y-m-d H:i:s');
+    if (!empty($response['processed_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($response['processed_on']));
+    } elseif (!empty($response['requested_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($response['requested_on']));
+    }
+
+    $info = '';
+    if (isset($payment_data['response_summary'])) {
+        $info .= $payment_data['response_summary'];
+    }
+    if (isset($payment_data['response_code'])) {
+        $info .= ' ('.$payment_data['response_code'].')';
+    }
+
+    $payment_data = array(
+        'Payment Store Key'          => $order->get('Order Store Key'),
+        'Payment Website Key'        => $website->id,
+        'Payment Customer Key'       => $order->get('Order Customer Key'),
+        'Payment Transaction Amount' => $payment_data['amount'] / 100,
+        'Payment Currency Code'      => $payment_data['currency'],
+
+        'Payment Sender Card Type' => $card_type,
+        'Payment Created Date'     => $date,
+
+        'Payment Last Updated Date'       => $date,
+        'Payment Transaction ID'          => $payment_data['id'],
+        'Payment Method'                  => $payment_method,
+        'Payment Location'                => 'Basket',
+        'Payment Metadata'                => json_encode($payment_data),
+        'Payment Transaction Status Info' => $info
+
+    );
+
+    print_r($payment_data);
+    exit;
+
+}
