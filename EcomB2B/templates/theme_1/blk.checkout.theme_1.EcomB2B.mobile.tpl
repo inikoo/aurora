@@ -138,6 +138,44 @@
 
                     {if $block=='Checkout' }
                         <iframe src="ar_web_payment_account_checkout_iframe.php?order_key={$order->id}" title="Checkout" style="width: 100%;min-height:300px;border:none;"></iframe>
+                    {elseif $block=='CheckoutFlow' }
+                        <div id="checkout-flow-button-container" style="width: 400px">
+                            <pre class="tw-hidden">
+                                id: {{$payment_account._data.id}}
+                                payment_session_secret: {{$payment_account._data.payment_session_secret}}
+                                payment_session_token: {{$payment_account._data.payment_session_token}}
+                                public_key: {{$payment_account._data.public_key}}
+                            </pre>
+                        </div>
+
+                        <script>
+                            (function() {
+                                var ckoScript = document.createElement('script');
+                                ckoScript.src = 'https://checkout-web-components.checkout.com/index.js';
+                                ckoScript.onload = async function() {
+                                    const paymentSession = {$payment_account._data|json_encode};
+                                    const publicKey = '{$payment_account._data.public_key}';
+
+                                    const checkout = await CheckoutWebComponents({
+                                        paymentSession,
+                                        publicKey,
+                                        environment: 'sandbox', // Use 'production' for Production environment
+                                        onPaymentCompleted: async (_self, paymentResponse) => {
+                                            console.log('Payment successful', paymentResponse);
+                                            window.location.replace(paymentSession.success_url+'?id='+paymentResponse.id);
+                                        },
+                                        onError: (_self, error) => {
+                                            console.log('Payment failed', error);
+                                            //  window.location.replace(paymentSession.failure_url);
+                                        },
+                                    });
+
+                                    const flowComponent = checkout.create('flow');
+                                    flowComponent.mount('#checkout-flow-button-container');
+                                };
+                                document.head.appendChild(ckoScript);
+                            })();
+                        </script>
                     {elseif $block=='Hokodo' }
                         <iframe src="ar_web_payment_account_hokodo_sdk_iframe.php?order_key={$order->id}" title="Checkout"
 
