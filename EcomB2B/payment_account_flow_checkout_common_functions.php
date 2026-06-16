@@ -166,7 +166,8 @@ function get_flow_payment($payment_account, $payment_id)
 
 function get_checkout_flow_payment_data($order, $payment_data)
 {
-    $payment_data = json_decode($payment_data, true);
+
+    $payment_data=$payment_data['response'];
 
     $website = get_object('Website', $_SESSION['website_key']);
 
