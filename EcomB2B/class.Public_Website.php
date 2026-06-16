@@ -333,13 +333,18 @@ class Public_Website
             switch ($payment_account->get('Payment Account Block')) {
                 case 'CheckoutFlow':
 
-                    if ($customer->get('Store Key') != 1) {
+//                    if ($customer->get('Store Key') != 1) {
+//                        $ok = false;
+//                    }
+//
+//                    if (!($customer->id == 444764 || $customer->id == 69318)) {
+//                        $ok = false;
+//                    }
+
+                    if(DNS_ACCOUNT_CODE!='AROMA'){
                         $ok = false;
                     }
 
-                    if (!($customer->id == 444764 || $customer->id == 69318)) {
-                        $ok = false;
-                    }
 
                     $settings = json_decode($payment_account->get('Payment Account Settings'), true);
 
@@ -429,7 +434,11 @@ class Public_Website
 
                 case 'Checkout':
 
-                    if ($customer->get('Store Key') == 1 && ($customer->id == 444764 || $customer->id == 69318)) {
+//                    if ($customer->get('Store Key') == 1 && ($customer->id == 444764 || $customer->id == 69318)) {
+//                        $ok = false;
+//                    }
+
+                    if(DNS_ACCOUNT_CODE=='AROMA'){
                         $ok = false;
                     }
 
