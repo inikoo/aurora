@@ -405,7 +405,6 @@ class Public_Website
                         'public_key'             => $payment_account->get('Payment Account Login'),
                         "success_url"            => $success_url,
                         "failure_url"            => $failure_url,
-                        'flow_to_pay'            => $toPay
                     ];
 
 
