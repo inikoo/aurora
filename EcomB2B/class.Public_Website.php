@@ -341,7 +341,7 @@ class Public_Website
 //                        $ok = false;
 //                    }
 
-                    if(DNS_ACCOUNT_CODE!='AROMAX'){
+                    if(DNS_ACCOUNT_CODE!='AROMA'){
                         $ok = false;
                     }
 
@@ -438,7 +438,7 @@ class Public_Website
 //                        $ok = false;
 //                    }
 
-                    if(DNS_ACCOUNT_CODE=='AROMAX'){
+                    if(DNS_ACCOUNT_CODE=='AROMA'){
                         $ok = false;
                     }
 
