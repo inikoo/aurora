@@ -112,13 +112,17 @@ if (!empty($_REQUEST['id'])) {
     exit;
 }
 
+
 $approved=false;
 $status=$payment_data['response']['status'];
 if($payment_data['response']['approved'] == 1){
     $approved=true;
 }
 
+$delay=false;
+
 if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified'])) {
+    $delay=true;
     sleep(3);
     $payment_data = get_flow_payment($payment_account, $payment_id);
     if ($payment_data['status'] != 200) {
@@ -140,6 +144,7 @@ if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified']))
 
 }
 if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified'])) {
+    $delay=true;
     sleep(3);
     $payment_data = get_flow_payment($payment_account, $payment_id);
     if ($payment_data['status'] != 200) {
@@ -162,6 +167,7 @@ if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified']))
 }
 
 if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified'])) {
+    $delay=true;
     sleep(3);
     $payment_data = get_flow_payment($payment_account, $payment_id);
     if ($payment_data['status'] != 200) {
@@ -182,10 +188,16 @@ if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified']))
     }
 
 }
-
 
 if(!$approved){
-    $_SESSION['checkout_payment_error'] = 'Timeout, please contact customer services';
+
+
+    if($delay) {
+        $_SESSION['checkout_payment_error'] = 'Timeout, please contact customer services';
+    }else{
+        $_SESSION['checkout_payment_error'] = $status;
+    }
+
     $redirect = "Location: checkout.sys?error=payment&t=1xx";
 
     header($redirect);
@@ -216,35 +228,5 @@ header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
 
 
 
-
-
-
-//if ($res['state'] == 400) {
-//    $_SESSION['checkout_payment_error'] = strip_tags($res['msg']);
-//
-//    $redirect="Location: checkout.sys?error=payment&t=1xx";
-//    if ($website->get('Website Type') == 'EcomDS') {
-//        $redirect.='&order_key='.$order->id;
-//    }
-//
-//
-//    header($redirect);
-//
-//} elseif ($res['state'] == 200) {
-//    setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
-//    header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
-//} else {
-//    $_SESSION['checkout_payment_error'] = _('Unknown error please contact customer services');
-//
-//
-//
-//    $redirect="Location: checkout.sys?error=payment&t=2";
-//    if ($website->get('Website Type') == 'EcomDS') {
-//        $redirect+'&order_key='.$order->id;
-//    }
-//    header($redirect);
-//
-//
-//}
 
 
