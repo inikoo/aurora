@@ -381,7 +381,7 @@ class Public_Website
                             ]
                         ],
                         'disabled_payment_methods'=>[
-                          'bizum'
+                          'bizum','paypal'
                         ],
                         "3ds"=>[
                             "enabled" => true
