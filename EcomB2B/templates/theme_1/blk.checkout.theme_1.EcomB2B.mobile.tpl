@@ -159,7 +159,7 @@
                                     const checkout = await CheckoutWebComponents({
                                         paymentSession,
                                         publicKey,
-                                        environment: 'sandbox', // Use 'production' for Production environment
+                                        environment: 'production', // Use 'production' for Production environment
                                         onPaymentCompleted: async (_self, paymentResponse) => {
                                             console.log('Payment successful', paymentResponse);
                                             window.location.replace(paymentSession.success_url+'?id='+paymentResponse.id);
