@@ -344,7 +344,9 @@ class Public_Website
                     $settings = json_decode($payment_account->get('Payment Account Settings'), true);
 
                     $order = get_object('Order', $customer->get_order_in_process_key());
-                    $toPay = (int) $order->get('Order Basket To Pay Amount') * 100;
+
+                    $cents=$order->get('Order Basket To Pay Amount') * 100;
+                    $toPay = (int)$cents;
 
                     $success_url = 'https://'.$this->get('Website URL')."/ar_web_process_flow_checkout.php";
                     $failure_url = 'https://'.$this->get('Website URL')."/ar_web_process_flow_checkout.php";
