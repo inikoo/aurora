@@ -96,14 +96,87 @@ if (!empty($_REQUEST['id'])) {
     exit;
 }
 
+$approved=false;
+$status=$payment_data['response']['status'];
 if($payment_data['response']['approved'] == 1){
-    print "Approved";
-    exit;
+    $approved=true;
+}
+
+if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified'])) {
+    sleep(3);
+    $payment_data = get_flow_payment($payment_account, $payment_id);
+    if ($payment_data['status'] != 200) {
+        $_SESSION['checkout_payment_error'] = 'Unknown error';
+        if ($payment_data['status'] == '404') {
+            $_SESSION['checkout_payment_error'] = 'Payment not found';
+        }
+
+
+        $redirect = "Location: checkout.sys?error=payment&t=1xx";
+
+        header($redirect);
+        exit;
+    }
+    $status=$payment_data['response']['status'];
+    if($payment_data['response']['approved'] == 1){
+        $approved=true;
+    }
+
+}
+if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified'])) {
+    sleep(3);
+    $payment_data = get_flow_payment($payment_account, $payment_id);
+    if ($payment_data['status'] != 200) {
+        $_SESSION['checkout_payment_error'] = 'Unknown error';
+        if ($payment_data['status'] == '404') {
+            $_SESSION['checkout_payment_error'] = 'Payment not found';
+        }
+
+
+        $redirect = "Location: checkout.sys?error=payment&t=1xx";
+
+        header($redirect);
+        exit;
+    }
+    $status=$payment_data['response']['status'];
+    if($payment_data['response']['approved'] == 1){
+        $approved=true;
+    }
+
+}
+
+if (!$approved && in_array($status, ['Pending', 'Authorized', 'Card Verified'])) {
+    sleep(3);
+    $payment_data = get_flow_payment($payment_account, $payment_id);
+    if ($payment_data['status'] != 200) {
+        $_SESSION['checkout_payment_error'] = 'Unknown error';
+        if ($payment_data['status'] == '404') {
+            $_SESSION['checkout_payment_error'] = 'Payment not found';
+        }
+
+
+        $redirect = "Location: checkout.sys?error=payment&t=1xx";
+
+        header($redirect);
+        exit;
+    }
+    $status=$payment_data['response']['status'];
+    if($payment_data['response']['approved'] == 1){
+        $approved=true;
+    }
+
 }
 
 
-print_r($payment_data);
-exit;
+if(!$approved){
+    $_SESSION['checkout_payment_error'] = 'Timeout, please contact customer services';
+    $redirect = "Location: checkout.sys?error=payment&t=1xx";
+
+    header($redirect);
+    exit;
+
+}
+
 
 $payment_data = get_checkout_flow_payment_data($order, $payment_data);
 
