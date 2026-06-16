@@ -96,6 +96,11 @@ if (!empty($_REQUEST['id'])) {
     exit;
 }
 
+if($payment_data['response']['approved'] == 1){
+    print "Approved";
+    exit;
+}
+
 
 print_r($payment_data);
 exit;
