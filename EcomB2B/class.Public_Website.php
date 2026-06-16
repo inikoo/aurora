@@ -341,7 +341,7 @@ class Public_Website
 //                        $ok = false;
 //                    }
 
-                    if(DNS_ACCOUNT_CODE!='AROMA'){
+                    if(!in_array(DNS_ACCOUNT_CODE,['AROMA','AW'])){
                         $ok = false;
                     }
 
@@ -438,7 +438,12 @@ class Public_Website
 //                        $ok = false;
 //                    }
 
-                    if(DNS_ACCOUNT_CODE=='AROMA'){
+//                    if(DNS_ACCOUNT_CODE=='AROMA'){
+//                        $ok = false;
+//                    }
+
+
+                    if(in_array(DNS_ACCOUNT_CODE,['AROMA','AW'])){
                         $ok = false;
                     }
 
