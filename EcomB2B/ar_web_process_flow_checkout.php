@@ -1,5 +1,14 @@
 <?php
 
+$editor = array(
+    'Author Name'  => '',
+    'Author Alias' => '',
+    'Author Type'  => '',
+    'Author Key'   => '',
+    'User Key'     => 0,
+    'Date'         => gmdate('Y-m-d H:i:s')
+);
+
 use Checkout\CheckoutApiException;
 use Checkout\CheckoutSdk;
 use Checkout\Environment;
@@ -10,8 +19,6 @@ include_once 'payment_account_flow_checkout_common_functions.php';
 //print "================";
 //print_r($_REQUEST);
 //exit;
-
-
 
 
 include_once 'ar_web_common_logged_in.php';
@@ -28,10 +35,6 @@ $smarty->addPluginsDir('./smarty_plugins');
 $account = get_object('Account', 1);
 
 $website = get_object('Website', $_SESSION['website_key']);
-
-
-
-
 
 
 $sql =
@@ -65,35 +68,27 @@ if (!$order->id) {
 }
 
 if (!empty($_REQUEST['id'])) {
-    $payment_id = $_REQUEST['id'];
-    $payment_data=get_flow_payment($payment_account,$payment_id);
+    $payment_id   = $_REQUEST['id'];
+    $payment_data = get_flow_payment($payment_account, $payment_id);
 
-    if($payment_data['status']!=200){
-
+    if ($payment_data['status'] != 200) {
         $_SESSION['checkout_payment_error'] = 'Unknown error';
-        if($payment_data['status']=='404'){
-            $_SESSION['checkout_payment_error']='Payment not found';
+        if ($payment_data['status'] == '404') {
+            $_SESSION['checkout_payment_error'] = 'Payment not found';
         }
 
 
-
-        $redirect="Location: checkout.sys?error=payment&t=1xx";
-        if ($website->get('Website Type') == 'EcomDS') {
-            $redirect.='&order_key='.$order->id;
-        }
-
+        $redirect = "Location: checkout.sys?error=payment&t=1xx";
 
         header($redirect);
         exit;
     }
-
-
 } else {
     $_SESSION['checkout_payment_error'] = 'Unknown error';
 
-    $redirect="Location: checkout.sys?error=payment&t=1xx";
+    $redirect = "Location: checkout.sys?error=payment&t=1xx";
     if ($website->get('Website Type') == 'EcomDS') {
-        $redirect.='&order_key='.$order->id;
+        $redirect .= '&order_key='.$order->id;
     }
 
 
@@ -101,61 +96,61 @@ if (!empty($_REQUEST['id'])) {
     exit;
 }
 
-// Create payment
-   $payment=create_checkout_flow_payment($order,$payment_data);
 
+print_r($payment_data);
+exit;
 
+$payment_data = get_checkout_flow_payment_data($order, $payment_data);
 
+$customer = get_object('Customer', $order->get('Order Customer Key'));
+$store    = get_object('Store', $order->get('Order Store Key'));
 
-exit('xxxx');
+$payment = $payment_account->create_payment($payment_data);
+$order->add_payment($payment);
+$credits = floatval($customer->get('Customer Account Balance'));
 
-
-
-
-
-$to_pay = $order->get('Order To Pay Amount');
-
-
-
-/** @var TYPE_NAME $editor */
-$payment_account->editor = $editor;
-
-
-
-
-$secretKey=$payment_account->get('Payment Account Password');
-
-
-$store = get_object('Store', $order->get('Order Store Key'));
-
-
-
-if ($res['state'] == 400) {
-    $_SESSION['checkout_payment_error'] = strip_tags($res['msg']);
-
-    $redirect="Location: checkout.sys?error=payment&t=1xx";
-    if ($website->get('Website Type') == 'EcomDS') {
-        $redirect.='&order_key='.$order->id;
-    }
-
-
-    header($redirect);
-
-} elseif ($res['state'] == 200) {
-    setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
-    header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
-} else {
-    $_SESSION['checkout_payment_error'] = _('Unknown error please contact customer services');
-
-
-
-    $redirect="Location: checkout.sys?error=payment&t=2";
-    if ($website->get('Website Type') == 'EcomDS') {
-        $redirect+'&order_key='.$order->id;
-    }
-    header($redirect);
-
-
+if ($credits > 0) {
+    $to_pay_credits = min($order->get('Order To Pay Amount'), $credits);
+    list($customer, $order, $credit_payment_account, $credit_payment) = pay_credit($order, $to_pay_credits, $editor, $db, $account);
 }
+
+
+place_order($store, $order, $payment_account->id, $customer, $website, $editor, $smarty, $account, $db);
+
+setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
+header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
+
+
+
+
+
+
+//if ($res['state'] == 400) {
+//    $_SESSION['checkout_payment_error'] = strip_tags($res['msg']);
+//
+//    $redirect="Location: checkout.sys?error=payment&t=1xx";
+//    if ($website->get('Website Type') == 'EcomDS') {
+//        $redirect.='&order_key='.$order->id;
+//    }
+//
+//
+//    header($redirect);
+//
+//} elseif ($res['state'] == 200) {
+//    setcookie('au_pu_'.$order->id, $order->id, time() + 300, "/");
+//    header('Location: thanks.sys?order_key='.$order->id.'&ts='.time());
+//} else {
+//    $_SESSION['checkout_payment_error'] = _('Unknown error please contact customer services');
+//
+//
+//
+//    $redirect="Location: checkout.sys?error=payment&t=2";
+//    if ($website->get('Website Type') == 'EcomDS') {
+//        $redirect+'&order_key='.$order->id;
+//    }
+//    header($redirect);
+//
+//
+//}
 
 

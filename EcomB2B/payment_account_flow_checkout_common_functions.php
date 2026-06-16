@@ -164,10 +164,9 @@ function get_flow_payment($payment_account, $payment_id)
     );
 }
 
-function create_checkout_flow_payment($order, $payment_data)
+function get_checkout_flow_payment_data($order, $payment_data)
 {
-
-    $payment_data=json_decode($payment_data,true);
+    $payment_data = json_decode($payment_data, true);
 
     $website = get_object('Website', $_SESSION['website_key']);
 
@@ -181,10 +180,10 @@ function create_checkout_flow_payment($order, $payment_data)
     }
 
     $date = gmdate('Y-m-d H:i:s');
-    if (!empty($response['processed_on'])) {
-        $date = gmdate('Y-m-d H:i:s', strtotime($response['processed_on']));
-    } elseif (!empty($response['requested_on'])) {
-        $date = gmdate('Y-m-d H:i:s', strtotime($response['requested_on']));
+    if (!empty($payment_data['processed_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($payment_data['processed_on']));
+    } elseif (!empty($payment_data['requested_on'])) {
+        $date = gmdate('Y-m-d H:i:s', strtotime($payment_data['requested_on']));
     }
 
     $info = '';
@@ -196,6 +195,7 @@ function create_checkout_flow_payment($order, $payment_data)
     }
 
     $payment_data = array(
+        'Payment Transaction Status' => 'Completed',
         'Payment Store Key'          => $order->get('Order Store Key'),
         'Payment Website Key'        => $website->id,
         'Payment Customer Key'       => $order->get('Order Customer Key'),
@@ -213,7 +213,9 @@ function create_checkout_flow_payment($order, $payment_data)
         'Payment Transaction Status Info' => $info
 
     );
-    print_r($payment_data);
-    exit;
+
+    return $payment_data;
+
+
 }
 
