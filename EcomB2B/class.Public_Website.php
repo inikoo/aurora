@@ -344,12 +344,12 @@ class Public_Website
                     $settings = json_decode($payment_account->get('Payment Account Settings'), true);
 
                     $order = get_object('Order', $customer->get_order_in_process_key());
-                    $toPay = (int)$order->get('Order Basket To Pay Amount') * 100;
+                    $toPay = (int)($order->get('Order Basket To Pay Amount') * 100);
 
                     $success_url = 'https://'.$this->get('Website URL')."/ar_web_process_flow_checkout.php";
                     $failure_url = 'https://'.$this->get('Website URL')."/ar_web_process_flow_checkout.php";
 
-                    $payload = json_encode([
+                    print_r([
                         "amount"                => $toPay,
                         "currency"              => $order->get('Currency Code'),
                         "reference"             => $order->get('Public ID'),
@@ -366,7 +366,7 @@ class Public_Website
                         "success_url"           => $success_url,
                         "failure_url"           => $failure_url,
                         'processing_channel_id' => $row['login'],
-                        "3ds"=>[
+                        "3ds"                   => [
                             "enabled" => false
                         ]
                     ]);
@@ -403,8 +403,9 @@ class Public_Website
                         'payment_session_secret' => $response['payment_session_secret'],
                         'payment_session_token'  => $response['payment_session_token'],
                         'public_key'             => $payment_account->get('Payment Account Login'),
-                        "success_url"           => $success_url,
-                        "failure_url"           => $failure_url,
+                        "success_url"            => $success_url,
+                        "failure_url"            => $failure_url,
+                        'flow_to_pay'            => $toPay
                     ];
 
 
