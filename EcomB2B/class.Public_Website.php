@@ -368,8 +368,18 @@ class Public_Website
                         "success_url"           => $success_url,
                         "failure_url"           => $failure_url,
                         'processing_channel_id' => $row['login'],
+                        'items'=>[
+                            [
+                                "name" => 'items',
+                                "quantity" => 1,
+                                "unit_price" => $toPay,
+                            ]
+                        ],
+                        'disabled_payment_methods'=>[
+                          'bizum'
+                        ],
                         "3ds"=>[
-                            "enabled" => false
+                            "enabled" => true
                         ]
                     ]);
 

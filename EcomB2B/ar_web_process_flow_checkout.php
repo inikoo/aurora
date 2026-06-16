@@ -83,6 +83,22 @@ if (!empty($_REQUEST['id'])) {
         header($redirect);
         exit;
     }
+} elseif (!empty($_REQUEST['cko-payment-id'])) {
+    $payment_id   = $_REQUEST['cko-payment-id'];
+    $payment_data = get_flow_payment($payment_account, $payment_id);
+
+    if ($payment_data['status'] != 200) {
+        $_SESSION['checkout_payment_error'] = 'Unknown error';
+        if ($payment_data['status'] == '404') {
+            $_SESSION['checkout_payment_error'] = 'Payment not found';
+        }
+
+
+        $redirect = "Location: checkout.sys?error=payment&t=1xx";
+
+        header($redirect);
+        exit;
+    }
 } else {
     $_SESSION['checkout_payment_error'] = 'Unknown error';
 
