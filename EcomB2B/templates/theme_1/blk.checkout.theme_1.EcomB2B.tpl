@@ -228,7 +228,6 @@
                                         payment_session_secret: {{$payment_account._data.payment_session_secret}}
                                         payment_session_token: {{$payment_account._data.payment_session_token}}
                                         public_key: {{$payment_account._data.public_key}}
-                                        flow_to_pay: {{$payment_account._data.flow_to_pay}}
                                     </pre>
                                 </div>
 
