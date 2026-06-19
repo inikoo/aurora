@@ -410,8 +410,11 @@ class Public_Order extends DBW_Table {
                 }
             case 'Order Basket To Pay Amount':
 
-                if ($this->data['Order To Pay Amount'] > $this->data['Order Available Credit Amount']) {
-                    return $this->data['Order To Pay Amount'] - $this->data['Order Available Credit Amount'];
+                $toPay=round($this->data['Order To Pay Amount'] ,2);
+                $credit_available=round($this->data['Order Available Credit Amount'] ,2);
+
+                if ($toPay> $credit_available) {
+                    return $toPay- $credit_available;
                 } else {
                     return 0;
 

@@ -350,7 +350,11 @@ class Public_Website
 
                     $order = get_object('Order', $customer->get_order_in_process_key());
 
-                    $cents=$order->get('Order Basket To Pay Amount') * 100;
+
+                    $to_pay_amount=round($order->get('Order Basket To Pay Amount') ,2);
+
+
+                    $cents=$to_pay_amount * 100;
                     $toPay = (int)$cents;
 
                     $success_url = 'https://'.$this->get('Website URL')."/ar_web_process_flow_checkout.php";
