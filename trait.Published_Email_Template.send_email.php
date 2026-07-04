@@ -339,7 +339,7 @@ trait Send_Email
             $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
-                    'region'      => 'us-east-1',
+                    'region'      => 'eu-west-1',
                     'credentials' => [
                         'key'    => AWS_ACCESS_KEY_ID,
                         'secret' => AWS_SECRET_ACCESS_KEY,
@@ -349,7 +349,7 @@ trait Send_Email
             $this->ses_clients[] = SesClient::factory(
                 array(
                     'version'     => 'latest',
-                    'region'      => 'us-east-1',
+                    'region'      => 'eu-west-1',
                     'credentials' => [
                         'key'    => AWS_ACCESS_KEY_ID,
                         'secret' => AWS_SECRET_ACCESS_KEY,
