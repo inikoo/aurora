@@ -37,63 +37,61 @@ $parameters = array(
 
 $table_buttons = array();
 
+if (!(DNS_ACCOUNT_CODE == 'ES' || DNS_ACCOUNT_CODE == 'AWEU')) {
+    $table_buttons[] = array(
+        'icon'                 => 'plus',
+        'title'                => _('New part'),
+        'id'                   => 'new_part',
+        'class'                => 'part',
+        'add_part_to_location' => array(
 
-$table_buttons[] = array(
-    'icon'                 => 'plus',
-    'title'                => _('New part'),
-    'id'                   => 'new_part',
-    'class'                => 'part',
-    'add_part_to_location' => array(
-
-        'field_label' => _("Part").':',
-        'metadata'    => base64_encode(
-            json_encode(
-                array(
-                    'scope'      => 'part',
-                    'parent'     => 'account',
-                    'parent_key' => 1,
-                    'options'    => array('in_use')
+            'field_label' => _("Part").':',
+            'metadata'    => base64_encode(
+                json_encode(
+                    array(
+                        'scope'      => 'part',
+                        'parent'     => 'account',
+                        'parent_key' => 1,
+                        'options'    => array('in_use')
+                    )
                 )
             )
+
         )
 
-    )
+    );
 
-);
+    $table_buttons[] = array(
+        'icon'                         => 'person-dolly',
+        'title'                        => _('Move all parts'),
+        'class'                        => 'move_all_parts_from_location',
+        'id'                           => 'move_all_parts_from_location',
+        'move_all_parts_from_location' => array(
+            'field_id'     => 'Location Code',
+            'field_label'  => _('Move to location'),
+            'placeholder'  => _('code'),
+            'location_key' => $state['key']
 
-
-$table_buttons[] = array(
-    'icon'                         => 'person-dolly',
-    'title'                        => _('Move all parts'),
-    'class'                        => 'move_all_parts_from_location',
-    'id'                           => 'move_all_parts_from_location',
-    'move_all_parts_from_location' => array(
-        'field_id' => 'Location Code',
-        'field_label'=>_('Move to location'),
-        'placeholder'=>_('code'),
-        'location_key'=>$state['key']
-
-    )
-);
+        )
+    );
+}
 
 
 $smarty->assign(
-    'table_metadata', json_encode(
-                        array(
-                            'parent'     => $state['object'],
-                            'parent_key' => $state['key'],
-                            'field'      => 'part'
-                        )
-                    )
+    'table_metadata',
+    json_encode(
+        array(
+            'parent'     => $state['object'],
+            'parent_key' => $state['key'],
+            'field'      => 'part'
+        )
+    )
 
 );
 
 
 $smarty->assign('table_buttons', $table_buttons);
 $smarty->assign('table_operation_msg', 'move_all_parts_from_location_inline_msg');
-
-
-
 
 
 $smarty->assign('table_top_template', 'location.parts.edit.tpl');
