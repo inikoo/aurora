@@ -420,7 +420,7 @@
                     </td>
 
                 </tr>
-                <tr class="{if !$user->can_edit('stock')}hide{/if}">
+                <tr class="{if !$user->can_edit('stock')  || !$canEditStock  }hide{/if}">
 
 
                     <td colspan="4" class="small " style="text-align: right">
