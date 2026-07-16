@@ -37,7 +37,7 @@ $parameters = array(
 
 $table_buttons = array();
 
-if (!(DNS_ACCOUNT_CODE == 'ES' || DNS_ACCOUNT_CODE == 'AWEU')) {
+if (!(DNS_ACCOUNT_CODE == 'ES' || DNS_ACCOUNT_CODE == 'AWEU' || DNS_ACCOUNT_CODE == 'AW')) {
     $table_buttons[] = array(
         'icon'                 => 'plus',
         'title'                => _('New part'),
