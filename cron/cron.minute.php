@@ -53,7 +53,7 @@ switch ($time) {
         );
 
 
-        update_staff_attendance($db);
+        //update_staff_attendance($db);
 
         $account->load_acc_data();
         $account->update_orders();
@@ -360,7 +360,7 @@ switch ($time) {
         break;
     case '01:30':
         //just in case
-        update_staff_attendance($db);
+        //update_staff_attendance($db);
         break;
     case '03:00':
         new_housekeeping_fork(
