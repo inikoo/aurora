@@ -1192,7 +1192,7 @@ function get_customer_navigation($data, $smarty, $user, $db) {
     }
 
 
-    if (!($store->get('Store Type') == 'External' or $store->get('Store Type') == 'Dropshipping')) {
+    if ( !in_array(DNS_ACCOUNT_CODE,['AROMA','AW','AWEU'])  && (  !($store->get('Store Type') == 'External' or $store->get('Store Type') == 'Dropshipping'))) {
 
         if($store->get('Store Type') != 'Fulfilment' ) {
             $right_buttons[] = array(
