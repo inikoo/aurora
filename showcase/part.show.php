@@ -355,11 +355,8 @@ function get_part_showcase($data, $smarty, $account) {
 
     $smarty->assign('part', $part);
 
-    $canEditStock=true;
-    if(DNS_ACCOUNT_CODE == 'ES'  || DNS_ACCOUNT_CODE == 'AWEU' || DNS_ACCOUNT_CODE == 'AW'){
-        $canEditStock=false;
-    }
-    $smarty->assign('canEditStock', $canEditStock);
+
+    $smarty->assign('canEditStock', false);
 
 
     return $smarty->fetch('showcase/part.tpl');
