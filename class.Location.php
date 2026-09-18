@@ -95,6 +95,7 @@ class Location extends DB_Table
 
     function create($data)
     {
+        exit();// closing down aurora
         $this->data = $this->base_data();
 
 

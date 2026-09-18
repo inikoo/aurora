@@ -13,7 +13,7 @@ include_once 'utils/get_export_edit_template_fields.php';
 /** @var \PDO $db */
 /** @var \Smarty $smarty */
 /** @var array $state */
-$html = '';
+
 if (!$user->can_view('locations') or !in_array(
         $state['key'], $user->warehouses
     )
