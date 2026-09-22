@@ -2805,7 +2805,7 @@ function delivery_checking_items($_data, $db, $user, $account) {
             $placement      .= '<div style="clear:both"></div></div>';
             $placement_note = '<input type="hidden" class="note" /><i class="far add_note fa-sticky-note padding_right_5 button" aria-hidden="true"  onClick="show_placement_note(this)" ></i>';
             $placement      .= '
-			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item  '.($data['Supplier Delivery Checked Units'] != '' ? '' : 'invisible').'  '.($data['Supplier Delivery Transaction Placed'] == 'No' ? '' : 'hide')
+			    <div style="clear:both"  id="place_item_'.$data['Purchase Order Transaction Fact Key'].'" class="place_item  '.($data['Supplier Delivery Checked Units'] != '' ? '' : 'invisible').'  '.($data['Supplier Delivery Transaction Placed'] == 'No' and !$supplier_delivery->is_closed_in_aurora() ? '' : 'hide')
                 .' " part_sku="'.$data['Part SKU'].'" transaction_key="'.$data['Purchase Order Transaction Fact Key'].'"  >
 
 			    '.$placement_note.'

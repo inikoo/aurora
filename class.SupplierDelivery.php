@@ -888,6 +888,22 @@ class SupplierDelivery extends DB_Table {
 
     }
 
+    function is_closed_in_aurora() {
+        if ($this->data['Supplier Delivery Type'] == 'Production') {
+            return false;
+        }
+
+        if ($this->data['Supplier Delivery Parent'] == 'Supplier') {
+            $stmt = $this->db->prepare('SELECT count(*) AS num FROM `Supplier Production Dimension` WHERE `Supplier Production Supplier Key`=?');
+            $stmt->execute(array($this->data['Supplier Delivery Parent Key']));
+            if ($row = $stmt->fetch() and $row['num'] > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     function update_state($value, $options = '', $metadata = array()) {
 
         $date = gmdate('Y-m-d H:i:s');
@@ -1951,6 +1967,12 @@ class SupplierDelivery extends DB_Table {
     }
 
     function update_item_delivery_placed_skos($data) {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Supplier deliveries are now booked in from aiku, not from Aurora');
+
+            return false;
+        }
 
 
         //   print_r($data);
