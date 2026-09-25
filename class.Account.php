@@ -736,6 +736,11 @@ class Account extends DB_Table {
 
         $this->new_object = false;
 
+        $this->error = true;
+        $this->msg   = _('Barcodes are now created in aiku, not in Aurora');
+
+        return false;
+
 
         $data['editor'] = $this->editor;
 

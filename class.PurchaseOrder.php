@@ -268,6 +268,12 @@ class PurchaseOrder extends DB_Table {
      * @throws \ErrorException
      */
     function create_supplier_delivery($data) {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Supplier deliveries are now managed in aiku, not in Aurora');
+
+            return false;
+        }
 
         include_once 'utils/currency_functions.php';
 
@@ -1532,7 +1538,29 @@ class PurchaseOrder extends DB_Table {
     }
 
 
+    function is_closed_in_aurora() {
+        if ($this->data['Purchase Order Type'] == 'Production') {
+            return false;
+        }
+
+        if ($this->data['Purchase Order Parent'] == 'Supplier') {
+            $stmt = $this->db->prepare('SELECT count(*) AS num FROM `Supplier Production Dimension` WHERE `Supplier Production Supplier Key`=?');
+            $stmt->execute(array($this->data['Purchase Order Parent Key']));
+            if ($row = $stmt->fetch() and $row['num'] > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     function update_item($data) {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Purchase orders are now managed in aiku, not in Aurora');
+
+            return false;
+        }
 
         switch ($data['field']) {
             case 'Purchase Order Cartons':
@@ -1549,6 +1577,12 @@ class PurchaseOrder extends DB_Table {
     }
 
     function update_item_quantity($data): array {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Purchase orders are now managed in aiku, not in Aurora');
+
+            return array();
+        }
 
 
         $account = get_object('account', 1);
@@ -2036,6 +2070,12 @@ class PurchaseOrder extends DB_Table {
      * @param bool    $update_part_next_deliveries_data
      */
     function update_purchase_order_item_state(int $purchase_order_transaction_fact_key, bool $update_part_next_deliveries_data = true) {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Purchase orders are now managed in aiku, not in Aurora');
+
+            return false;
+        }
 
         $sql  = "select PO.`Purchase Order State`,`Purchase Order Submitted Cancelled Units`,`Purchase Order Transaction Fact Key`,`Purchase Order Ordering Units`,`Purchase Order Submitted Units`,POTF.`Supplier Delivery Key` ,`Supplier Delivery Units`,
                 `Supplier Delivery Transaction State`,`Purchase Order Transaction State`,`Purchase Order Transaction Part SKU`
@@ -2248,6 +2288,12 @@ class PurchaseOrder extends DB_Table {
     }
 
     function delete() {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Purchase orders are now managed in aiku, not in Aurora');
+
+            return false;
+        }
 
         include_once 'class.Attachment.php';
         $items = array();
@@ -2426,6 +2472,13 @@ class PurchaseOrder extends DB_Table {
 */
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Purchase orders are now managed in aiku, not in Aurora');
+
+            return false;
+        }
+
         switch ($field) {
             case 'Purchase Order Operator Key':
 

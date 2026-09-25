@@ -789,6 +789,12 @@ class Supplier extends SubjectSupplier {
     }
 
     function create_supplier_part_record($data, $allow_duplicate_part_reference = 'No') {
+        if ($this->get('Supplier Production') != 'Yes') {
+            $this->error = true;
+            $this->msg   = _('Supplier products and parts are now created in aiku, not in Aurora');
+
+            return false;
+        }
 
 
         $data['editor'] = $this->editor;

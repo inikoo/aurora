@@ -1258,6 +1258,15 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $response['tab'] = get_tab($redis, $db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
+    if (!in_array($state['module'], array('production', 'production_server'))) {
+        $response['tab'] = '
+<div style="background-color: #d00000;color: whitesmoke;padding: 20px">
+<h1>Aurora has been replaced with <a style="font-size: x-large;color: white;text-decoration: underline" href="https://app.aiku.io">aiku</a></h1>
+<p>You can log with your same username and password to <a style="color: white;text-decoration: underline" href="https://app.aiku.io">https://app.aiku.io</a></p>
+<p>Purchase orders, supplier deliveries, supplier products, parts, products and barcodes are now managed only in aiku. Please do not use aurora, only Production stays here.</p>
+</div>'.$response['tab'];
+    }
+
     if ($old_web_location != (isset($state['module']) ? $state['module'] : '').'|'.(isset($state['section']) ? $state['section'] : '')) {
 
 

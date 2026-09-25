@@ -556,6 +556,10 @@ function cancel_purchase_order_submitted_item($data, $db)
          * @var $purchase_order \PurchaseOrder
          */
         $purchase_order = get_object('Purchase_Order', $row['Purchase Order Key']);
+        if ($purchase_order->id and $purchase_order->is_closed_in_aurora()) {
+            echo json_encode(array('state' => 400, 'msg' => _('Purchase orders are now managed in aiku, not in Aurora')));
+            exit;
+        }
         if ($purchase_order->id) {
             $old_state = $purchase_order->get('Purchase Order State');
 
@@ -863,6 +867,12 @@ function edit_item_in_order(PDO $db, $editor, $data)
 
 
     $transaction_data = $parent->update_item($data);
+
+    if ($parent instanceof PurchaseOrder and $parent->error) {
+        echo json_encode(array('state' => 400, 'msg' => $parent->msg));
+
+        return;
+    }
 
 
     $discounts_data = array();

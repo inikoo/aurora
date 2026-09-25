@@ -21,7 +21,7 @@ class SubjectSupplier extends Subject {
 
         if ($this->is_ordered_from_aiku()) {
             $this->error = true;
-            $this->msg   = _('Purchase orders for this supplier are now created in aiku, not in Aurora');
+            $this->msg   = _('Purchase orders are now managed in aiku, not in Aurora');
 
             return false;
         }
@@ -100,6 +100,10 @@ class SubjectSupplier extends Subject {
     }
 
     function is_ordered_from_aiku() {
+        if ($this->table_name == 'Agent') {
+            return true;
+        }
+
         if ($this->table_name != 'Supplier') {
             return false;
         }
@@ -108,11 +112,7 @@ class SubjectSupplier extends Subject {
             return false;
         }
 
-        if (($this->data['aiku_ignore'] ?? 'No') == 'Yes') {
-            return false;
-        }
-
-        $stmt = $this->db->prepare('SELECT count(*) AS num FROM `Agent Supplier Bridge` WHERE `Agent Supplier Supplier Key`=?');
+        $stmt = $this->db->prepare('SELECT count(*) AS num FROM `Supplier Production Dimension` WHERE `Supplier Production Supplier Key`=?');
         $stmt->execute(array($this->id));
         if ($row = $stmt->fetch() and $row['num'] > 0) {
             return false;

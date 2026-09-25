@@ -3650,6 +3650,11 @@ return;
     {
         $this->new_product = false;
 
+        $this->error = true;
+        $this->msg   = _('Products are now created in aiku, not in Aurora');
+
+        return false;
+
         $data['editor'] = $this->editor;
 
 

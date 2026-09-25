@@ -4711,6 +4711,13 @@ class Part extends Asset
             $this->msg        = _('Supplier not found');
         }
 
+        if ($supplier->id and $supplier->get('Supplier Production') != 'Yes') {
+            $this->error = true;
+            $this->msg   = _('Supplier products are now created in aiku, not in Aurora');
+
+            return false;
+        }
+
         if ($data['Supplier Part Minimum Carton Order'] == '') {
             $data['Supplier Part Minimum Carton Order'] = 1;
         } else {

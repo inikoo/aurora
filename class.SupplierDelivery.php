@@ -797,6 +797,13 @@ class SupplierDelivery extends DB_Table {
 
 
     function update_field_switcher($field, $value, $options = '', $metadata = '') {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Supplier deliveries are now managed in aiku, not in Aurora');
+
+            return false;
+        }
+
         switch ($field) {
             case 'Supplier Delivery State':
                 $this->update_state($value, $options, $metadata);
@@ -1541,6 +1548,12 @@ class SupplierDelivery extends DB_Table {
     }
 
     function update_item($data) {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Supplier deliveries are now managed in aiku, not in Aurora');
+
+            return false;
+        }
 
         switch ($data['field']) {
             /*
@@ -1562,6 +1575,12 @@ class SupplierDelivery extends DB_Table {
     }
 
     function update_item_delivery_checked_units($data) {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Supplier deliveries are now managed in aiku, not in Aurora');
+
+            return false;
+        }
 
 
         $date            = gmdate('Y-m-d H:i:s');
@@ -1969,7 +1988,7 @@ class SupplierDelivery extends DB_Table {
     function update_item_delivery_placed_skos($data) {
         if ($this->is_closed_in_aurora()) {
             $this->error = true;
-            $this->msg   = _('Supplier deliveries are now booked in from aiku, not from Aurora');
+            $this->msg   = _('Supplier deliveries are now managed in aiku, not in Aurora');
 
             return false;
         }
@@ -2264,6 +2283,12 @@ class SupplierDelivery extends DB_Table {
     }
 
     function delete() {
+        if ($this->is_closed_in_aurora()) {
+            $this->error = true;
+            $this->msg   = _('Supplier deliveries are now managed in aiku, not in Aurora');
+
+            return false;
+        }
 
         if ($this->data['Supplier Delivery State'] == 'InProcess') {
 
