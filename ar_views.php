@@ -1258,12 +1258,17 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $response['tab'] = get_tab($redis, $db, $smarty, $user, $account, $state['tab'], $state['subtab'], $state, $data['metadata']);
 
-    if (!in_array($state['module'], array('production', 'production_server'))) {
+    $modules_still_in_aurora = array('production', 'production_server');
+    if ($account->get('Code') == 'AROMA') {
+        $modules_still_in_aurora = array_merge($modules_still_in_aurora, array('orders', 'orders_server'));
+    }
+
+    if (!in_array($state['module'], $modules_still_in_aurora)) {
         $response['tab'] = '
 <div style="background-color: #d00000;color: whitesmoke;padding: 20px">
 <h1>Aurora has been replaced with <a style="font-size: x-large;color: white;text-decoration: underline" href="https://app.aiku.io">aiku</a></h1>
 <p>You can log with your same username and password to <a style="color: white;text-decoration: underline" href="https://app.aiku.io">https://app.aiku.io</a></p>
-<p>Purchase orders, supplier deliveries, supplier products, parts, products and barcodes are now managed only in aiku. Please do not use aurora, only Production stays here.</p>
+<p>Purchase orders, supplier deliveries, supplier products, parts, products and barcodes are now managed only in aiku. Please do not use aurora. Only Production, and in Aroma the processing of the last remaining orders, stays here.</p>
 </div>'.$response['tab'];
     }
 
