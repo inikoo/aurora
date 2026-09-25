@@ -1260,7 +1260,7 @@ function get_view($db, $smarty, $user, $account, $modules, $redis) {
 
     $modules_still_in_aurora = array('production', 'production_server');
     if ($account->get('Code') == 'AROMA') {
-        $modules_still_in_aurora = array_merge($modules_still_in_aurora, array('orders', 'orders_server'));
+        $modules_still_in_aurora = array_merge($modules_still_in_aurora, array('orders', 'orders_server', 'delivery_notes', 'delivery_notes_server'));
     }
 
     if (!in_array($state['module'], $modules_still_in_aurora)) {
