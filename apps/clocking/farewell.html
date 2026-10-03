@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clocking has retired</title>
+    <style>
+        :root { --ink: #3b3a36; --soft: #8a857a; --paper: #faf7f0; --accent: #c2603f; }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--paper); color: var(--ink); font-family: Georgia, "Times New Roman", serif; padding: 24px 16px; text-align: center; }
+        main { max-width: 560px; }
+        svg { width: 240px; max-width: 70vw; height: auto; }
+        h1 { font-size: 2rem; margin: 16px 0 8px; font-weight: normal; }
+        .years { color: var(--accent); letter-spacing: .2em; font-size: .95rem; margin: 0 0 24px; }
+        p { line-height: 1.6; margin: 0 0 14px; font-size: 1.1rem; }
+        .count { margin: 22px 0 24px; font-size: 1rem; color: var(--soft); }
+        .count span { display: block; font-size: 2.6rem; color: var(--accent); line-height: 1.1; }
+        .soft { color: var(--soft); font-size: .95rem; }
+    </style>
+</head>
+<body>
+<main>
+    <svg viewBox="0 0 240 230" fill="none" stroke="#3b3a36" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 205 C70 198 170 198 220 205"/>
+        <path d="M58 202 V96 C58 50 182 50 182 96 V202"/>
+        <circle cx="120" cy="118" r="40"/>
+        <path d="M120 84 v6 M120 146 v6 M86 118 h6 M148 118 h6"/>
+        <path d="M104 112 q6 5 12 0 M124 112 q6 5 12 0"/>
+        <path d="M110 132 q10 6 20 0"/>
+        <path d="M120 118 v-18 M120 118 l10 8"/>
+        <text x="120" y="182" text-anchor="middle" font-family="Georgia, serif" font-size="15" fill="#3b3a36" stroke="none">{since_year} – {until_year}</text>
+        <path d="M196 202 v-26 M196 186 c-8 -2 -12 -8 -10 -14 c6 0 10 6 10 14 M196 182 c8 -2 12 -8 10 -14 c-6 0 -10 6 -10 14" stroke="#7a8f5a"/>
+        <circle cx="196" cy="170" r="5" stroke="#c2603f"/>
+        <path d="M34 202 v-14 M34 192 c-5 -1 -7 -5 -6 -9 c4 0 6 4 6 9" stroke="#7a8f5a"/>
+        <text x="200" y="40" font-family="Georgia, serif" font-size="14" fill="#8a857a" stroke="none">z</text>
+        <text x="210" y="26" font-family="Georgia, serif" font-size="18" fill="#8a857a" stroke="none">z</text>
+    </svg>
+
+    <h1>This clock has clocked out for good</h1>
+    <p class="years">{since} – {until}</p>
+
+    <p>{years} this little machine counted every arrival, every break and every “see you tomorrow”.</p>
+    <p class="count"><span>{clockings}</span>clockings, one tap at a time</p>
+    <p>It has now been laid to rest. Clocking in and out is done in <strong>aiku</strong>.</p>
+    <p>Thank you to everyone who tapped in, morning after morning. Rest in peace, old friend.</p>
+
+    <p class="soft">If you are not sure how to clock in now, please ask your manager.</p>
+</main>
+</body>
+</html>
