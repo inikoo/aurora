@@ -92,6 +92,15 @@ if ($row = $stmt->fetch()) {
 
     $staff->create_timesheet_record($data);
 
+    if ($staff->create_timesheet_record_error) {
+        echo json_encode(
+            [
+                'status' => 400,
+                'msg'    => $staff->create_timesheet_record_msg
+            ]
+        );
+        exit;
+    }
 
 
     if($staff->get('Staff Attendance Status')=='Work'){

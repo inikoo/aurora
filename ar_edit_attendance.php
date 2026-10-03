@@ -114,6 +114,16 @@ function check_in($data, $editor) {
 
     $staff->create_timesheet_record($time_record_data);
 
+    if ($staff->create_timesheet_record_error) {
+        echo json_encode(
+            array(
+                'state' => 400,
+                'msg'   => $staff->create_timesheet_record_msg
+            )
+        );
+        exit;
+    }
+
 
     $response = array(
         'state'             => 200,
@@ -169,6 +179,16 @@ function check_out($data, $editor) {
     //print_r($time_record_data);
     //exit;
     $staff->create_timesheet_record($time_record_data);
+
+    if ($staff->create_timesheet_record_error) {
+        echo json_encode(
+            array(
+                'state' => 400,
+                'msg'   => $staff->create_timesheet_record_msg
+            )
+        );
+        exit;
+    }
 
 
     $response = array(

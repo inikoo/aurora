@@ -335,7 +335,7 @@ class Clocking_Machine_NFC_Tag extends DB_Table {
 
                     } else {
                         $scan_data = log_api_key_access_failure(
-                            $this->db, $api_key_key, 'Fail_Operation', "Error creating record"
+                            $this->db, $api_key_key, 'Fail_Operation', $staff->create_timesheet_record_msg
                         );
 
                     }

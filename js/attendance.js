@@ -80,6 +80,8 @@ $(function () {
                         reset: true
                     });
 
+                } else {
+                    alert(data.msg)
                 }
 
 

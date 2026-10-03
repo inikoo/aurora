@@ -64,53 +64,8 @@ class Timesheet_Record extends DB_Table {
 
         $this->duplicated = false;
         $this->new        = false;
-
-        $this->editor = $data['editor'];
-        unset($data['editor']);
-        $this->data = $data;
-
-        $keys   = '';
-        $values = '';
-
-        foreach ($this->data as $key => $value) {
-            $keys .= ",`".$key."`";
-            $values .= ','.prepare_mysql($value, false);
-        }
-        $values = preg_replace('/^,/', '', $values);
-        $keys   = preg_replace('/^,/', '', $keys);
-
-        $sql
-            = "insert into `Timesheet Record Dimension` ($keys) values ($values)";
-
-        //print  $sql;
-        if ($this->db->exec($sql)) {
-
-            $this->id  = $this->db->lastInsertId();
-            $this->new = true;
-            $this->get_data('id', $this->id);
-
-            if ($this->data['Timesheet Record Source'] == 'Manual') {
-                $this->update_field(
-                    'Timesheet Authoriser Key', $this->editor['Author Key'], 'no_history'
-                );
-
-            }
-
-            $this->model_updated( 'new', $this->id);
-
-        } else {
-            $this->error = true;
-            $error_info  = $this->db->errorInfo();
-            if ($error_info[0] == 23000) {
-                $this->duplicated = true;
-                $this->msg        = _('Record already exists');
-            } else {
-                $this->msg = 'Can not create Timesheet Record. '.$error_info[2];
-            }
-
-
-        }
-
+        $this->error      = true;
+        $this->msg        = _('Clocking is now done in aiku, not in Aurora');
 
     }
 

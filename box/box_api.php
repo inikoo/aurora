@@ -148,7 +148,7 @@ if ($authenticated == 'OK') {
 
                             $response = array(
                                 'result'     => 'error',
-                                'msg'=> "Error creating record"
+                                'msg'=> $staff->create_timesheet_record_msg
                             );
 
                         }

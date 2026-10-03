@@ -86,7 +86,7 @@ function post_timesheet($db, $editor, $api_key_key)
                 $db,
                 $api_key_key,
                 'Fail_Operation',
-                "Error creating record"
+                $staff->create_timesheet_record_msg
             );
         }
 
