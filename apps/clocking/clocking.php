@@ -96,7 +96,7 @@ if ($row = $stmt->fetch()) {
         echo json_encode(
             [
                 'status' => 400,
-                'msg'    => $staff->create_timesheet_record_msg
+                'msg'    => 'Clocking has moved to aiku. Please reload this page.'
             ]
         );
         exit;
