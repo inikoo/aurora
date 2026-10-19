@@ -220,7 +220,10 @@ class Material extends DB_Table {
     }
 
     protected function update_field_switcher($field, $value, $options = '', $metadata = '') {
+        $this->error = true;
+        $this->msg   = _('Materials are now edited in aiku');
 
+        return;
 
         switch ($field) {
 

@@ -981,6 +981,11 @@ class Product extends Asset
 
     function create($data)
     {
+        $this->error = true;
+        $this->msg   = _('Products are now created in aiku');
+
+        return;
+
         include_once 'utils/natural_language.php';
 
 
@@ -2918,7 +2923,9 @@ class Product extends Asset
                 break;
 
             case 'Product Materials':
-
+                $this->error = true;
+                $this->msg   = _('Materials are now edited in aiku');
+                break;
 
                 if (!preg_match('/from_part/', $options) and count($this->get_parts()) == 1) {
                     /**

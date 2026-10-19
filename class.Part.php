@@ -144,6 +144,11 @@ class Part extends Asset
 
     function create($data)
     {
+        $this->error = true;
+        $this->msg   = _('Parts are now created in aiku');
+
+        return;
+
         include_once 'class.Account.php';
         include_once 'class.Category.php';
 
@@ -2513,6 +2518,10 @@ class Part extends Asset
 
                 break;
             case 'Part Materials':
+                $this->error = true;
+                $this->msg   = _('Materials are now edited in aiku');
+                break;
+
                 include_once 'utils/parse_materials.php';
 
 
