@@ -575,3 +575,16 @@ function get_object($object_name, $key, $load_other_data = false) {
 }
 
 
+
+function exit_if_catalogue_is_edited_in_aiku($object_name, $operation = '')
+{
+    if (in_array(strtolower($object_name), array('part', 'product', 'barcode')) and !in_array($operation, array('set_up_raw_material', 'reindex', 'clean_cache'))) {
+        echo json_encode(
+            array(
+                'state' => 400,
+                'msg'   => _('Products, parts and barcodes are now edited in aiku')
+            )
+        );
+        exit;
+    }
+}

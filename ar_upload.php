@@ -955,6 +955,8 @@ function get_data($account, $db, $user, $data, $smarty) {
 
 
 function edit_objects($account, $db, $user, $editor, $data) {
+    exit_if_catalogue_is_edited_in_aiku($data['objects']);
+
 
     list(
         $upload_files_data, $files_with_errors, $error_info

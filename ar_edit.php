@@ -330,6 +330,8 @@ function edit_field($account, $db, $redis, $editor, $data, $smarty, $user)
         exit;
     }
 
+    exit_if_catalogue_is_edited_in_aiku($object->get_object_name());
+
     $field = preg_replace('/_/', ' ', $data['field']);
 
 
@@ -661,6 +663,8 @@ function set_as_main($account, $db, $user, $editor, $data, $smarty)
         exit;
     }
 
+    exit_if_catalogue_is_edited_in_aiku($object->get_object_name());
+
     $object->editor = $editor;
 
 
@@ -818,6 +822,8 @@ function delete_object_component($account, $db, $user, $editor, $data, $smarty)
         exit;
     }
 
+    exit_if_catalogue_is_edited_in_aiku($object->get_object_name());
+
     $object->editor = $editor;
 
 
@@ -902,6 +908,8 @@ function object_operation($account, $db, $user, $editor, $data, $smarty)
         echo json_encode($response);
         exit;
     }
+
+    exit_if_catalogue_is_edited_in_aiku($object->get_object_name(), $data['operation']);
 
     switch ($data['operation']) {
         case 'policy':
@@ -1039,6 +1047,8 @@ function object_operation($account, $db, $user, $editor, $data, $smarty)
  */
 function new_object($account, $db, $user, $editor, $data, $smarty)
 {
+    exit_if_catalogue_is_edited_in_aiku($data['object']);
+
     $parent         = get_object($data['parent'], $data['parent_key']);
     $parent->editor = $editor;
 
