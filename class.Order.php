@@ -99,6 +99,11 @@ class Order extends DB_Table
 
     function update_field_switcher($field, $value, $options = '', $metadata = '')
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         switch ($field) {
             case('Replacement State'):
                 $delivery_note = get_object('delivery note', $metadata['Delivery Note Key']);
@@ -1035,6 +1040,11 @@ class Order extends DB_Table
 
     function update_state($value, $options = '{}', $metadata = array())
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         include_once 'utils/new_fork.php';
 
         $store = get_object('Store', $this->data['Order Store Key']);

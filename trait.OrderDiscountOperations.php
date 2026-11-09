@@ -2612,6 +2612,11 @@ trait OrderDiscountOperations
 
     function update_transaction_discount_percentage($otf_key, $percentage)
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         if (!is_numeric($percentage)) {
             $this->error = true;
             $this->msg   = _('Wrong percentage');
@@ -2668,6 +2673,11 @@ trait OrderDiscountOperations
 
     function update_transaction_discount_amount($otf_key, $discount_amount, $deal_campaign_key = 0, $deal_key = 0, $deal_component_key = 0)
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         $deal_info = '';
 
         $sql = sprintf(

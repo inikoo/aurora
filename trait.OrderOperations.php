@@ -15,11 +15,29 @@ trait OrderOperations
 {
 
 
+    function basket_is_frozen(): bool
+    {
+        if (($this->data['Order State'] ?? '') != 'InBasket') {
+            return false;
+        }
+
+        $this->error = true;
+        $this->msg   = _('Orders in basket are frozen in Aurora, create the order in aiku');
+
+        return true;
+    }
+
     /**
      * @throws \Exception
      */
     function create($data)
     {
+        $this->error = true;
+        $this->msg   = _('Orders are now created in aiku');
+
+        return;
+
+
         $account = get_object('Account', 1);
 
 

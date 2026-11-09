@@ -20,6 +20,14 @@ trait OrderItems
      */
     function update_item($data): array
     {
+        if ($this->basket_is_frozen()) {
+            return array(
+                'updated' => false,
+                'why'     => $this->msg
+            );
+        }
+
+
         $product = get_object('Product', $data['item_historic_key'], 'historic_key');
         if(!$product->id){
             return array(
@@ -573,6 +581,11 @@ VALUES (?,?,?,?,?,? ,?,?, ?,?, ?,?,?,?,? ,?,?,?,?,? ,?,?,?,?,?)   ";
 
     function delete_transaction($otf_key)
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         $sql = sprintf(
             "DELETE FROM `Order Transaction Fact` WHERE `Order Transaction Fact Key`=%d",
             $otf_key

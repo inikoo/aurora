@@ -38,6 +38,11 @@ trait OrderChargesOperations
      */
     function use_calculated_items_charges()
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
@@ -298,6 +303,11 @@ trait OrderChargesOperations
      */
     function update_hanging_charges_amount($value, $dn_key = false)
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
         }
@@ -384,6 +394,11 @@ trait OrderChargesOperations
      */
     function add_charge($charge,$amount=false)
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
 
 
         $_charge_amount=$charge->get('Charge Metadata');
@@ -483,6 +498,11 @@ trait OrderChargesOperations
      */
     function remove_charge($charge)
     {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return false;
         }

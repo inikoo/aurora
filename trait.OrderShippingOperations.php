@@ -15,6 +15,11 @@ trait OrderShippingOperations {
 
 
     function update_shipping_amount($value, $dn_key = false) {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
 
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
             return;
@@ -256,6 +261,11 @@ trait OrderShippingOperations {
 
 
     function use_calculated_shipping() {
+        if ($this->basket_is_frozen()) {
+            return;
+        }
+
+
 
 
         if ($this->get('State Index') >= 90 or $this->get('State Index') <= 0) {
